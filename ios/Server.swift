@@ -39,6 +39,17 @@ class Server {
         self.connectionsByID.removeAll()
     }
     
+    func send(connectionId: Int, message: String) {
+        let connection = connectionsByID[connectionId]
+        connection?.send(data: (message.data(using: .utf8))!)
+    }
+    
+    func broadcast(message: String) {
+        for connection in connectionsByID.values {
+            send(connectionId: connection.id, message: message)
+        }
+    }
+    
     private func stateDidChange(to newState: NWListener.State) {
        switch newState {
        case .ready:
