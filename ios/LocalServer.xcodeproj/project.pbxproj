@@ -15,7 +15,6 @@
 		1B6056B72848DA380069394F /* LocalMessagingClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B62848DA380069394F /* LocalMessagingClient.swift */; };
 		1B6056B92848DC9B0069394F /* LocalMessagingServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B82848DC9B0069394F /* LocalMessagingServer.swift */; };
 		1B6056BB2848DCB40069394F /* LocalMessagingServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056BA2848DCB40069394F /* LocalMessagingServer.m */; };
-		F4FF95D7245B92E800C19C63 /* LocalServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* LocalServer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,9 +39,7 @@
 		1B6056B62848DA380069394F /* LocalMessagingClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalMessagingClient.swift; sourceTree = "<group>"; };
 		1B6056B82848DC9B0069394F /* LocalMessagingServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalMessagingServer.swift; sourceTree = "<group>"; };
 		1B6056BA2848DCB40069394F /* LocalMessagingServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalMessagingServer.m; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* LocalServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalServer.m; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServer-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4FF95D6245B92E800C19C63 /* LocalServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,8 +80,6 @@
 				1B6056BA2848DCB40069394F /* LocalMessagingServer.m */,
 				1B6056B62848DA380069394F /* LocalMessagingClient.swift */,
 				1B6056B42848DA1B0069394F /* LocalMessagingClient.m */,
-				F4FF95D6245B92E800C19C63 /* LocalServer.swift */,
-				B3E7B5891CC2AC0600A0062D /* LocalServer.m */,
 				F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
@@ -155,7 +150,6 @@
 				1B6056BB2848DCB40069394F /* LocalMessagingServer.m in Sources */,
 				1B6056B92848DC9B0069394F /* LocalMessagingServer.swift in Sources */,
 				1B6056B72848DA380069394F /* LocalMessagingClient.swift in Sources */,
-				F4FF95D7245B92E800C19C63 /* LocalServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

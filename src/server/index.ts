@@ -5,7 +5,6 @@ export class LocalMessagingServer implements LocalMessagingServerInterface {
     readonly config: LocalMessagingServerConfiguration
 
     constructor(configuration: LocalMessagingServerConfiguration) {
-        console.log(configuration)
         this.config = configuration
     }
 
