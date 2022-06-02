@@ -4,8 +4,8 @@ import Network
 @objc(LocalServer)
 class LocalServer: NSObject {
     
-    private let server: Server = Server(portArg: 12000)
-    private let client: Client = Client(id:"test-1", host: "192.168.1.65", port: 12000)
+    private let server: Server = Server(id: "server-1", port: 12000)
+    private let client: Client = Client(id: "client-1", host: "192.168.1.65", port: 12000)
 
 
     @objc(multiply:withB:withResolver:withRejecter:)

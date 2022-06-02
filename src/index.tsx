@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from "react-native"
 export * from "./client/index"
+export * from "./server/index"
 
 const LINKING_ERROR =
     "The package 'react-native-local-server' doesn't seem to be linked. Make sure: \n\n" +

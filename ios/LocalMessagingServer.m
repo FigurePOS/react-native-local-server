@@ -6,4 +6,28 @@
 //  Copyright © 2022 Facebook. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <React/RCTBridgeModule.h>
+
+@interface RCT_EXTERN_MODULE(LocalMessagingServer, NSObject)
+
+RCT_EXTERN_METHOD(createServer:(NSString *)id
+                  withPort:(int)port
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(stopServer:(NSString *)id
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(send:(NSString *)id
+                  withConnectionId:(NSString *)connectionId
+                  withMessage:(NSString *)message
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(broadcast:(NSString *)id
+                  withMessage:(NSString *)message
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+
+@end

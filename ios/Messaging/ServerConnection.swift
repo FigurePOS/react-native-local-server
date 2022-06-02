@@ -13,21 +13,18 @@ import Network
 class ServerConnection {
     //The TCP maximum package size is 64K 65536
     let MTU = 65536
-
-    private static var nextID: Int = 0
-    let  connection: NWConnection
-    let id: Int
+    let connection: NWConnection
+    let id: String
 
     init(nwConnection: NWConnection) {
         connection = nwConnection
-        id = ServerConnection.nextID
-        ServerConnection.nextID += 1
+        id = UUID().uuidString
     }
 
     var didStopCallback: ((Error?) -> Void)? = nil
 
     func start() {
-        print("connection \(id) will start")
+        print("ServerConnection - connection \(id) will start")
         connection.stateUpdateHandler = self.stateDidChange(to:)
         setupReceive()
         connection.start(queue: .main)
@@ -38,7 +35,7 @@ class ServerConnection {
         case .waiting(let error):
             connectionDidFail(error: error)
         case .ready:
-            print("connection \(id) ready")
+            print("ServerConnection - connection \(id) ready")
         case .failed(let error):
             connectionDidFail(error: error)
         default:
@@ -50,8 +47,9 @@ class ServerConnection {
         connection.receive(minimumIncompleteLength: 1, maximumLength: MTU) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
                 let message = String(data: data, encoding: .utf8)
-                print("connection \(self.id) did receive, data: \(data as NSData) string: \(message ?? "-")")
-                self.send(data: data)
+                print("ServerConnection - did receive data")
+                print("\tconnecionId: \(self.id)")
+                print("\tmessage: \(message ?? "-")")
             }
             if isComplete {
                 self.connectionDidEnd()

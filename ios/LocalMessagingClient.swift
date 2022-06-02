@@ -38,7 +38,7 @@ class LocalMessagingClient: NSObject {
     
     @objc(send:withMessage:withResolver:withRejecter:)
     func send(clientId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("LocalMessagingClient - stopClient - started")
+        print("LocalMessagingClient - send - started")
         if let client: Client = clients[clientId] {
             client.send(message: message)
             resolve(true)

@@ -11,21 +11,25 @@ import Network
 
 @available(iOS 12.0, *)
 class Server {
+    let id: String
     let port: NWEndpoint.Port
     let listener: NWListener
+    let queue: DispatchQueue
     
-    private var connectionsByID: [Int: ServerConnection] = [:]
+    private var connectionsByID: [String: ServerConnection] = [:]
     
-    init(portArg: UInt16) {
-        port = NWEndpoint.Port(rawValue: portArg)!
-        listener = try! NWListener(using: .tcp, on: port)
+    init(id: String, port: UInt16) {
+        queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
+        self.id = id
+        self.port = NWEndpoint.Port(rawValue: port)!
+        listener = try! NWListener(using: .tcp, on: self.port)
     }
     
     func start() throws {
         print("Server - start")
         listener.stateUpdateHandler = stateDidChange(to:)
         listener.newConnectionHandler = didAccept(nwConnection:)
-        listener.start(queue: .main)
+        listener.start(queue: self.queue)
     }
     
     func stop() {
@@ -39,14 +43,22 @@ class Server {
         self.connectionsByID.removeAll()
     }
     
-    func send(connectionId: Int, message: String) {
-        let connection = connectionsByID[connectionId]
-        connection?.send(data: (message.data(using: .utf8))!)
+    func send(connectionId: String, message: String) {
+        print("Server - send")
+        print("\tconnection: \(connectionId)")
+        print("\tmessage: \(message)")
+        if let connection = connectionsByID[connectionId] {
+            connection.send(data: (message.data(using: .utf8))!)
+        } else {
+            // TODO handle somehow
+            print("Server - send - no connection")
+        }
     }
     
     func broadcast(message: String) {
+        print("Server - broadcas message: \(message)")
         for connection in connectionsByID.values {
-            send(connectionId: connection.id, message: message)
+            self.send(connectionId: connection.id, message: message)
         }
     }
     
@@ -71,7 +83,6 @@ class Server {
             self.connectionDidStop(connection)
         }
         connection.start()
-        connection.send(data: "Welcome you are connection: \(connection.id)".data(using: .utf8)!)
         print("server did open connection \(connection.id)")
     }
 

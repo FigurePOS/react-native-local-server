@@ -5,7 +5,6 @@ export class LocalMessagingClient implements LocalMessagingClientInterface {
     readonly config: LocalMessagingClientConfiguration
 
     constructor(configuration: LocalMessagingClientConfiguration) {
-        console.log(configuration)
         this.config = configuration
     }
 
@@ -18,11 +17,10 @@ export class LocalMessagingClient implements LocalMessagingClientInterface {
     }
 
     start = (): Promise<void> => {
-        console.log(this.config)
         return LocalMessagingClientModule.createClient(this.config.id, this.config.host, this.config.port)
     }
 
     stop = (): Promise<void> => {
-        return LocalMessagingClientModule.stopClient()
+        return LocalMessagingClientModule.stopClient(this.config.id)
     }
 }
