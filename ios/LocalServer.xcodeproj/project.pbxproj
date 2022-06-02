@@ -11,6 +11,10 @@
 		1B6056AE2848B1030069394F /* ServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056AD2848B1030069394F /* ServerConnection.swift */; };
 		1B6056B12848BB8D0069394F /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B02848BB8D0069394F /* Client.swift */; };
 		1B6056B32848BB9A0069394F /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B22848BB9A0069394F /* ClientConnection.swift */; };
+		1B6056B52848DA1B0069394F /* LocalMessagingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B42848DA1B0069394F /* LocalMessagingClient.m */; };
+		1B6056B72848DA380069394F /* LocalMessagingClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B62848DA380069394F /* LocalMessagingClient.swift */; };
+		1B6056B92848DC9B0069394F /* LocalMessagingServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B82848DC9B0069394F /* LocalMessagingServer.swift */; };
+		1B6056BB2848DCB40069394F /* LocalMessagingServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056BA2848DCB40069394F /* LocalMessagingServer.m */; };
 		F4FF95D7245B92E800C19C63 /* LocalServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* LocalServer.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +36,10 @@
 		1B6056AD2848B1030069394F /* ServerConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConnection.swift; sourceTree = "<group>"; };
 		1B6056B02848BB8D0069394F /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		1B6056B22848BB9A0069394F /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
+		1B6056B42848DA1B0069394F /* LocalMessagingClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalMessagingClient.m; sourceTree = "<group>"; };
+		1B6056B62848DA380069394F /* LocalMessagingClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalMessagingClient.swift; sourceTree = "<group>"; };
+		1B6056B82848DC9B0069394F /* LocalMessagingServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalMessagingServer.swift; sourceTree = "<group>"; };
+		1B6056BA2848DCB40069394F /* LocalMessagingServer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalMessagingServer.m; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* LocalServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalServer.m; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServer-Bridging-Header.h"; sourceTree = "<group>"; };
 		F4FF95D6245B92E800C19C63 /* LocalServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServer.swift; sourceTree = "<group>"; };
@@ -56,13 +64,25 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		58B511D21A9E6C8500147676 = {
+		1B6056BC2848DCCA0069394F /* Messaging */ = {
 			isa = PBXGroup;
 			children = (
 				1B6056B22848BB9A0069394F /* ClientConnection.swift */,
 				1B6056B02848BB8D0069394F /* Client.swift */,
 				1B6056AD2848B1030069394F /* ServerConnection.swift */,
 				1B6056AB2848AD580069394F /* Server.swift */,
+			);
+			path = Messaging;
+			sourceTree = "<group>";
+		};
+		58B511D21A9E6C8500147676 = {
+			isa = PBXGroup;
+			children = (
+				1B6056BC2848DCCA0069394F /* Messaging */,
+				1B6056B82848DC9B0069394F /* LocalMessagingServer.swift */,
+				1B6056BA2848DCB40069394F /* LocalMessagingServer.m */,
+				1B6056B62848DA380069394F /* LocalMessagingClient.swift */,
+				1B6056B42848DA1B0069394F /* LocalMessagingClient.m */,
 				F4FF95D6245B92E800C19C63 /* LocalServer.swift */,
 				B3E7B5891CC2AC0600A0062D /* LocalServer.m */,
 				F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */,
@@ -128,9 +148,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B6056AC2848AD580069394F /* Server.swift in Sources */,
+				1B6056B52848DA1B0069394F /* LocalMessagingClient.m in Sources */,
 				1B6056AE2848B1030069394F /* ServerConnection.swift in Sources */,
 				1B6056B12848BB8D0069394F /* Client.swift in Sources */,
 				1B6056B32848BB9A0069394F /* ClientConnection.swift in Sources */,
+				1B6056BB2848DCB40069394F /* LocalMessagingServer.m in Sources */,
+				1B6056B92848DC9B0069394F /* LocalMessagingServer.swift in Sources */,
+				1B6056B72848DA380069394F /* LocalMessagingClient.swift in Sources */,
 				F4FF95D7245B92E800C19C63 /* LocalServer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

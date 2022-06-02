@@ -5,7 +5,7 @@ import Network
 class LocalServer: NSObject {
     
     private let server: Server = Server(portArg: 12000)
-    private let client: Client = Client(host: "192.168.1.65", port: 12000)
+    private let client: Client = Client(id:"test-1", host: "192.168.1.65", port: 12000)
 
 
     @objc(multiply:withB:withResolver:withRejecter:)
@@ -30,7 +30,7 @@ class LocalServer: NSObject {
     @objc(sendFromClient:withResolver:withRejecter:)
     func sendFromClient(message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("sendFromClient - started")
-        client.send(data: message.data(using: .utf8)!)
+        client.send(message: message)
         resolve(true)
     }
     

@@ -12,30 +12,57 @@ import Network
 @available(iOS 12.0, *)
 class ClientConnection {
 
-    let  nwConnection: NWConnection
-    let queue = DispatchQueue(label: "Client connection Q")
-
-    init(nwConnection: NWConnection) {
-        self.nwConnection = nwConnection
-    }
-
+    let clientId: String
+    let nwConnection: NWConnection
+    let queue: DispatchQueue
+    
     var didStopCallback: ((Error?) -> Void)? = nil
+    var didRecieveDataCallback: ((String, Data) -> Void)? = nil
+
+    init(clientId: String, nwConnection: NWConnection) {
+        self.clientId = clientId
+        self.nwConnection = nwConnection
+        self.queue = DispatchQueue(label: "com.react-native-messaging.client." + clientId)
+    }
 
     func start() {
-        print("client connection will start")
+        print("ClientConnection - start")
         nwConnection.stateUpdateHandler = stateDidChange(to:)
         setupReceive()
-        nwConnection.start(queue: queue)
+        nwConnection.start(queue: self.queue)
     }
+    
+    func send(data: Data) {
+        print("ClientConnection - send")
+        nwConnection.send(content: data, completion: .contentProcessed( { error in
+            if let error = error {
+                print("ClientConnection - send - failure")
+                self.connectionDidFail(error: error)
+                return
+            }
+            print("ClientConnection - send - success")
+        }))
+    }
+
+    func stop() {
+        print("ClientConnection - stop")
+        stop(error: nil)
+    }
+
 
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
         case .waiting(let error):
+            print("ClientConnection - stateDidChange - waiting")
             connectionDidFail(error: error)
+            break
         case .ready:
-            print("Client connection ready")
+            print("ClientConnection - stateDidChange - ready")
+            break
         case .failed(let error):
+            print("ClientConnection - stateDidChange - failed")
             connectionDidFail(error: error)
+            break
         default:
             break
         }
@@ -44,8 +71,12 @@ class ClientConnection {
     private func setupReceive() {
         nwConnection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                let message = String(data: data, encoding: .utf8)
-                print("client connection did receive, data: \(data as NSData) string: \(message ?? "-" )")
+                print("ClientConnection - did receive data")
+                if let didRecieveDataCallback = self.didRecieveDataCallback {
+                    didRecieveDataCallback(self.clientId, data)
+                } else {
+                    print("ClientConnection - did receive data - no callback")
+                }
             }
             if isComplete {
                 self.connectionDidEnd()
@@ -55,21 +86,6 @@ class ClientConnection {
                 self.setupReceive()
             }
         }
-    }
-
-    func send(data: Data) {
-        nwConnection.send(content: data, completion: .contentProcessed( { error in
-            if let error = error {
-                self.connectionDidFail(error: error)
-                return
-            }
-            print("client connection did send, data: \(data as NSData)")
-        }))
-    }
-
-    func stop() {
-        print("client connection will stop")
-        stop(error: nil)
     }
 
     private func connectionDidFail(error: Error) {
