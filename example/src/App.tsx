@@ -1,12 +1,13 @@
 import * as React from "react"
 
 import { Button, StyleSheet, View } from "react-native"
-import { startServer } from "react-native-local-server"
+import { startServer, stopServer } from "react-native-local-server"
 
 export default function App() {
     return (
         <View style={styles.container}>
             <Button title={"Start Server"} onPress={startServer} />
+            <Button title={"Stop Server"} onPress={stopServer} />
         </View>
     )
 }

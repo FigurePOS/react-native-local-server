@@ -9,4 +9,7 @@ RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
 RCT_EXTERN_METHOD(startServer:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(stopServer:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+
 @end

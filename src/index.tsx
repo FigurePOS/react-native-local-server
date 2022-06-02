@@ -24,3 +24,6 @@ export function multiply(a: number, b: number): Promise<number> {
 export const startServer = (): Promise<void> => {
     return LocalServer.startServer()
 }
+export const stopServer = (): Promise<void> => {
+    return LocalServer.stopServer()
+}
