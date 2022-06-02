@@ -1,0 +1,9 @@
+node_modules/*
+ios/*
+example/ios/*
+scripts/*
+.idea/*
+.circleci/*
+coverage/*
+*.spec.js
+lib/*
