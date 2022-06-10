@@ -48,7 +48,8 @@ class Server {
         print("\tconnection: \(connectionId)")
         print("\tmessage: \(message)")
         if let connection = connectionsByID[connectionId] {
-            connection.send(data: (message.data(using: .utf8))!)
+            let preparedMessage = message + "\r\n"
+            connection.send(data: (preparedMessage.data(using: .utf8))!)
         } else {
             // TODO handle somehow
             print("Server - send - no connection")

@@ -18,6 +18,7 @@ class Client {
 
     init(id: String, host: String, port: UInt16) {
         self.id = id
+        // TODO think about moving creating NWConnection to client
         self.host = NWEndpoint.Host(host)
         self.port = NWEndpoint.Port(rawValue: port)!
         let nwConnection = NWConnection(host: self.host, port: self.port, using: .tcp)
@@ -37,8 +38,9 @@ class Client {
     }
 
     func send(message: String) {
-        print("Client - send")
-        connection.send(data: message.data(using: .utf8)!)
+        let preparedMessage = message + "\r\n"
+        print("Client - send \(preparedMessage)")
+        connection.send(data: preparedMessage.data(using: .utf8)!)
     }
     
     func didStopCallback(error: Error?) {
