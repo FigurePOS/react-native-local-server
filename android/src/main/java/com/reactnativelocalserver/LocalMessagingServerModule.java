@@ -32,7 +32,7 @@ public class LocalMessagingServerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void createServer(String id, int port, Promise promise) {
-        Log.d(NAME, "createServer started for id:" + id);
+        Log.d(NAME, "createServer started for id: " + id);
         if (servers.get(id) != null) {
             promise.reject("client.already-exists", "Server with this id already exists");
             return;
@@ -45,7 +45,7 @@ public class LocalMessagingServerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void stopServer(String id, Promise promise) {
-        Log.d(NAME, "stopServer started for id:" + id);
+        Log.d(NAME, "stopServer started for id: " + id);
         Server server = servers.get(id);
         if (server == null) {
             promise.reject("server.not-exists", "Server with this id does not exist");
@@ -58,7 +58,7 @@ public class LocalMessagingServerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void send(String serverId, String connectionId, String message, Promise promise) {
-        Log.d(NAME, "send started for server:" + serverId);
+        Log.d(NAME, "send started for server: " + serverId);
         Server server = servers.get(serverId);
         if (server == null) {
             promise.reject("server.not-exists", "Server with this id does not exist");
@@ -70,7 +70,7 @@ public class LocalMessagingServerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void broadcast(String serverId, String message, Promise promise) {
-        Log.d(NAME, "broadcast started for server:" + serverId);
+        Log.d(NAME, "broadcast started for server: " + serverId);
         Server server = servers.get(serverId);
         if (server == null) {
             promise.reject("server.not-exists", "Server with this id does not exist");

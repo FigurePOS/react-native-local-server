@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class Server {
     }
 
     public void start() {
-        Log.d(TAG, "start");
+        Log.d(TAG, "start: " + id);
         try {
             serverSocket = new ServerSocket(port, 1);
             if (runnable != null) {
@@ -48,11 +49,16 @@ public class Server {
     }
 
     public void stop() {
-        Log.d(TAG, "stop");
+        Log.d(TAG, "stop: " + id);
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            Log.e(TAG, "close server socket error", e);
+        }
     }
 
     public void send(String connectionId, String message) {
-        Log.d(TAG, "send to: " + connectionId + "\n message: " + message);
+        Log.d(TAG, "send: " + id + "\n\tto: " + connectionId + "\n\tmessage: " + message);
         ServerConnection connection = connections.get(connectionId);
         if (connection == null) {
             // TODO throw err
@@ -62,20 +68,34 @@ public class Server {
     }
 
     public void broadcast(String message) {
-        Log.d(TAG, "broadcast: " + message);
+        Log.d(TAG, "broadcast: " + id + "\n\tmessage: " + message);
         for (ServerConnection connection : connections.values()) {
             connection.send(message);
         }
     }
 
-    public class TCPRunnable implements Runnable {
-        private boolean shouldRun = true;
+    private void cleanUp() {
+        Log.d(TAG, "clean up: " + id);
+        for (ServerConnection connection : connections.values()) {
+            connection.stop();
+        }
+        connections.clear();
+        thread.interrupt();
+        thread = null;
+        runnable = null;
+        serverSocket = null;
+    }
 
+    public class TCPRunnable implements Runnable {
         @Override
         public void run() {
             try {
-                while (shouldRun && serverSocket != null) {
+                while (serverSocket != null) {
                     Socket s = serverSocket.accept();
+                    if (Thread.interrupted()) {
+                        Log.d(TAG, "was interrupted: " + id);
+                        throw new InterruptedException();
+                    }
                     if (s != null) {
                         Log.d(TAG, "client connected");
                         ServerConnection connection = new ServerConnection();
@@ -85,8 +105,8 @@ public class Server {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "error in connection accepting", e);
+                cleanUp();
             }
-
         }
     }
 }
