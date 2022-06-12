@@ -4,8 +4,10 @@ import android.util.Log;
 
 import com.reactnativelocalserver.utils.SocketWrapper;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class ClientConnection {
     private static final String TAG = "ClientConnection";
@@ -13,6 +15,7 @@ public class ClientConnection {
     private final String host;
     private final int port;
 
+    private SocketWrapper socket;
     private TCPRunnable runnable;
     private Thread thread;
 
@@ -23,10 +26,18 @@ public class ClientConnection {
     }
 
     public void start() {
-        Log.d(TAG, "start");
+        Log.d(TAG, "start: " + clientId);
         if (runnable != null) {
             // TODO throw error
             return;
+        }
+        try {
+            InetAddress serverAddress = InetAddress.getByName(host);
+            socket = new SocketWrapper(new Socket(serverAddress, port));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         runnable = new TCPRunnable();
         thread = new Thread(runnable, "com.react-native-messaging.client." + clientId);
@@ -34,37 +45,45 @@ public class ClientConnection {
     }
 
     public void send(String data) {
-        Log.d(TAG, "send: " + data);
-        runnable.send(data);
+        Log.d(TAG, "send: " + clientId + "\n\tdata: " + data);
+        socket.write(data);
+    }
+
+    public void stop() {
+        Log.d(TAG, "stop: " + clientId);
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cleanUp() {
+        Log.d(TAG, "clean up: " + clientId);
+        thread.interrupt();
+        thread = null;
+        runnable = null;
+        socket = null;
     }
 
     public class TCPRunnable implements Runnable {
-        private boolean shouldRun = true;
-        private SocketWrapper socket;
-
-        public void send(String data) {
-            socket.write(data);
-        }
 
         @Override
         public void run() {
             try {
-                InetAddress serverAddress = InetAddress.getByName(host);
-                socket = new SocketWrapper(new Socket(serverAddress, port));
-                try {
-                    while (shouldRun) {
-                        String messageFromServer = socket.read();
-                        if (messageFromServer != null) {
-                            Log.d(TAG, "received message: " + messageFromServer);
-                        }
+                while (true) {
+                    String messageFromServer = socket.read();
+                    if (Thread.interrupted()) {
+                        Log.d(TAG, "was interrupted: " + clientId);
                     }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error in run 2", e);
-                } finally {
-                    socket.close();
+                    if (messageFromServer != null) {
+                        Log.d(TAG, "received message on: " + clientId + "\n\tmessage: " + messageFromServer);
+                    }
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Error in run", e);
+                Log.e(TAG, "Error in run 2", e);
+            } finally {
+                cleanUp();
             }
         }
     }

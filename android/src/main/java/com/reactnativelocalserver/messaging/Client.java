@@ -29,16 +29,17 @@ public class Client {
     }
 
     public void start() {
-        Log.d(TAG, "start");
+        Log.d(TAG, "start: " + id);
         connection.start();
     }
 
     public void stop() {
-        Log.d(TAG, "stop");
+        Log.d(TAG, "stop: " + id);
+        connection.stop();
     }
 
     public void send(String message) {
-        Log.d(TAG, "send: " + message);
+        Log.d(TAG, "send: " + id + "\n\tmessage: " + message);
         connection.send(message);
     }
 }
