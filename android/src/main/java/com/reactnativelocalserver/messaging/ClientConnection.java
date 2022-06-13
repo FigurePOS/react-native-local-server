@@ -2,6 +2,9 @@ package com.reactnativelocalserver.messaging;
 
 import android.util.Log;
 
+import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.JSEvent;
+import com.reactnativelocalserver.utils.MessagingClientEventName;
 import com.reactnativelocalserver.utils.SocketWrapper;
 
 import java.io.IOException;
@@ -14,15 +17,17 @@ public class ClientConnection {
     private final String clientId;
     private final String host;
     private final int port;
+    private final EventEmitter eventEmitter;
 
     private SocketWrapper socket;
     private TCPRunnable runnable;
     private Thread thread;
 
-    public ClientConnection(String clientId, String host, int port) {
+    public ClientConnection(String clientId, String host, int port, EventEmitter eventEmitter) {
         this.clientId = clientId;
         this.host = host;
         this.port = port;
+        this.eventEmitter = eventEmitter;
     }
 
     public void start() {
@@ -64,12 +69,26 @@ public class ClientConnection {
         thread = null;
         runnable = null;
         socket = null;
+        handleLifecycleEvent(MessagingClientEventName.ClientStopped);
+    }
+
+    private void handleLifecycleEvent(String eventName) {
+        JSEvent event = new JSEvent(eventName);
+        event.putString("clientId", clientId);
+        this.eventEmitter.emitEvent(event);
+    }
+
+    private void handleMessageReceived(String message) {
+        JSEvent event = new JSEvent(MessagingClientEventName.ClientReceivedMessage);
+        event.putString("clientId", clientId);
+        event.putString("message", message);
+        this.eventEmitter.emitEvent(event);
     }
 
     public class TCPRunnable implements Runnable {
-
         @Override
         public void run() {
+            handleLifecycleEvent(MessagingClientEventName.ClientReady);
             try {
                 while (true) {
                     String messageFromServer = socket.read();
@@ -78,6 +97,7 @@ public class ClientConnection {
                     }
                     if (messageFromServer != null) {
                         Log.d(TAG, "received message on: " + clientId + "\n\tmessage: " + messageFromServer);
+                        handleMessageReceived(messageFromServer);
                     }
                 }
             } catch (Exception e) {

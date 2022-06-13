@@ -1,8 +1,14 @@
 import type { LocalMessagingClientConfiguration, LocalMessagingClientInterface } from "./types"
+import { LocalMessagingClientEventName } from "./types"
 import { LocalMessagingClientModule } from "./module"
+import { NativeEventEmitter } from "react-native"
+
+const eventEmitter = new NativeEventEmitter(LocalMessagingClientModule)
 
 export class LocalMessagingClient implements LocalMessagingClientInterface {
     readonly config: LocalMessagingClientConfiguration
+    static readonly EventName = LocalMessagingClientEventName
+    static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
     constructor(configuration: LocalMessagingClientConfiguration) {
         this.config = configuration

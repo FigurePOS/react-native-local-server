@@ -1,8 +1,14 @@
 import type { LocalMessagingServerConfiguration, LocalMessagingServerInterface } from "./types"
+import { LocalMessagingServerEventName } from "./types"
 import { LocalMessagingServerModule } from "./module"
+import { NativeEventEmitter } from "react-native"
+
+const eventEmitter = new NativeEventEmitter(LocalMessagingServerModule)
 
 export class LocalMessagingServer implements LocalMessagingServerInterface {
     readonly config: LocalMessagingServerConfiguration
+    static readonly EventName = LocalMessagingServerEventName
+    static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
     constructor(configuration: LocalMessagingServerConfiguration) {
         this.config = configuration
@@ -13,7 +19,6 @@ export class LocalMessagingServer implements LocalMessagingServerInterface {
     }
 
     start = (): Promise<void> => {
-        console.log(this.config)
         return LocalMessagingServerModule.createServer(this.config.id, this.config.port)
     }
 

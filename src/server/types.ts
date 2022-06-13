@@ -3,6 +3,16 @@ export type LocalMessagingServerConfiguration = {
     port: number
 }
 
+export enum LocalMessagingServerEventName {
+    ServerReady = "ServerReady",
+    ServerStopped = "ServerStopped",
+    ServerConnectionAccepted = "ServerConnectionAccepted",
+    ServerConnectionReady = "ServerConnectionReady",
+    ServerConnectionLost = "ServerConnectionLost",
+    ServerConnectionClosed = "ServerConnectionClosed",
+    ServerReceivedMessage = "ServerReceivedMessage",
+}
+
 export interface LocalMessagingServerInterface {
     getConfiguration: () => LocalMessagingServerConfiguration
 

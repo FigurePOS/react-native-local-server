@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.messaging.Server;
+import com.reactnativelocalserver.utils.EventEmitter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +19,12 @@ import java.util.Map;
 public class LocalMessagingServerModule extends ReactContextBaseJavaModule {
     public static final String NAME = "LocalMessagingServer";
 
+    private final EventEmitter eventEmitter;
     private final Map<String, Server> servers = new HashMap();
 
     public LocalMessagingServerModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        eventEmitter = new EventEmitter(reactContext);
     }
 
     @Override
@@ -37,7 +40,7 @@ public class LocalMessagingServerModule extends ReactContextBaseJavaModule {
             promise.reject("client.already-exists", "Server with this id already exists");
             return;
         }
-        Server server = new Server(id, port);
+        Server server = new Server(id, port, eventEmitter);
         server.start();
         servers.put(server.getId(), server);
         promise.resolve(true);

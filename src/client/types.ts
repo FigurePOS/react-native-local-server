@@ -4,6 +4,12 @@ export type LocalMessagingClientConfiguration = {
     port: number
 }
 
+export enum LocalMessagingClientEventName {
+    ClientReady = "ClientReady",
+    ClientStopped = "ClientStopped",
+    ClientReceivedMessage = "ClientReceivedMessage",
+}
+
 export interface LocalMessagingClientInterface {
     getConfiguration: () => LocalMessagingClientConfiguration
 

@@ -1,10 +1,8 @@
 package com.reactnativelocalserver;
 
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -12,19 +10,21 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.messaging.Client;
+import com.reactnativelocalserver.utils.EventEmitter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @ReactModule(name = LocalMessagingClientModule.NAME)
 public class LocalMessagingClientModule extends ReactContextBaseJavaModule {
     public static final String NAME = "LocalMessagingClient";
 
+    private final EventEmitter eventEmitter;
     private final Map<String, Client> clients = new HashMap();
 
     public LocalMessagingClientModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        eventEmitter = new EventEmitter(reactContext);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class LocalMessagingClientModule extends ReactContextBaseJavaModule {
             promise.reject("client.already-exists", "Client with this id already exists");
             return;
         }
-        Client client = new Client(id, host, port);
+        Client client = new Client(id, host, port, eventEmitter);
         client.start();
         clients.put(client.getId(), client);
         promise.resolve(true);

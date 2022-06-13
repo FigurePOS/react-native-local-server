@@ -2,18 +2,22 @@ package com.reactnativelocalserver.messaging;
 
 import android.util.Log;
 
+import com.reactnativelocalserver.utils.EventEmitter;
+
 public class Client {
     private final static String TAG = "Client";
     private final String id;
     private final String host;
     private final int port;
+    private final EventEmitter eventEmitter;
     private final ClientConnection connection;
 
-    public Client(String id, String host, int port) {
+    public Client(String id, String host, int port, EventEmitter eventEmitter) {
         this.id = id;
         this.host = host;
         this.port = port;
-        connection = new ClientConnection(id, host, port);
+        this.eventEmitter = eventEmitter;
+        connection = new ClientConnection(id, host, port, eventEmitter);
     }
 
     public String getId() {

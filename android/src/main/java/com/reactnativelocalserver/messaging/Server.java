@@ -2,10 +2,13 @@ package com.reactnativelocalserver.messaging;
 
 import android.util.Log;
 
+import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.JSEvent;
+import com.reactnativelocalserver.utils.MessagingServerEventName;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,15 +16,17 @@ public class Server {
     private final static String TAG = "Server";
     private final String id;
     private final int port;
-    private ServerSocket serverSocket;
+    private final EventEmitter eventEmitter;
     private final Map<String, ServerConnection> connections = new HashMap();
 
+    private ServerSocket serverSocket;
     private TCPRunnable runnable;
     private Thread thread;
 
-    public Server(String id, int port) {
+    public Server(String id, int port, EventEmitter eventEmitter) {
         this.id = id;
         this.port = port;
+        this.eventEmitter = eventEmitter;
     }
 
     public String getId() {
@@ -84,11 +89,26 @@ public class Server {
         thread = null;
         runnable = null;
         serverSocket = null;
+        handleLifecycleEvent(MessagingServerEventName.ServerStopped);
+    }
+
+    private void handleConnectionAccepted(String connectionId) {
+        JSEvent event = new JSEvent(MessagingServerEventName.ServerConnectionAccepted);
+        event.putString("serverId", id);
+        event.putString("connectionId", connectionId);
+        this.eventEmitter.emitEvent(event);
+    }
+
+    private void handleLifecycleEvent(String eventName) {
+        JSEvent event = new JSEvent(eventName);
+        event.putString("serverId", id);
+        this.eventEmitter.emitEvent(event);
     }
 
     public class TCPRunnable implements Runnable {
         @Override
         public void run() {
+            handleLifecycleEvent(MessagingServerEventName.ServerReady);
             try {
                 while (serverSocket != null) {
                     Socket s = serverSocket.accept();
@@ -98,9 +118,10 @@ public class Server {
                     }
                     if (s != null) {
                         Log.d(TAG, "client connected");
-                        ServerConnection connection = new ServerConnection();
+                        ServerConnection connection = new ServerConnection(id, eventEmitter);
                         connection.start(s);
                         connections.put(connection.getId(), connection);
+                        handleConnectionAccepted(connection.getId());
                     }
                 }
             } catch (Exception e) {
