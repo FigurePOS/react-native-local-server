@@ -16,7 +16,8 @@ public class LocalServerPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new LocalServerModule(reactContext));
+        modules.add(new LocalMessagingClientModule(reactContext));
+        modules.add(new LocalMessagingServerModule(reactContext));
         return modules;
     }
 
