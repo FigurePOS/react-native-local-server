@@ -1,4 +1,4 @@
-package com.reactnativelocalserver.messaging;
+package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Server {
-    private final static String TAG = "Server";
+    private final static String TAG = "TCPServer";
     private final String id;
     private final int port;
     private final EventEmitter eventEmitter;

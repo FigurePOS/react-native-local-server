@@ -1,11 +1,11 @@
-package com.reactnativelocalserver.messaging;
+package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 
 public class Client {
-    private final static String TAG = "Client";
+    private final static String TAG = "TCPClient";
     private final String id;
     private final String host;
     private final int port;

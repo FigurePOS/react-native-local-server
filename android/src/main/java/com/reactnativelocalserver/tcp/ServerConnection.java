@@ -1,4 +1,4 @@
-package com.reactnativelocalserver.messaging;
+package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.UUID;
 
 public class ServerConnection {
-    private static final String TAG = "ServerConnection";
+    private static final String TAG = "TCPServerConnection";
     private final String serverId;
     private final String id;
     private final EventEmitter eventEmitter;

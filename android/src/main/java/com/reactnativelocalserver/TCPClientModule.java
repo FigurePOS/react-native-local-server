@@ -9,20 +9,20 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
-import com.reactnativelocalserver.messaging.Client;
+import com.reactnativelocalserver.tcp.Client;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ReactModule(name = LocalMessagingClientModule.NAME)
-public class LocalMessagingClientModule extends ReactContextBaseJavaModule {
-    public static final String NAME = "LocalMessagingClient";
+@ReactModule(name = TCPClientModule.NAME)
+public class TCPClientModule extends ReactContextBaseJavaModule {
+    public static final String NAME = "TCPClientModule";
 
     private final EventEmitter eventEmitter;
     private final Map<String, Client> clients = new HashMap();
 
-    public LocalMessagingClientModule(ReactApplicationContext reactContext) {
+    public TCPClientModule(ReactApplicationContext reactContext) {
         super(reactContext);
         eventEmitter = new EventEmitter(reactContext);
     }

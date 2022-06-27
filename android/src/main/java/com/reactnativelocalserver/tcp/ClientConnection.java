@@ -1,4 +1,4 @@
-package com.reactnativelocalserver.messaging;
+package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ClientConnection {
-    private static final String TAG = "ClientConnection";
+    private static final String TAG = "TCPClientConnection";
     private final String clientId;
     private final String host;
     private final int port;
