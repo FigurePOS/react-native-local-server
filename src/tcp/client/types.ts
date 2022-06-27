@@ -1,17 +1,17 @@
-export type LocalMessagingClientConfiguration = {
+export type TCPClientConfiguration = {
     id: string
     host: string
     port: number
 }
 
-export enum LocalMessagingClientEventName {
+export enum TCPClientEventName {
     ClientReady = "ClientReady",
     ClientStopped = "ClientStopped",
     ClientReceivedMessage = "ClientReceivedMessage",
 }
 
-export interface LocalMessagingClientInterface {
-    getConfiguration: () => LocalMessagingClientConfiguration
+export interface TCPClientInterface {
+    getConfiguration: () => TCPClientConfiguration
 
     start: () => Promise<void>
 

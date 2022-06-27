@@ -1,62 +1,62 @@
 import * as React from "react"
 import { Button, StyleSheet, View } from "react-native"
-import { LocalMessagingClient, LocalMessagingServer } from "react-native-local-server"
+import { TCPClient, TCPServer } from "react-native-local-server"
 
-const client = new LocalMessagingClient({
+const client = new TCPClient({
     id: "client-1",
     host: "localhost",
     port: 12000,
 })
 
-const server = new LocalMessagingServer({
+const server = new TCPServer({
     id: "server-1",
     port: 12000,
 })
 
-LocalMessagingServer.EventEmitter.addListener(LocalMessagingServer.EventName.ServerConnectionAccepted, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerConnectionAccepted, (e) => {
     console.log("SERVER")
-    console.log(LocalMessagingServer.EventName.ServerConnectionAccepted)
+    console.log(TCPServer.EventName.ServerConnectionAccepted)
     console.log(e)
 })
-LocalMessagingServer.EventEmitter.addListener(LocalMessagingServer.EventName.ServerReady, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerReady, (e) => {
     console.log("SERVER")
-    console.log(LocalMessagingServer.EventName.ServerReady)
+    console.log(TCPServer.EventName.ServerReady)
     console.log(e)
 })
-LocalMessagingServer.EventEmitter.addListener(LocalMessagingServer.EventName.ServerStopped, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerStopped, (e) => {
     console.log("SERVER")
-    console.log(LocalMessagingServer.EventName.ServerStopped)
+    console.log(TCPServer.EventName.ServerStopped)
     console.log(e)
 })
-LocalMessagingServer.EventEmitter.addListener(LocalMessagingServer.EventName.ServerReceivedMessage, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerReceivedMessage, (e) => {
     console.log("SERVER")
-    console.log(LocalMessagingServer.EventName.ServerReceivedMessage)
+    console.log(TCPServer.EventName.ServerReceivedMessage)
     console.log(e)
 })
-LocalMessagingServer.EventEmitter.addListener(LocalMessagingServer.EventName.ServerConnectionClosed, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerConnectionClosed, (e) => {
     console.log("SERVER")
-    console.log(LocalMessagingServer.EventName.ServerConnectionClosed)
+    console.log(TCPServer.EventName.ServerConnectionClosed)
     console.log(e)
 })
-LocalMessagingServer.EventEmitter.addListener(LocalMessagingServer.EventName.ServerConnectionReady, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerConnectionReady, (e) => {
     console.log("SERVER")
-    console.log(LocalMessagingServer.EventName.ServerConnectionReady)
+    console.log(TCPServer.EventName.ServerConnectionReady)
     console.log(e)
 })
 
-LocalMessagingClient.EventEmitter.addListener(LocalMessagingClient.EventName.ClientReady, (e) => {
+TCPClient.EventEmitter.addListener(TCPClient.EventName.ClientReady, (e) => {
     console.log("CLIENT")
-    console.log(LocalMessagingClient.EventName.ClientReady)
+    console.log(TCPClient.EventName.ClientReady)
     console.log(e)
 })
-LocalMessagingClient.EventEmitter.addListener(LocalMessagingClient.EventName.ClientStopped, (e) => {
+TCPClient.EventEmitter.addListener(TCPClient.EventName.ClientStopped, (e) => {
     console.log("CLIENT")
-    console.log(LocalMessagingClient.EventName.ClientStopped)
+    console.log(TCPClient.EventName.ClientStopped)
     console.log(e)
 })
-LocalMessagingClient.EventEmitter.addListener(LocalMessagingClient.EventName.ClientReceivedMessage, (e) => {
+TCPClient.EventEmitter.addListener(TCPClient.EventName.ClientReceivedMessage, (e) => {
     console.log("CLIENT")
-    console.log(LocalMessagingClient.EventName.ClientReceivedMessage)
+    console.log(TCPClient.EventName.ClientReceivedMessage)
     console.log(e)
 })
 

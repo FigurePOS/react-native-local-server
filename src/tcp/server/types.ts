@@ -1,9 +1,9 @@
-export type LocalMessagingServerConfiguration = {
+export type TCPServerConfiguration = {
     id: string
     port: number
 }
 
-export enum LocalMessagingServerEventName {
+export enum TCPServerEventName {
     ServerReady = "ServerReady",
     ServerStopped = "ServerStopped",
     ServerConnectionAccepted = "ServerConnectionAccepted",
@@ -13,8 +13,8 @@ export enum LocalMessagingServerEventName {
     ServerReceivedMessage = "ServerReceivedMessage",
 }
 
-export interface LocalMessagingServerInterface {
-    getConfiguration: () => LocalMessagingServerConfiguration
+export interface TCPServerInterface {
+    getConfiguration: () => TCPServerConfiguration
 
     start: () => Promise<void>
 
@@ -22,5 +22,6 @@ export interface LocalMessagingServerInterface {
 
     sendMessage: (connectionId: string, message: string) => Promise<void>
 
+    // TODO we should remove this since TCP doesn't support broadcasting and this is just fake
     broadcastMessage: (message: string) => Promise<void>
 }
