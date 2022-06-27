@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
-import com.reactnativelocalserver.utils.MessagingClientEventName;
+import com.reactnativelocalserver.utils.TCPClientEventName;
 import com.reactnativelocalserver.utils.SocketWrapper;
 
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class ClientConnection {
         thread = null;
         runnable = null;
         socket = null;
-        handleLifecycleEvent(MessagingClientEventName.ClientStopped);
+        handleLifecycleEvent(TCPClientEventName.Stopped);
     }
 
     private void handleLifecycleEvent(String eventName) {
@@ -79,7 +79,7 @@ public class ClientConnection {
     }
 
     private void handleMessageReceived(String message) {
-        JSEvent event = new JSEvent(MessagingClientEventName.ClientReceivedMessage);
+        JSEvent event = new JSEvent(TCPClientEventName.MessageReceived);
         event.putString("clientId", clientId);
         event.putString("message", message);
         this.eventEmitter.emitEvent(event);
@@ -88,7 +88,7 @@ public class ClientConnection {
     public class TCPRunnable implements Runnable {
         @Override
         public void run() {
-            handleLifecycleEvent(MessagingClientEventName.ClientReady);
+            handleLifecycleEvent(TCPClientEventName.Ready);
             try {
                 while (true) {
                     String messageFromServer = socket.read();

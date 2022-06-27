@@ -5,9 +5,9 @@ export type TCPClientConfiguration = {
 }
 
 export enum TCPClientEventName {
-    ClientReady = "ClientReady",
-    ClientStopped = "ClientStopped",
-    ClientReceivedMessage = "ClientReceivedMessage",
+    Ready = "TCP_Client_Ready",
+    Stopped = "TCP_Client_Stopped",
+    MessageReceived = "TCP_Client_MessageReceived",
 }
 
 export interface TCPClientInterface {

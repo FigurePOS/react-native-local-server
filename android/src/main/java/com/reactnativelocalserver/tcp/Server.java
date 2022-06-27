@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
-import com.reactnativelocalserver.utils.MessagingServerEventName;
+import com.reactnativelocalserver.utils.TCPServerEventName;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -89,11 +89,11 @@ public class Server {
         thread = null;
         runnable = null;
         serverSocket = null;
-        handleLifecycleEvent(MessagingServerEventName.ServerStopped);
+        handleLifecycleEvent(TCPServerEventName.Stopped);
     }
 
     private void handleConnectionAccepted(String connectionId) {
-        JSEvent event = new JSEvent(MessagingServerEventName.ServerConnectionAccepted);
+        JSEvent event = new JSEvent(TCPServerEventName.ConnectionAccepted);
         event.putString("serverId", id);
         event.putString("connectionId", connectionId);
         this.eventEmitter.emitEvent(event);
@@ -108,7 +108,7 @@ public class Server {
     public class TCPRunnable implements Runnable {
         @Override
         public void run() {
-            handleLifecycleEvent(MessagingServerEventName.ServerReady);
+            handleLifecycleEvent(TCPServerEventName.Ready);
             try {
                 while (serverSocket != null) {
                     Socket s = serverSocket.accept();

@@ -13,50 +13,50 @@ const server = new TCPServer({
     port: 12000,
 })
 
-TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerConnectionAccepted, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ConnectionAccepted, (e) => {
     console.log("SERVER")
-    console.log(TCPServer.EventName.ServerConnectionAccepted)
+    console.log(TCPServer.EventName.ConnectionAccepted)
     console.log(e)
 })
-TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerReady, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.Ready, (e) => {
     console.log("SERVER")
-    console.log(TCPServer.EventName.ServerReady)
+    console.log(TCPServer.EventName.Ready)
     console.log(e)
 })
-TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerStopped, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.Stopped, (e) => {
     console.log("SERVER")
-    console.log(TCPServer.EventName.ServerStopped)
+    console.log(TCPServer.EventName.Stopped)
     console.log(e)
 })
-TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerReceivedMessage, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.MessageReceived, (e) => {
     console.log("SERVER")
-    console.log(TCPServer.EventName.ServerReceivedMessage)
+    console.log(TCPServer.EventName.MessageReceived)
     console.log(e)
 })
-TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerConnectionClosed, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ConnectionClosed, (e) => {
     console.log("SERVER")
-    console.log(TCPServer.EventName.ServerConnectionClosed)
+    console.log(TCPServer.EventName.ConnectionClosed)
     console.log(e)
 })
-TCPServer.EventEmitter.addListener(TCPServer.EventName.ServerConnectionReady, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.ConnectionReady, (e) => {
     console.log("SERVER")
-    console.log(TCPServer.EventName.ServerConnectionReady)
+    console.log(TCPServer.EventName.ConnectionReady)
     console.log(e)
 })
 
-TCPClient.EventEmitter.addListener(TCPClient.EventName.ClientReady, (e) => {
+TCPClient.EventEmitter.addListener(TCPClient.EventName.Ready, (e) => {
     console.log("CLIENT")
-    console.log(TCPClient.EventName.ClientReady)
+    console.log(TCPClient.EventName.Ready)
     console.log(e)
 })
-TCPClient.EventEmitter.addListener(TCPClient.EventName.ClientStopped, (e) => {
+TCPClient.EventEmitter.addListener(TCPClient.EventName.Stopped, (e) => {
     console.log("CLIENT")
-    console.log(TCPClient.EventName.ClientStopped)
+    console.log(TCPClient.EventName.Stopped)
     console.log(e)
 })
-TCPClient.EventEmitter.addListener(TCPClient.EventName.ClientReceivedMessage, (e) => {
+TCPClient.EventEmitter.addListener(TCPClient.EventName.MessageReceived, (e) => {
     console.log("CLIENT")
-    console.log(TCPClient.EventName.ClientReceivedMessage)
+    console.log(TCPClient.EventName.MessageReceived)
     console.log(e)
 })
 
