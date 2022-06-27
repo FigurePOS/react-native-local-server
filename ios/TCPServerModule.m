@@ -8,7 +8,7 @@
 
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(LocalMessagingServer, NSObject)
+@interface RCT_EXTERN_MODULE(TCPServerModule, NSObject)
 
 RCT_EXTERN_METHOD(createServer:(NSString *)id
                   withPort:(int)port

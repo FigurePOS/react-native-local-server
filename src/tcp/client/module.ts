@@ -6,8 +6,8 @@ const LINKING_ERROR =
     "- You rebuilt the app after installing the package\n" +
     "- You are not using Expo managed workflow\n"
 
-export const TCPClientModule = NativeModules.LocalMessagingClient
-    ? NativeModules.LocalMessagingClient
+export const TCPClientModule = NativeModules.TCPClientModule
+    ? NativeModules.TCPClientModule
     : new Proxy(
           {},
           {

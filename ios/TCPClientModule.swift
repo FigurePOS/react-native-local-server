@@ -7,18 +7,18 @@
 //
 import Foundation
 
-@objc(LocalMessagingClient)
-class LocalMessagingClient: NSObject {
+@objc(TCPClientModule)
+class TCPClientModule: NSObject {
     
-    private var clients: [String: Client] = [:]
+    private var clients: [String: TCPClient] = [:]
     
     @objc(createClient:withHost:withPort:withResolver:withRejecter:)
     func createClient(id: String, host: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("LocalMessagingClient - createClient - started")
+        print("TCPClientModule - createClient - started")
         if (clients[id] != nil) {
             reject("client.already-exists", "Client with this id already exists", nil)
         }
-        let client: Client = Client(id: id, host: host, port: port)
+        let client: TCPClient = TCPClient(id: id, host: host, port: port)
         clients[id] = client
         client.start()
         resolve(true)
@@ -26,8 +26,8 @@ class LocalMessagingClient: NSObject {
     
     @objc(stopClient:withResolver:withRejecter:)
     func stopClient(id: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("LocalMessagingClient - stopClient - started")
-        if let client: Client = clients[id] {
+        print("TCPClientModule - stopClient - started")
+        if let client: TCPClient = clients[id] {
             client.stop()
             clients.removeValue(forKey: id)
             resolve(true)
@@ -38,8 +38,8 @@ class LocalMessagingClient: NSObject {
     
     @objc(send:withMessage:withResolver:withRejecter:)
     func send(clientId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("LocalMessagingClient - send - started")
-        if let client: Client = clients[clientId] {
+        print("TCPClientModule - send - started")
+        if let client: TCPClient = clients[clientId] {
             client.send(message: message)
             resolve(true)
         } else {

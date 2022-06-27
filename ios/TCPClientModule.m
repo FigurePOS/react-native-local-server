@@ -8,7 +8,7 @@
 
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(LocalMessagingClient, NSObject)
+@interface RCT_EXTERN_MODULE(TCPClientModule, NSObject)
 
 RCT_EXTERN_METHOD(createClient:(NSString *)id
                   withHost:(NSString *)host

@@ -1,5 +1,5 @@
 //
-//  Server.swift
+//  TCPServer.swift
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
@@ -10,13 +10,13 @@ import Foundation
 import Network
 
 @available(iOS 12.0, *)
-class Server {
+class TCPServer {
     let id: String
     let port: NWEndpoint.Port
     let listener: NWListener
     let queue: DispatchQueue
     
-    private var connectionsByID: [String: ServerConnection] = [:]
+    private var connectionsByID: [String: TCPServerConnection] = [:]
     
     init(id: String, port: UInt16) {
         queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
@@ -26,7 +26,7 @@ class Server {
     }
     
     func start() throws {
-        print("Server - start")
+        print("TCPServer - start")
         listener.stateUpdateHandler = stateDidChange(to:)
         listener.newConnectionHandler = didAccept(nwConnection:)
         listener.start(queue: self.queue)
@@ -44,7 +44,7 @@ class Server {
     }
     
     func send(connectionId: String, message: String) {
-        print("Server - send")
+        print("TCPServer - send")
         print("\tconnection: \(connectionId)")
         print("\tmessage: \(message)")
         if let connection = connectionsByID[connectionId] {
@@ -52,12 +52,12 @@ class Server {
             connection.send(data: (preparedMessage.data(using: .utf8))!)
         } else {
             // TODO handle somehow
-            print("Server - send - no connection")
+            print("TCPServer - send - no connection")
         }
     }
     
     func broadcast(message: String) {
-        print("Server - broadcas message: \(message)")
+        print("TCPServer - broadcas message: \(message)")
         for connection in connectionsByID.values {
             self.send(connectionId: connection.id, message: message)
         }
@@ -66,19 +66,19 @@ class Server {
     private func stateDidChange(to newState: NWListener.State) {
        switch newState {
        case .ready:
-           print("Server ready.")
+           print("TCPServer ready.")
            break
        case .failed(let error):
-           print("Server failure, error: \(error.localizedDescription)")
+           print("TCPServer failure, error: \(error.localizedDescription)")
            break
        default:
-           print("Server stateDidChange - unknown state")
+           print("TCPServer stateDidChange - unknown state")
            break
        }
     }
     
     private func didAccept(nwConnection: NWConnection) {
-        let connection = ServerConnection(nwConnection: nwConnection)
+        let connection = TCPServerConnection(nwConnection: nwConnection)
         self.connectionsByID[connection.id] = connection
         connection.didStopCallback = { _ in
             self.connectionDidStop(connection)
@@ -87,7 +87,7 @@ class Server {
         print("server did open connection \(connection.id)")
     }
 
-    private func connectionDidStop(_ connection: ServerConnection) {
+    private func connectionDidStop(_ connection: TCPServerConnection) {
         self.connectionsByID.removeValue(forKey: connection.id)
         print("server did close connection \(connection.id)")
     }

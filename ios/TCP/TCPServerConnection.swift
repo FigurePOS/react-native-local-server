@@ -1,5 +1,5 @@
 //
-//  ServerConnection.swift
+//  TCPServerConnection.swift
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
@@ -10,7 +10,7 @@ import Foundation
 import Network
 
 @available(iOS 12.0, *)
-class ServerConnection {
+class TCPServerConnection {
     //The TCP maximum package size is 64K 65536
     let MTU = 65536
     let connection: NWConnection
@@ -24,7 +24,7 @@ class ServerConnection {
     var didStopCallback: ((Error?) -> Void)? = nil
 
     func start() {
-        print("ServerConnection - connection \(id) will start")
+        print("TCPServerConnection - connection \(id) will start")
         connection.stateUpdateHandler = self.stateDidChange(to:)
         setupReceive()
         connection.start(queue: .main)
@@ -35,7 +35,7 @@ class ServerConnection {
         case .waiting(let error):
             connectionDidFail(error: error)
         case .ready:
-            print("ServerConnection - connection \(id) ready")
+            print("TCPServerConnection - connection \(id) ready")
         case .failed(let error):
             connectionDidFail(error: error)
         default:
@@ -47,7 +47,7 @@ class ServerConnection {
         connection.receive(minimumIncompleteLength: 1, maximumLength: MTU) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
                 let message = String(data: data, encoding: .utf8)
-                print("ServerConnection - did receive data")
+                print("TCPServerConnection - did receive data")
                 print("\tconnecionId: \(self.id)")
                 print("\tmessage: \(message ?? "-")")
             }

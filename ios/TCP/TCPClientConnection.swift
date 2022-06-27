@@ -1,5 +1,5 @@
 //
-//  ClientConnection.swift
+//  TCPClientConnection.swift
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
@@ -10,7 +10,7 @@ import Foundation
 import Network
 
 @available(iOS 12.0, *)
-class ClientConnection {
+class TCPClientConnection {
 
     let clientId: String
     let nwConnection: NWConnection
@@ -26,26 +26,26 @@ class ClientConnection {
     }
 
     func start() {
-        print("ClientConnection - start")
+        print("TCPClientConnection - start")
         nwConnection.stateUpdateHandler = stateDidChange(to:)
         setupReceive()
         nwConnection.start(queue: self.queue)
     }
     
     func send(data: Data) {
-        print("ClientConnection - send")
+        print("TCPClientConnection - send")
         nwConnection.send(content: data, completion: .contentProcessed( { error in
             if let error = error {
-                print("ClientConnection - send - failure")
+                print("TCPClientConnection - send - failure")
                 self.connectionDidFail(error: error)
                 return
             }
-            print("ClientConnection - send - success")
+            print("TCPClientConnection - send - success")
         }))
     }
 
     func stop() {
-        print("ClientConnection - stop")
+        print("TCPClientConnection - stop")
         stop(error: nil)
     }
 
@@ -53,14 +53,14 @@ class ClientConnection {
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
         case .waiting(let error):
-            print("ClientConnection - stateDidChange - waiting")
+            print("TCPClientConnection - stateDidChange - waiting")
             connectionDidFail(error: error)
             break
         case .ready:
-            print("ClientConnection - stateDidChange - ready")
+            print("TCPClientConnection - stateDidChange - ready")
             break
         case .failed(let error):
-            print("ClientConnection - stateDidChange - failed")
+            print("TCPClientConnection - stateDidChange - failed")
             connectionDidFail(error: error)
             break
         default:
@@ -71,11 +71,11 @@ class ClientConnection {
     private func setupReceive() {
         nwConnection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                print("ClientConnection - did receive data")
+                print("TCPClientConnection - did receive data")
                 if let didRecieveDataCallback = self.didRecieveDataCallback {
                     didRecieveDataCallback(self.clientId, data)
                 } else {
-                    print("ClientConnection - did receive data - no callback")
+                    print("TCPClientConnection - did receive data - no callback")
                 }
             }
             if isComplete {
