@@ -8,7 +8,6 @@ export enum TCPServerEventName {
     Stopped = "RN_Local_Communication__TCP_Server_Stopped",
     ConnectionAccepted = "RN_Local_Communication__TCP_Server_ConnectionAccepted",
     ConnectionReady = "RN_Local_Communication__TCP_Server_ConnectionReady",
-    ConnectionLost = "RN_Local_Communication__TCP_Server_ConnectionLost",
     ConnectionClosed = "RN_Local_Communication__TCP_Server_ConnectionClosed",
     DataReceived = "RN_Local_Communication__TCP_Server_DataReceived",
 }

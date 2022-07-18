@@ -3,7 +3,7 @@
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
-//  Copyright © 2022 Facebook. All rights reserved.
+//  Copyright © 2022 Figure, Inc. All rights reserved.
 //
 
 import Foundation
@@ -12,32 +12,40 @@ import Network
 @available(iOS 12.0, *)
 class TCPClientConnection {
 
+    private let eventEmitter: EventEmitterWrapper
+
     let clientId: String
     let nwConnection: NWConnection
     let queue: DispatchQueue
     
-    var didStopCallback: ((Error?) -> Void)? = nil
-    var didRecieveDataCallback: ((String, Data) -> Void)? = nil
+    let host: NWEndpoint.Host
+    let port: NWEndpoint.Port
 
-    init(clientId: String, nwConnection: NWConnection) {
+
+    init(clientId: String, host: String, port: UInt16, eventEmitter: EventEmitterWrapper) {
+        self.eventEmitter = eventEmitter
         self.clientId = clientId
+        self.host = NWEndpoint.Host(host)
+        self.port = NWEndpoint.Port(rawValue: port)!
+        let nwConnection = NWConnection(host: self.host, port: self.port, using: .tcp)
         self.nwConnection = nwConnection
         self.queue = DispatchQueue(label: "com.react-native-messaging.client." + clientId)
     }
 
     func start() {
-        print("TCPClientConnection - start")
+        print("TCPClientConnection - start: \(clientId)")
         nwConnection.stateUpdateHandler = stateDidChange(to:)
         setupReceive()
         nwConnection.start(queue: self.queue)
     }
     
-    func send(data: Data) {
-        print("TCPClientConnection - send")
-        nwConnection.send(content: data, completion: .contentProcessed( { error in
+    func send(data: String) {
+        print("TCPClientConnection - send: \(clientId)")
+        let preparedData: Data = data.data(using: .utf8)!
+        nwConnection.send(content: preparedData, completion: .contentProcessed( { error in
             if let error = error {
                 print("TCPClientConnection - send - failure")
-                self.connectionDidFail(error: error)
+                self.closeConnection(reason: error)
                 return
             }
             print("TCPClientConnection - send - success")
@@ -45,26 +53,44 @@ class TCPClientConnection {
     }
 
     func stop() {
-        print("TCPClientConnection - stop")
-        stop(error: nil)
+        print("TCPClientConnection - stop: \(clientId)")
+        closeConnection(reason: nil)
     }
-
+    
+    private func closeConnection(reason: Error?) {
+        print("TCPClientConnection - close connection")
+        if (nwConnection.state == NWConnection.State.cancelled) {
+            print("TCPClientConnection - close connection - already cancelled")
+            return
+        }
+        self.nwConnection.cancel()
+    }
 
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
-        case .waiting(let error):
-            print("TCPClientConnection - stateDidChange - waiting")
-            connectionDidFail(error: error)
-            break
-        case .ready:
-            print("TCPClientConnection - stateDidChange - ready")
-            break
-        case .failed(let error):
-            print("TCPClientConnection - stateDidChange - failed")
-            connectionDidFail(error: error)
-            break
-        default:
-            break
+            case .setup:
+                print("TCPClientConnection - stateDidChange - setup")
+                break
+            case .preparing:
+                print("TCPClientConnection - stateDidChange - preparing")
+                break
+            case .waiting(let error):
+                print("TCPClientConnection - stateDidChange - waiting - \(error)")
+                break
+            case .ready:
+                print("TCPClientConnection - stateDidChange - ready")
+                handleLifecycleEvent(eventName: TCPClientEventName.Ready)
+                break
+            case .failed(let error):
+                print("TCPClientConnection - stateDidChange - failed - \(error)")
+//                closeConnection(reason: error)
+                break
+            case .cancelled:
+                print("TCPClientConnection - stateDidChange - cancelled")
+                handleLifecycleEvent(eventName: TCPClientEventName.Stopped)
+                break
+            default:
+                break
         }
     }
 
@@ -72,38 +98,34 @@ class TCPClientConnection {
         nwConnection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
                 print("TCPClientConnection - did receive data")
-                if let didRecieveDataCallback = self.didRecieveDataCallback {
-                    didRecieveDataCallback(self.clientId, data)
-                } else {
-                    print("TCPClientConnection - did receive data - no callback")
-                }
+                self.handleDataReceived(data: data)
             }
             if isComplete {
-                self.connectionDidEnd()
+                print("TCPClientConnection - is complete")
+                self.closeConnection(reason: nil)
             } else if let error = error {
-                self.connectionDidFail(error: error)
+                print("TCPClientConnection - error when receiving data \n\treason: \(error)")
+                self.closeConnection(reason: error)
             } else {
                 self.setupReceive()
             }
         }
     }
 
-    private func connectionDidFail(error: Error) {
-        print("client connection did fail, error: \(error)")
-        self.stop(error: error)
-    }
-
-    private func connectionDidEnd() {
-        print("client connection did end")
-        self.stop(error: nil)
-    }
-
-    private func stop(error: Error?) {
-        self.nwConnection.stateUpdateHandler = nil
-        self.nwConnection.cancel()
-        if let didStopCallback = self.didStopCallback {
-            self.didStopCallback = nil
-            didStopCallback(error)
+    private func handleLifecycleEvent(eventName: String, error: Error? = nil) {
+        let event: JSEvent = JSEvent(name: eventName)
+        event.putString(key: "clientId", value: clientId)
+        if (error != nil) {
+            event.putString(key: "error", value: error.debugDescription)
         }
+        eventEmitter.emitEvent(event: event)
+    }
+
+    private func handleDataReceived(data: Data) {
+        let parsedData: String = String(decoding: data, as: UTF8.self)
+        let event: JSEvent = JSEvent(name: TCPClientEventName.DataReceived)
+        event.putString(key: "clientId", value: clientId)
+        event.putString(key: "data", value: parsedData)
+        eventEmitter.emitEvent(event: event)
     }
 }

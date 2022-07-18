@@ -7,8 +7,9 @@
 //
 
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(TCPClientModule, NSObject)
+@interface RCT_EXTERN_MODULE(TCPClientModule, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(createClient:(NSString *)id
                   withHost:(NSString *)host

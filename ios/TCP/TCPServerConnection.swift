@@ -3,7 +3,7 @@
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
-//  Copyright © 2022 Facebook. All rights reserved.
+//  Copyright © 2022 Figure, Inc. All rights reserved.
 //
 
 import Foundation
@@ -11,12 +11,17 @@ import Network
 
 @available(iOS 12.0, *)
 class TCPServerConnection {
+    private let eventEmitter: EventEmitterWrapper
+
     //The TCP maximum package size is 64K 65536
     let MTU = 65536
     let connection: NWConnection
     let id: String
+    let serverId: String
 
-    init(nwConnection: NWConnection) {
+    init(serverId: String, nwConnection: NWConnection, eventEmitter: EventEmitterWrapper) {
+        self.serverId = serverId
+        self.eventEmitter = eventEmitter
         connection = nwConnection
         id = UUID().uuidString
     }
@@ -24,36 +29,52 @@ class TCPServerConnection {
     var didStopCallback: ((Error?) -> Void)? = nil
 
     func start() {
-        print("TCPServerConnection - connection \(id) will start")
+        print("TCPServerConnection - start \(id)")
         connection.stateUpdateHandler = self.stateDidChange(to:)
         setupReceive()
+        // TODO change queue
         connection.start(queue: .main)
     }
 
     private func stateDidChange(to state: NWConnection.State) {
+        let prefix = "TCPServerConnection - stateDidChange \(id)\n"
         switch state {
-        case .waiting(let error):
-            connectionDidFail(error: error)
-        case .ready:
-            print("TCPServerConnection - connection \(id) ready")
-        case .failed(let error):
-            connectionDidFail(error: error)
-        default:
-            break
+            case .setup:
+                print("\(prefix)\tstate: setup")
+                break
+            case .waiting(let error):
+                print("\(prefix)\tstate: waiting \(error.debugDescription)")
+                break
+            case .preparing:
+                print("\(prefix)\tstate: preparing")
+                break
+            case .ready:
+                print("\(prefix)\tstate: ready")
+                self.handleLifecycleEvent(eventName: TCPServerEventName.ConnectionReady)
+                break
+            case .failed(let error):
+                print("\(prefix)\tstate: failure, error: \(error.debugDescription)")
+                break
+            case .cancelled:
+                print("\(prefix)\tstate: cancelled")
+                break
+            default:
+                print("\(prefix)\tstate: unknown state - \(state)")
+                break
         }
     }
 
     private func setupReceive() {
         connection.receive(minimumIncompleteLength: 1, maximumLength: MTU) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                let message = String(data: data, encoding: .utf8)
                 print("TCPServerConnection - did receive data")
-                print("\tconnecionId: \(self.id)")
-                print("\tmessage: \(message ?? "-")")
+                self.handleDataReceived(data: data)
             }
             if isComplete {
+                print("TCPServerConnection - is complete")
                 self.connectionDidEnd()
             } else if let error = error {
+                print("TCPServerConnection - error when receiving data \n\treason: \(error)")
                 self.connectionDidFail(error: error)
             } else {
                 self.setupReceive()
@@ -78,20 +99,39 @@ class TCPServerConnection {
 
     private func connectionDidFail(error: Error) {
         print("connection \(id) did fail, error: \(error)")
-        stop(error: error)
+        closeConnection(reason: error)
     }
 
     private func connectionDidEnd() {
         print("connection \(id) did end")
-        stop(error: nil)
+        closeConnection(reason: nil)
     }
 
-    private func stop(error: Error?) {
+    private func closeConnection(reason: Error?) {
         connection.stateUpdateHandler = nil
         connection.cancel()
         if let didStopCallback = didStopCallback {
             self.didStopCallback = nil
-            didStopCallback(error)
+            didStopCallback(reason)
         }
+    }
+    
+    private func handleLifecycleEvent(eventName: String, error: Error? = nil) {
+        let event: JSEvent = JSEvent(name: eventName)
+        event.putString(key: "serverId", value: serverId)
+        event.putString(key: "connectionId", value: id)
+        if (error != nil) {
+            event.putString(key: "error", value: error.debugDescription)
+        }
+        eventEmitter.emitEvent(event: event)
+    }
+    
+    private func handleDataReceived(data: Data) {
+        let parsedData: String = String(decoding: data, as: UTF8.self)
+        let event: JSEvent = JSEvent(name: TCPServerEventName.DataReceived)
+        event.putString(key: "serverId", value: serverId)
+        event.putString(key: "clientId", value: id)
+        event.putString(key: "data", value: parsedData)
+        eventEmitter.emitEvent(event: event)
     }
 }

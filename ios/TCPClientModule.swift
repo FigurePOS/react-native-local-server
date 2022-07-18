@@ -8,17 +8,26 @@
 import Foundation
 
 @objc(TCPClientModule)
-class TCPClientModule: NSObject {
+class TCPClientModule: RCTEventEmitter {
 
+    private let eventNames: [String]! = TCPClientEventName.allValues
+    private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
+    
     private var clients: [String: TCPClient] = [:]
-
+    
+    override init() {
+        super.init()
+        eventEmitter.setEventEmitter(eventEmitter: self)
+    }
+    
     @objc(createClient:withHost:withPort:withResolver:withRejecter:)
     func createClient(id: String, host: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPClientModule - createClient - started")
         if (clients[id] != nil) {
             reject("client.already-exists", "Client with this id already exists", nil)
+            return
         }
-        let client: TCPClient = TCPClient(id: id, host: host, port: port)
+        let client: TCPClient = TCPClient(id: id, host: host, port: port, eventEmitter: eventEmitter)
         clients[id] = client
         client.start()
         resolve(true)
@@ -47,4 +56,7 @@ class TCPClientModule: NSObject {
         }
     }
 
+    override func supportedEvents() -> [String]! {
+        return self.eventNames
+    }
 }

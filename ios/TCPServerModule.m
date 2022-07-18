@@ -7,8 +7,9 @@
 //
 
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(TCPServerModule, NSObject)
+@interface RCT_EXTERN_MODULE(TCPServerModule, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(createServer:(NSString *)id
                   withPort:(int)port

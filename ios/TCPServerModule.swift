@@ -9,17 +9,25 @@
 import Foundation
 
 @objc(TCPServerModule)
-class TCPServerModule: NSObject {
+class TCPServerModule: RCTEventEmitter {
+
+    private var eventNames: [String]! = TCPServerEventName.allValues
+    private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
 
     private var servers: [String: TCPServer] = [:]
 
+    override init() {
+        super.init()
+        eventEmitter.setEventEmitter(eventEmitter: self)
+    }
+    
     @objc(createServer:withPort:withResolver:withRejecter:)
     func createServer(id: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - createServer - started")
         if let _: TCPServer = servers[id] {
             reject("server.already-exists", "Server with this id already exists", nil)
         } else {
-            let server: TCPServer = TCPServer(id: id, port: port)
+            let server: TCPServer = TCPServer(id: id, port: port, eventEmitter: eventEmitter)
             servers[id] = server
             try! server.start()
             resolve(true)
@@ -60,5 +68,8 @@ class TCPServerModule: NSObject {
             reject("server.not-exists", "Server with this id does not exist", nil)
         }
     }
-
+    
+    override func supportedEvents() -> [String]! {
+        return self.eventNames
+    }
 }
