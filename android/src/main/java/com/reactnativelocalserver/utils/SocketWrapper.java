@@ -16,7 +16,7 @@ public class SocketWrapper {
 
     public SocketWrapper(Socket socket) throws IOException {
         this.socket = socket;
-        out = new PrintWriter( new BufferedWriter( new OutputStreamWriter(socket.getOutputStream())),true);
+        out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 

@@ -4,13 +4,13 @@ export type TCPServerConfiguration = {
 }
 
 export enum TCPServerEventName {
-    Ready = "TCP_Server_Ready",
-    Stopped = "TCP_Server_Stopped",
-    ConnectionAccepted = "TCP_Server_ConnectionAccepted",
-    ConnectionReady = "TCP_Server_ConnectionReady",
-    ConnectionLost = "TCP_Server_ConnectionLost",
-    ConnectionClosed = "TCP_Server_ConnectionClosed",
-    DataReceived = "TCP_Server_DataReceived",
+    Ready = "RN_Local_Communication__TCP_Server_Ready",
+    Stopped = "RN_Local_Communication__TCP_Server_Stopped",
+    ConnectionAccepted = "RN_Local_Communication__TCP_Server_ConnectionAccepted",
+    ConnectionReady = "RN_Local_Communication__TCP_Server_ConnectionReady",
+    ConnectionLost = "RN_Local_Communication__TCP_Server_ConnectionLost",
+    ConnectionClosed = "RN_Local_Communication__TCP_Server_ConnectionClosed",
+    DataReceived = "RN_Local_Communication__TCP_Server_DataReceived",
 }
 
 export interface TCPServerInterface {

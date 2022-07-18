@@ -3,7 +3,7 @@
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
-//  Copyright © 2022 Facebook. All rights reserved.
+//  Copyright © 2022 Figure, Inc. All rights reserved.
 //
 
 #import <React/RCTBridgeModule.h>

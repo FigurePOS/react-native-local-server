@@ -10,6 +10,7 @@ public class JSEvent {
     public JSEvent(String name) {
         this.name = name;
         this.body = Arguments.createMap();
+        this.putString("type", name);
     }
 
     public String getName() {

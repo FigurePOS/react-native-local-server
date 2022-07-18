@@ -70,7 +70,7 @@ public class ServerConnection {
     }
 
     private void handleMessageReceived(String message) {
-        JSEvent event = new JSEvent(TCPServerEventName.MessageReceived);
+        JSEvent event = new JSEvent(TCPServerEventName.DataReceived);
         event.putString("serverId", serverId);
         event.putString("connectionId", id);
         event.putString("message", message);
@@ -87,7 +87,7 @@ public class ServerConnection {
     public class TCPRunnable implements Runnable {
         @Override
         public void run() {
-            handleLifecycleEvent(TCPServerEventName.Ready);
+            handleLifecycleEvent(TCPServerEventName.ConnectionReady);
             try {
                 while (true) {
                     String messageFromServer = socket.read();

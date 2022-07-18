@@ -3,15 +3,15 @@
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
-//  Copyright © 2022 Facebook. All rights reserved.
+//  Copyright © 2022 Figure, Inc. All rights reserved.
 //
 import Foundation
 
 @objc(TCPClientModule)
 class TCPClientModule: NSObject {
-    
+
     private var clients: [String: TCPClient] = [:]
-    
+
     @objc(createClient:withHost:withPort:withResolver:withRejecter:)
     func createClient(id: String, host: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPClientModule - createClient - started")
@@ -23,7 +23,7 @@ class TCPClientModule: NSObject {
         client.start()
         resolve(true)
     }
-    
+
     @objc(stopClient:withResolver:withRejecter:)
     func stopClient(id: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPClientModule - stopClient - started")
@@ -35,7 +35,7 @@ class TCPClientModule: NSObject {
             reject("client.not-exists", "Client with this id does not exist", nil)
         }
     }
-    
+
     @objc(send:withMessage:withResolver:withRejecter:)
     func send(clientId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPClientModule - send - started")
@@ -46,5 +46,5 @@ class TCPClientModule: NSObject {
             reject("client.not-exists", "Client with this id does not exist", nil)
         }
     }
-    
+
 }

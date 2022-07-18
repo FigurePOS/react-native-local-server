@@ -78,10 +78,10 @@ public class ClientConnection {
         this.eventEmitter.emitEvent(event);
     }
 
-    private void handleMessageReceived(String message) {
-        JSEvent event = new JSEvent(TCPClientEventName.MessageReceived);
+    private void handleDataReceived(String data) {
+        JSEvent event = new JSEvent(TCPClientEventName.DataReceived);
         event.putString("clientId", clientId);
-        event.putString("message", message);
+        event.putString("data", data);
         this.eventEmitter.emitEvent(event);
     }
 
@@ -91,13 +91,13 @@ public class ClientConnection {
             handleLifecycleEvent(TCPClientEventName.Ready);
             try {
                 while (true) {
-                    String messageFromServer = socket.read();
+                    String dataFromServer = socket.read();
                     if (Thread.interrupted()) {
                         Log.d(TAG, "was interrupted: " + clientId);
                     }
-                    if (messageFromServer != null) {
-                        Log.d(TAG, "received message on: " + clientId + "\n\tmessage: " + messageFromServer);
-                        handleMessageReceived(messageFromServer);
+                    if (dataFromServer != null) {
+                        Log.d(TAG, "received data on: " + clientId + "\n\tdata: " + dataFromServer);
+                        handleDataReceived(dataFromServer);
                     }
                 }
             } catch (Exception e) {

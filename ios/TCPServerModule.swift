@@ -3,16 +3,16 @@
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
-//  Copyright © 2022 Facebook. All rights reserved.
+//  Copyright © 2022 Figure, Inc. All rights reserved.
 //
 
 import Foundation
 
 @objc(TCPServerModule)
 class TCPServerModule: NSObject {
-    
+
     private var servers: [String: TCPServer] = [:]
-    
+
     @objc(createServer:withPort:withResolver:withRejecter:)
     func createServer(id: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - createServer - started")
@@ -25,7 +25,7 @@ class TCPServerModule: NSObject {
             resolve(true)
         }
     }
-    
+
     @objc(stopServer:withResolver:withRejecter:)
     func stopServer(id: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - stopServer - started")
@@ -37,7 +37,7 @@ class TCPServerModule: NSObject {
             reject("server.not-exists", "Server with this id does not exist", nil)
         }
     }
-    
+
     @objc(send:withConnectionId:withMessage:withResolver:withRejecter:)
     func send(serverId: String, connectionId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - send - started")
@@ -48,8 +48,8 @@ class TCPServerModule: NSObject {
             reject("server.not-exists", "Server with this id does not exist", nil)
         }
     }
-    
-    
+
+
     @objc(broadcast:withMessage:withResolver:withRejecter:)
     func broadcast(serverId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - broadcast - started")
@@ -60,5 +60,5 @@ class TCPServerModule: NSObject {
             reject("server.not-exists", "Server with this id does not exist", nil)
         }
     }
-    
+
 }

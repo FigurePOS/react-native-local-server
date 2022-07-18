@@ -28,9 +28,9 @@ TCPServer.EventEmitter.addListener(TCPServer.EventName.Stopped, (e) => {
     console.log(TCPServer.EventName.Stopped)
     console.log(e)
 })
-TCPServer.EventEmitter.addListener(TCPServer.EventName.MessageReceived, (e) => {
+TCPServer.EventEmitter.addListener(TCPServer.EventName.DataReceived, (e) => {
     console.log("SERVER")
-    console.log(TCPServer.EventName.MessageReceived)
+    console.log(TCPServer.EventName.DataReceived)
     console.log(e)
 })
 TCPServer.EventEmitter.addListener(TCPServer.EventName.ConnectionClosed, (e) => {
@@ -54,9 +54,9 @@ TCPClient.EventEmitter.addListener(TCPClient.EventName.Stopped, (e) => {
     console.log(TCPClient.EventName.Stopped)
     console.log(e)
 })
-TCPClient.EventEmitter.addListener(TCPClient.EventName.MessageReceived, (e) => {
+TCPClient.EventEmitter.addListener(TCPClient.EventName.DataReceived, (e) => {
     console.log("CLIENT")
-    console.log(TCPClient.EventName.MessageReceived)
+    console.log(TCPClient.EventName.DataReceived)
     console.log(e)
 })
 
