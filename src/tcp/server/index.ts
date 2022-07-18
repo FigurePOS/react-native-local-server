@@ -26,7 +26,7 @@ export class TCPServer implements TCPServerInterface {
         return TCPServerModule.stopServer(this.config.id)
     }
 
-    sendMessage = (connectionId: string, message: string): Promise<void> => {
+    sendData = (connectionId: string, message: string): Promise<void> => {
         return TCPServerModule.send(this.config.id, connectionId, message)
     }
 

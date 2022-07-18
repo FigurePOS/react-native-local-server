@@ -10,7 +10,7 @@ export enum TCPServerEventName {
     ConnectionReady = "TCP_Server_ConnectionReady",
     ConnectionLost = "TCP_Server_ConnectionLost",
     ConnectionClosed = "TCP_Server_ConnectionClosed",
-    MessageReceived = "TCP_Server_MessageReceived",
+    DataReceived = "TCP_Server_DataReceived",
 }
 
 export interface TCPServerInterface {
@@ -20,7 +20,7 @@ export interface TCPServerInterface {
 
     stop: () => Promise<void>
 
-    sendMessage: (connectionId: string, message: string) => Promise<void>
+    sendData: (connectionId: string, message: string) => Promise<void>
 
     // TODO we should remove this since TCP doesn't support broadcasting and this is just fake
     broadcastMessage: (message: string) => Promise<void>

@@ -4,10 +4,27 @@ export type TCPClientConfiguration = {
     port: number
 }
 
+// TODO add project prefix
 export enum TCPClientEventName {
     Ready = "TCP_Client_Ready",
     Stopped = "TCP_Client_Stopped",
-    MessageReceived = "TCP_Client_MessageReceived",
+    DataReceived = "TCP_Client_DataReceived",
+}
+
+export type TCPClientDataReceivedNativeEvent = {
+    type: TCPClientEventName.DataReceived
+    clientId: string
+    data: string
+}
+
+export type TCPClientReadyNativeEvent = {
+    type: TCPClientEventName.Ready
+    clientId: string
+}
+
+export type TCPClientStoppedNativeEvent = {
+    type: TCPClientEventName.Stopped
+    clientId: string
 }
 
 export interface TCPClientInterface {
