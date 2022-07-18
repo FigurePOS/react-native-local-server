@@ -1,6 +1,9 @@
+import "react-native-gesture-handler"
 import * as React from "react"
 import { Button, StyleSheet, View } from "react-native"
 import { TCPClient, TCPServer } from "react-native-local-server"
+import { NavigationContainer } from "@react-navigation/native"
+import { createDrawerNavigator } from "@react-navigation/drawer"
 
 const client = new TCPClient({
     id: "client-1",
@@ -60,21 +63,29 @@ TCPClient.EventEmitter.addListener(TCPClient.EventName.DataReceived, (e) => {
     console.log(e)
 })
 
+const Drawer = createDrawerNavigator()
+
 export default function App() {
     return (
-        <View style={styles.container}>
-            <Button
-                title={"Start Server"}
-                onPress={() => {
-                    server.start().catch(() => {})
-                }}
-            />
-            <Button title={"Stop Server"} onPress={server.stop} />
-            <Button title={"Send From Server"} onPress={() => server.broadcastMessage("I am the server")} />
-            <Button title={"Start Client"} onPress={client.start} />
-            <Button title={"Stop Client"} onPress={client.stop} />
-            <Button title={"Send From Client"} onPress={() => client.sendMessage("I am the client")} />
-        </View>
+        <NavigationContainer>
+            <Drawer.Navigator initialRouteName={"TCP Server"}>
+                <Drawer.Screen name={"TCP Server"} component={() => <View />} />
+                <Drawer.Screen name={"TCP Client"} component={() => <View />} />
+            </Drawer.Navigator>
+            {/*<View style={styles.container}>*/}
+            {/*    <Button*/}
+            {/*        title={"Start Server"}*/}
+            {/*        onPress={() => {*/}
+            {/*            server.start().catch(() => {})*/}
+            {/*        }}*/}
+            {/*    />*/}
+            {/*    <Button title={"Stop Server"} onPress={server.stop} />*/}
+            {/*    <Button title={"Send From Server"} onPress={() => server.broadcastMessage("I am the server")} />*/}
+            {/*    <Button title={"Start Client"} onPress={client.start} />*/}
+            {/*    <Button title={"Stop Client"} onPress={client.stop} />*/}
+            {/*    <Button title={"Send From Client"} onPress={() => client.sendMessage("I am the client")} />*/}
+            {/*</View>*/}
+        </NavigationContainer>
     )
 }
 
