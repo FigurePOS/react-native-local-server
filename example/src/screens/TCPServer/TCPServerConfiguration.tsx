@@ -1,22 +1,26 @@
 import React, { useCallback, useState } from "react"
-import { Text } from "react-native"
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import { FormTextInput } from "../../common/components/form/formTextInput"
 import { Colors, FontSize } from "../../common/constants"
 import { Button } from "../../common/components/form/button"
 import { useDispatch, useSelector } from "react-redux"
-import { createActionTcpServerStartRequested, createActionTcpServerStopRequested } from "./actions"
-import { getTCPServerState, isTCPServerRunning } from "./selectors"
+import { createActionBareTcpServerStartRequested, createActionBareTcpServerStopRequested } from "./actions"
+import { getBareTCPServerStateLabel, isBareTCPServerRunning } from "./selectors"
 
 export const TCPServerConfiguration = () => {
     const dispatch = useDispatch()
-    const state = useSelector(getTCPServerState)
-    const isRunning = useSelector(isTCPServerRunning)
-    const onButtonPressed = useCallback(() => {
-        const action = isRunning ? createActionTcpServerStopRequested() : createActionTcpServerStartRequested()
-        dispatch(action)
-    }, [isRunning, dispatch])
+    const stateLabel = useSelector(getBareTCPServerStateLabel)
+    const isRunning = useSelector(isBareTCPServerRunning)
+
     const [port, setPort] = useState<string>("")
+
+    const onButtonPressed = useCallback(() => {
+        const action = isRunning
+            ? createActionBareTcpServerStopRequested()
+            : createActionBareTcpServerStartRequested(port)
+        dispatch(action)
+    }, [isRunning, dispatch, port])
+
     return (
         <View style={styles.container}>
             <FormTextInput
@@ -27,7 +31,7 @@ export const TCPServerConfiguration = () => {
                 keyboardType={"numeric"}
                 containerStyle={styles.input}
             />
-            <Text style={styles.state}>{`State: ${state}`}</Text>
+            <Text style={styles.state}>{`State: ${stateLabel}`}</Text>
             <Button label={`${isRunning ? "Stop" : "Start"} Server`} onPress={onButtonPressed} />
         </View>
     )

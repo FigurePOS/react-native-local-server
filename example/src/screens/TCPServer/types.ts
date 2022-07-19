@@ -3,4 +3,5 @@ export enum TCPServerState {
     Ready = "Ready",
     Starting = "Starting",
     ShuttingDown = "Shutting Down",
+    Error = "Error",
 }

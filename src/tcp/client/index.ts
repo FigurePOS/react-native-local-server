@@ -1,7 +1,7 @@
 import type { TCPClientConfiguration, TCPClientInterface } from "./types"
-import { TCPClientEventName } from "./types"
 import { TCPClientModule } from "./module"
 import { NativeEventEmitter } from "react-native"
+import { TCPClientEventName } from "./nativeEvents"
 
 const eventEmitter = new NativeEventEmitter(TCPClientModule)
 

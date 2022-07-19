@@ -1,2 +1,6 @@
 export * from "./client"
+export * from "./client/types"
+export * from "./client/nativeEvents"
 export * from "./server"
+export * from "./server/types"
+export * from "./server/nativeEvents"
