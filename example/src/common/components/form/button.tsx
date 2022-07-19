@@ -14,7 +14,9 @@ export const Button = (props: Props) => {
 }
 
 const styles = StyleSheet.create({
-    container: {},
+    container: {
+        flex: 0,
+    },
     label: {
         fontSize: FontSize.Medium,
         padding: FontSize.Small,

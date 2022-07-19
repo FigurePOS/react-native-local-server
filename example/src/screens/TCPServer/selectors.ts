@@ -1,9 +1,11 @@
 import { TCPServerState } from "./types"
 import { StateObject } from "../../rootReducer"
-import { TCPServerStateObject } from "./reducer"
+import { TCPServerConnectionStateObject, TCPServerStateObject } from "./reducer"
 import { Maybe } from "../../types"
 
 export const getBareTCPServerStateObject = (state: StateObject): TCPServerStateObject => state.TCPServer
+
+export const getBareTCPServerPort = (state: StateObject): Maybe<string> => getBareTCPServerStateObject(state).port
 
 export const getBareTCPServerState = (state: StateObject): TCPServerState => getBareTCPServerStateObject(state).state
 
@@ -20,3 +22,12 @@ export const getBareTCPServerStateLabel = (state: StateObject): string => {
 
 export const isBareTCPServerRunning = (state: StateObject): boolean =>
     [TCPServerState.Ready, TCPServerState.Starting].includes(getBareTCPServerState(state))
+
+export const getBareTCPServerConnections = (state: StateObject): TCPServerConnectionStateObject[] =>
+    getBareTCPServerStateObject(state).connections
+
+export const getBareTCPServerActiveConnectionId = (state: StateObject): Maybe<string> =>
+    getBareTCPServerStateObject(state).activeConnectionId
+
+export const getBareTCPServerActiveConnection = (state: StateObject): Maybe<TCPServerConnectionStateObject> =>
+    getBareTCPServerConnections(state).find((c) => c.connectionId === getBareTCPServerActiveConnectionId(state))

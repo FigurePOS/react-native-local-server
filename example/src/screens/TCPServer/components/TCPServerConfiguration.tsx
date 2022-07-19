@@ -1,26 +1,18 @@
-import React, { useCallback, useState } from "react"
+import React, { useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { FormTextInput } from "../../common/components/form/formTextInput"
-import { Colors, FontSize } from "../../common/constants"
-import { Button } from "../../common/components/form/button"
+import { FormTextInput } from "../../../common/components/form/formTextInput"
+import { Colors, FontSize } from "../../../common/constants"
+import { Button } from "../../../common/components/form/button"
 import { useDispatch, useSelector } from "react-redux"
-import { createActionBareTcpServerStartRequested, createActionBareTcpServerStopRequested } from "./actions"
-import { getBareTCPServerStateLabel, isBareTCPServerRunning } from "./selectors"
+import { createActionBareTcpServerStartRequested, createActionBareTcpServerStopRequested } from "../actions"
+import { getBareTCPServerPort, getBareTCPServerStateLabel, isBareTCPServerRunning } from "../selectors"
 
 export const TCPServerConfiguration = () => {
     const dispatch = useDispatch()
     const stateLabel = useSelector(getBareTCPServerStateLabel)
     const isRunning = useSelector(isBareTCPServerRunning)
-
-    const [port, setPort] = useState<string>("")
-
-    const onButtonPressed = useCallback(() => {
-        const action = isRunning
-            ? createActionBareTcpServerStopRequested()
-            : createActionBareTcpServerStartRequested(port)
-        dispatch(action)
-    }, [isRunning, dispatch, port])
-
+    const reduxPort = useSelector(getBareTCPServerPort)
+    const [port, setPort] = useState<string>(reduxPort ?? "")
     return (
         <View style={styles.container}>
             <FormTextInput
@@ -32,7 +24,8 @@ export const TCPServerConfiguration = () => {
                 containerStyle={styles.input}
             />
             <Text style={styles.state}>{`State: ${stateLabel}`}</Text>
-            <Button label={`${isRunning ? "Stop" : "Start"} Server`} onPress={onButtonPressed} />
+            <Button label={"Start"} onPress={() => dispatch(createActionBareTcpServerStartRequested(port))} />
+            <Button label={"Stop"} onPress={() => dispatch(createActionBareTcpServerStopRequested())} />
         </View>
     )
 }

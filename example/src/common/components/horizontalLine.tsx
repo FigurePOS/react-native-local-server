@@ -2,8 +2,18 @@ import React from "react"
 import { View, StyleSheet } from "react-native"
 import { Colors } from "../constants"
 
-export const HorizontalLine = () => {
-    return <View style={styles.container} />
+type Props = {
+    opacity?: number
+}
+
+export const HorizontalLine = (props: Props) => {
+    const opacity =
+        props.opacity != null
+            ? {
+                  opacity: props.opacity,
+              }
+            : null
+    return <View style={[styles.container, opacity]} />
 }
 
 const styles = StyleSheet.create({

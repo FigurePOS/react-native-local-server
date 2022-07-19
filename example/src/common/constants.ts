@@ -30,4 +30,7 @@ export enum Colors {
     White = "#EEE",
     WhiteWhite = "#FFF",
     GreyText = "#666",
+
+    Green = "#5aff1e",
+    GreenDark = "#08ac00",
 }

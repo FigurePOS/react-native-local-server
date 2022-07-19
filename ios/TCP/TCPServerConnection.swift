@@ -130,7 +130,7 @@ class TCPServerConnection {
         let parsedData: String = String(decoding: data, as: UTF8.self)
         let event: JSEvent = JSEvent(name: TCPServerEventName.DataReceived)
         event.putString(key: "serverId", value: serverId)
-        event.putString(key: "clientId", value: id)
+        event.putString(key: "connectionId", value: id)
         event.putString(key: "data", value: parsedData)
         eventEmitter.emitEvent(event: event)
     }

@@ -69,11 +69,11 @@ public class ServerConnection {
         handleLifecycleEvent(TCPServerEventName.ConnectionClosed);
     }
 
-    private void handleMessageReceived(String message) {
+    private void handleDataReceived(String data) {
         JSEvent event = new JSEvent(TCPServerEventName.DataReceived);
         event.putString("serverId", serverId);
         event.putString("connectionId", id);
-        event.putString("message", message);
+        event.putString("data", data);
         this.eventEmitter.emitEvent(event);
     }
 
@@ -90,14 +90,14 @@ public class ServerConnection {
             handleLifecycleEvent(TCPServerEventName.ConnectionReady);
             try {
                 while (true) {
-                    String messageFromServer = socket.read();
+                    String dataFromServer = socket.read();
                     if (Thread.interrupted()) {
                         Log.d(TAG, "was interrupted: " + id);
                         throw new InterruptedException();
                     }
-                    if (messageFromServer != null) {
-                        Log.d(TAG, "received message: " + id + "\n\tmessage: " + messageFromServer);
-                        handleMessageReceived(messageFromServer);
+                    if (dataFromServer != null) {
+                        Log.d(TAG, "received data: " + id + "\n\tdata: " + dataFromServer);
+                        handleDataReceived(dataFromServer);
                     }
                 }
             } catch (Exception e) {

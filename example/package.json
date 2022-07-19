@@ -13,6 +13,7 @@
     "@react-navigation/native": "^6.0.11",
     "@types/react": "^18.0.15",
     "@types/react-native": "^0.69.3",
+    "ramda": "0.28.0",
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-gesture-handler": "2.1.0",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/runtime": "^7.12.5",
+    "@types/ramda": "0.28.15",
     "@types/react-native-vector-icons": "6.4.10",
     "@types/react-redux": "7.1.21",
     "@types/redux-logger": "3.0.9",
