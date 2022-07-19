@@ -4,10 +4,10 @@ import { getBareTCPServerActiveConnectionId, getBareTCPServerConnections } from 
 import { useSelector } from "react-redux"
 import { TCPServerConnectionStateObject } from "../reducer"
 import { TCPServerActiveConnection } from "./TCPServerActiveConnection"
-import { HorizontalLine } from "../../../common/components/horizontalLine"
+import { HorizontalLine } from "../../../../common/components/horizontalLine"
 import { TCPServerConnectionButton } from "./TCPServerConnectionButton"
-import { Colors, FontSize } from "../../../common/constants"
-import { Maybe } from "../../../types"
+import { Colors, FontSize } from "../../../../common/constants"
+import { Maybe } from "../../../../types"
 
 export const TCPServerConnections = () => {
     const connections: TCPServerConnectionStateObject[] = useSelector(getBareTCPServerConnections)

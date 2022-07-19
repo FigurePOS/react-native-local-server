@@ -1,12 +1,12 @@
-import { Maybe, StateAction } from "../../types"
+import { Maybe, StateAction } from "../../../types"
 import { Reducer } from "redux"
-import { TCPServerConnectionData, TCPServerConnectionState, TCPServerState } from "./types"
+import { TCPData, TCPServerConnectionState, TCPServerState } from "../common/types"
 import {
     BARE_TCP_SERVER_ACTIVE_CONNECTION_CHANGED,
     BARE_TCP_SERVER_CONNECTION_NEW_DATA,
     BARE_TCP_SERVER_CONNECTION_STATE_CHANGED,
     BARE_TCP_SERVER_READY,
-    BARE_TCP_SERVER_START_ERRORED,
+    BARE_TCP_SERVER_ERRORED,
     BARE_TCP_SERVER_START_FAILED,
     BARE_TCP_SERVER_START_REQUESTED,
     BARE_TCP_SERVER_STOP_REQUESTED,
@@ -25,10 +25,10 @@ export type TCPServerStateObject = {
 export type TCPServerConnectionStateObject = {
     connectionId: string
     state: TCPServerConnectionState
-    data: TCPServerConnectionData[]
+    data: TCPData[]
 }
 
-export const createDefaultDevicesState = (): TCPServerStateObject => ({
+export const createDefaultState = (): TCPServerStateObject => ({
     state: TCPServerState.StandBy,
     port: "12000",
     error: null,
@@ -37,7 +37,7 @@ export const createDefaultDevicesState = (): TCPServerStateObject => ({
 })
 
 export const TCPServerReducer: Reducer = (
-    state: TCPServerStateObject = createDefaultDevicesState(),
+    state: TCPServerStateObject = createDefaultState(),
     action: StateAction
 ): TCPServerStateObject => {
     switch (action.type) {
@@ -47,7 +47,7 @@ export const TCPServerReducer: Reducer = (
                 port: action.payload.port,
                 state: TCPServerState.Starting,
             }
-        case BARE_TCP_SERVER_START_ERRORED:
+        case BARE_TCP_SERVER_ERRORED:
         case BARE_TCP_SERVER_START_FAILED:
             return {
                 ...state,
@@ -121,7 +121,7 @@ export const updateConnectionState = (
 export const updateConnectionData = (
     connections: TCPServerConnectionStateObject[],
     connectionId: string,
-    data: TCPServerConnectionData
+    data: TCPData
 ): TCPServerConnectionStateObject[] =>
     map((connection) => {
         if (connection.connectionId === connectionId) {

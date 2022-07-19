@@ -1,10 +1,10 @@
 import React from "react"
 import { StyleSheet } from "react-native"
 import { TCPServerConnectionStateObject } from "../reducer"
-import { Button } from "../../../common/components/form/button"
+import { Button } from "../../../../common/components/form/button"
 import { useDispatch } from "react-redux"
 import { createActionBareTcpServerActiveConnectionChanged } from "../actions"
-import { Colors } from "../../../common/constants"
+import { Colors } from "../../../../common/constants"
 
 type Props = {
     connection: TCPServerConnectionStateObject

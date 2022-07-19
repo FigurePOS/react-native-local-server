@@ -1,27 +1,27 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback } from "react"
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native"
-import { Maybe } from "../../../types"
+import { Maybe } from "../../../../types"
 import { TCPServerConnectionStateObject } from "../reducer"
 import { useDispatch, useSelector } from "react-redux"
 import { getBareTCPServerActiveConnection } from "../selectors"
-import { Colors, FontSize } from "../../../common/constants"
-import { TCPServerDataRow } from "./TCPServerDataRow"
-import { HorizontalLine } from "../../../common/components/horizontalLine"
-import { FormTextInput } from "../../../common/components/form/formTextInput"
-import { Button } from "../../../common/components/form/button"
+import { Colors, FontSize } from "../../../../common/constants"
+import { TCPDataRow } from "../../common/components/TCPDataRow"
+import { HorizontalLine } from "../../../../common/components/horizontalLine"
 import { createActionBareTcpServerDataSendRequested } from "../actions"
+import { TCPControlRow } from "../../common/components/TCPControlRow"
 
 export const TCPServerActiveConnection = () => {
     const dispatch = useDispatch()
-    const [data, setData] = useState<string>("")
     const activeConnection: Maybe<TCPServerConnectionStateObject> = useSelector(getBareTCPServerActiveConnection)
     const connectionId = activeConnection?.connectionId
-    const onDataSent = useCallback(() => {
-        if (connectionId) {
-            dispatch(createActionBareTcpServerDataSendRequested(connectionId, data))
-        }
-        setData("")
-    }, [dispatch, setData, data, connectionId])
+    const onDataSent = useCallback(
+        (data: string) => {
+            if (connectionId) {
+                dispatch(createActionBareTcpServerDataSendRequested(connectionId, data))
+            }
+        },
+        [dispatch, connectionId]
+    )
     if (!activeConnection) {
         return (
             <View style={styles.noConnectionContainer}>
@@ -39,14 +39,11 @@ export const TCPServerActiveConnection = () => {
                 <FlatList
                     data={activeConnection.data}
                     inverted={true}
-                    renderItem={({ item }) => <TCPServerDataRow data={item} />}
+                    renderItem={({ item }) => <TCPDataRow data={item} />}
                     ItemSeparatorComponent={() => <HorizontalLine opacity={0.5} />}
                 />
                 <HorizontalLine />
-                <View style={styles.controlContainer}>
-                    <FormTextInput placeholder={"Enter Message"} value={data} onChangeText={setData} />
-                    <Button label={"Send"} onPress={onDataSent} />
-                </View>
+                <TCPControlRow onSent={onDataSent} />
             </View>
         </KeyboardAvoidingView>
     )
@@ -65,11 +62,5 @@ const styles = StyleSheet.create({
         fontSize: FontSize.Medium,
         padding: FontSize.Small,
         color: Colors.GreyText,
-    },
-    controlContainer: {
-        flexDirection: "row",
-        padding: FontSize.ExtraSmall,
-        alignItems: "center",
-        justifyContent: "center",
     },
 })
