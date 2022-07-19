@@ -1,5 +1,4 @@
 export type TCPServerConfiguration = {
-    id: string
     port: number
 }
 
@@ -13,14 +12,13 @@ export enum TCPServerEventName {
 }
 
 export interface TCPServerInterface {
-    getConfiguration: () => TCPServerConfiguration
+    getId: () => string
 
-    start: () => Promise<void>
+    getConfiguration: () => TCPServerConfiguration | null
+
+    start: (config: TCPServerConfiguration) => Promise<void>
+
+    sendData: (connectionId: string, data: string) => Promise<void>
 
     stop: () => Promise<void>
-
-    sendData: (connectionId: string, message: string) => Promise<void>
-
-    // TODO we should remove this since TCP doesn't support broadcasting and this is just fake
-    broadcastMessage: (message: string) => Promise<void>
 }

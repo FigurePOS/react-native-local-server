@@ -6,31 +6,33 @@ import { NativeEventEmitter } from "react-native"
 const eventEmitter = new NativeEventEmitter(TCPServerModule)
 
 export class TCPServer implements TCPServerInterface {
-    readonly config: TCPServerConfiguration
+    private readonly id: string
+    private config: TCPServerConfiguration | null = null
     static readonly EventName = TCPServerEventName
     static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
-    constructor(configuration: TCPServerConfiguration) {
-        this.config = configuration
+    constructor(id: string) {
+        this.id = id
     }
 
-    getConfiguration = (): TCPServerConfiguration => {
+    getId = (): string => {
+        return this.id
+    }
+
+    getConfiguration = (): TCPServerConfiguration | null => {
         return this.config
     }
 
-    start = (): Promise<void> => {
-        return TCPServerModule.createServer(this.config.id, this.config.port)
+    start = (configuration: TCPServerConfiguration): Promise<void> => {
+        this.config = configuration
+        return TCPServerModule.createServer(this.getId(), this.config.port)
+    }
+
+    sendData = (connectionId: string, data: string): Promise<void> => {
+        return TCPServerModule.send(this.getId(), connectionId, data)
     }
 
     stop = (): Promise<void> => {
-        return TCPServerModule.stopServer(this.config.id)
-    }
-
-    sendData = (connectionId: string, message: string): Promise<void> => {
-        return TCPServerModule.send(this.config.id, connectionId, message)
-    }
-
-    broadcastMessage(message: string): Promise<void> {
-        return TCPServerModule.broadcast(this.config.id, message)
+        return TCPServerModule.stopServer(this.getId())
     }
 }

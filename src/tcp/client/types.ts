@@ -1,5 +1,4 @@
 export type TCPClientConfiguration = {
-    id: string
     host: string
     port: number
 }
@@ -27,11 +26,13 @@ export type TCPClientStoppedNativeEvent = {
 }
 
 export interface TCPClientInterface {
-    getConfiguration: () => TCPClientConfiguration
+    getId: () => string
 
-    start: () => Promise<void>
+    getConfiguration: () => TCPClientConfiguration | null
+
+    start: (config: TCPClientConfiguration) => Promise<void>
+
+    sendData: (data: string) => Promise<void>
 
     stop: () => Promise<void>
-
-    sendMessage: (message: string) => Promise<void>
 }

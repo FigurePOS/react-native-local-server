@@ -6,27 +6,33 @@ import { NativeEventEmitter } from "react-native"
 const eventEmitter = new NativeEventEmitter(TCPClientModule)
 
 export class TCPClient implements TCPClientInterface {
-    readonly config: TCPClientConfiguration
+    private readonly id: string
+    private config: TCPClientConfiguration | null = null
     static readonly EventName = TCPClientEventName
     static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
-    constructor(configuration: TCPClientConfiguration) {
-        this.config = configuration
+    constructor(id: string) {
+        this.id = id
     }
 
-    getConfiguration = (): TCPClientConfiguration => {
+    getId = (): string => {
+        return this.id
+    }
+
+    getConfiguration = (): TCPClientConfiguration | null => {
         return this.config
     }
 
-    sendMessage = (message: string): Promise<void> => {
-        return TCPClientModule.send(this.config.id, message)
+    start = (config: TCPClientConfiguration): Promise<void> => {
+        this.config = config
+        return TCPClientModule.createClient(this.getId(), this.config.host, this.config.port)
     }
 
-    start = (): Promise<void> => {
-        return TCPClientModule.createClient(this.config.id, this.config.host, this.config.port)
+    sendData = (data: string): Promise<void> => {
+        return TCPClientModule.send(this.getId(), data)
     }
 
     stop = (): Promise<void> => {
-        return TCPClientModule.stopClient(this.config.id)
+        return TCPClientModule.stopClient(this.getId())
     }
 }

@@ -21,11 +21,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
 
-        this.tcpClient = new TCPClient({
-            id: id,
-            host: "localhost",
-            port: 12000,
-        })
+        this.tcpClient = new TCPClient(id)
     }
 
     start(rootHandler: MessageHandler<In, Out>, dependencies: Deps): Observable<any> {
@@ -45,7 +41,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
             mergeMap((message: Message<Out>) =>
                 defer(() => {
                     const serialized = serializeMessage(message)
-                    return this.tcpClient.sendMessage(serialized)
+                    return this.tcpClient.sendData(serialized)
                 }).pipe(
                     mapTo(true),
                     catchError(() => {
@@ -63,12 +59,17 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpClient.start()).pipe(
+        const config = {
+            port: 12000,
+            host: "localhost",
+        }
+
+        return defer(() => this.tcpClient.start(config)).pipe(
             switchMap(() => merge(fromEvent(TCPClient.EventEmitter, TCPClient.EventName.Ready), this.error$)),
             // @ts-ignore
             takeUntil(
                 fromEvent(TCPClient.EventEmitter, TCPClient.EventName.Stopped).pipe(
-                    filter((e: any) => e.clientId === this.tcpClient.getConfiguration().id)
+                    filter((e: any) => e.clientId === this.tcpClient.getId())
                 )
             ),
             endWith({ type: "stopped" })
@@ -79,7 +80,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         // TODO this is duplicate
         return defer(() => {
             const serialized = serializeMessage(message)
-            return this.tcpClient.sendMessage(serialized)
+            return this.tcpClient.sendData(serialized)
         }).pipe(
             mapTo(true),
             catchError(() => {
