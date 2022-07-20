@@ -63,4 +63,13 @@ class TCPClientModule: RCTEventEmitter {
     override func supportedEvents() -> [String]! {
         return self.eventNames
     }
+    
+    override func invalidate() {
+        print("TCPClientModule - invalidate - \(clients.count) clients")
+        for (_, client) in clients {
+            client.stop()
+        }
+        clients.removeAll()
+        super.invalidate()
+    }
 }

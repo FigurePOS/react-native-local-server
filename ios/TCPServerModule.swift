@@ -76,4 +76,13 @@ class TCPServerModule: RCTEventEmitter {
     override func supportedEvents() -> [String]! {
         return self.eventNames
     }
+    
+    override func invalidate() {
+        print("TCPServerModule - invalidate - \(servers.count) servers")
+        for (_, server) in servers {
+            server.stop()
+        }
+        servers.removeAll()
+        super.invalidate()
+    }
 }
