@@ -20,6 +20,10 @@ class TCPClientModule: RCTEventEmitter {
         eventEmitter.setEventEmitter(eventEmitter: self)
     }
     
+    @objc override static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+    
     @objc(createClient:withHost:withPort:withResolver:withRejecter:)
     func createClient(id: String, host: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPClientModule - createClient - started")

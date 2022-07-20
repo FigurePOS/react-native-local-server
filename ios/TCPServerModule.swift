@@ -21,6 +21,10 @@ class TCPServerModule: RCTEventEmitter {
         eventEmitter.setEventEmitter(eventEmitter: self)
     }
     
+    @objc override static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+    
     @objc(createServer:withPort:withResolver:withRejecter:)
     func createServer(id: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - createServer - started")
