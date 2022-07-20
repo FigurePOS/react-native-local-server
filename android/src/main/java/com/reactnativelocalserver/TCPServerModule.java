@@ -82,4 +82,15 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         server.broadcast(message);
         promise.resolve(true);
     }
+
+
+    @Override
+    public void invalidate() {
+        Log.d(NAME, "invalidate - number of servers: " + servers.size());
+        for (Map.Entry<String, Server> entry: servers.entrySet()) {
+            entry.getValue().stop();
+        }
+        servers.clear();
+        super.invalidate();
+    }
 }

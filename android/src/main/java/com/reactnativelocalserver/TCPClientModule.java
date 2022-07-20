@@ -70,4 +70,14 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         client.send(message);
         promise.resolve(true);
     }
+
+    @Override
+    public void invalidate() {
+        Log.d(NAME, "invalidate - number of clients: " + clients.size());
+        for (Map.Entry<String, Client> entry: clients.entrySet()) {
+            entry.getValue().stop();
+        }
+        clients.clear();
+        super.invalidate();
+    }
 }
