@@ -1,12 +1,9 @@
-import { fromEvent, Observable } from "rxjs"
+import { Observable } from "rxjs"
 import { DataObject } from "../../types"
 import { TCPClient } from "react-native-local-server"
-import { filter, map } from "rxjs/operators"
+import { map } from "rxjs/operators"
 import { parseDataObject } from "../../functions/parseDataObject"
-import { TCPClientDataReceivedNativeEvent } from "../../../tcp/client/nativeEvents"
+import { fromClientEvent } from "./fromClientEvent"
 
 export const fromClientDataReceived = (clientId: string): Observable<DataObject> =>
-    fromEvent<TCPClientDataReceivedNativeEvent>(TCPClient.EventEmitter, TCPClient.EventName.DataReceived).pipe(
-        filter((event: TCPClientDataReceivedNativeEvent): boolean => event.clientId === clientId),
-        map(parseDataObject)
-    )
+    fromClientEvent(clientId, TCPClient.EventName.DataReceived).pipe(map(parseDataObject))

@@ -1,36 +1,35 @@
 import { defer, merge, Observable, of, Subject, Subscription } from "rxjs"
-import { TCPClient } from "../../"
+import { MessageHandler } from "../../.."
+import { Message, TCPServer } from "../../"
 import { catchError, map, mapTo, mergeMap, switchMap, withLatestFrom } from "rxjs/operators"
-import { Message, MessageHandler } from "../types"
-import { handleBy } from "../operators/handleBy"
-import { fromClientDataReceived } from "./operators/fromClientDataReceived"
 import { ofDataTypeMessage } from "../operators/ofDataType"
 import { deduplicateBy } from "../operators/deduplicateBy"
 import { getMessageDeduplicationId } from "../functions/getMessageDeduplicationId"
-import { fromClientEvent } from "./operators/fromClientEvent"
-import { MessagingClientConfiguration } from "./types"
+import { handleBy } from "../operators/handleBy"
+import { fromServerDataReceived } from "./operators/fromServerDataReceived"
+import { fromServerEvent } from "./operators/fromServerEvent"
+import { MessagingServerConfiguration } from "./types"
 
-export class MessagingClient<In, Out = In, Deps = any> {
-    private readonly clientId: string
+export class MessagingServer<In, Out = In, Deps = any> {
+    private readonly serverId: string
     private readonly handler$: Subject<MessageHandler<In, Out>>
     private readonly dep$: Subject<Deps>
     private readonly error$: Subject<any>
-    private readonly tcpClient: TCPClient
+    private readonly tcpServer: TCPServer
 
-    private config: MessagingClientConfiguration | null = null
+    private config: MessagingServerConfiguration | null = null
     private mainSubscription: Subscription | null = null
 
     constructor(id: string) {
-        this.clientId = id
+        this.serverId = id
         this.handler$ = new Subject<MessageHandler<In, Out>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
-
-        this.tcpClient = new TCPClient(id)
+        this.tcpServer = new TCPServer(id)
     }
 
     start(
-        config: MessagingClientConfiguration,
+        config: MessagingServerConfiguration,
         rootHandler: MessageHandler<In, Out>,
         dependencies: Deps
     ): Observable<any> {
@@ -38,7 +37,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
             mergeMap(([handler, deps]: [MessageHandler<In, Out>, Deps]): Observable<Message<Out>> => {
-                return fromClientDataReceived(this.clientId).pipe(
+                return fromServerDataReceived(this.serverId).pipe(
                     ofDataTypeMessage,
                     map((data): Message<In> => data.message),
                     // todo ack
@@ -50,8 +49,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
             }),
             mergeMap((message: Message<Out>) =>
                 defer(() => {
+                    if (!message.connectionId) {
+                        throw new Error("no connection id in message")
+                    }
                     const serialized = serializeMessage(message)
-                    return this.tcpClient.sendData(serialized)
+                    return this.tcpServer.sendData(message.connectionId, serialized)
                 }).pipe(
                     mapTo(true),
                     catchError(() => {
@@ -69,11 +71,14 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpClient.start(config)).pipe(
+        return defer(() => this.tcpServer.start(config)).pipe(
             switchMap(() =>
                 merge(
-                    fromClientEvent(this.clientId, TCPClient.EventName.Ready),
-                    fromClientEvent(this.clientId, TCPClient.EventName.Stopped),
+                    fromServerEvent(this.serverId, TCPServer.EventName.Ready),
+                    fromServerEvent(this.serverId, TCPServer.EventName.Stopped),
+                    fromServerEvent(this.serverId, TCPServer.EventName.ConnectionAccepted),
+                    fromServerEvent(this.serverId, TCPServer.EventName.ConnectionReady),
+                    fromServerEvent(this.serverId, TCPServer.EventName.ConnectionClosed),
                     this.error$
                 )
             )
@@ -83,8 +88,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
     send(message: Message<Out>): Observable<any> {
         // TODO this is duplicate
         return defer(() => {
+            if (!message.connectionId) {
+                throw new Error("no connection id in message")
+            }
             const serialized = serializeMessage(message)
-            return this.tcpClient.sendData(serialized)
+            return this.tcpServer.sendData(message.connectionId, serialized)
         }).pipe(
             mapTo(true),
             catchError(() => {
@@ -100,10 +108,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
             this.mainSubscription = null
         }
         this.config = null
-        return defer(() => this.tcpClient.stop())
+        return defer(() => this.tcpServer.stop())
     }
 
-    getConfig(): MessagingClientConfiguration | null {
+    getConfig(): MessagingServerConfiguration | null {
         return this.config
     }
 }

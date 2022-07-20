@@ -7,6 +7,7 @@ import { Observable } from "rxjs"
 export type Message<B = any, S = any> = {
     id: string
     timestamp: string
+    connectionId?: string
     source: S // TODO this contains information about device
     attributes: Partial<{
         sequenceId: string

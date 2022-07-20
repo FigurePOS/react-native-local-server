@@ -1,6 +1,8 @@
 import { DataObject } from "../types"
-import { TCPClientDataReceivedNativeEvent } from "../../tcp/client/nativeEvents"
+import { TCPClientDataReceivedNativeEvent, TCPServerDataReceivedNativeEvent } from "../../"
 
-export const parseDataObject = (nativeEvent: TCPClientDataReceivedNativeEvent): DataObject => {
+export const parseDataObject = (
+    nativeEvent: TCPClientDataReceivedNativeEvent | TCPServerDataReceivedNativeEvent
+): DataObject => {
     return JSON.parse(nativeEvent.data)
 }
