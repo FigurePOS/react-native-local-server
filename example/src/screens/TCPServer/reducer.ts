@@ -1,21 +1,22 @@
-import { Maybe, StateAction } from "../../../types"
+import { Maybe, StateAction } from "../../types"
 import { Reducer } from "redux"
-import { TCPData, TCPServerConnectionState, TCPServerState } from "../common/types"
 import {
     BARE_TCP_SERVER_ACTIVE_CONNECTION_CHANGED,
     BARE_TCP_SERVER_CONNECTION_NEW_DATA,
     BARE_TCP_SERVER_CONNECTION_STATE_CHANGED,
-    BARE_TCP_SERVER_READY,
     BARE_TCP_SERVER_ERRORED,
+    BARE_TCP_SERVER_READY,
     BARE_TCP_SERVER_START_FAILED,
     BARE_TCP_SERVER_START_REQUESTED,
     BARE_TCP_SERVER_STOP_REQUESTED,
     BARE_TCP_SERVER_STOPPED,
 } from "./actions"
 import { append, map, none, prepend } from "ramda"
+import { MessageData } from "../../common/components/messaging/types"
+import { ServerConnectionState, ServerState } from "../../common/types"
 
 export type TCPServerStateObject = {
-    state: TCPServerState
+    state: ServerState
     port: Maybe<string>
     error: Maybe<string>
     connections: TCPServerConnectionStateObject[]
@@ -24,12 +25,12 @@ export type TCPServerStateObject = {
 
 export type TCPServerConnectionStateObject = {
     connectionId: string
-    state: TCPServerConnectionState
-    data: TCPData[]
+    state: ServerConnectionState
+    data: MessageData[]
 }
 
 export const createDefaultState = (): TCPServerStateObject => ({
-    state: TCPServerState.StandBy,
+    state: ServerState.StandBy,
     port: "12000",
     error: null,
     connections: [],
@@ -45,29 +46,29 @@ export const TCPServerReducer: Reducer = (
             return {
                 ...state,
                 port: action.payload.port,
-                state: TCPServerState.Starting,
+                state: ServerState.Starting,
             }
         case BARE_TCP_SERVER_ERRORED:
         case BARE_TCP_SERVER_START_FAILED:
             return {
                 ...state,
                 error: action.payload.error,
-                state: TCPServerState.Error,
+                state: ServerState.Error,
             }
         case BARE_TCP_SERVER_READY:
             return {
                 ...state,
-                state: TCPServerState.Ready,
+                state: ServerState.Ready,
             }
         case BARE_TCP_SERVER_STOP_REQUESTED:
             return {
                 ...state,
-                state: TCPServerState.ShuttingDown,
+                state: ServerState.ShuttingDown,
             }
         case BARE_TCP_SERVER_STOPPED:
             return {
                 ...state,
-                state: action.payload.error ? TCPServerState.Error : TCPServerState.StandBy,
+                state: action.payload.error ? ServerState.Error : ServerState.StandBy,
                 error: action.payload.error,
             }
         case BARE_TCP_SERVER_CONNECTION_STATE_CHANGED:
@@ -97,7 +98,7 @@ export const TCPServerReducer: Reducer = (
 export const updateConnectionState = (
     connections: TCPServerConnectionStateObject[],
     connectionId: string,
-    state: TCPServerConnectionState
+    state: ServerConnectionState
 ): TCPServerConnectionStateObject[] => {
     if (none((connection) => connection.connectionId === connectionId, connections)) {
         const newConnection: TCPServerConnectionStateObject = {
@@ -121,7 +122,7 @@ export const updateConnectionState = (
 export const updateConnectionData = (
     connections: TCPServerConnectionStateObject[],
     connectionId: string,
-    data: TCPData
+    data: MessageData
 ): TCPServerConnectionStateObject[] =>
     map((connection) => {
         if (connection.connectionId === connectionId) {

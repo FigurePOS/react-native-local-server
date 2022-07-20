@@ -1,5 +1,5 @@
 import { ActionsObservable, Epic, ofType } from "redux-observable"
-import { StateAction } from "../../../types"
+import { StateAction } from "../../types"
 import { catchError, filter, switchMap } from "rxjs/operators"
 import { defer } from "rxjs"
 import { BareTCPClient } from "./network"
@@ -10,9 +10,7 @@ import {
     TCPClientReadyNativeEvent,
     TCPClientStoppedNativeEvent,
 } from "react-native-local-server"
-import { fromEventFixed } from "../../../common/utils"
-import { TCPClientState } from "../common/types"
-import { createTCPRowData } from "../common/functions"
+import { fromEventFixed } from "../../common/utils"
 import {
     BARE_TCP_CLIENT_DATA_SEND_REQUESTED,
     BARE_TCP_CLIENT_START_REQUESTED,
@@ -21,6 +19,8 @@ import {
     createActionBareTcpClientNewData,
     createActionBareTcpClientStateChanged,
 } from "./actions"
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ClientState } from "../../common/types"
 
 const bareTCPClientStartRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
@@ -46,8 +46,8 @@ const bareTCPClientReadyEpic: Epic = () =>
     fromEventFixed(TCPClient.EventEmitter, TCPClient.EventName.Ready).pipe(
         filter((event: TCPClientReadyNativeEvent) => event.clientId === BareTCPClient.getId()),
         switchMap(() => [
-            createActionBareTcpClientStateChanged(TCPClientState.Ready),
-            createActionBareTcpClientNewData(createTCPRowData("status", "READY")),
+            createActionBareTcpClientStateChanged(ClientState.Ready),
+            createActionBareTcpClientNewData(createMessageData("status", "READY")),
         ])
     )
 
@@ -55,8 +55,8 @@ const bareTCPClientStoppedEpic: Epic = () =>
     fromEventFixed(TCPClient.EventEmitter, TCPClient.EventName.Stopped).pipe(
         filter((event: TCPClientStoppedNativeEvent) => event.clientId === BareTCPClient.getId()),
         switchMap(() => [
-            createActionBareTcpClientStateChanged(TCPClientState.StandBy),
-            createActionBareTcpClientNewData(createTCPRowData("status", "STOPPED")),
+            createActionBareTcpClientStateChanged(ClientState.StandBy),
+            createActionBareTcpClientNewData(createMessageData("status", "STOPPED")),
         ])
     )
 
@@ -75,7 +75,7 @@ const bareTCPClientDataReceivedEpic: Epic = () =>
     fromEventFixed(TCPClient.EventEmitter, TCPClient.EventName.DataReceived).pipe(
         filter((event: TCPClientDataReceivedNativeEvent) => event.clientId === BareTCPClient.getId()),
         switchMap((event: TCPClientDataReceivedNativeEvent) => [
-            createActionBareTcpClientNewData(createTCPRowData("server", event.data)),
+            createActionBareTcpClientNewData(createMessageData("server", event.data)),
         ])
     )
 
@@ -85,7 +85,7 @@ const bareTCPClientDataSendRequestedEpic: Epic = (action$: ActionsObservable<Sta
         switchMap((action) => {
             const data = action.payload.data
             return defer(() => BareTCPClient.sendData(data)).pipe(
-                switchMap(() => [createActionBareTcpClientNewData(createTCPRowData("client", data))]),
+                switchMap(() => [createActionBareTcpClientNewData(createMessageData("client", data))]),
                 catchError((err) => [createActionBareTcpClientErrored(err)])
             )
         })

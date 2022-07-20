@@ -1,13 +1,13 @@
 import { ActionsObservable, Epic, ofType } from "redux-observable"
-import { StateAction } from "../../../types"
+import { StateAction } from "../../types"
 import {
     BARE_TCP_SERVER_DATA_SEND_REQUESTED,
     BARE_TCP_SERVER_START_REQUESTED,
     BARE_TCP_SERVER_STOP_REQUESTED,
     createActionBareTcpServerConnectionNewData,
     createActionBareTcpServerConnectionStateChanged,
-    createActionBareTcpServerReady,
     createActionBareTcpServerErrored,
+    createActionBareTcpServerReady,
     createActionBareTcpServerStartFailed,
     createActionBareTcpServerStartSucceeded,
     createActionBareTcpServerStopped,
@@ -25,9 +25,9 @@ import {
     TCPServerReadyNativeEvent,
     TCPServerStoppedNativeEvent,
 } from "react-native-local-server"
-import { fromEventFixed } from "../../../common/utils"
-import { TCPServerConnectionState } from "../common/types"
-import { createTCPRowData } from "../common/functions"
+import { fromEventFixed } from "../../common/utils"
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ServerConnectionState } from "../../common/types"
 
 const bareTcpServerStartRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
@@ -74,8 +74,8 @@ const bareTcpServerConnectionAcceptedEpic: Epic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.ConnectionAccepted).pipe(
         filter((event: TCPServerConnectionAcceptedNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerConnectionAcceptedNativeEvent) => [
-            createActionBareTcpServerConnectionStateChanged(event.connectionId, TCPServerConnectionState.Accepted),
-            createActionBareTcpServerConnectionNewData(event.connectionId, createTCPRowData("status", "ACCEPTED")),
+            createActionBareTcpServerConnectionStateChanged(event.connectionId, ServerConnectionState.Accepted),
+            createActionBareTcpServerConnectionNewData(event.connectionId, createMessageData("status", "ACCEPTED")),
         ])
     )
 
@@ -83,8 +83,8 @@ const bareTcpServerConnectionReadyEpic: Epic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.ConnectionReady).pipe(
         filter((event: TCPServerConnectionReadyNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerConnectionReadyNativeEvent) => [
-            createActionBareTcpServerConnectionStateChanged(event.connectionId, TCPServerConnectionState.Ready),
-            createActionBareTcpServerConnectionNewData(event.connectionId, createTCPRowData("status", "READY")),
+            createActionBareTcpServerConnectionStateChanged(event.connectionId, ServerConnectionState.Ready),
+            createActionBareTcpServerConnectionNewData(event.connectionId, createMessageData("status", "READY")),
         ])
     )
 
@@ -92,8 +92,8 @@ const bareTcpServerConnectionStoppedEpic: Epic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.ConnectionClosed).pipe(
         filter((event: TCPServerConnectionClosedNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerConnectionClosedNativeEvent) => [
-            createActionBareTcpServerConnectionStateChanged(event.connectionId, TCPServerConnectionState.Closed),
-            createActionBareTcpServerConnectionNewData(event.connectionId, createTCPRowData("status", "CLOSED")),
+            createActionBareTcpServerConnectionStateChanged(event.connectionId, ServerConnectionState.Closed),
+            createActionBareTcpServerConnectionNewData(event.connectionId, createMessageData("status", "CLOSED")),
         ])
     )
 
@@ -101,7 +101,7 @@ const bareTcpServerDataReceivedEpic: Epic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.DataReceived).pipe(
         filter((event: TCPServerDataReceivedNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerDataReceivedNativeEvent) => [
-            createActionBareTcpServerConnectionNewData(event.connectionId, createTCPRowData("client", event.data)),
+            createActionBareTcpServerConnectionNewData(event.connectionId, createMessageData("client", event.data)),
         ])
     )
 
@@ -113,7 +113,7 @@ const bareTcpServerDataSendRequestedEpic: Epic = (action$: ActionsObservable<Sta
             const data = action.payload.data
             return defer(() => BareTCPServer.sendData(connectionId, data)).pipe(
                 switchMap(() => [
-                    createActionBareTcpServerConnectionNewData(connectionId, createTCPRowData("server", data)),
+                    createActionBareTcpServerConnectionNewData(connectionId, createMessageData("server", data)),
                 ]),
                 catchError((err) => [createActionBareTcpServerErrored(err)])
             )

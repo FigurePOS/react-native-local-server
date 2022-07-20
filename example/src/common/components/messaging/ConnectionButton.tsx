@@ -1,21 +1,19 @@
 import React from "react"
 import { StyleSheet } from "react-native"
-import { TCPServerConnectionStateObject } from "../reducer"
-import { Button } from "../../../../common/components/form/button"
-import { useDispatch } from "react-redux"
-import { createActionBareTcpServerActiveConnectionChanged } from "../actions"
-import { Colors } from "../../../../common/constants"
+import { ServerConnection } from "../../types"
+import { Button } from "../form/button"
+import { Colors } from "../../constants"
 
 type Props = {
-    connection: TCPServerConnectionStateObject
+    connection: ServerConnection
     isActive: boolean
+    onPress: (id: string) => void
 }
 
-export const TCPServerConnectionButton = (props: Props) => {
-    const dispatch = useDispatch()
+export const ConnectionButton = (props: Props) => {
     const connection = props.connection
     const isActive = props.isActive
-    const id = connection.connectionId
+    const id = connection.id
     const label = `${id.slice(0, 6)} (${connection.state})`
     return (
         <Button
@@ -23,7 +21,7 @@ export const TCPServerConnectionButton = (props: Props) => {
             disabled={isActive}
             style={styles.button}
             labelStyle={isActive ? styles.labelActive : null}
-            onPress={() => dispatch(createActionBareTcpServerActiveConnectionChanged(id))}
+            onPress={() => props.onPress(id)}
         />
     )
 }

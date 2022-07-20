@@ -1,8 +1,8 @@
 import { ActionsObservable, combineEpics, Epic, StateObservable } from "redux-observable"
 import { StateAction } from "./types"
 import { StateObject } from "./rootReducer"
-import TCPServerEpics from "./screens/TCP/TCPServer/epics"
-import TCPClientEpics from "./screens/TCP/TCPClient/epics"
+import TCPServerEpics from "./screens/TCPServer/epics"
+import TCPClientEpics from "./screens/TCPClient/epics"
 
 const epics: Epic[] = [...TCPServerEpics, ...TCPClientEpics]
 

@@ -1,6 +1,5 @@
-import { Maybe, StateAction } from "../../../types"
+import { Maybe, StateAction } from "../../types"
 import { Reducer } from "redux"
-import { TCPClientState, TCPData } from "../common/types"
 import {
     BARE_TCP_CLIENT_ERRORED,
     BARE_TCP_CLIENT_NEW_DATA,
@@ -9,17 +8,19 @@ import {
     BARE_TCP_CLIENT_STOP_REQUESTED,
 } from "./actions"
 import { prepend } from "ramda"
+import { MessageData } from "../../common/components/messaging/types"
+import { ClientState } from "../../common/types"
 
 export type TCPClientStateObject = {
-    state: TCPClientState
+    state: ClientState
     port: string
     host: string
     error: Maybe<string>
-    data: TCPData[]
+    data: MessageData[]
 }
 
 export const createDefaultState = (): TCPClientStateObject => ({
-    state: TCPClientState.StandBy,
+    state: ClientState.StandBy,
     port: "12000",
     host: "localhost",
     error: null,
@@ -34,12 +35,12 @@ export const TCPClientReducer: Reducer = (
         case BARE_TCP_CLIENT_START_REQUESTED:
             return {
                 ...state,
-                state: TCPClientState.Starting,
+                state: ClientState.Starting,
             }
         case BARE_TCP_CLIENT_STOP_REQUESTED:
             return {
                 ...state,
-                state: TCPClientState.ShuttingDown,
+                state: ClientState.ShuttingDown,
             }
         case BARE_TCP_CLIENT_STATE_CHANGED:
             return {
@@ -49,7 +50,7 @@ export const TCPClientReducer: Reducer = (
         case BARE_TCP_CLIENT_ERRORED:
             return {
                 ...state,
-                state: TCPClientState.Error,
+                state: ClientState.Error,
                 error: action.payload.error,
             }
         case BARE_TCP_CLIENT_NEW_DATA:

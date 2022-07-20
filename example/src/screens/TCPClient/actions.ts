@@ -1,4 +1,5 @@
-import { TCPClientState, TCPData } from "../common/types"
+import { MessageData } from "../../common/components/messaging/types"
+import { ClientState } from "../../common/types"
 
 export const BARE_TCP_CLIENT_START_REQUESTED = "BARE_TCP_CLIENT_START_REQUESTED"
 export const createActionBareTcpClientStartRequested = (host: string, port: string) => ({
@@ -23,7 +24,7 @@ export const createActionBareTcpClientErrored = (error: string) => ({
 })
 
 export const BARE_TCP_CLIENT_STATE_CHANGED = "BARE_TCP_CLIENT_STATE_CHANGED"
-export const createActionBareTcpClientStateChanged = (state: TCPClientState) => ({
+export const createActionBareTcpClientStateChanged = (state: ClientState) => ({
     type: BARE_TCP_CLIENT_STATE_CHANGED,
     payload: {
         state: state,
@@ -31,7 +32,7 @@ export const createActionBareTcpClientStateChanged = (state: TCPClientState) => 
 })
 
 export const BARE_TCP_CLIENT_NEW_DATA = "BARE_TCP_CLIENT_NEW_DATA"
-export const createActionBareTcpClientNewData = (data: TCPData) => ({
+export const createActionBareTcpClientNewData = (data: MessageData) => ({
     type: BARE_TCP_CLIENT_NEW_DATA,
     payload: {
         data: data,

@@ -1,4 +1,4 @@
-export enum TCPServerState {
+export enum ServerState {
     StandBy = "Stand-By",
     Ready = "Ready",
     Starting = "Starting",
@@ -6,7 +6,7 @@ export enum TCPServerState {
     Error = "Error",
 }
 
-export enum TCPClientState {
+export enum ClientState {
     StandBy = "Stand-By",
     Ready = "Ready",
     Starting = "Starting",
@@ -14,7 +14,7 @@ export enum TCPClientState {
     Error = "Error",
 }
 
-export enum TCPServerConnectionState {
+export enum ServerConnectionState {
     Accepted = "Accepted",
     Ready = "Ready",
     Closing = "Closing",
@@ -22,8 +22,7 @@ export enum TCPServerConnectionState {
     Error = "Error",
 }
 
-export type TCPData = {
-    from: "server" | "client" | "status"
-    timestamp: string
-    data: string
+export type ServerConnection = {
+    id: string
+    state: ServerConnectionState
 }

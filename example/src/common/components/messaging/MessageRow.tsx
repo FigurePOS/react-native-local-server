@@ -1,13 +1,13 @@
 import React from "react"
-import { Text, View, StyleSheet } from "react-native"
-import { TCPData } from "../types"
-import { Colors, FontSize } from "../../../../common/constants"
+import { StyleSheet, Text, View } from "react-native"
+import { MessageData } from "./types"
+import { Colors, FontSize } from "../../constants"
 
 type Props = {
-    data: TCPData
+    data: MessageData
 }
 
-export const TCPDataRow = (props: Props) => {
+export const MessageRow = (props: Props) => {
     return (
         <View style={styles.container}>
             <Text style={styles.source}>{props.data.from.toUpperCase()}</Text>

@@ -1,14 +1,14 @@
 import React, { useState } from "react"
 import { StyleSheet, View } from "react-native"
-import { FormTextInput } from "../../../../common/components/form/formTextInput"
-import { Button } from "../../../../common/components/form/button"
-import { FontSize } from "../../../../common/constants"
+import { FormTextInput } from "../form/formTextInput"
+import { Button } from "../form/button"
+import { FontSize } from "../../constants"
 
 type Props = {
     onSent: (data: string) => void
 }
 
-export const TCPControlRow = (props: Props) => {
+export const MessageControl = (props: Props) => {
     const [data, setData] = useState<string>("")
     return (
         <View style={styles.container}>

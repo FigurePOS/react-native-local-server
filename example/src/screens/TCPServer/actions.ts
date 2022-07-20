@@ -1,5 +1,6 @@
-import { Maybe } from "../../../types"
-import { TCPData, TCPServerConnectionState } from "../common/types"
+import { Maybe } from "../../types"
+import { MessageData } from "../../common/components/messaging/types"
+import { ServerConnectionState } from "../../common/types"
 
 export const BARE_TCP_SERVER_START_REQUESTED = "BARE_TCP_SERVER_START_REQUESTED"
 export const createActionBareTcpServerStartRequested = (port: string) => ({
@@ -51,7 +52,7 @@ export const createActionBareTcpServerStopRequested = () => ({
 export const BARE_TCP_SERVER_CONNECTION_STATE_CHANGED = "BARE_TCP_SERVER_CONNECTION_STATE_CHANGED"
 export const createActionBareTcpServerConnectionStateChanged = (
     connectionId: string,
-    state: TCPServerConnectionState
+    state: ServerConnectionState
 ) => ({
     type: BARE_TCP_SERVER_CONNECTION_STATE_CHANGED,
     payload: {
@@ -61,7 +62,7 @@ export const createActionBareTcpServerConnectionStateChanged = (
 })
 
 export const BARE_TCP_SERVER_CONNECTION_NEW_DATA = "BARE_TCP_SERVER_CONNECTION_NEW_DATA"
-export const createActionBareTcpServerConnectionNewData = (connectionId: string, data: TCPData) => ({
+export const createActionBareTcpServerConnectionNewData = (connectionId: string, data: MessageData) => ({
     type: BARE_TCP_SERVER_CONNECTION_NEW_DATA,
     payload: {
         connectionId: connectionId,

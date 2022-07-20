@@ -1,6 +1,6 @@
 import React from "react"
 import { View, StyleSheet } from "react-native"
-import { HorizontalLine } from "../../../common/components/horizontalLine"
+import { HorizontalLine } from "../../common/components/horizontalLine"
 import { TCPClientConfiguration } from "./components/TCPClientConfiguration"
 import { TCPClientData } from "./components/TCPClientData"
 

@@ -1,8 +1,9 @@
 import React from "react"
 import { View, StyleSheet } from "react-native"
 import { TCPServerConfiguration } from "./components/TCPServerConfiguration"
-import { HorizontalLine } from "../../../common/components/horizontalLine"
+import { HorizontalLine } from "../../common/components/horizontalLine"
 import { TCPServerConnections } from "./components/TCPServerConnections"
+import { TCPServerActiveConnection } from "./components/TCPServerActiveConnection"
 
 export const TCPServerScreen = () => {
     return (
@@ -10,6 +11,8 @@ export const TCPServerScreen = () => {
             <TCPServerConfiguration />
             <HorizontalLine />
             <TCPServerConnections />
+            <HorizontalLine />
+            <TCPServerActiveConnection />
         </View>
     )
 }
