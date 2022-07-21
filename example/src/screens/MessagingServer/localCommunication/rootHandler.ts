@@ -12,10 +12,8 @@ export const rootHandler: ServerMessageHandler<
 > = (message$, deps) =>
     message$.pipe(
         switchMap((message) => {
-            console.log("SERVER - handler ", message)
             if (message.body.type === LocalCommunicationMessageType.TextMessageSent) {
                 deps.dispatch(
-                    // TODO connectionId
                     createActionMessagingServerDataReceived(
                         message.connectionId,
                         createMessageData("client", message.body.payload.text)
