@@ -3,15 +3,14 @@ import { DataObject, DataObjectType, DataObjectMessageAck, DataObjectMessage } f
 import { filter } from "rxjs/operators"
 
 export const ofDataType =
-    <T extends DataObjectType>(...types: T[]) =>
-    (source$: Observable<DataObject>): Observable<Extract<DataObject, { type: T }>> =>
+    <T extends DataObjectType, S = any>(...types: T[]) =>
+    (source$: Observable<[DataObject, S]>): Observable<[Extract<DataObject, { type: T }>, S]> =>
         // @ts-ignore
-        source$.pipe(filter((data: DataObject): boolean => types.includes(data.type)))
+        source$.pipe(filter(([data, _]: [DataObject, S]): boolean => types.includes(data.type)))
 
-export const ofDataTypeMessage: (source$: Observable<DataObject>) => Observable<DataObjectMessage> = ofDataType(
-    DataObjectType.Message
-)
+export const ofDataTypeMessage: <T>(source$: Observable<[DataObject, T]>) => Observable<[DataObjectMessage, T]> =
+    ofDataType(DataObjectType.Message)
 
-export const ofDataTypeMessageAck: (source$: Observable<DataObject>) => Observable<DataObjectMessageAck> = ofDataType(
-    DataObjectType.MessageAck
-)
+export const ofDataTypeMessageAck: <T = any>(
+    source$: Observable<[DataObject, T]>
+) => Observable<[DataObjectMessageAck, T]> = ofDataType(DataObjectType.MessageAck)

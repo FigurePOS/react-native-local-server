@@ -47,6 +47,7 @@ export type TCPServerDataReceivedNativeEvent = {
 export type TCPServerNativeEvent =
     | TCPServerReadyNativeEvent
     | TCPServerStoppedNativeEvent
+    | TCPServerConnectionAcceptedNativeEvent
     | TCPServerConnectionReadyNativeEvent
     | TCPServerConnectionClosedNativeEvent
     | TCPServerDataReceivedNativeEvent

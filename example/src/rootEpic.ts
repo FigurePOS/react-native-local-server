@@ -3,8 +3,10 @@ import { StateAction } from "./types"
 import { StateObject } from "./rootReducer"
 import TCPServerEpics from "./screens/TCPServer/epics"
 import TCPClientEpics from "./screens/TCPClient/epics"
+import MessagingServerEpics from "./screens/MessagingServer/epics"
+import MessagingClientEpics from "./screens/MessagingClient/epics"
 
-const epics: Epic[] = [...TCPServerEpics, ...TCPClientEpics]
+const epics: Epic[] = [...TCPServerEpics, ...TCPClientEpics, ...MessagingServerEpics, ...MessagingClientEpics]
 
 export const rootEpic: Epic = (
     action$: ActionsObservable<StateAction>,

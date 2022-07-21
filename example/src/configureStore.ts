@@ -21,4 +21,4 @@ const configureStore = (): Store => {
     return store
 }
 
-export default configureStore
+export const store = configureStore()
