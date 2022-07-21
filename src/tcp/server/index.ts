@@ -32,6 +32,11 @@ export class TCPServer implements TCPServerInterface {
         return TCPServerModule.send(this.getId(), connectionId, data)
     }
 
+    // TODO implement connection closing
+    closeConnection = (_: string): Promise<void> => {
+        return Promise.resolve()
+    }
+
     stop = (): Promise<void> => {
         return TCPServerModule.stopServer(this.getId())
     }

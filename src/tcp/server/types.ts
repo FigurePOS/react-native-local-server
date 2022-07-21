@@ -11,5 +11,7 @@ export interface TCPServerInterface {
 
     sendData: (connectionId: string, data: string) => Promise<void>
 
+    closeConnection: (connectionId: string) => Promise<void>
+
     stop: () => Promise<void>
 }
