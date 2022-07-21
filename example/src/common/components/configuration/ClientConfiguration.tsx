@@ -51,11 +51,11 @@ const styles = StyleSheet.create({
     },
     inputPort: {
         flex: 0,
-        maxWidth: 170,
+        maxWidth: 150,
     },
     inputHost: {
         flex: 0,
-        maxWidth: 300,
+        maxWidth: 200,
     },
     state: {
         flex: 1,

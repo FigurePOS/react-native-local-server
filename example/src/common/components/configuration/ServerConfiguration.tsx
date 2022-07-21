@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 0,
-        maxWidth: 200,
+        maxWidth: 150,
     },
     state: {
         flex: 1,
