@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     label: {
-        width: 80,
+        width: 90,
         fontSize: FontSize.Medium,
         padding: FontSize.Small,
         color: Colors.Black,

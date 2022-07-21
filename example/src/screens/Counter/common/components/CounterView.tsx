@@ -1,19 +1,21 @@
 import React from "react"
 import { View, StyleSheet, Text } from "react-native"
 import { useDispatch, useSelector } from "react-redux"
-import { getCounterCount, isCounterAutoIncrementOn } from "../data/selectors"
-import { Colors, FontSize } from "../../../common/constants"
-import { Button } from "../../../common/components/form/button"
+import { getCounterCount, isCounterAutoIncrementOn } from "../../data/selectors"
+import { Colors, FontSize } from "../../../../common/constants"
+import { Button } from "../../../../common/components/form/button"
 import {
     createActionCounterAutoIncrementStarted,
     createActionCounterAutoIncrementStopped,
     createActionCounterCountDecreased,
     createActionCounterCountIncremented,
     createActionCounterCountReset,
-} from "../data/actionts"
+} from "../../data/actionts"
+import { isCounterClientRunning } from "../../client/selectors"
 
 export const CounterView = () => {
     const dispatch = useDispatch()
+    const clientIsRunning = useSelector(isCounterClientRunning)
     const autoIncrementOn = useSelector(isCounterAutoIncrementOn)
     const autoAction = autoIncrementOn
         ? createActionCounterAutoIncrementStopped()
@@ -26,6 +28,7 @@ export const CounterView = () => {
                     <Button
                         label={"-"}
                         labelStyle={styles.changeButton}
+                        disabled={clientIsRunning}
                         onPress={() => dispatch(createActionCounterCountDecreased())}
                     />
                 </View>
@@ -34,6 +37,7 @@ export const CounterView = () => {
                     <Button
                         label={"+"}
                         labelStyle={styles.changeButton}
+                        disabled={clientIsRunning}
                         onPress={() => dispatch(createActionCounterCountIncremented())}
                     />
                 </View>
@@ -46,6 +50,7 @@ export const CounterView = () => {
             <Button
                 label={autoIncrementOn ? "STOP" : "START"}
                 labelStyle={styles.resetButton}
+                disabled={clientIsRunning}
                 onPress={() => dispatch(autoAction)}
             />
         </View>
