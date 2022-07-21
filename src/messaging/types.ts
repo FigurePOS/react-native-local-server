@@ -1,30 +1,29 @@
 import { Observable } from "rxjs"
-import { MessagingServerMessageAdditionalInfo } from "./server/types"
 
 /**
  * PUBLIC types
  */
 
-export type Message<B = any, S = any, Addition = {}> = {
+export type Message<B = any> = {
     id: string
     timestamp: string
-    source: S // TODO this contains information about device
+    source: MessageSource
     body: B
-} & Addition
+}
 
 export type MessageHandler<In, Out = In, Deps = any> = (
     message$: Observable<Message<In>>,
     deps: Deps
-) => Observable<Message<Out>>
-
-export type ServerMessageHandler<In, Out = In, Deps = any> = (
-    message$: Observable<Message<In, any, MessagingServerMessageAdditionalInfo>>,
-    deps: Deps
-) => Observable<Message<Out, any, MessagingServerMessageAdditionalInfo>>
+) => Observable<Out>
 
 /**
  * PRIVATE types
  */
+export type MessageSource = {
+    name?: string
+    serviceId?: string
+    connectionId: string
+}
 
 export enum DataObjectType {
     Message = "message",

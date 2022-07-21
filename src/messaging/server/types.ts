@@ -4,6 +4,8 @@
 
 export type MessagingServerConfiguration = {
     port: number
+    name?: string
+    serviceId?: string
 }
 
 export enum MessagingServerStatusEventName {

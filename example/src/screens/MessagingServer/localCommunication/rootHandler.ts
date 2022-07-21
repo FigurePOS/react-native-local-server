@@ -4,9 +4,9 @@ import { SampleMessagingServerDependenciesType } from "./deps"
 import { createActionMessagingServerDataReceived } from "../actions"
 import { createMessageData } from "../../../common/components/messaging/functions"
 import { timer } from "rxjs"
-import { combineServerHandlers, ServerMessageHandler } from "react-native-local-server"
+import { combineHandlers, MessageHandler } from "react-native-local-server"
 
-export const handler1: ServerMessageHandler<
+export const handler1: MessageHandler<
     LocalCommunicationMessage,
     LocalCommunicationMessage,
     SampleMessagingServerDependenciesType
@@ -25,7 +25,7 @@ export const handler1: ServerMessageHandler<
         })
     )
 
-export const handler2: ServerMessageHandler<
+export const handler2: MessageHandler<
     LocalCommunicationMessage,
     LocalCommunicationMessage,
     SampleMessagingServerDependenciesType
@@ -36,7 +36,7 @@ export const handler2: ServerMessageHandler<
                 console.log("handler 2 " + new Date().toISOString())
                 deps.dispatch(
                     createActionMessagingServerDataReceived(
-                        message.connectionId,
+                        message.source.connectionId,
                         createMessageData("client", message.body.payload.text)
                     )
                 )
@@ -50,8 +50,8 @@ export const handler2: ServerMessageHandler<
         })
     )
 
-export const rootHandler: ServerMessageHandler<
+export const rootHandler: MessageHandler<
     LocalCommunicationMessage,
     LocalCommunicationMessage,
     SampleMessagingServerDependenciesType
-> = combineServerHandlers(handler1, handler2)
+> = combineHandlers(handler1, handler2)

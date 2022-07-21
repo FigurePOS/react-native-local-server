@@ -1,4 +1,6 @@
 export type MessagingClientConfiguration = {
+    name?: string
+    serviceId?: string
     host: string
     port: number
 }

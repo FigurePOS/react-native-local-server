@@ -9,13 +9,17 @@ export const parseClientMessage = <B = any>([data, _]: [DataObjectMessage, null]
     return [parseMessage(data), null]
 }
 
-export const parseServerMessage = <B = any, S = any>([data, info]: [
-    DataObjectMessage,
+export const parseServerMessage = <B = any>([data, info]: [DataObjectMessage, MessagingServerMessageAdditionalInfo]): [
+    Message<B>,
     MessagingServerMessageAdditionalInfo
-]): [Message<B, S, MessagingServerMessageAdditionalInfo>, MessagingServerMessageAdditionalInfo] => {
-    const message = {
-        ...parseMessage(data),
-        connectionId: info.connectionId,
+] => {
+    const parsed = parseMessage(data)
+    const message: Message<B> = {
+        ...parsed,
+        source: {
+            ...parsed.source,
+            connectionId: info.connectionId,
+        },
     }
     return [message, info]
 }

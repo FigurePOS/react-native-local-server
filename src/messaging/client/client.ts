@@ -1,7 +1,7 @@
 import { defer, from, Observable, of, Subject, Subscription } from "rxjs"
 import { MessagingClientStatusEvent, TCPClient } from "../../"
 import { catchError, concatMap, map, mapTo, mergeMap, switchMap, timeout, withLatestFrom } from "rxjs/operators"
-import { DataObject, Message, MessageHandler } from "../types"
+import { DataObject, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
 import { fromClientDataReceived } from "./operators/fromClientDataReceived"
 import { ofDataTypeMessage } from "../operators/ofDataType"
@@ -13,6 +13,7 @@ import { getMessageId } from "../functions/getMessageId"
 import { getMessageData } from "../functions/getMessageData"
 import { parseClientMessage } from "../functions/parseMessage"
 import { fromClientStatusEvent } from "./operators/fromClientStatusEvent"
+import { composeMessageObject } from "../functions/composeMessageObject"
 
 export class MessagingClient<In, Out = In, Deps = any> {
     private readonly clientId: string
@@ -41,7 +42,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.config = config
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
-            mergeMap(([handler, deps]: [MessageHandler<In, Out>, Deps]): Observable<[Message<Out>, null]> => {
+            mergeMap(([handler, deps]: [MessageHandler<In, Out>, Deps]) => {
                 return fromClientDataReceived(this.clientId).pipe(
                     ofDataTypeMessage,
                     map(parseClientMessage),
@@ -49,7 +50,8 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     handleBy(handler, deps)
                 )
             }),
-            concatMap(([message, _]: [Message<Out>, null]) => {
+            concatMap(([body, _]: [Out, null]) => {
+                const message = composeMessageObject(body, this.getSourceData())
                 const data = composeDataMessageObject(message)
                 return this.sendData(data)
             })
@@ -67,7 +69,8 @@ export class MessagingClient<In, Out = In, Deps = any> {
         )
     }
 
-    send(message: Message<Out>): Observable<any> {
+    send(body: Out): Observable<any> {
+        const message = composeMessageObject(body, this.getSourceData())
         const data = composeDataMessageObject(message)
         return this.sendData(data)
     }
@@ -83,6 +86,15 @@ export class MessagingClient<In, Out = In, Deps = any> {
 
     getConfig(): MessagingClientConfiguration | null {
         return this.config
+    }
+
+    private getSourceData(): MessageSource {
+        const config = this.getConfig()
+        return {
+            ...(config ? { name: config.name } : null),
+            ...(config ? { serviceId: config.serviceId } : null),
+            connectionId: "",
+        }
     }
 
     private sendData(data: DataObject, t: number = 500): Observable<boolean> {

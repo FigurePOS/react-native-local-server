@@ -13,11 +13,7 @@ import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingClientDependencies } from "./localCommunication/deps"
 import { SampleMessagingClient } from "./localCommunication/client"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
-import {
-    composeMessageObject,
-    MessagingClientConfiguration,
-    MessagingClientStatusEventName,
-} from "react-native-local-server"
+import { MessagingClientConfiguration, MessagingClientStatusEventName } from "react-native-local-server"
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
 
@@ -30,6 +26,7 @@ const messagingServerClientRequested: Epic = (action$: ActionsObservable<StateAc
                 return [createActionMessagingClientErrored("Invalid Port")]
             }
             const config: MessagingClientConfiguration = {
+                name: "Sample Messaging Client",
                 port: port,
                 host: action.payload.host,
             }
@@ -68,7 +65,7 @@ const messagingClientDataSendRequested: Epic = (action$: ActionsObservable<State
         switchMap((action) => {
             const text = action.payload.data
             const message = createMessageTextMessageSent(text)
-            return SampleMessagingClient.send(composeMessageObject(message)).pipe(
+            return SampleMessagingClient.send(message).pipe(
                 switchMap(() => {
                     return [createActionMessagingClientDataReceived(createMessageData("client", text))]
                 })
