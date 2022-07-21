@@ -8,6 +8,7 @@ type Props = {
     stateLabel: string
     isRunning: boolean
     initialPort: string
+    style?: any
 
     onStarted: (port: string) => void
     onStopped: () => void
@@ -16,7 +17,7 @@ type Props = {
 export const ServerConfiguration = (props: Props) => {
     const [port, setPort] = useState<string>(props.initialPort)
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, props.style]}>
             <FormTextInput
                 editable={!props.isRunning}
                 label={"Port"}

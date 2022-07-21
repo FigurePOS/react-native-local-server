@@ -9,6 +9,7 @@ type Props = {
     isRunning: boolean
     initialPort: string
     initialHost: string
+    style?: any
 
     onStarted: (host: string, port: string) => void
     onStopped: () => void
@@ -18,7 +19,7 @@ export const ClientConfiguration = (props: Props) => {
     const [port, setPort] = useState<string>(props.initialPort)
     const [host, setHost] = useState<string>(props.initialHost)
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, props.style]}>
             <FormTextInput
                 editable={!props.isRunning}
                 label={"Host"}

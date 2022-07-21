@@ -6,6 +6,7 @@ export enum FontSize {
     Medium = 17,
     MediumBig = 22,
     Big = 26,
+    ExtraExtraBig = 54,
 }
 
 export enum FontWeight {
