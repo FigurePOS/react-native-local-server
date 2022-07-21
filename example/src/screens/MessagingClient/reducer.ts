@@ -10,6 +10,7 @@ import {
     MESSAGING_CLIENT_STOP_REQUESTED,
 } from "./actions"
 import { prepend } from "ramda"
+import { createMessageData } from "../../common/components/messaging/functions"
 
 export type MessagingClientStateObject = {
     state: ClientState
@@ -46,6 +47,7 @@ export const MessagingClientReducer: Reducer = (
             return {
                 ...state,
                 state: action.payload.state,
+                data: prepend(createMessageData("status", action.payload.state), state.data),
             }
         case MESSAGING_CLIENT_ERRORED:
             return {

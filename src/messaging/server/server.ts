@@ -1,6 +1,6 @@
-import { defer, Observable, of, Subject, Subscription } from "rxjs"
+import { defer, from, Observable, of, Subject, Subscription } from "rxjs"
 import { Message, TCPServer } from "../../"
-import { catchError, map, mapTo, mergeMap, switchMap, withLatestFrom } from "rxjs/operators"
+import { catchError, concatMap, map, mapTo, mergeMap, switchMap, timeout, withLatestFrom } from "rxjs/operators"
 import { ofDataTypeMessage } from "../operators/ofDataType"
 import { deduplicateBy } from "../operators/deduplicateBy"
 import { handleBy } from "../operators/handleBy"
@@ -12,7 +12,7 @@ import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { fromServerStatusEvent } from "./operators/fromServerStatusEvent"
 import { parseServerMessage } from "../functions/parseMessage"
 import { getMessageData } from "../functions/getMessageData"
-import { ServerMessageHandler } from "../types"
+import { DataObject, ServerMessageHandler } from "../types"
 
 export class MessagingServer<In, Out = In, Deps = any> {
     private readonly serverId: string
@@ -53,19 +53,10 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     )
                 }
             ),
-            mergeMap(([message, info]: [Message<Out>, MessagingServerMessageAdditionalInfo]) =>
-                defer(() => {
-                    const connectionId: string = info.connectionId
-                    const serialized = serializeDataObject(composeDataMessageObject(message))
-                    return this.tcpServer.sendData(connectionId, serialized)
-                }).pipe(
-                    mapTo(true),
-                    catchError((err) => {
-                        this.error$.next(err)
-                        return of(false)
-                    })
-                )
-            )
+            concatMap(([message, info]: [Message<Out>, MessagingServerMessageAdditionalInfo]) => {
+                const data = composeDataMessageObject(message)
+                return this.sendData(data, info.connectionId)
+            })
         )
 
         this.mainSubscription = output$.subscribe(() => {})
@@ -81,17 +72,8 @@ export class MessagingServer<In, Out = In, Deps = any> {
     }
 
     send(message: Message<Out>, connectionId: string): Observable<any> {
-        // TODO this is duplicate
-        return defer(() => {
-            const serialized = serializeDataObject(composeDataMessageObject(message))
-            return this.tcpServer.sendData(connectionId, serialized)
-        }).pipe(
-            mapTo(true),
-            catchError((err) => {
-                this.error$.next(err)
-                return of(false)
-            })
-        )
+        const data = composeDataMessageObject(message)
+        return this.sendData(data, connectionId)
     }
 
     stop(): Observable<any> {
@@ -105,5 +87,19 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     getConfig(): MessagingServerConfiguration | null {
         return this.config
+    }
+
+    private sendData(data: DataObject, connectionId: string, t: number = 500): Observable<boolean> {
+        return defer(() => {
+            const serialized = serializeDataObject(data)
+            return from(this.tcpServer.sendData(connectionId, serialized)).pipe(
+                timeout(t),
+                mapTo(true),
+                catchError((err) => {
+                    this.error$.next(err)
+                    return of(false)
+                })
+            )
+        })
     }
 }

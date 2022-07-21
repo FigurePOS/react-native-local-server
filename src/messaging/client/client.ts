@@ -1,7 +1,7 @@
-import { defer, Observable, of, Subject, Subscription } from "rxjs"
+import { defer, from, Observable, of, Subject, Subscription } from "rxjs"
 import { MessagingClientStatusEvent, TCPClient } from "../../"
-import { catchError, map, mapTo, mergeMap, switchMap, withLatestFrom } from "rxjs/operators"
-import { Message, MessageHandler } from "../types"
+import { catchError, concatMap, map, mapTo, mergeMap, switchMap, timeout, withLatestFrom } from "rxjs/operators"
+import { DataObject, Message, MessageHandler } from "../types"
 import { handleBy } from "../operators/handleBy"
 import { fromClientDataReceived } from "./operators/fromClientDataReceived"
 import { ofDataTypeMessage } from "../operators/ofDataType"
@@ -49,18 +49,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     handleBy(handler, deps)
                 )
             }),
-            mergeMap(([message]: [Message<Out>, null]) =>
-                defer(() => {
-                    const serialized = serializeDataObject(composeDataMessageObject(message))
-                    return this.tcpClient.sendData(serialized)
-                }).pipe(
-                    mapTo(true),
-                    catchError((err) => {
-                        this.error$.next(err)
-                        return of(false)
-                    })
-                )
-            )
+            concatMap(([message, _]: [Message<Out>, null]) => {
+                const data = composeDataMessageObject(message)
+                return this.sendData(data)
+            })
         )
 
         this.mainSubscription = output$.subscribe(() => {})
@@ -76,17 +68,8 @@ export class MessagingClient<In, Out = In, Deps = any> {
     }
 
     send(message: Message<Out>): Observable<any> {
-        // TODO this is duplicate
-        return defer(() => {
-            const serialized = serializeDataObject(composeDataMessageObject(message))
-            return this.tcpClient.sendData(serialized)
-        }).pipe(
-            mapTo(true),
-            catchError((err) => {
-                this.error$.next(err)
-                return of(false)
-            })
-        )
+        const data = composeDataMessageObject(message)
+        return this.sendData(data)
     }
 
     stop(): Observable<any> {
@@ -100,5 +83,19 @@ export class MessagingClient<In, Out = In, Deps = any> {
 
     getConfig(): MessagingClientConfiguration | null {
         return this.config
+    }
+
+    private sendData(data: DataObject, t: number = 500): Observable<boolean> {
+        return defer(() => {
+            const serialized = serializeDataObject(data)
+            return from(this.tcpClient.sendData(serialized)).pipe(
+                timeout(t),
+                mapTo(true),
+                catchError((err) => {
+                    this.error$.next(err)
+                    return of(false)
+                })
+            )
+        })
     }
 }
