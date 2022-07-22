@@ -17,7 +17,7 @@ export type CounterClientStateObject = {
 
 export const createDefaultState = (): CounterClientStateObject => ({
     state: ClientState.StandBy,
-    host: "192.168.1.70",
+    host: "10.14.200.39",
     port: "12000",
     error: null,
 })

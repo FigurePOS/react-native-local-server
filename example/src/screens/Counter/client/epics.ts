@@ -14,7 +14,7 @@ import { CounterDependencies } from "../common/deps"
 import { CounterClient } from "./client"
 import { rootHandler } from "./rootHandler"
 import { createCounterMessageCountRequested, createCounterMessageCountResetRequested } from "../common/messages"
-import { COUNTER_COUNT_RESET } from "../data/actionts"
+import { COUNTER_COUNT_RESET_REQUESTED } from "../data/actionts"
 import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { isCounterClientRunning } from "./selectors"
 import { StateObject } from "../../../rootReducer"
@@ -66,7 +66,7 @@ const counterClientCountResetRequested: Epic = (
     state$: StateObservable<StateObject>
 ) =>
     action$.pipe(
-        ofType(COUNTER_COUNT_RESET),
+        ofType(COUNTER_COUNT_RESET_REQUESTED),
         filterWithSelector(isCounterClientRunning, state$),
         switchMap(() => {
             const message = createCounterMessageCountResetRequested()

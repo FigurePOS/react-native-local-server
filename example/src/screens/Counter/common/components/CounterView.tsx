@@ -1,5 +1,5 @@
 import React from "react"
-import { View, StyleSheet, Text } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import { useDispatch, useSelector } from "react-redux"
 import { getCounterCount, isCounterAutoIncrementOn } from "../../data/selectors"
 import { Colors, FontSize } from "../../../../common/constants"
@@ -9,7 +9,7 @@ import {
     createActionCounterAutoIncrementStopped,
     createActionCounterCountDecreased,
     createActionCounterCountIncremented,
-    createActionCounterCountReset,
+    createActionCounterCountResetRequested,
 } from "../../data/actionts"
 import { isCounterClientRunning } from "../../client/selectors"
 
@@ -45,7 +45,7 @@ export const CounterView = () => {
             <Button
                 label={"RESET"}
                 labelStyle={styles.resetButton}
-                onPress={() => dispatch(createActionCounterCountReset())}
+                onPress={() => dispatch(createActionCounterCountResetRequested())}
             />
             <Button
                 label={autoIncrementOn ? "STOP" : "START"}

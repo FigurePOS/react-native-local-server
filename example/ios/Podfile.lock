@@ -272,6 +272,8 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
+  - react-native-get-random-values (1.8.0):
+    - React-Core
   - react-native-local-server (0.1.0):
     - React-Core
   - react-native-safe-area-context (4.3.1):
@@ -424,6 +426,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-local-server (from `../..`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -496,6 +499,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-local-server:
     :path: "../.."
   react-native-safe-area-context:
@@ -566,6 +571,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
+  react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
   react-native-local-server: 3816d860ba9cb351ccd137c7d0eb6a4f58654390
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd

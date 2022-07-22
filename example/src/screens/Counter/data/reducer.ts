@@ -1,15 +1,25 @@
 import { StateAction } from "../../../types"
 import { Reducer } from "redux"
-import { COUNTER_AUTO_INCREMENT_STARTED, COUNTER_AUTO_INCREMENT_STOPPED, COUNTER_COUNT_CHANGED } from "./actionts"
+import {
+    COUNTER_AUTO_INCREMENT_STARTED,
+    COUNTER_AUTO_INCREMENT_STOPPED,
+    COUNTER_COUNT_CHANGED,
+    COUNTER_LOG_CLEAR_REQUESTED,
+    COUNTER_LOGGED,
+} from "./actionts"
+import { LoggerMessage } from "../../../common/components/loggerView/types"
+import { prepend } from "ramda"
 
 export type CounterDataStateObject = {
     count: number
     autoIncrementOn: boolean
+    logData: LoggerMessage[]
 }
 
 export const createDefaultState = (): CounterDataStateObject => ({
     count: 0,
     autoIncrementOn: false,
+    logData: [],
 })
 
 export const counterDataReducer: Reducer = (
@@ -31,6 +41,16 @@ export const counterDataReducer: Reducer = (
             return {
                 ...state,
                 autoIncrementOn: false,
+            }
+        case COUNTER_LOGGED:
+            return {
+                ...state,
+                logData: prepend(action.payload.log, state.logData),
+            }
+        case COUNTER_LOG_CLEAR_REQUESTED:
+            return {
+                ...state,
+                logData: [],
             }
         default:
             return state

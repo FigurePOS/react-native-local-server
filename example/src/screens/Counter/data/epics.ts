@@ -6,13 +6,18 @@ import {
     COUNTER_COUNT_DECREASED,
     COUNTER_COUNT_INCREMENTED,
     COUNTER_COUNT_RESET,
+    COUNTER_COUNT_RESET_REQUESTED,
     createActionCounterCountChanged,
     createActionCounterCountIncremented,
+    createActionCounterCountReset,
 } from "./actionts"
 import { switchMap, takeUntil } from "rxjs/operators"
 import { StateObject } from "../../../rootReducer"
 import { getCounterCount } from "./selectors"
 import { interval } from "rxjs"
+import { filterWithSelector } from "../../../common/operators/filterWithSelector"
+import { isCounterClientRunning } from "../client/selectors"
+import { not, pipe } from "ramda"
 
 export const counterIncrementedEpic: Epic = (
     action$: ActionsObservable<StateAction>,
@@ -45,6 +50,17 @@ export const counterResetEpic: Epic = (action$: ActionsObservable<StateAction>) 
             return [createActionCounterCountChanged(0)]
         })
     )
+export const counterResetRequestedEpic: Epic = (
+    action$: ActionsObservable<StateAction>,
+    state$: StateObservable<StateObject>
+) =>
+    action$.pipe(
+        ofType(COUNTER_COUNT_RESET_REQUESTED),
+        filterWithSelector(pipe(isCounterClientRunning, not), state$),
+        switchMap(() => {
+            return [createActionCounterCountReset()]
+        })
+    )
 
 export const counterAutoIncrementEpic: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
@@ -59,4 +75,10 @@ export const counterAutoIncrementEpic: Epic = (action$: ActionsObservable<StateA
         })
     )
 
-export default [counterIncrementedEpic, counterDecreasedEpic, counterResetEpic, counterAutoIncrementEpic]
+export default [
+    counterIncrementedEpic,
+    counterDecreasedEpic,
+    counterResetEpic,
+    counterResetRequestedEpic,
+    counterAutoIncrementEpic,
+]
