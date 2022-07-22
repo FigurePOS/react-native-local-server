@@ -32,18 +32,23 @@ public class Client {
         return port;
     }
 
-    public void start() {
+    public void start() throws Exception {
         Log.d(TAG, "start: " + id);
         connection.start();
     }
 
-    public void stop() {
+    public void stop() throws Exception {
         Log.d(TAG, "stop: " + id);
         connection.stop();
     }
 
-    public void send(String message) {
+    public void send(String message) throws Exception {
         Log.d(TAG, "send: " + id + "\n\tmessage: " + message);
         connection.send(message);
+    }
+
+    @Override
+    public String toString() {
+        return "Client[" + id + "]";
     }
 }

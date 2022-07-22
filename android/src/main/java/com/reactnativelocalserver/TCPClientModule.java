@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.Client;
+import com.reactnativelocalserver.tcp.ClientFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 import java.util.HashMap;
@@ -19,12 +20,20 @@ import java.util.Map;
 public class TCPClientModule extends ReactContextBaseJavaModule {
     public static final String NAME = "TCPClientModule";
 
+    private final ClientFactory clientFactory;
+
     private final EventEmitter eventEmitter;
+
     private final Map<String, Client> clients = new HashMap();
 
-    public TCPClientModule(ReactApplicationContext reactContext) {
+    public TCPClientModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, ClientFactory clientFactory) {
         super(reactContext);
-        eventEmitter = new EventEmitter(reactContext);
+        this.eventEmitter = eventEmitter;
+        this.clientFactory = clientFactory;
+    }
+
+    public Map<String, Client> getClients() {
+        return clients;
     }
 
     @Override
@@ -40,9 +49,13 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             promise.reject("client.already-exists", "Client with this id already exists");
             return;
         }
-        Client client = new Client(id, host, port, eventEmitter);
-        client.start();
-        clients.put(client.getId(), client);
+        try {
+            Client client = clientFactory.of(id, host, port, eventEmitter);
+            client.start();
+            clients.put(id, client);
+        } catch (Exception e) {
+            promise.reject("client.error", e);
+        }
         promise.resolve(true);
     }
 
@@ -54,8 +67,12 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             promise.reject("client.not-exists", "Client with this id does not exist");
             return;
         }
-        client.stop();
-        clients.remove(id);
+        try {
+            client.stop();
+            clients.remove(id);
+        } catch (Exception e) {
+            promise.reject("client.error", e);
+        }
         promise.resolve(true);
     }
 
@@ -67,15 +84,23 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             promise.reject("client.not-exists", "Client with this id does not exist");
             return;
         }
-        client.send(message);
+        try {
+            client.send(message);
+        } catch (Exception e) {
+            promise.reject("client.error", e);
+        }
         promise.resolve(true);
     }
 
     @Override
     public void invalidate() {
         Log.d(NAME, "invalidate - number of clients: " + clients.size());
-        for (Map.Entry<String, Client> entry: clients.entrySet()) {
-            entry.getValue().stop();
+        for (Map.Entry<String, Client> entry : clients.entrySet()) {
+            try {
+                entry.getValue().stop();
+            } catch (Exception e) {
+                Log.e(NAME, "invalidate - failed to stop client: " + entry.getKey(), e);
+            }
         }
         clients.clear();
         super.invalidate();
