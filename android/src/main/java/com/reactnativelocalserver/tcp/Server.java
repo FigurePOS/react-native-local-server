@@ -2,6 +2,8 @@ package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
+import com.reactnativelocalserver.tcp.factory.ServerConnectionFactory;
+import com.reactnativelocalserver.tcp.factory.ServerSocketFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
 import com.reactnativelocalserver.utils.TCPServerEventName;
@@ -12,21 +14,32 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class Server {
     private final static String TAG = "TCPServer";
-    private final String id;
-    private final int port;
+    private final ServerConnectionFactory connectionFactory;
+    private final ServerSocketFactory socketFactory;
     private final EventEmitter eventEmitter;
     private final Map<String, ServerConnection> connections = new HashMap();
+
+    private final String id;
+    private final int port;
 
     private ServerSocket serverSocket;
     private TCPRunnable runnable;
     private Thread thread;
 
+
     public Server(String id, int port, EventEmitter eventEmitter) {
+        this(id, port, eventEmitter, new ServerSocketFactory(), new ServerConnectionFactory());
+    }
+
+    public Server(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, ServerConnectionFactory connectionFactory) {
         this.id = id;
         this.port = port;
         this.eventEmitter = eventEmitter;
+        this.socketFactory = socketFactory;
+        this.connectionFactory = connectionFactory;
     }
 
     public String getId() {
@@ -37,10 +50,14 @@ public class Server {
         return port;
     }
 
+    public Map<String, ServerConnection> getConnections() {
+        return connections;
+    }
+
     public void start() throws Exception {
         Log.d(TAG, "start: " + id);
         try {
-            serverSocket = new ServerSocket(port, 1);
+            serverSocket = socketFactory.of(port);
             if (runnable != null) {
                 // TODO throw error
                 return;
@@ -50,6 +67,7 @@ public class Server {
             thread.start();
         } catch (IOException e) {
             Log.e(TAG, "start failed", e);
+            throw new Exception("Port " + port + " already in use.", e);
         }
     }
 

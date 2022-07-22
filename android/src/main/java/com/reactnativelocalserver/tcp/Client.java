@@ -49,9 +49,4 @@ public class Client {
         Log.d(TAG, "send: " + id + "\n\tmessage: " + message);
         connection.send(message);
     }
-
-    @Override
-    public String toString() {
-        return "Client[" + id + "]";
-    }
 }

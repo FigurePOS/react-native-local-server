@@ -1,15 +1,15 @@
 package com.reactnativelocalserver.utils;
 
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.WritableMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JSEvent {
     private final String name;
-    private final WritableMap body;
+    private final Map<String, String> body;
 
     public JSEvent(String name) {
         this.name = name;
-        this.body = Arguments.createMap();
+        this.body = new HashMap();
         this.putString("type", name);
     }
 
@@ -17,11 +17,11 @@ public class JSEvent {
         return name;
     }
 
-    public WritableMap getBody() {
+    public Map<String, String> getBody() {
         return body;
     }
 
     public void putString(String key, String data) {
-        body.putString(key, data);
+        body.put(key, data);
     }
 }

@@ -37,8 +37,16 @@ public class ClientTest {
         assertThat(client.getId()).isEqualTo(clientId);
         assertThat(client.getHost()).isEqualTo(host);
         assertThat(client.getPort()).isEqualTo(port);
-        assertThat(client.toString()).isEqualTo("Client[client-1]");
         verify(connectionFactory, times(1)).of(clientId, host, port, eventEmitter);
+    }
+
+    @Test
+    public void shouldCreateClientWithoutFactory() {
+        Client client = new Client(clientId, host, port, eventEmitter);
+
+        assertThat(client.getId()).isEqualTo(clientId);
+        assertThat(client.getHost()).isEqualTo(host);
+        assertThat(client.getPort()).isEqualTo(port);
     }
 
     @Test
