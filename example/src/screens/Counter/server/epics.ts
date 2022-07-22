@@ -18,8 +18,9 @@ import { COUNTER_COUNT_CHANGED } from "../data/actionts"
 import { createCounterMessageCountChanged } from "../common/messages"
 import { createActionCounterClientErrored } from "../client/actions"
 import { StateObject } from "../../../rootReducer"
-import { getCounterServerReadyConnections } from "./selectors"
+import { getCounterServerReadyConnections, isCounterServerRunning } from "./selectors"
 import { from } from "rxjs"
+import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 
 const counterServerStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
@@ -88,6 +89,7 @@ const counterServerCountChanged: Epic = (
 ) =>
     action$.pipe(
         ofType(COUNTER_COUNT_CHANGED),
+        filterWithSelector(isCounterServerRunning, state$),
         switchMap((action) => {
             const message = createCounterMessageCountChanged(action.payload.count)
             const connections = getCounterServerReadyConnections(state$.value)

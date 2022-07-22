@@ -1,4 +1,4 @@
-import { ActionsObservable, Epic, ofType } from "redux-observable"
+import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observable"
 import { StateAction } from "../../../types"
 import { catchError, filter, mergeMap, switchMap } from "rxjs/operators"
 import {
@@ -15,6 +15,9 @@ import { CounterClient } from "./client"
 import { rootHandler } from "./rootHandler"
 import { createCounterMessageCountRequested, createCounterMessageCountResetRequested } from "../common/messages"
 import { COUNTER_COUNT_RESET } from "../data/actionts"
+import { filterWithSelector } from "../../../common/operators/filterWithSelector"
+import { isCounterClientRunning } from "./selectors"
+import { StateObject } from "../../../rootReducer"
 
 const counterServerClientRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
@@ -58,9 +61,13 @@ const counterClientStopRequested: Epic = (action$: ActionsObservable<StateAction
         catchError((err) => [createActionCounterClientErrored(err)])
     )
 
-const counterClientCountResetRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientCountResetRequested: Epic = (
+    action$: ActionsObservable<StateAction>,
+    state$: StateObservable<StateObject>
+) =>
     action$.pipe(
         ofType(COUNTER_COUNT_RESET),
+        filterWithSelector(isCounterClientRunning, state$),
         switchMap(() => {
             const message = createCounterMessageCountResetRequested()
             return CounterClient.send(message).pipe(

@@ -14,6 +14,9 @@ import { fromServerStatusEvent } from "./operators/fromServerStatusEvent"
 import { parseServerMessage } from "../functions/parseMessage"
 import { getMessageData } from "../functions/getMessageData"
 import { DataObject, MessageHandler, MessageSource } from "../types"
+import { Logger } from "../../utils/types"
+import { DefaultLogger } from "../../utils/logger"
+import { log } from "../operators/log"
 
 export class MessagingServer<In, Out = In, Deps = any> {
     private readonly serverId: string
@@ -22,6 +25,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
     private readonly error$: Subject<any>
     private readonly tcpServer: TCPServer
 
+    private logger: Logger | null = DefaultLogger
     private config: MessagingServerConfiguration | null = null
     private mainSubscription: Subscription | null = null
 
@@ -39,6 +43,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         rootHandler: MessageHandler<In, Out>,
         dependencies: Deps
     ): Observable<MessagingServerStatusEvent> {
+        this.logger?.log(`MessagingServer [${this.serverId}] - start`, config)
         this.config = config
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
@@ -47,9 +52,11 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     ofDataTypeMessage,
                     map(parseServerMessage),
                     deduplicateBy(getMessageData(getMessageId)),
+                    log(this.logger, `MessagingServer [${this.serverId}] - received message`),
                     handleBy(handler, deps)
                 )
             }),
+            log(this.logger, `MessagingServer [${this.serverId}] - sending reply message`),
             concatMap(([body, info]: [Out, MessagingServerMessageAdditionalInfo]) => {
                 const message = composeMessageObject(body, this.getSourceData(info.connectionId))
                 const data = composeDataMessageObject(message)
@@ -65,17 +72,23 @@ export class MessagingServer<In, Out = In, Deps = any> {
         return defer(() => this.tcpServer.start(config)).pipe(
             switchMap(() => {
                 return fromServerStatusEvent(this.serverId)
-            })
+            }),
+            log(this.logger, `MessagingServer [${this.serverId}] - status`)
         )
     }
 
     send(body: Out, connectionId: string): Observable<any> {
+        this.logger?.log(`MessagingServer [${this.serverId}] - sending message`, {
+            body: body,
+            connectionId: connectionId,
+        })
         const message = composeMessageObject(body, this.getSourceData(connectionId))
         const data = composeDataMessageObject(message)
         return this.sendData(data, connectionId)
     }
 
     stop(): Observable<any> {
+        this.logger?.log(`MessagingServer [${this.serverId}] - stop`)
         if (this.mainSubscription) {
             this.mainSubscription.unsubscribe()
             this.mainSubscription = null
@@ -86,6 +99,11 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     getConfig(): MessagingServerConfiguration | null {
         return this.config
+    }
+
+    setLogger(logger: Logger | null): void {
+        this.logger = logger
+        this.tcpServer.setLogger(logger)
     }
 
     private getSourceData(connectionId: string): MessageSource {
@@ -99,12 +117,17 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     private sendData(data: DataObject, connectionId: string, t: number = 500): Observable<boolean> {
         return defer(() => {
+            this.logger?.log(`MessagingServer [${this.serverId}] - sending data`, {
+                data: data,
+                connectionId: connectionId,
+            })
             const serialized = serializeDataObject(data)
             return from(this.tcpServer.sendData(connectionId, serialized)).pipe(
                 timeout(t),
                 mapTo(true),
                 catchError((err) => {
                     this.error$.next(err)
+                    this.logger?.error(`MessagingServer [${this.serverId}] - send data error`, err)
                     return of(false)
                 })
             )
