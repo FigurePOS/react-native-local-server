@@ -2,6 +2,7 @@ package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
+import com.reactnativelocalserver.tcp.factory.ClientConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 public class Client {
@@ -9,15 +10,17 @@ public class Client {
     private final String id;
     private final String host;
     private final int port;
-    private final EventEmitter eventEmitter;
     private final ClientConnection connection;
 
     public Client(String id, String host, int port, EventEmitter eventEmitter) {
+        this(id, host, port, eventEmitter, new ClientConnectionFactory());
+    }
+
+    public Client(String id, String host, int port, EventEmitter eventEmitter, ClientConnectionFactory connectionFactory) {
         this.id = id;
         this.host = host;
         this.port = port;
-        this.eventEmitter = eventEmitter;
-        connection = new ClientConnection(id, host, port, eventEmitter);
+        this.connection = connectionFactory.of(id, host, port, eventEmitter);
     }
 
     public String getId() {

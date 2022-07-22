@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
-import com.reactnativelocalserver.utils.TCPClientEventName;
 import com.reactnativelocalserver.utils.SocketWrapper;
+import com.reactnativelocalserver.utils.TCPClientEventName;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -30,7 +30,7 @@ public class ClientConnection {
         this.eventEmitter = eventEmitter;
     }
 
-    public void start() {
+    public void start() throws Exception {
         Log.d(TAG, "start: " + clientId);
         if (runnable != null) {
             // TODO throw error
@@ -49,12 +49,12 @@ public class ClientConnection {
         thread.start();
     }
 
-    public void send(String data) {
+    public void send(String data) throws Exception {
         Log.d(TAG, "send: " + clientId + "\n\tdata: " + data);
         socket.write(data);
     }
 
-    public void stop() {
+    public void stop() throws Exception {
         Log.d(TAG, "stop: " + clientId);
         try {
             socket.close();
