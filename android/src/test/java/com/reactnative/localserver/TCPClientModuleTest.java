@@ -2,6 +2,7 @@ package com.reactnative.localserver;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,7 +11,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.reactnativelocalserver.TCPClientModule;
 import com.reactnativelocalserver.tcp.Client;
-import com.reactnativelocalserver.tcp.ClientFactory;
+import com.reactnativelocalserver.tcp.factory.ClientFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 import org.junit.Test;
@@ -36,6 +37,12 @@ public class TCPClientModuleTest {
     Client client;
     @Mock
     EventEmitter eventEmitter;
+
+    @Test
+    public void shouldReturnNameForLogging() {
+        TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
+        assertThat(module.getName()).isEqualTo("TCPClientModule");
+    }
 
     @Test
     public void shouldCreateClient() throws Exception {
@@ -141,6 +148,42 @@ public class TCPClientModuleTest {
 
         verify(client).send(message);
         verify(promise2).reject("client.error", exception);
+    }
+
+    @Test
+    public void shouldNotSendData_ClientDoesNotExist() throws Exception {
+        String message = "This is the message";
+        TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
+        module.send("client-1", message, promise2);
+
+        verify(client, never()).send(message);
+        verify(promise2).reject("client.not-exists", "Client with this id does not exist");
+    }
+
+    @Test
+    public void shouldInvalidate() throws Exception {
+        TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
+        when(clientFactory.of("client-1", "localhost", 12000, eventEmitter)).thenReturn(client);
+
+        module.createClient("client-1", "localhost", 12000, promise);
+
+        module.invalidate();
+        verify(client).stop();
+        assertThat(module.getClients()).isEmpty();
+    }
+
+    @Test
+    public void shouldInvalidate_EvenWhenStopFails() throws Exception {
+        Exception exception = new Exception("Failed to stop client");
+        TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
+        when(clientFactory.of("client-1", "localhost", 12000, eventEmitter)).thenReturn(client);
+        doThrow(exception).when(client).stop();
+
+        module.createClient("client-1", "localhost", 12000, promise);
+
+        module.invalidate();
+        verify(client).stop();
+        assertThat(module.getClients()).isEmpty();
     }
 
 }

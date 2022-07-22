@@ -37,7 +37,7 @@ public class Server {
         return port;
     }
 
-    public void start() {
+    public void start() throws Exception {
         Log.d(TAG, "start: " + id);
         try {
             serverSocket = new ServerSocket(port, 1);
@@ -53,7 +53,7 @@ public class Server {
         }
     }
 
-    public void stop() {
+    public void stop() throws Exception {
         Log.d(TAG, "stop: " + id);
         try {
             serverSocket.close();
@@ -62,7 +62,7 @@ public class Server {
         }
     }
 
-    public void send(String connectionId, String message) {
+    public void send(String connectionId, String message) throws Exception {
         Log.d(TAG, "send: " + id + "\n\tto: " + connectionId + "\n\tmessage: " + message);
         ServerConnection connection = connections.get(connectionId);
         if (connection == null) {
@@ -70,13 +70,6 @@ public class Server {
             return;
         }
         connection.send(message + "\r\n");
-    }
-
-    public void broadcast(String message) {
-        Log.d(TAG, "broadcast: " + id + "\n\tmessage: " + message);
-        for (ServerConnection connection : connections.values()) {
-            connection.send(message);
-        }
     }
 
     private void cleanUp() {

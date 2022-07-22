@@ -1,5 +1,6 @@
-package com.reactnativelocalserver.tcp;
+package com.reactnativelocalserver.tcp.factory;
 
+import com.reactnativelocalserver.tcp.Client;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 public class ClientFactory {

@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.Client;
-import com.reactnativelocalserver.tcp.ClientFactory;
+import com.reactnativelocalserver.tcp.factory.ClientFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 import java.util.HashMap;
@@ -53,10 +53,10 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             Client client = clientFactory.of(id, host, port, eventEmitter);
             client.start();
             clients.put(id, client);
+            promise.resolve(true);
         } catch (Exception e) {
             promise.reject("client.error", e);
         }
-        promise.resolve(true);
     }
 
     @ReactMethod
@@ -70,10 +70,10 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         try {
             client.stop();
             clients.remove(id);
+            promise.resolve(true);
         } catch (Exception e) {
             promise.reject("client.error", e);
         }
-        promise.resolve(true);
     }
 
     @ReactMethod
@@ -86,10 +86,10 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         }
         try {
             client.send(message);
+            promise.resolve(true);
         } catch (Exception e) {
             promise.reject("client.error", e);
         }
-        promise.resolve(true);
     }
 
     @Override

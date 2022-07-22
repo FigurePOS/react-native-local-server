@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.Server;
+import com.reactnativelocalserver.tcp.factory.ServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 import java.util.HashMap;
@@ -20,11 +21,17 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     public static final String NAME = "TCPServerModule";
 
     private final EventEmitter eventEmitter;
+    private final ServerFactory serverFactory;
     private final Map<String, Server> servers = new HashMap();
 
-    public TCPServerModule(ReactApplicationContext reactContext) {
+    public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, ServerFactory serverFactory) {
         super(reactContext);
-        eventEmitter = new EventEmitter(reactContext);
+        this.eventEmitter = eventEmitter;
+        this.serverFactory = serverFactory;
+    }
+
+    public Map<String, Server> getServers() {
+        return servers;
     }
 
     @Override
@@ -37,13 +44,17 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     public void createServer(String id, int port, Promise promise) {
         Log.d(NAME, "createServer started for id: " + id);
         if (servers.get(id) != null) {
-            promise.reject("client.already-exists", "Server with this id already exists");
+            promise.reject("server.already-exists", "Server with this id already exists");
             return;
         }
-        Server server = new Server(id, port, eventEmitter);
-        server.start();
-        servers.put(server.getId(), server);
-        promise.resolve(true);
+        try {
+            Server server = serverFactory.of(id, port, eventEmitter);
+            server.start();
+            servers.put(id, server);
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject("server.error", e);
+        }
     }
 
     @ReactMethod
@@ -54,9 +65,13 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             promise.reject("server.not-exists", "Server with this id does not exist");
             return;
         }
-        server.stop();
-        servers.remove(id);
-        promise.resolve(true);
+        try {
+            server.stop();
+            servers.remove(id);
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject("server.error", e);
+        }
     }
 
     @ReactMethod
@@ -67,28 +82,23 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             promise.reject("server.not-exists", "Server with this id does not exist");
             return;
         }
-        server.send(connectionId, message);
-        promise.resolve(true);
-    }
-
-    @ReactMethod
-    public void broadcast(String serverId, String message, Promise promise) {
-        Log.d(NAME, "broadcast started for server: " + serverId);
-        Server server = servers.get(serverId);
-        if (server == null) {
-            promise.reject("server.not-exists", "Server with this id does not exist");
-            return;
+        try {
+            server.send(connectionId, message);
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject("server.error", e);
         }
-        server.broadcast(message);
-        promise.resolve(true);
     }
-
 
     @Override
     public void invalidate() {
         Log.d(NAME, "invalidate - number of servers: " + servers.size());
-        for (Map.Entry<String, Server> entry: servers.entrySet()) {
-            entry.getValue().stop();
+        for (Map.Entry<String, Server> entry : servers.entrySet()) {
+            try {
+                entry.getValue().stop();
+            } catch (Exception e) {
+                Log.e(NAME, "invalidate - failed to stop server: " + entry.getKey(), e);
+            }
         }
         servers.clear();
         super.invalidate();
