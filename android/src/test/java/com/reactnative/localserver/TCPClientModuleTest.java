@@ -84,7 +84,7 @@ public class TCPClientModuleTest {
 
         verify(clientFactory, times(1)).of("client-1", "localhost", 12000, eventEmitter);
         verify(client, times(1)).start();
-        verify(promise, times(1)).reject("client.error", exception);
+        verify(promise, times(1)).reject("client.error", exception.getMessage());
         assertThat(module.getClients()).doesNotContainEntry("client-1", client);
     }
 
@@ -119,7 +119,7 @@ public class TCPClientModuleTest {
         module.stopClient("client-1", promise2);
 
         verify(client).stop();
-        verify(promise2).reject("client.error", exception);
+        verify(promise2).reject("client.error", exception.getMessage());
         assertThat(module.getClients()).containsEntry("client-1", client);
     }
 
@@ -147,7 +147,7 @@ public class TCPClientModuleTest {
         module.send("client-1", message, promise2);
 
         verify(client).send(message);
-        verify(promise2).reject("client.error", exception);
+        verify(promise2).reject("client.error", exception.getMessage());
     }
 
     @Test

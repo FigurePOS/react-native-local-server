@@ -172,6 +172,64 @@ public class E2E {
         assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
     }
 
+    @Test
+    public void serverShouldNotSendDataToClosedConnection() throws Exception {
+        prepareServer("server");
+        prepareClient("client");
+
+        Promise stopPromise = mockPromise();
+        clientModule.stopClient("client", stopPromise);
+        verify(stopPromise).resolve(true);
+
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(clientEventEmitter, times(2)).emitEvent(clientEventCaptor.capture());
+        List<JSEvent> clientEvents = clientEventCaptor.getAllValues();
+        assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
+        assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
+
+        verify(serverEventEmitter, times(4)).emitEvent(serverEventCaptor.capture());
+        List<JSEvent> serverEvents = serverEventCaptor.getAllValues();
+        assertThat(serverEvents.get(0).getName()).isEqualTo(TCPServerEventName.Ready);
+        assertThat(serverEvents.get(1).getName()).isEqualTo(TCPServerEventName.ConnectionAccepted);
+        assertThat(serverEvents.get(2).getName()).isEqualTo(TCPServerEventName.ConnectionReady);
+        assertThat(serverEvents.get(3).getName()).isEqualTo(TCPServerEventName.ConnectionClosed);
+
+        String connectionId = serverEvents.get(3).getBody().get("connectionId");
+        Promise sendPromise = mockPromise();
+        serverModule.send("server", connectionId, "message", sendPromise);
+        verify(sendPromise).reject("server.error", "Unknown connection: " + connectionId);
+    }
+
+    @Test
+    public void clientShouldNotSendDataToClosedConnection() throws Exception {
+        prepareServer("server");
+        prepareClient("client");
+
+        Promise promise = mockPromise();
+        serverModule.stopServer("server", promise);
+        verify(promise).resolve(true);
+
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(serverEventEmitter, times(5)).emitEvent(serverEventCaptor.capture());
+        List<JSEvent> serverEvents = serverEventCaptor.getAllValues();
+        assertThat(serverEvents.get(0).getName()).isEqualTo(TCPServerEventName.Ready);
+        assertThat(serverEvents.get(1).getName()).isEqualTo(TCPServerEventName.ConnectionAccepted);
+        assertThat(serverEvents.get(2).getName()).isEqualTo(TCPServerEventName.ConnectionReady);
+        assertThat(serverEvents.get(3).getName()).isEqualTo(TCPServerEventName.Stopped);
+        assertThat(serverEvents.get(4).getName()).isEqualTo(TCPServerEventName.ConnectionClosed);
+
+        verify(clientEventEmitter, times(2)).emitEvent(clientEventCaptor.capture());
+        List<JSEvent> clientEvents = clientEventCaptor.getAllValues();
+        assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
+        assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
+
+        Promise sendPromise = mockPromise();
+        clientModule.send("client", "message", sendPromise);
+        verify(sendPromise).reject("client.not-exists", "Client with this id does not exist");
+    }
+
     private void prepareServer(String id) throws Exception {
         Promise promise = mockPromise();
         serverModule.createServer(id, port, promise);

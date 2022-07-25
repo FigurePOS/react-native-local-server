@@ -53,7 +53,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             servers.put(id, server);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("server.error", e);
+            promise.reject("server.error", e.getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             servers.remove(id);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("server.error", e);
+            promise.reject("server.error", e.getMessage());
         }
     }
 
@@ -86,7 +86,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             server.send(connectionId, message);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("server.error", e);
+            promise.reject("server.error", e.getMessage());
         }
     }
 

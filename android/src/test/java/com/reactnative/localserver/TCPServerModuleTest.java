@@ -84,7 +84,7 @@ public class TCPServerModuleTest {
 
         verify(serverFactory, times(1)).of("server-1", 12000, eventEmitter);
         verify(server, times(1)).start();
-        verify(promise, times(1)).reject("server.error", exception);
+        verify(promise, times(1)).reject("server.error", exception.getMessage());
         assertThat(module.getServers()).doesNotContainEntry("server-1", server);
     }
 
@@ -119,7 +119,7 @@ public class TCPServerModuleTest {
         module.stopServer("server-1", promise2);
 
         verify(server).stop();
-        verify(promise2).reject("server.error", exception);
+        verify(promise2).reject("server.error", exception.getMessage());
         assertThat(module.getServers()).containsEntry("server-1", server);
     }
 
@@ -147,7 +147,7 @@ public class TCPServerModuleTest {
         module.send("server-1", "connection-1", message, promise2);
 
         verify(server).send("connection-1", message);
-        verify(promise2).reject("server.error", exception);
+        verify(promise2).reject("server.error", exception.getMessage());
     }
 
     @Test

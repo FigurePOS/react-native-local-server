@@ -65,7 +65,6 @@ public class ServerConnectionManagerTest {
     @Test
     public void shouldNotStartConnection_UnknownConnection() {
         ServerConnectionManager manager = new ServerConnectionManager();
-
         try {
             manager.start(connectionId, socket);
             fail("manager.start() did not throw exception.");

@@ -51,11 +51,12 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         }
         try {
             Client client = clientFactory.of(id, host, port, eventEmitter);
+            client.setOnConnectionClosed(this::onConnectionClosed);
             client.start();
             clients.put(id, client);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("client.error", e);
+            promise.reject("client.error", e.getMessage());
         }
     }
 
@@ -72,7 +73,7 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             clients.remove(id);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("client.error", e);
+            promise.reject("client.error", e.getMessage());
         }
     }
 
@@ -88,7 +89,7 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             client.send(message);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("client.error", e);
+            promise.reject("client.error", e.getMessage());
         }
     }
 
@@ -104,5 +105,9 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         }
         clients.clear();
         super.invalidate();
+    }
+
+    private void onConnectionClosed(String clientId) {
+        clients.remove(clientId);
     }
 }

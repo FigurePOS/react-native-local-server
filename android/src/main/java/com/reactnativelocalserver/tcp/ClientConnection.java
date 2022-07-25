@@ -1,6 +1,9 @@
 package com.reactnativelocalserver.tcp;
 
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
@@ -11,6 +14,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.function.Consumer;
 
 public class ClientConnection {
     private static final String TAG = "TCPClientConnection";
@@ -19,6 +23,7 @@ public class ClientConnection {
     private final int port;
     private final EventEmitter eventEmitter;
 
+    private Consumer<String> onConnectionClosed;
     private SocketWrapper socket;
     private TCPRunnable runnable;
     private Thread thread;
@@ -44,6 +49,9 @@ public class ClientConnection {
 
     public void send(String data) throws Exception {
         Log.d(TAG, "send: " + clientId + "\n\tdata: " + data);
+        if (runnable == null) {
+            throw new Exception("Connection closed");
+        }
         socket.write(data);
     }
 
@@ -76,6 +84,7 @@ public class ClientConnection {
         this.eventEmitter.emitEvent(event);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + clientId);
         if (thread != null && !thread.isInterrupted()) {
@@ -85,9 +94,17 @@ public class ClientConnection {
         runnable = null;
         socket = null;
         handleLifecycleEvent(TCPClientEventName.Stopped, reason);
+        if (onConnectionClosed != null) {
+            onConnectionClosed.accept(clientId);
+        }
+    }
+
+    public void setOnConnectionClosed(Consumer<String> onConnectionClosed) {
+        this.onConnectionClosed = onConnectionClosed;
     }
 
     public class TCPRunnable implements Runnable {
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void run() {
             handleLifecycleEvent(TCPClientEventName.Ready);

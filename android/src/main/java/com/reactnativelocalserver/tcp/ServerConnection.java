@@ -1,6 +1,9 @@
 package com.reactnativelocalserver.tcp;
 
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
@@ -11,6 +14,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ServerConnection {
     private static final String TAG = "TCPServerConnection";
@@ -18,6 +22,7 @@ public class ServerConnection {
     private final String id;
     private final EventEmitter eventEmitter;
 
+    private Consumer<String> onConnectionClosed;
     private SocketWrapper socket;
     private TCPRunnable runnable;
     private Thread thread;
@@ -32,19 +37,21 @@ public class ServerConnection {
         return this.id;
     }
 
-    public void send(String data) {
+    public void setOnConnectionClosed(Consumer<String> onConnectionClosed) {
+        this.onConnectionClosed = onConnectionClosed;
+    }
+
+    public void send(String data) throws Exception {
         if (runnable == null) {
-            // TODO throw err
-            return;
+            throw new Exception("Connection is closed");
         }
         socket.write(data);
     }
 
-    public void start(Socket socket) throws IOException {
+    public void start(Socket socket) throws Exception {
         Log.d(TAG, "start: " + id);
         if (runnable != null) {
-            // TODO throw error
-            return;
+            throw new Exception("Connection is already running");
         }
         this.socket = new SocketWrapper(socket);
         runnable = new TCPRunnable();
@@ -62,6 +69,7 @@ public class ServerConnection {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
         if (thread != null && !thread.isInterrupted()) {
@@ -71,6 +79,9 @@ public class ServerConnection {
         runnable = null;
         socket = null;
         handleLifecycleEvent(TCPServerEventName.ConnectionClosed, reason);
+        if (onConnectionClosed != null) {
+            onConnectionClosed.accept(id);
+        }
     }
 
     private void handleDataReceived(String data) {
@@ -96,17 +107,18 @@ public class ServerConnection {
     }
 
     public class TCPRunnable implements Runnable {
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void run() {
             handleLifecycleEvent(TCPServerEventName.ConnectionReady);
             try {
                 while (true) {
-                    String dataFromServer = socket.read();
-                    if (dataFromServer == null) {
+                    String dataFromClient = socket.read();
+                    if (dataFromClient == null) {
                         throw new SocketException("Connection closed by peer");
                     }
-                    Log.d(TAG, "received data: " + id + "\n\tdata: " + dataFromServer);
-                    handleDataReceived(dataFromServer);
+                    Log.d(TAG, "received data: " + id + "\n\tdata: " + dataFromClient);
+                    handleDataReceived(dataFromClient);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error in run: " + id, e);

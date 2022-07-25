@@ -38,11 +38,16 @@ public class ServerConnectionManager {
         if (connection == null) {
             throw new Exception("Unknown connection: " + id);
         }
+        connection.setOnConnectionClosed(this::onConnectionClosed);
         connection.start(socket);
     }
 
     public ServerConnection get(String id) {
         return connections.get(id);
+    }
+
+    public void onConnectionClosed(String connectionId) {
+        connections.remove(connectionId);
     }
 
     public void clear() {

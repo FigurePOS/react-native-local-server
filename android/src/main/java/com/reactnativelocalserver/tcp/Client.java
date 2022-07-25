@@ -5,6 +5,8 @@ import android.util.Log;
 import com.reactnativelocalserver.tcp.factory.ClientConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
+import java.util.function.Consumer;
+
 public class Client {
     private final static String TAG = "TCPClient";
     private final String id;
@@ -48,5 +50,9 @@ public class Client {
     public void send(String message) throws Exception {
         Log.d(TAG, "send: " + id + "\n\tmessage: " + message);
         connection.send(message);
+    }
+
+    public void setOnConnectionClosed(Consumer<String> onConnectionClosed) {
+        this.connection.setOnConnectionClosed(onConnectionClosed);
     }
 }
