@@ -3,7 +3,11 @@ version: 2.1
 executors:
   default:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:16
+    working_directory: ~/project
+  android:
+    docker:
+      - image: circleci/android:api-30-node
     working_directory: ~/project
 
 commands:
@@ -59,26 +63,26 @@ jobs:
           command: |
             yarn typescript
 
-  unit-tests:
+  unit-tests-ts:
     executor: default
     steps:
       - attach_project
       - run:
-          name: Run unit tests
+          name: Run unit tests (TS)
           command: |
-            yarn test --coverage
+            yarn test:ts --coverage
       - store_artifacts:
           path: coverage
           destination: coverage
 
-  build-package:
-    executor: default
+  unit-tests-android:
+    executor: android
     steps:
       - attach_project
       - run:
-          name: Build package
+          name: Run unit tests (Android)
           command: |
-            yarn prepare
+            yarn test:android
 
 workflows:
   build-and-test:
@@ -90,9 +94,9 @@ workflows:
       - typescript:
           requires:
             - install-dependencies
-      - unit-tests:
+      - unit-tests-ts:
           requires:
             - install-dependencies
-      - build-package:
+      - unit-tests-android:
           requires:
             - install-dependencies
