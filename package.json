@@ -1,5 +1,5 @@
 {
-    "name": "react-native-local-server",
+    "name": "@figuredev/react-native-local-server",
     "version": "0.1.0",
     "description": "Library for creating a local server on the device running React Native.",
     "main": "lib/commonjs/index",
