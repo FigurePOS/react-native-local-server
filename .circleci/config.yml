@@ -96,6 +96,7 @@ jobs:
   release:
     executor: default
     steps:
+      - attach_project
       - run:
           name: "Release SDK"
           command: |
