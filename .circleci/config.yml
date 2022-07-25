@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Lint files
           command: |
-            yarn lint
+            yarn check:lint
 
   typescript:
     executor: default
@@ -61,7 +61,7 @@ jobs:
       - run:
           name: Typecheck files
           command: |
-            yarn typescript
+            yarn check:ts
 
   unit-tests-ts:
     executor: default
