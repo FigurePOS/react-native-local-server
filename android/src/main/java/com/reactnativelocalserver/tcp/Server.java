@@ -90,7 +90,7 @@ public class Server {
         connection.send(message);
     }
 
-    private void cleanUp() {
+    private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
         connectionManager.clear();
         if (thread != null && !thread.isInterrupted()) {
@@ -99,7 +99,7 @@ public class Server {
         thread = null;
         runnable = null;
         serverSocket = null;
-        handleLifecycleEvent(TCPServerEventName.Stopped);
+        handleLifecycleEvent(TCPServerEventName.Stopped, reason);
     }
 
     private void handleConnectionAccepted(String connectionId) {
@@ -111,8 +111,15 @@ public class Server {
     }
 
     private void handleLifecycleEvent(String eventName) {
+        handleLifecycleEvent(eventName, null);
+    }
+
+    private void handleLifecycleEvent(String eventName, String reason) {
         JSEvent event = new JSEvent(eventName);
         event.putString("serverId", id);
+        if (reason != null) {
+            event.putString("reason", reason);
+        }
         this.eventEmitter.emitEvent(event);
     }
 
@@ -132,7 +139,7 @@ public class Server {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "error in connection accepting", e);
-                cleanUp();
+                cleanUp(e.getMessage());
             }
         }
     }

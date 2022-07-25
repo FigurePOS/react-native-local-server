@@ -20,10 +20,6 @@ public class SocketWrapper {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
     public String read() throws IOException {
         return in.readLine();
     }

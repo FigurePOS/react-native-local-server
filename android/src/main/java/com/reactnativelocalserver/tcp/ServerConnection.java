@@ -9,6 +9,7 @@ import com.reactnativelocalserver.utils.TCPServerEventName;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.UUID;
 
 public class ServerConnection {
@@ -61,13 +62,15 @@ public class ServerConnection {
         }
     }
 
-    private void cleanUp() {
+    private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
-        thread.interrupt();
+        if (thread != null && !thread.isInterrupted()) {
+            thread.interrupt();
+        }
         thread = null;
         runnable = null;
         socket = null;
-        handleLifecycleEvent(TCPServerEventName.ConnectionClosed);
+        handleLifecycleEvent(TCPServerEventName.ConnectionClosed, reason);
     }
 
     private void handleDataReceived(String data) {
@@ -79,9 +82,16 @@ public class ServerConnection {
     }
 
     private void handleLifecycleEvent(String eventName) {
+        handleLifecycleEvent(eventName, null);
+    }
+
+    private void handleLifecycleEvent(String eventName, String reason) {
         JSEvent event = new JSEvent(eventName);
         event.putString("serverId", serverId);
         event.putString("connectionId", id);
+        if (reason != null) {
+            event.putString("reason", reason);
+        }
         this.eventEmitter.emitEvent(event);
     }
 
@@ -92,19 +102,15 @@ public class ServerConnection {
             try {
                 while (true) {
                     String dataFromServer = socket.read();
-                    if (Thread.interrupted()) {
-                        Log.d(TAG, "was interrupted: " + id);
-                        throw new InterruptedException();
+                    if (dataFromServer == null) {
+                        throw new SocketException("Connection closed by peer");
                     }
-                    if (dataFromServer != null) {
-                        Log.d(TAG, "received data: " + id + "\n\tdata: " + dataFromServer);
-                        handleDataReceived(dataFromServer);
-                    }
+                    Log.d(TAG, "received data: " + id + "\n\tdata: " + dataFromServer);
+                    handleDataReceived(dataFromServer);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error in run: " + id, e);
-            } finally {
-                cleanUp();
+                cleanUp(e.getMessage());
             }
         }
     }

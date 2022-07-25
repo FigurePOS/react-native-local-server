@@ -10,7 +10,7 @@ import com.reactnativelocalserver.utils.TCPClientEventName;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.SocketException;
 
 public class ClientConnection {
     private static final String TAG = "TCPClientConnection";
@@ -33,17 +33,10 @@ public class ClientConnection {
     public void start() throws Exception {
         Log.d(TAG, "start: " + clientId);
         if (runnable != null) {
-            // TODO throw error
-            return;
+            throw new Exception("Connection is already running");
         }
-        try {
-            InetAddress serverAddress = InetAddress.getByName(host);
-            socket = new SocketWrapper(new Socket(serverAddress, port));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InetAddress serverAddress = InetAddress.getByName(host);
+        socket = new SocketWrapper(new Socket(serverAddress, port));
         runnable = new TCPRunnable();
         thread = new Thread(runnable, "com.react-native-messaging.client." + clientId);
         thread.start();
@@ -63,18 +56,16 @@ public class ClientConnection {
         }
     }
 
-    private void cleanUp() {
-        Log.d(TAG, "clean up: " + clientId);
-        thread.interrupt();
-        thread = null;
-        runnable = null;
-        socket = null;
-        handleLifecycleEvent(TCPClientEventName.Stopped);
+    private void handleLifecycleEvent(String eventName) {
+        handleLifecycleEvent(eventName, null);
     }
 
-    private void handleLifecycleEvent(String eventName) {
+    private void handleLifecycleEvent(String eventName, String reason) {
         JSEvent event = new JSEvent(eventName);
         event.putString("clientId", clientId);
+        if (reason != null) {
+            event.putString("reason", reason);
+        }
         this.eventEmitter.emitEvent(event);
     }
 
@@ -85,6 +76,17 @@ public class ClientConnection {
         this.eventEmitter.emitEvent(event);
     }
 
+    private void cleanUp(String reason) {
+        Log.d(TAG, "clean up: " + clientId);
+        if (thread != null && !thread.isInterrupted()) {
+            thread.interrupt();
+        }
+        thread = null;
+        runnable = null;
+        socket = null;
+        handleLifecycleEvent(TCPClientEventName.Stopped, reason);
+    }
+
     public class TCPRunnable implements Runnable {
         @Override
         public void run() {
@@ -92,18 +94,15 @@ public class ClientConnection {
             try {
                 while (true) {
                     String dataFromServer = socket.read();
-                    if (Thread.interrupted()) {
-                        Log.d(TAG, "was interrupted: " + clientId);
+                    if (dataFromServer == null) {
+                        throw new SocketException("Connection closed by peer");
                     }
-                    if (dataFromServer != null) {
-                        Log.d(TAG, "received data on: " + clientId + "\n\tdata: " + dataFromServer);
-                        handleDataReceived(dataFromServer);
-                    }
+                    Log.d(TAG, "received data on: " + clientId + "\n\tdata: " + dataFromServer);
+                    handleDataReceived(dataFromServer);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Error in run 2", e);
-            } finally {
-                cleanUp();
+                Log.e(TAG, "Error in run", e);
+                cleanUp(e.getMessage());
             }
         }
     }
