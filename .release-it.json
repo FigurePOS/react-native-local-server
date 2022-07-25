@@ -1,7 +1,4 @@
 {
-    "hooks": {
-        "before:init": ["yarn check:ts", "yarn check:lint", "yarn test:ts", "yarn test:android"]
-    },
     "git": {
         "commitMessage": "chore: release ${version} [skip ci]",
         "tagName": "v${version}"

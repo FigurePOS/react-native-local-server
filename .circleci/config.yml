@@ -93,6 +93,14 @@ jobs:
       - store_test_results:
           path: ~/test-results
 
+  release:
+    executor: default
+    steps:
+      - run:
+          name: "Release SDK"
+          command: |
+            yarn release
+
 workflows:
   build-and-test:
     jobs:
@@ -109,3 +117,13 @@ workflows:
       - unit-tests-android:
           requires:
             - install-dependencies
+      - hold:
+          type: approval
+          requires:
+            - lint
+            - typescript
+            - unit-tests-ts
+            - unit-tests-android
+      - release:
+          requires:
+            - hold

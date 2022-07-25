@@ -30,9 +30,9 @@
         "test:ios": "cd ios && echo TODO",
         "build:ts": "yarn tsc --project tsconfig.build.json",
         "prepare": "bob build",
-        "release:ts": "yarn release -- patch",
-        "release:native": "yarn release -- minor",
-        "release": "release-it"
+        "release": "yarn exec ./scripts/release.sh",
+        "release:ts": "yarn release-it patch",
+        "release:native": "yarn release-it minor"
     },
     "keywords": [
         "react-native",
