@@ -3,7 +3,7 @@ module.exports = {
     extends: "@react-native-community",
     parser: "@typescript-eslint/parser",
     plugins: ["@typescript-eslint"],
-    ignorePatterns: ["node_modules/", "lib/"],
+    ignorePatterns: ["node_modules/", "lib/", "android/", "ios/"],
     rules: {
         quotes: ["error", "double"],
         semi: ["error", "never"],
