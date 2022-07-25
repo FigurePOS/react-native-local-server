@@ -22,16 +22,16 @@
         "!**/__mocks__"
     ],
     "scripts": {
-        "test": "jest",
-        "typescript": "tsc --noEmit",
-        "lint": "eslint \"**/*.{js,ts,tsx}\"",
+        "check:ts": "tsc --noEmit",
+        "check:lint": "eslint \"**/*.{js,ts,tsx}\"",
+        "test:ts": "jest",
+        "test:android": "cd android && ./gradlew testDebugUnitTest",
+        "test:ios": "cd ios && echo TODO",
+        "build:ts": "yarn tsc --project tsconfig.build.json",
         "prepare": "bob build",
-        "release": "release-it",
-        "example": "yarn --cwd example",
-        "pods": "cd example && pod-install --quiet",
-        "bootstrap": "yarn example && yarn && yarn pods",
-        "dev-menu": "adb shell input keyevent 82",
-        "test:android": "cd android && ./gradlew testDebugUnitTest"
+        "release:ts": "yarn release -- patch",
+        "release:native": "yarn release -- minor",
+        "release": "release-it"
     },
     "keywords": [
         "react-native",

@@ -1,0 +1,34 @@
+{
+    "hooks": {
+        "before:init": ["yarn check:ts", "yarn check:lint", "yarn test:ts", "yarn test:android"]
+    },
+    "git": {
+        "commitMessage": "chore: release ${version}",
+        "tagName": "v${version}"
+    },
+    "npm": {
+        "publish": false
+    },
+    "github": {
+        "release": true
+    },
+    "plugins": {
+        "@release-it/conventional-changelog": {
+            "infile": "CHANGELOG.md",
+            "ignoreRecommendedBump": true,
+            "preset": {
+                "name": "conventionalcommits",
+                "types": [
+                    { "type": "feat", "section": "Features" },
+                    { "type": "fix", "section": "Bug Fixes" },
+                    { "type": "chore", "hidden": false, "section": "Chores" },
+                    { "type": "docs", "hidden": false, "section": "Docs" },
+                    { "type": "style", "hidden": true },
+                    { "type": "refactor", "hidden": false, "section": "Refactoring" },
+                    { "type": "perf", "hidden": true },
+                    { "type": "test", "hidden": true }
+                ]
+            }
+        }
+    }
+}
