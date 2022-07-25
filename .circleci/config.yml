@@ -70,10 +70,11 @@ jobs:
       - run:
           name: Run unit tests (TS)
           command: |
-            yarn test:ts --coverage
-      - store_artifacts:
-          path: coverage
-          destination: coverage
+            yarn test:ts:ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/
+      - store_test_results:
+        path: ./reports/
 
   unit-tests-android:
     executor: android
