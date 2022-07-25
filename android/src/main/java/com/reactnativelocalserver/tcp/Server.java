@@ -2,7 +2,6 @@ package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
-import com.reactnativelocalserver.tcp.factory.ServerConnectionFactory;
 import com.reactnativelocalserver.tcp.factory.ServerSocketFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
@@ -11,35 +10,35 @@ import com.reactnativelocalserver.utils.TCPServerEventName;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 
 
 public class Server {
     private final static String TAG = "TCPServer";
-    private final ServerConnectionFactory connectionFactory;
+    private final ServerConnectionManager connectionManager;
     private final ServerSocketFactory socketFactory;
     private final EventEmitter eventEmitter;
-    private final Map<String, ServerConnection> connections = new HashMap();
 
     private final String id;
     private final int port;
 
+    private Integer maxConnections = null;
+    private Integer connectionCount = 0;
     private ServerSocket serverSocket;
     private TCPRunnable runnable;
     private Thread thread;
 
 
     public Server(String id, int port, EventEmitter eventEmitter) {
-        this(id, port, eventEmitter, new ServerSocketFactory(), new ServerConnectionFactory());
+        this(id, port, eventEmitter, new ServerSocketFactory(), new ServerConnectionManager());
     }
 
-    public Server(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, ServerConnectionFactory connectionFactory) {
+    public Server(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, ServerConnectionManager connectionManager) {
         this.id = id;
         this.port = port;
         this.eventEmitter = eventEmitter;
         this.socketFactory = socketFactory;
-        this.connectionFactory = connectionFactory;
+        this.connectionManager = connectionManager;
     }
 
     public String getId() {
@@ -51,17 +50,18 @@ public class Server {
     }
 
     public Map<String, ServerConnection> getConnections() {
-        return connections;
+        return connectionManager.getConnections();
     }
 
     public void start() throws Exception {
+        this.start(null);
+    }
+
+    public void start(Integer maxConnections) throws Exception {
         Log.d(TAG, "start: " + id);
+        this.maxConnections = maxConnections;
         try {
             serverSocket = socketFactory.of(port);
-            if (runnable != null) {
-                // TODO throw error
-                return;
-            }
             runnable = new TCPRunnable();
             thread = new Thread(runnable, "com.react-native-messaging.server." + id);
             thread.start();
@@ -77,26 +77,25 @@ public class Server {
             serverSocket.close();
         } catch (IOException e) {
             Log.e(TAG, "close server socket error", e);
+            throw new Exception("Failed to stop server: " + id, e);
         }
     }
 
     public void send(String connectionId, String message) throws Exception {
         Log.d(TAG, "send: " + id + "\n\tto: " + connectionId + "\n\tmessage: " + message);
-        ServerConnection connection = connections.get(connectionId);
+        ServerConnection connection = connectionManager.get(connectionId);
         if (connection == null) {
-            // TODO throw err
-            return;
+            throw new Exception("Unknown connection: " + connectionId);
         }
-        connection.send(message + "\r\n");
+        connection.send(message);
     }
 
     private void cleanUp() {
         Log.d(TAG, "clean up: " + id);
-        for (ServerConnection connection : connections.values()) {
-            connection.stop();
+        connectionManager.clear();
+        if (thread != null && !thread.isInterrupted()) {
+            thread.interrupt();
         }
-        connections.clear();
-        thread.interrupt();
         thread = null;
         runnable = null;
         serverSocket = null;
@@ -107,6 +106,7 @@ public class Server {
         JSEvent event = new JSEvent(TCPServerEventName.ConnectionAccepted);
         event.putString("serverId", id);
         event.putString("connectionId", connectionId);
+        connectionCount++;
         this.eventEmitter.emitEvent(event);
     }
 
@@ -121,18 +121,13 @@ public class Server {
         public void run() {
             handleLifecycleEvent(TCPServerEventName.Ready);
             try {
-                while (serverSocket != null) {
+                while (serverSocket != null && (maxConnections == null || connectionCount < maxConnections)) {
                     Socket s = serverSocket.accept();
-                    if (Thread.interrupted()) {
-                        Log.d(TAG, "was interrupted: " + id);
-                        throw new InterruptedException();
-                    }
                     if (s != null) {
                         Log.d(TAG, "client connected");
-                        ServerConnection connection = new ServerConnection(id, eventEmitter);
-                        connection.start(s);
-                        connections.put(connection.getId(), connection);
-                        handleConnectionAccepted(connection.getId());
+                        String connectionId = connectionManager.create(id, eventEmitter);
+                        connectionManager.start(connectionId, s);
+                        handleConnectionAccepted(connectionId);
                     }
                 }
             } catch (Exception e) {

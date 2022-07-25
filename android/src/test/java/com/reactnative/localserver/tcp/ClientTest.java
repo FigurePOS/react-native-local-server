@@ -1,6 +1,7 @@
 package com.reactnative.localserver.tcp;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,7 +68,7 @@ public class ClientTest {
 
         try {
             client.start();
-            assertThat("invoked").isEqualTo("should not be invoked");
+            fail("client.start() did not throw exception");
         } catch (Exception e) {
             assertThat(e).isEqualTo(exception);
         }
@@ -92,7 +93,7 @@ public class ClientTest {
 
         try {
             client.stop();
-            assertThat("invoked").isEqualTo("should not be invoked");
+            fail("client.stop() did not throw exception");
         } catch (Exception e) {
             assertThat(e).isEqualTo(exception);
         }
@@ -117,7 +118,7 @@ public class ClientTest {
 
         try {
             client.send("message");
-            assertThat("invoked").isEqualTo("should not be invoked");
+            fail("client.send() did not throw exception");
         } catch (Exception e) {
             assertThat(e).isEqualTo(exception);
         }

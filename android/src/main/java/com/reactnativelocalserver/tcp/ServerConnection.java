@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
-import com.reactnativelocalserver.utils.TCPServerEventName;
 import com.reactnativelocalserver.utils.SocketWrapper;
+import com.reactnativelocalserver.utils.TCPServerEventName;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -51,12 +51,13 @@ public class ServerConnection {
         thread.start();
     }
 
-    public void stop() {
+    public void stop() throws Exception {
         Log.d(TAG, "stop: " + id);
         try {
             socket.close();
         } catch (IOException e) {
             Log.e(TAG, "stop error: " + id, e);
+            throw new Exception("Failed to stop connection", e);
         }
     }
 
