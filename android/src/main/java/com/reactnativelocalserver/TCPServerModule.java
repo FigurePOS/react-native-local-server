@@ -90,6 +90,22 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void closeConnection(String serverId, String connectionId, Promise promise) {
+        Log.d(NAME, "close connection started for server: " + serverId);
+        Server server = servers.get(serverId);
+        if (server == null) {
+            promise.reject("server.not-exists", "Server with this id does not exist");
+            return;
+        }
+        try {
+            server.closeConnection(connectionId);
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject("server.error", e.getMessage());
+        }
+    }
+
     @Override
     public void invalidate() {
         Log.d(NAME, "invalidate - number of servers: " + servers.size());

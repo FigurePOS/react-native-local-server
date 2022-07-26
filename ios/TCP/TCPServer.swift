@@ -59,10 +59,13 @@ class TCPServer {
         }
     }
     
-    func broadcast(message: String) {
-        print("TCPServer - broadcas message: \(message)")
-        for connection in connectionsByID.values {
-            self.send(connectionId: connection.id, message: message)
+    func closeConnection(connectionId: String) {
+        print("TCPServer - close connection: \(connectionId)")
+        if let connection = connectionsByID[connectionId] {
+            connection.stop()
+        } else {
+            // TODO handle somehow
+            print("TCPServer - closeConnection - no connection")
         }
     }
     
