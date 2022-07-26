@@ -1,3 +1,10 @@
+### [0.1.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.3...v0.1.4) (2022-07-26)
+
+
+### Docs
+
+* CONTRIBUTING.md updated ([#2](https://github.com/FigurePOS/react-native-local-server/issues/2)) ([4cc9af2](https://github.com/FigurePOS/react-native-local-server/commit/4cc9af20aa5311e07d62ad5e562b6d0bd23369d4))
+
 ### [0.1.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.2...v0.1.3) (2022-07-26)
 
 
