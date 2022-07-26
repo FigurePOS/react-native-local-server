@@ -1,3 +1,14 @@
+### [0.1.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.2...v0.1.3) (2022-07-26)
+
+
+### Chores
+
+* add --ci flag to release-it command ([62d6f78](https://github.com/FigurePOS/react-native-local-server/commit/62d6f78d398c313a08b81ef766632af06c4a1d05))
+* circle ci config git variables ([1bf2974](https://github.com/FigurePOS/react-native-local-server/commit/1bf2974555549885a910076fd8076581d97d640b))
+* create ~/.ssh directory on circleci ([c38bc9f](https://github.com/FigurePOS/react-native-local-server/commit/c38bc9fb562302df4287f40d2e07d74b40165576))
+* release script ([fce4f43](https://github.com/FigurePOS/react-native-local-server/commit/fce4f43a12b8ef8a94da3581253077772d9cdac1))
+* release.sh updated ([01f0f55](https://github.com/FigurePOS/react-native-local-server/commit/01f0f550e0bbbf3dc2d293d5184a3e2829dd190e))
+
 ### [0.1.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.1...v0.1.2) (2022-07-25)
 
 
