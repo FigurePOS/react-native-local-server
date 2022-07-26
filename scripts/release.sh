@@ -11,7 +11,7 @@ ANDROID_FILES="$(echo  "$CHANGED_FILES" | grep "^android/src/main/java")"
 IOS_FILES="$(echo  "$CHANGED_FILES" | grep "^ios/")"
 
 if [ -z "$ANDROID_FILES" ] && [ -z "$IOS_FILES" ]; then
-  yarn release:ts
+  yarn release:ts --ci
 else
-  yarn release:native
+  yarn release:native --ci
 fi
