@@ -95,6 +95,7 @@ class TCPServerConnection {
 
     func stop() {
         print("connection \(id) will stop")
+        closeConnection(reason: nil)
     }
 
     private func connectionDidFail(error: Error) {

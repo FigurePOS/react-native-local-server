@@ -62,11 +62,11 @@ class TCPServerModule: RCTEventEmitter {
     }
 
 
-    @objc(broadcast:withMessage:withResolver:withRejecter:)
-    func broadcast(serverId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("TCPServerModule - broadcast - started")
+    @objc(closeConnection:withConnectionId:withResolver:withRejecter:)
+    func closeConnection(serverId: String, connectionId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        print("TCPServerModule - closeConnection - started")
         if let server: TCPServer = servers[serverId] {
-            server.broadcast(message: message)
+            server.closeConnection(connectionId: connectionId)
             resolve(true)
         } else {
             reject("server.not-exists", "Server with this id does not exist", nil)
