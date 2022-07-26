@@ -1,3 +1,10 @@
+### [0.2.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.2.0...v0.2.1) (2022-07-26)
+
+
+### Features
+
+* concat data when sending from MessagingServer and MessagingClient ([5fc6b5c](https://github.com/FigurePOS/react-native-local-server/commit/5fc6b5c8a1fb62c9f36f28b28e9e49fc9a3cc821))
+
 ## [0.2.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.6...v0.2.0) (2022-07-26)
 
 
