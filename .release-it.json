@@ -4,8 +4,7 @@
         "tagName": "v${version}"
     },
     "npm": {
-        "publish": true,
-        "access": "public"
+        "publish": true
     },
     "github": {
         "release": true
