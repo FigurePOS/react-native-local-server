@@ -56,10 +56,10 @@ export class TCPServer implements TCPServerInterface {
         }
     }
 
-    // TODO implement connection closing
     closeConnection = async (connectionId: string): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - closeConnection`, { connectionId: connectionId })
         try {
+            await TCPServerModule.closeConnection(this.getId(), connectionId)
             this.logger?.log(`TCPServer [${this.getId()}] - closeConnection - success`)
             return Promise.resolve()
         } catch (e) {

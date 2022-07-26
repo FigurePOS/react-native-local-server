@@ -87,6 +87,13 @@ export class MessagingServer<In, Out = In, Deps = any> {
         return this.sendData(data, connectionId)
     }
 
+    closeConnection(connectionId: string): Observable<any> {
+        this.logger?.log(`MessagingServer [${this.serverId}] - closing connection`, {
+            connectionId: connectionId,
+        })
+        return defer(() => this.tcpServer.closeConnection(connectionId))
+    }
+
     stop(): Observable<any> {
         this.logger?.log(`MessagingServer [${this.serverId}] - stop`)
         if (this.mainSubscription) {
