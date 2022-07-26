@@ -23,17 +23,20 @@ export class MessagingClient<In, Out = In, Deps = any> {
     private readonly handler$: Subject<MessageHandler<In, Out>>
     private readonly dep$: Subject<Deps>
     private readonly error$: Subject<any>
+    private readonly dataOutput$: Subject<[DataObject, null]>
     private readonly tcpClient: TCPClient
 
     private logger: Logger | null = DefaultLogger
     private config: MessagingClientConfiguration | null = null
     private mainSubscription: Subscription | null = null
+    private dataSubscription: Subscription | null = null
 
     constructor(id: string) {
         this.clientId = id
         this.handler$ = new Subject<MessageHandler<In, Out>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
+        this.dataOutput$ = new Subject<[DataObject, null]>()
 
         this.tcpClient = new TCPClient(id)
     }
@@ -56,15 +59,18 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     handleBy(handler, deps)
                 )
             }),
-            log(this.logger, `MessagingClient [${this.clientId}] - sending reply message`),
-            concatMap(([body, _]: [Out, null]) => {
-                const message = composeMessageObject(body, this.getSourceData())
-                const data = composeDataMessageObject(message)
-                return this.sendData(data)
+            log(this.logger, `MessagingClient [${this.clientId}] - reply message`),
+            mergeMap(([body, _]: [Out, null]) => {
+                return this.sendMessage(body)
             })
         )
 
-        this.mainSubscription = output$.subscribe(() => {})
+        const data$: Observable<boolean> = this.dataOutput$.pipe(
+            concatMap(([data, _]: [DataObject, null]) => this.sendData(data))
+        )
+
+        this.mainSubscription = output$.subscribe()
+        this.dataSubscription = data$.subscribe()
 
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
@@ -81,9 +87,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.logger?.log(`MessagingClient [${this.clientId}] - sending message`, {
             body: body,
         })
-        const message = composeMessageObject(body, this.getSourceData())
-        const data = composeDataMessageObject(message)
-        return this.sendData(data)
+        return this.sendMessage(body)
     }
 
     stop(): Observable<any> {
@@ -91,6 +95,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
         if (this.mainSubscription) {
             this.mainSubscription.unsubscribe()
             this.mainSubscription = null
+        }
+        if (this.dataSubscription) {
+            this.dataSubscription.unsubscribe()
+            this.dataSubscription = null
         }
         this.config = null
         return defer(() => this.tcpClient.stop())
@@ -112,6 +120,13 @@ export class MessagingClient<In, Out = In, Deps = any> {
             ...(config ? { serviceId: config.serviceId } : null),
             connectionId: "",
         }
+    }
+
+    private sendMessage(body: Out): Observable<boolean> {
+        const message = composeMessageObject(body, this.getSourceData())
+        const data = composeDataMessageObject(message)
+        this.dataOutput$.next([data, null])
+        return of(true)
     }
 
     private sendData(data: DataObject, t: number = 500): Observable<boolean> {
