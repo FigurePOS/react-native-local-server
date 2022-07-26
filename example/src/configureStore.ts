@@ -15,7 +15,6 @@ const configureStore = (): Store => {
     middleware = applyMiddleware(...middlewares)
 
     const store: Store = createStore(rootReducer, middleware)
-
     epicMiddleware.run(rootEpic)
 
     return store
