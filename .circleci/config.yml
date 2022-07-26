@@ -125,7 +125,7 @@ workflows:
       - unit-tests-android:
           requires:
             - install-dependencies
-      - hold:
+      - approve-release:
           type: approval
           requires:
             - lint
@@ -134,4 +134,4 @@ workflows:
             - unit-tests-android
       - release:
           requires:
-            - hold
+            - approve-release
