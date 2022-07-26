@@ -4,19 +4,19 @@ Library for creating a local server on the device running React Native.
 
 ## Installation
 
+Install yarn dependency:
 ```sh
-npm install react-native-local-server
+yarn add @figuredev/react-native-local-server
+```
+
+Install iOS dependencies (from ios/ directory):
+```sh
+pod install
 ```
 
 ## Usage
 
-```js
-import { multiply } from "react-native-local-server";
-
-// ...
-
-const result = await multiply(3, 7);
-```
+TODO
 
 ## Contributing
 
