@@ -1,3 +1,15 @@
+### [0.1.6](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.5...v0.1.6) (2022-07-26)
+
+
+### Bug Fixes
+
+* empty commit ([1ef4449](https://github.com/FigurePOS/react-native-local-server/commit/1ef444995cb92c395918291ba6949a18f33d7ac1))
+
+
+### Chores
+
+* add .npmrc ([8d546b8](https://github.com/FigurePOS/react-native-local-server/commit/8d546b8c87d0ccfeb4fe61ea825f3c6527a29aec))
+
 ### [0.1.5](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.4...v0.1.5) (2022-07-26)
 
 
