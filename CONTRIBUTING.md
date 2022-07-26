@@ -8,6 +8,7 @@ To get started with the project, run `yarn` in the root directory to install the
 
 ```sh
 yarn
+yarn example install-native
 ```
 
 > While it's possible to use [`npm`](https://github.com/npm/cli), the tooling is built around [`yarn`](https://classic.yarnpkg.com/), so you'll have an easier time if you use `yarn` for development.
@@ -17,7 +18,7 @@ While developing, you can run the [example app](/example/) to test your changes.
 To start the packager:
 
 ```sh
-yarn example start
+yarn example bundle
 ```
 
 To run the example app on Android:
@@ -35,20 +36,16 @@ yarn example ios
 Make sure your code passes TypeScript and ESLint. Run the following to verify:
 
 ```sh
-yarn typescript
-yarn lint
-```
-
-To fix formatting errors, run the following:
-
-```sh
-yarn lint --fix
+yarn check:ts
+yarn check:lint
 ```
 
 Remember to add tests for your change if possible. Run the unit tests by:
 
 ```sh
-yarn test
+yarn test:ts
+yarn test:android
+yarn test:ios
 ```
 
 To edit the Objective-C files, open `example/ios/LocalServerExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-local-server`.
@@ -66,7 +63,6 @@ We follow the [conventional commits specification](https://www.conventionalcommi
 - `test`: adding or updating tests, e.g. add integration tests using detox.
 - `chore`: tooling changes, e.g. change CI config.
 
-Our pre-commit hooks verify that your commit message matches this format when committing.
 
 ### Linting and tests
 
@@ -74,41 +70,23 @@ Our pre-commit hooks verify that your commit message matches this format when co
 
 We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting the code, and [Jest](https://jestjs.io/) for testing.
 
-Our pre-commit hooks verify that the linter and tests pass when committing.
-
 ### Publishing to npm
 
 We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
 
-To publish new versions, run the following:
-
-```sh
-yarn release
-```
+To publish new versions, approve release on circleci.
 
 ### Scripts
 
 The `package.json` file contains various scripts for common tasks:
 
-- `yarn bootstrap`: setup project by installing all dependencies and pods.
-- `yarn typescript`: type-check files with TypeScript.
-- `yarn lint`: lint files with ESLint.
-- `yarn test`: run unit tests with Jest.
-- `yarn example start`: start the Metro server for the example app.
+- `yarn check:ts`: type-check files with TypeScript.
+- `yarn check:lint`: lint files with ESLint.
+- `yarn test:ts`: run unit tests with Jest.
+- `yarn example install-native`: install all dependencies for the example app.
+- `yarn example bundle`: start the Metro server for the example app.
 - `yarn example android`: run the example app on Android.
 - `yarn example ios`: run the example app on iOS.
-
-### Sending a pull request
-
-> **Working on your first pull request?** You can learn how from this _free_ series: [How to Contribute to an Open Source Project on GitHub](https://app.egghead.io/playlists/how-to-contribute-to-an-open-source-project-on-github).
-
-When you're sending a pull request:
-
-- Prefer small pull requests focused on one change.
-- Verify that linters and tests are passing.
-- Review the documentation to make sure it looks good.
-- Follow the pull request template when opening a pull request.
-- For pull requests that change the API or implementation, discuss with maintainers first by opening an issue.
 
 ## Code of Conduct
 

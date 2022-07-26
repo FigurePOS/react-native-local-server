@@ -22,6 +22,7 @@
         "!**/__mocks__"
     ],
     "scripts": {
+        "example": "yarn --cwd example",
         "check:ts": "tsc --noEmit",
         "check:lint": "eslint \"**/*.{js,ts,tsx}\"",
         "test:ts": "jest",

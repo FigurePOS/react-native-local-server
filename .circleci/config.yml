@@ -132,6 +132,9 @@ workflows:
             - typescript
             - unit-tests-ts
             - unit-tests-android
+          filters:
+            branches:
+              only: master
       - release:
           requires:
             - approve-release
