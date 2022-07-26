@@ -98,9 +98,12 @@ jobs:
     steps:
       - attach_project
       - run:
+          name: Add github.com to known hosts
+          command: ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
           name: "Release SDK"
           command: |
-            yarn release
+            ./scripts/release.sh
 
 workflows:
   build-and-test:
