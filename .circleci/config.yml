@@ -103,7 +103,7 @@ jobs:
       - run:
           name: Set git global variables
           command: |
-            ./scripts/git-config.sh
+            ./scripts/git-variables.sh
       - run:
           name: Release SDK
           command: |
