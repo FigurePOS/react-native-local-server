@@ -90,6 +90,15 @@ public class Server {
         connection.send(message);
     }
 
+    public void closeConnection(String connectionId) throws Exception {
+        Log.d(TAG, "close connection: " + id + "\n\tconnectionId: " + connectionId);
+        ServerConnection connection = connectionManager.get(connectionId);
+        if (connection == null) {
+            throw new Exception("Unknown connection: " + connectionId);
+        }
+        connection.stop();
+    }
+
     private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
         connectionManager.clear();
