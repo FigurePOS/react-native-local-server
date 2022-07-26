@@ -1,3 +1,10 @@
+### [0.1.5](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.4...v0.1.5) (2022-07-26)
+
+
+### Chores
+
+* release also to npm ([0f9410b](https://github.com/FigurePOS/react-native-local-server/commit/0f9410b46051e7fe2a329be218f221c96135c6bb))
+
 ### [0.1.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.3...v0.1.4) (2022-07-26)
 
 
