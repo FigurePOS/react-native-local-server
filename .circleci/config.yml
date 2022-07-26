@@ -101,7 +101,11 @@ jobs:
           name: Add github.com to known hosts
           command: mkdir -p ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
-          name: "Release SDK"
+          name: Set git global variables
+          command: |
+            ./scripts/git-config.sh
+      - run:
+          name: Release SDK
           command: |
             ./scripts/release.sh
 
