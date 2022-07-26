@@ -1,3 +1,10 @@
+## [0.2.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.6...v0.2.0) (2022-07-26)
+
+
+### Features
+
+* TCPServer - close connection ([#3](https://github.com/FigurePOS/react-native-local-server/issues/3)) ([79a82f2](https://github.com/FigurePOS/react-native-local-server/commit/79a82f22d306d1767f16f55883e96e8e80d3d6cf))
+
 ### [0.1.6](https://github.com/FigurePOS/react-native-local-server/compare/v0.1.5...v0.1.6) (2022-07-26)
 
 
