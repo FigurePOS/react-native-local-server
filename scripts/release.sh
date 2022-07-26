@@ -4,7 +4,7 @@ echo "Releasing SDK"
 
 VERSION=$(cat "./package.json" | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
 
-if [ -z "$version" ]; then
+if [ -z "$VERSION" ]; then
   echo "Failed to get version from package.json."
   echo "version: $VERSION"
   exit 1
