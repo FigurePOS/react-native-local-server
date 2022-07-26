@@ -2,17 +2,15 @@
 
 echo "Releasing SDK"
 
-dirname="$(dirname ${BASH_SOURCE[0]})"
-version=$(cat "$dirname/../package.json" | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+VERSION=$(cat "./package.json" | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
 
 if [ -z "$version" ]; then
   echo "Failed to get version from package.json."
-  echo "dirname: $dirname"
-  echo "version: $version"
+  echo "version: $VERSION"
   exit 1
 fi
 
-LAST_TAG="v$version"
+LAST_TAG="v$VERSION"
 
 echo "Comparing files with the latest tag: $LAST_TAG"
 
