@@ -15,6 +15,11 @@ commands:
     steps:
       - attach_workspace:
           at: ~/project
+  persist_project:
+    steps:
+      - persist_to_workspace:
+          root: .
+          paths: .
 
 jobs:
   install-dependencies:
@@ -31,9 +36,13 @@ jobs:
             - dependencies-example-{{ checksum "example/package.json" }}
             - dependencies-example-
       - run:
+          name: Prepare .npmrc
+          command: |
+            cp .npmrc.ci .npmrc
+      - run:
           name: Install dependencies
           command: |
-            yarn install --cwd example --frozen-lockfile
+            yarn example install --frozen-lockfile
             yarn install --frozen-lockfile
       - save_cache:
           key: dependencies-{{ checksum "package.json" }}
@@ -41,9 +50,7 @@ jobs:
       - save_cache:
           key: dependencies-example-{{ checksum "example/package.json" }}
           paths: example/node_modules
-      - persist_to_workspace:
-          root: .
-          paths: .
+      - persist_project:
 
   lint:
     executor: default
