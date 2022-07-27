@@ -50,7 +50,7 @@ jobs:
       - save_cache:
           key: dependencies-example-{{ checksum "example/package.json" }}
           paths: example/node_modules
-      - persist_project:
+      - persist_project
 
   lint:
     executor: default
