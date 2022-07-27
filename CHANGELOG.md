@@ -1,3 +1,10 @@
+### [0.2.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.2.1...v0.2.2) (2022-07-27)
+
+
+### Chores
+
+* fix .npmrc config ([#4](https://github.com/FigurePOS/react-native-local-server/issues/4)) ([0958ee5](https://github.com/FigurePOS/react-native-local-server/commit/0958ee5cc9604b40bd4c4ea85eccb4b2c51d95c8))
+
 ### [0.2.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.2.0...v0.2.1) (2022-07-26)
 
 
