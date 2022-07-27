@@ -1,4 +1,4 @@
-import { MessagingClient } from "react-native-local-server"
+import { MessagingClient } from "@figuredev/react-native-local-server"
 import { LocalCommunicationMessage } from "./messages"
 import { SampleMessagingClientDependenciesType } from "./deps"
 

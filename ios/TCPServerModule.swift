@@ -30,34 +30,46 @@ class TCPServerModule: RCTEventEmitter {
         print("TCPServerModule - createServer - started")
         if let _: TCPServer = servers[id] {
             reject("server.already-exists", "Server with this id already exists", nil)
-        } else {
-            let server: TCPServer = TCPServer(id: id, port: port, eventEmitter: eventEmitter)
+            return
+        }
+        do {
+            let server: TCPServer = try TCPServer(id: id, port: port, eventEmitter: eventEmitter)
+            try server.start()
             servers[id] = server
-            try! server.start()
             resolve(true)
+        } catch {
+            reject("server.error", "Failed to create server", error)
         }
     }
 
     @objc(stopServer:withResolver:withRejecter:)
     func stopServer(id: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - stopServer - started")
-        if let server: TCPServer = servers[id] {
-            server.stop()
+        guard let server: TCPServer = servers[id] else {
+            reject("server.not-exists", "Server with this id does not exist", nil)
+            return
+        }
+        do {
+            try server.stop()
             servers.removeValue(forKey: id)
             resolve(true)
-        } else {
-            reject("server.not-exists", "Server with this id does not exist", nil)
+        } catch {
+            reject("server.error", "Failed to stop server", error)
         }
     }
 
     @objc(send:withConnectionId:withMessage:withResolver:withRejecter:)
     func send(serverId: String, connectionId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - send - started")
-        if let server: TCPServer = servers[serverId] {
-            server.send(connectionId: connectionId, message: message)
-            resolve(true)
-        } else {
+        guard let server: TCPServer = servers[serverId] else {
             reject("server.not-exists", "Server with this id does not exist", nil)
+            return
+        }
+        do {
+            try server.send(connectionId: connectionId, message: message)
+            resolve(true)
+        } catch {
+            reject("server.error", "Failed to send data", error)
         }
     }
 
@@ -65,11 +77,15 @@ class TCPServerModule: RCTEventEmitter {
     @objc(closeConnection:withConnectionId:withResolver:withRejecter:)
     func closeConnection(serverId: String, connectionId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         print("TCPServerModule - closeConnection - started")
-        if let server: TCPServer = servers[serverId] {
-            server.closeConnection(connectionId: connectionId)
-            resolve(true)
-        } else {
+        guard let server: TCPServer = servers[serverId] else {
             reject("server.not-exists", "Server with this id does not exist", nil)
+            return
+        }
+        do {
+            try server.closeConnection(connectionId: connectionId)
+            resolve(true)
+        } catch {
+            reject("server.error", "Failed to close connection", error)
         }
     }
     

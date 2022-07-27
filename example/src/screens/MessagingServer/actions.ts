@@ -59,6 +59,14 @@ export const createActionMessagingServerConnectionStateChanged = (
     },
 })
 
+export const MESSAGING_SERVER_CONNECTION_CLOSE_REQUESTED = "MESSAGING_SERVER_CONNECTION_CLOSE_REQUESTED"
+export const createActionMessagingServerConnectionCloseRequested = (connectionId: string) => ({
+    type: MESSAGING_SERVER_CONNECTION_CLOSE_REQUESTED,
+    payload: {
+        connectionId: connectionId,
+    },
+})
+
 export const MESSAGING_SERVER_DATA_RECEIVED = "MESSAGING_SERVER_DATA_RECEIVED"
 export const createActionMessagingServerDataReceived = (connectionId: string, data: MessageData) => ({
     type: MESSAGING_SERVER_DATA_RECEIVED,

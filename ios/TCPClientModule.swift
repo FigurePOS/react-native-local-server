@@ -33,6 +33,7 @@ class TCPClientModule: RCTEventEmitter {
         }
         let client: TCPClient = TCPClient(id: id, host: host, port: port, eventEmitter: eventEmitter)
         clients[id] = client
+        client.setOnClosedCallback(callback: onConnectionClosed(clientId:))
         client.start()
         resolve(true)
     }
@@ -58,6 +59,10 @@ class TCPClientModule: RCTEventEmitter {
         } else {
             reject("client.not-exists", "Client with this id does not exist", nil)
         }
+    }
+    
+    func onConnectionClosed(clientId: String) -> Void {
+        clients.removeValue(forKey: clientId)
     }
 
     override func supportedEvents() -> [String]! {

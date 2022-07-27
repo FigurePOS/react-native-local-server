@@ -8,7 +8,7 @@ import {
     createActionCounterClientErrored,
     createActionCounterClientStateChanged,
 } from "./actions"
-import { MessagingClientConfiguration, MessagingClientStatusEventName } from "react-native-local-server"
+import { MessagingClientConfiguration, MessagingClientStatusEventName } from "@figuredev/react-native-local-server"
 import { ClientState } from "../../../common/types"
 import { CounterDependencies } from "../common/deps"
 import { CounterClient } from "./client"

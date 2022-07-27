@@ -20,12 +20,12 @@ class TCPServer {
     
     private var connectionsByID: [String: TCPServerConnection] = [:]
     
-    init(id: String, port: UInt16, eventEmitter: EventEmitterWrapper) {
+    init(id: String, port: UInt16, eventEmitter: EventEmitterWrapper) throws {
         self.eventEmitter = eventEmitter
         queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
         self.id = id
         self.port = NWEndpoint.Port(rawValue: port)!
-        listener = try! NWListener(using: .tcp, on: self.port)
+        self.listener = try NWListener(using: .tcp, on: self.port)
     }
     
     func start() throws {
@@ -46,27 +46,25 @@ class TCPServer {
         self.listener.cancel()
     }
     
-    func send(connectionId: String, message: String) {
+    func send(connectionId: String, message: String) throws {
         print("TCPServer - send \(id)")
         print("\tconnection: \(connectionId)")
         print("\tmessage: \(message)")
-        if let connection = connectionsByID[connectionId] {
-            let preparedMessage = message + "\r\n"
-            connection.send(data: (preparedMessage.data(using: .utf8))!)
-        } else {
-            // TODO handle somehow
+        guard let connection = connectionsByID[connectionId] else {
             print("TCPServer - send - no connection")
+            throw LocalServerError.UnknownConnectionId
         }
+        let preparedMessage = message + "\r\n"
+        connection.send(data: (preparedMessage.data(using: .utf8))!)
     }
     
-    func closeConnection(connectionId: String) {
+    func closeConnection(connectionId: String) throws {
         print("TCPServer - close connection: \(connectionId)")
-        if let connection = connectionsByID[connectionId] {
-            connection.stop()
-        } else {
-            // TODO handle somehow
+        guard let connection = connectionsByID[connectionId] else {
             print("TCPServer - closeConnection - no connection")
+            throw LocalServerError.UnknownConnectionId
         }
+        connection.stop()
     }
     
     private func stateDidChange(to newState: NWListener.State) {
@@ -84,6 +82,7 @@ class TCPServer {
                 break
             case .failed(let error):
                 print("\tstate: failure, error: \(error.debugDescription)")
+                self.handleLifecycleEvent(eventName: TCPServerEventName.Stopped, error: error)
                 break
             case .cancelled:
                 print("\tstate: cancelled")
@@ -99,7 +98,7 @@ class TCPServer {
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "serverId", value: id)
         if (error != nil) {
-            event.putString(key: "error", value: error.debugDescription)
+            event.putString(key: "reason", value: error.debugDescription)
         }
         eventEmitter.emitEvent(event: event)
     }
@@ -109,7 +108,7 @@ class TCPServer {
         event.putString(key: "serverId", value: id)
         event.putString(key: "connectionId", value: connectionId)
         if (error != nil) {
-            event.putString(key: "error", value: error.debugDescription)
+            event.putString(key: "reason", value: error.debugDescription)
         }
         eventEmitter.emitEvent(event: event)
     }

@@ -6,6 +6,7 @@ import {
     createActionMessagingServerDataReceived,
     createActionMessagingServerErrored,
     createActionMessagingServerStateChanged,
+    MESSAGING_SERVER_CONNECTION_CLOSE_REQUESTED,
     MESSAGING_SERVER_SEND_MESSAGE_REQUESTED,
     MESSAGING_SERVER_START_REQUESTED,
     MESSAGING_SERVER_STOP_REQUESTED,
@@ -13,10 +14,10 @@ import {
 import { SampleMessagingServer } from "./localCommunication/server"
 import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingServerDependencies } from "./localCommunication/deps"
-import { MessagingServerConfiguration, MessagingServerStatusEventName } from "react-native-local-server"
 import { ServerConnectionState, ServerState } from "../../common/types"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
 import { createMessageData } from "../../common/components/messaging/functions"
+import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
 
 const messagingServerStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
@@ -94,4 +95,18 @@ const messagingServerSendDataRequested: Epic = (action$: ActionsObservable<State
         })
     )
 
-export default [messagingServerStartRequested, messagingServerStopRequested, messagingServerSendDataRequested]
+const messagingServerCloseConnectionRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+    action$.pipe(
+        ofType(MESSAGING_SERVER_CONNECTION_CLOSE_REQUESTED),
+        switchMap((action) => {
+            const connectionId = action.payload.connectionId
+            return SampleMessagingServer.closeConnection(connectionId).pipe(switchMap(() => []))
+        })
+    )
+
+export default [
+    messagingServerStartRequested,
+    messagingServerStopRequested,
+    messagingServerSendDataRequested,
+    messagingServerCloseConnectionRequested,
+]

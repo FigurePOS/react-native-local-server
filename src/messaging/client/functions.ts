@@ -4,7 +4,7 @@ import {
     MessagingClientLifecycleStatusEvent,
     TCPClientEventName,
     TCPClientNativeEvent,
-} from "react-native-local-server"
+} from "../../"
 
 export const composeMessagingClientLifecycleStatusEvent = (
     type: MessagingClientLifecycleStatusEvent["type"]

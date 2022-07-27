@@ -86,3 +86,11 @@ export const createActionBareTcpServerDataSendRequested = (connectionId: string,
         data: data,
     },
 })
+
+export const BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED = "BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED"
+export const createActionBareTcpServerCloseConnectionRequested = (connectionId: string) => ({
+    type: BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED,
+    payload: {
+        connectionId: connectionId,
+    },
+})

@@ -13,7 +13,7 @@ import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingClientDependencies } from "./localCommunication/deps"
 import { SampleMessagingClient } from "./localCommunication/client"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
-import { MessagingClientConfiguration, MessagingClientStatusEventName } from "react-native-local-server"
+import { MessagingClientConfiguration, MessagingClientStatusEventName } from "@figuredev/react-native-local-server"
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
 

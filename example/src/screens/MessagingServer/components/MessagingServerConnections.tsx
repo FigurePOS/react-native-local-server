@@ -3,7 +3,10 @@ import { getMessagingServerActiveConnectionId, getMessagingServerConnections } f
 import { useDispatch, useSelector } from "react-redux"
 import { Maybe } from "../../../types"
 import { ConnectionRow } from "../../../common/components/messaging/ConnectionRow"
-import { createActionMessagingServerActiveConnectionChanged } from "../actions"
+import {
+    createActionMessagingServerActiveConnectionChanged,
+    createActionMessagingServerConnectionCloseRequested,
+} from "../actions"
 import { ServerConnection } from "../../../common/types"
 
 export const MessagingServerConnections = () => {
@@ -15,6 +18,7 @@ export const MessagingServerConnections = () => {
             connections={connections}
             activeConnectionId={activeId}
             onConnectionPressed={(id: string) => dispatch(createActionMessagingServerActiveConnectionChanged(id))}
+            onConnectionClosePressed={(id: string) => dispatch(createActionMessagingServerConnectionCloseRequested(id))}
         />
     )
 }

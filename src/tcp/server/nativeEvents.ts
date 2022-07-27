@@ -15,7 +15,7 @@ export type TCPServerReadyNativeEvent = {
 export type TCPServerStoppedNativeEvent = {
     type: TCPServerEventName.Stopped
     serverId: string
-    error?: string
+    reason?: string
 }
 
 export type TCPServerConnectionAcceptedNativeEvent = {
@@ -34,7 +34,7 @@ export type TCPServerConnectionClosedNativeEvent = {
     type: TCPServerEventName.ConnectionClosed
     serverId: string
     connectionId: string
-    error?: string
+    reason?: string
 }
 
 export type TCPServerDataReceivedNativeEvent = {

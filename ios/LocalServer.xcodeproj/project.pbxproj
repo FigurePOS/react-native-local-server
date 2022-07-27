@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B52002D28914ED300DDFAC1 /* LocalServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B52002C28914ED300DDFAC1 /* LocalServerError.swift */; };
+		1B52002F28914FF400DDFAC1 /* EventEmitterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B52002E28914FF400DDFAC1 /* EventEmitterWrapper.swift */; };
 		1B6056B52848DA1B0069394F /* TCPClientModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B42848DA1B0069394F /* TCPClientModule.m */; };
 		1B6056B72848DA380069394F /* TCPClientModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B62848DA380069394F /* TCPClientModule.swift */; };
 		1B6056B92848DC9B0069394F /* TCPServerModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6056B82848DC9B0069394F /* TCPServerModule.swift */; };
@@ -18,7 +20,6 @@
 		1B720EF82885427D00A3B7CA /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B720EF42885427D00A3B7CA /* TCPServer.swift */; };
 		1B720EF92885427D00A3B7CA /* TCPServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B720EF52885427D00A3B7CA /* TCPServerConnection.swift */; };
 		1B720EFC2885483B00A3B7CA /* JSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B720EFB2885483B00A3B7CA /* JSEvent.swift */; };
-		1B720EFE28854BC400A3B7CA /* EventEmitterFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B720EFD28854BC400A3B7CA /* EventEmitterFacade.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libLocalServer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLocalServer.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B52002C28914ED300DDFAC1 /* LocalServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServerError.swift; sourceTree = "<group>"; };
+		1B52002E28914FF400DDFAC1 /* EventEmitterWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventEmitterWrapper.swift; sourceTree = "<group>"; };
 		1B6056B42848DA1B0069394F /* TCPClientModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TCPClientModule.m; sourceTree = "<group>"; };
 		1B6056B62848DA380069394F /* TCPClientModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientModule.swift; sourceTree = "<group>"; };
 		1B6056B82848DC9B0069394F /* TCPServerModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPServerModule.swift; sourceTree = "<group>"; };
@@ -46,7 +49,6 @@
 		1B720EF42885427D00A3B7CA /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServer.swift; sourceTree = "<group>"; };
 		1B720EF52885427D00A3B7CA /* TCPServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerConnection.swift; sourceTree = "<group>"; };
 		1B720EFB2885483B00A3B7CA /* JSEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSEvent.swift; sourceTree = "<group>"; };
-		1B720EFD28854BC400A3B7CA /* EventEmitterFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmitterFacade.swift; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServer-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,8 +87,9 @@
 		1B720EFA2885482200A3B7CA /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				1B52002E28914FF400DDFAC1 /* EventEmitterWrapper.swift */,
 				1B720EFB2885483B00A3B7CA /* JSEvent.swift */,
-				1B720EFD28854BC400A3B7CA /* EventEmitterFacade.swift */,
+				1B52002C28914ED300DDFAC1 /* LocalServerError.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -165,14 +168,15 @@
 				1B720EF82885427D00A3B7CA /* TCPServer.swift in Sources */,
 				1B6056B52848DA1B0069394F /* TCPClientModule.m in Sources */,
 				1B720EF62885427D00A3B7CA /* TCPClient.swift in Sources */,
+				1B52002D28914ED300DDFAC1 /* LocalServerError.swift in Sources */,
 				1B720EF92885427D00A3B7CA /* TCPServerConnection.swift in Sources */,
 				1B720EF72885427D00A3B7CA /* TCPClientConnection.swift in Sources */,
 				1B720EEF28853FDF00A3B7CA /* TCPClientEventName.swift in Sources */,
 				1B720EFC2885483B00A3B7CA /* JSEvent.swift in Sources */,
-				1B720EFE28854BC400A3B7CA /* EventEmitterFacade.swift in Sources */,
 				1B720EF128853FF000A3B7CA /* TCPServerEventName.swift in Sources */,
 				1B6056BB2848DCB40069394F /* TCPServerModule.m in Sources */,
 				1B6056B92848DC9B0069394F /* TCPServerModule.swift in Sources */,
+				1B52002F28914FF400DDFAC1 /* EventEmitterWrapper.swift in Sources */,
 				1B6056B72848DA380069394F /* TCPClientModule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,6 +13,8 @@ import Network
 class TCPClientConnection {
 
     private let eventEmitter: EventEmitterWrapper
+    
+    var onClosedCallback: ((String) -> ())? = nil
 
     let clientId: String
     let nwConnection: NWConnection
@@ -76,6 +78,7 @@ class TCPClientConnection {
                 break
             case .waiting(let error):
                 print("TCPClientConnection - stateDidChange - waiting - \(error)")
+                closeConnection(reason: error)
                 break
             case .ready:
                 print("TCPClientConnection - stateDidChange - ready")
@@ -83,15 +86,20 @@ class TCPClientConnection {
                 break
             case .failed(let error):
                 print("TCPClientConnection - stateDidChange - failed - \(error)")
-//                closeConnection(reason: error)
+                onClosed(error: error)
                 break
             case .cancelled:
                 print("TCPClientConnection - stateDidChange - cancelled")
-                handleLifecycleEvent(eventName: TCPClientEventName.Stopped)
+                onClosed(error: nil)
                 break
             default:
                 break
         }
+    }
+    
+    private func onClosed(error: Error?) {
+        handleLifecycleEvent(eventName: TCPClientEventName.Stopped, error: error)
+        onClosedCallback?(clientId)
     }
 
     private func setupReceive() {
@@ -116,13 +124,13 @@ class TCPClientConnection {
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "clientId", value: clientId)
         if (error != nil) {
-            event.putString(key: "error", value: error.debugDescription)
+            event.putString(key: "reason", value: error.debugDescription)
         }
         eventEmitter.emitEvent(event: event)
     }
 
     private func handleDataReceived(data: Data) {
-        let parsedData: String = String(decoding: data, as: UTF8.self)
+        let parsedData: String = String(decoding: data, as: UTF8.self).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let event: JSEvent = JSEvent(name: TCPClientEventName.DataReceived)
         event.putString(key: "clientId", value: clientId)
         event.putString(key: "data", value: parsedData)
