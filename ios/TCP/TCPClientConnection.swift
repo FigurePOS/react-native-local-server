@@ -83,7 +83,7 @@ class TCPClientConnection {
                 break
             case .failed(let error):
                 print("TCPClientConnection - stateDidChange - failed - \(error)")
-//                closeConnection(reason: error)
+                handleLifecycleEvent(eventName: TCPClientEventName.Stopped, error: error)
                 break
             case .cancelled:
                 print("TCPClientConnection - stateDidChange - cancelled")
@@ -116,7 +116,7 @@ class TCPClientConnection {
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "clientId", value: clientId)
         if (error != nil) {
-            event.putString(key: "error", value: error.debugDescription)
+            event.putString(key: "reason", value: error.debugDescription)
         }
         eventEmitter.emitEvent(event: event)
     }

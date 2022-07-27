@@ -18,6 +18,7 @@ export type TCPClientReadyNativeEvent = {
 export type TCPClientStoppedNativeEvent = {
     type: TCPClientEventName.Stopped
     clientId: string
+    reason?: string
 }
 
 export type TCPClientNativeEvent =
