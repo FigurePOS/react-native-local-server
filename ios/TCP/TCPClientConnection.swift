@@ -122,7 +122,7 @@ class TCPClientConnection {
     }
 
     private func handleDataReceived(data: Data) {
-        let parsedData: String = String(decoding: data, as: UTF8.self)
+        let parsedData: String = String(decoding: data, as: UTF8.self).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let event: JSEvent = JSEvent(name: TCPClientEventName.DataReceived)
         event.putString(key: "clientId", value: clientId)
         event.putString(key: "data", value: parsedData)

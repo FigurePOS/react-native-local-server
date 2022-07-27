@@ -128,7 +128,7 @@ class TCPServerConnection {
     }
     
     private func handleDataReceived(data: Data) {
-        let parsedData: String = String(decoding: data, as: UTF8.self)
+        let parsedData: String = String(decoding: data, as: UTF8.self).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let event: JSEvent = JSEvent(name: TCPServerEventName.DataReceived)
         event.putString(key: "serverId", value: serverId)
         event.putString(key: "connectionId", value: id)
