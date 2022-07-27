@@ -1,4 +1,4 @@
-import { MessageHandler } from "react-native-local-server"
+import { MessageHandler } from "@figuredev/react-native-local-server"
 import { SampleMessagingClientDependenciesType } from "../../MessagingClient/localCommunication/deps"
 import { switchMap } from "rxjs/operators"
 import { CounterMessage, CounterMessageType, createCounterMessageCountChanged } from "../common/messages"

@@ -1,6 +1,6 @@
 import { merge, Observable } from "rxjs"
 import { fromServerEvent } from "./fromServerEvent"
-import { TCPServer } from "react-native-local-server"
+import { TCPServer } from "../../../"
 import { map } from "rxjs/operators"
 import { composeMessagingServerStatusEvent } from "../functions"
 import { MessagingServerStatusEvent } from "../types"

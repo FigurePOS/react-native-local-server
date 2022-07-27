@@ -16,7 +16,7 @@ import { SampleMessagingServerDependencies } from "./localCommunication/deps"
 import { ServerConnectionState, ServerState } from "../../common/types"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
 import { createMessageData } from "../../common/components/messaging/functions"
-import { MessagingServerConfiguration, MessagingServerStatusEventName } from "react-native-local-server"
+import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
 
 const messagingServerStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(

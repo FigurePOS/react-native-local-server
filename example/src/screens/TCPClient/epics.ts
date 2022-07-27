@@ -9,7 +9,7 @@ import {
     TCPClientDataReceivedNativeEvent,
     TCPClientReadyNativeEvent,
     TCPClientStoppedNativeEvent,
-} from "react-native-local-server"
+} from "@figuredev/react-native-local-server"
 import { fromEventFixed } from "../../common/utils"
 import {
     BARE_TCP_CLIENT_DATA_SEND_REQUESTED,

@@ -24,7 +24,7 @@ import {
     TCPServerDataReceivedNativeEvent,
     TCPServerReadyNativeEvent,
     TCPServerStoppedNativeEvent,
-} from "react-native-local-server"
+} from "@figuredev/react-native-local-server"
 import { fromEventFixed } from "../../common/utils"
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ServerConnectionState } from "../../common/types"

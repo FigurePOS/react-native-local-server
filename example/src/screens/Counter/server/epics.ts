@@ -2,7 +2,7 @@ import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observab
 import { StateAction } from "../../../types"
 
 import { catchError, concatMap, mergeMap, switchMap } from "rxjs/operators"
-import { MessagingServerConfiguration, MessagingServerStatusEventName } from "react-native-local-server"
+import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
 import { ServerConnectionState, ServerState } from "../../../common/types"
 import {
     COUNTER_SERVER_START_REQUESTED,
