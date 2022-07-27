@@ -82,6 +82,7 @@ class TCPServer {
                 break
             case .failed(let error):
                 print("\tstate: failure, error: \(error.debugDescription)")
+                self.handleLifecycleEvent(eventName: TCPServerEventName.Stopped, error: error)
                 break
             case .cancelled:
                 print("\tstate: cancelled")

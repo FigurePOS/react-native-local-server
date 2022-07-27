@@ -13,6 +13,8 @@ import Network
 class TCPClientConnection {
 
     private let eventEmitter: EventEmitterWrapper
+    
+    var onClosedCallback: ((String) -> ())? = nil
 
     let clientId: String
     let nwConnection: NWConnection
@@ -76,6 +78,7 @@ class TCPClientConnection {
                 break
             case .waiting(let error):
                 print("TCPClientConnection - stateDidChange - waiting - \(error)")
+                closeConnection(reason: error)
                 break
             case .ready:
                 print("TCPClientConnection - stateDidChange - ready")
@@ -83,15 +86,20 @@ class TCPClientConnection {
                 break
             case .failed(let error):
                 print("TCPClientConnection - stateDidChange - failed - \(error)")
-                handleLifecycleEvent(eventName: TCPClientEventName.Stopped, error: error)
+                onClosed(error: error)
                 break
             case .cancelled:
                 print("TCPClientConnection - stateDidChange - cancelled")
-                handleLifecycleEvent(eventName: TCPClientEventName.Stopped)
+                onClosed(error: nil)
                 break
             default:
                 break
         }
+    }
+    
+    private func onClosed(error: Error?) {
+        handleLifecycleEvent(eventName: TCPClientEventName.Stopped, error: error)
+        onClosedCallback?(clientId)
     }
 
     private func setupReceive() {

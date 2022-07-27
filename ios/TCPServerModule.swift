@@ -30,6 +30,7 @@ class TCPServerModule: RCTEventEmitter {
         print("TCPServerModule - createServer - started")
         if let _: TCPServer = servers[id] {
             reject("server.already-exists", "Server with this id already exists", nil)
+            return
         }
         do {
             let server: TCPServer = try TCPServer(id: id, port: port, eventEmitter: eventEmitter)

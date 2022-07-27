@@ -34,4 +34,8 @@ class TCPClient {
         print("TCPClient - send \(preparedMessage)")
         connection.send(data: preparedMessage)
     }
+    
+    func setOnClosedCallback(callback: @escaping (String) -> ()) {
+        connection.onClosedCallback = callback
+    }
 }

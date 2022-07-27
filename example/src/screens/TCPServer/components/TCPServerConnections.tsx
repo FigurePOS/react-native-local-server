@@ -3,7 +3,10 @@ import { getBareTCPServerActiveConnectionId, getBareTCPServerConnections } from 
 import { useDispatch, useSelector } from "react-redux"
 import { Maybe } from "../../../types"
 import { ConnectionRow } from "../../../common/components/messaging/ConnectionRow"
-import { createActionBareTcpServerActiveConnectionChanged } from "../actions"
+import {
+    createActionBareTcpServerActiveConnectionChanged,
+    createActionBareTcpServerCloseConnectionRequested,
+} from "../actions"
 import { ServerConnection } from "../../../common/types"
 
 export const TCPServerConnections = () => {
@@ -15,6 +18,7 @@ export const TCPServerConnections = () => {
             connections={connections}
             activeConnectionId={activeId}
             onConnectionPressed={(id: string) => dispatch(createActionBareTcpServerActiveConnectionChanged(id))}
+            onConnectionClosePressed={(id: string) => dispatch(createActionBareTcpServerCloseConnectionRequested(id))}
         />
     )
 }

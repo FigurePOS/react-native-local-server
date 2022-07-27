@@ -2,7 +2,7 @@
     "compilerOptions": {
         "baseUrl": "./",
         "paths": {
-            "react-native-local-server": ["./src/index"]
+            "@figuredev/react-native-local-server": ["./src/index"]
         },
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,

@@ -1,6 +1,7 @@
 import { ActionsObservable, Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
 import {
+    BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED,
     BARE_TCP_SERVER_DATA_SEND_REQUESTED,
     BARE_TCP_SERVER_START_REQUESTED,
     BARE_TCP_SERVER_STOP_REQUESTED,
@@ -105,6 +106,18 @@ const bareTcpServerDataReceivedEpic: Epic = () =>
         ])
     )
 
+const bareTcpServerCloseConnectionRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+    action$.pipe(
+        ofType(BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED),
+        switchMap((action) => {
+            const connectionId = action.payload.connectionId
+            return defer(() => BareTCPServer.closeConnection(connectionId)).pipe(
+                switchMap(() => []),
+                catchError((err) => [createActionBareTcpServerErrored(err)])
+            )
+        })
+    )
+
 const bareTcpServerDataSendRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_DATA_SEND_REQUESTED),
@@ -129,5 +142,6 @@ export default [
     bareTcpServerConnectionReadyEpic,
     bareTcpServerConnectionStoppedEpic,
     bareTcpServerDataReceivedEpic,
+    bareTcpServerCloseConnectionRequested,
     bareTcpServerDataSendRequestedEpic,
 ]

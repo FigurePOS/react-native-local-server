@@ -9,6 +9,7 @@ export type Props = {
     connections: ServerConnection[]
     activeConnectionId: Maybe<string>
     onConnectionPressed: (id: string) => void
+    onConnectionClosePressed: (id: string) => void
 }
 
 export const ConnectionRow = (props: Props) => {
@@ -22,6 +23,7 @@ export const ConnectionRow = (props: Props) => {
                         connection={c}
                         isActive={c.id === props.activeConnectionId}
                         onPress={props.onConnectionPressed}
+                        onClosed={props.onConnectionClosePressed}
                     />
                 ))}
             </ScrollView>
