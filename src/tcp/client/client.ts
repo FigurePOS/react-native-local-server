@@ -3,7 +3,6 @@ import { TCPClientModule } from "./module"
 import { NativeEventEmitter } from "react-native"
 import { TCPClientEventName } from "./nativeEvents"
 import { Logger } from "../../utils/types"
-import { DefaultLogger } from "../../utils/logger"
 
 const eventEmitter = new NativeEventEmitter(TCPClientModule)
 
@@ -12,7 +11,7 @@ export class TCPClient {
     static readonly EventName = TCPClientEventName
     static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
-    private logger: Logger | null = DefaultLogger
+    private logger: Logger | null = null
     private config: TCPClientConfiguration | null = null
 
     constructor(id: string) {

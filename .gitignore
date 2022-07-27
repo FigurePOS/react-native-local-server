@@ -65,3 +65,6 @@ lib/
 
 # npm
 .npmrc
+
+# test coverage
+./coverage

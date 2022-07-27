@@ -3,7 +3,6 @@ import { TCPServerModule } from "./module"
 import { NativeEventEmitter } from "react-native"
 import { TCPServerEventName } from "./nativeEvents"
 import { Logger } from "../../utils/types"
-import { DefaultLogger } from "../../utils/logger"
 
 const eventEmitter = new NativeEventEmitter(TCPServerModule)
 
@@ -12,7 +11,7 @@ export class TCPServer {
     static readonly EventName = TCPServerEventName
     static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
-    private logger: Logger | null = DefaultLogger
+    private logger: Logger | null = null
     private config: TCPServerConfiguration | null = null
 
     constructor(id: string) {
