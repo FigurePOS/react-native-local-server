@@ -67,4 +67,4 @@ lib/
 .npmrc
 
 # test coverage
-./coverage
+coverage/*
