@@ -108,10 +108,10 @@ jobs:
     executor: ios
     steps:
       - attach_project
-      - run:
-          name: Install xcbeautify
-          command: |
-            brew install xcbeautify
+#      - run:
+#          name: Install xcbeautify
+#          command: |
+#            brew install xcbeautify
       - run:
           name: Run unit tests (iOS)
           command: |
