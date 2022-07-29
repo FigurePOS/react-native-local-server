@@ -35,7 +35,7 @@ class TCPServer {
         listener.start(queue: self.queue)
     }
     
-    func stop() {
+    func stop() throws {
         print("TCPServer - stop \(id)")
         self.listener.newConnectionHandler = nil
         for connection in self.connectionsByID.values {
