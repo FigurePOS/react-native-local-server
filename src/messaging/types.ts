@@ -30,9 +30,9 @@ export enum DataObjectType {
     MessageAck = "message-ack",
 }
 
-export type DataObjectMessage = {
+export type DataObjectMessage<M = any> = {
     type: DataObjectType.Message
-    message: any // TODO type this better
+    message: Message<M>
 }
 
 export type DataObjectMessageAck = {
@@ -40,4 +40,4 @@ export type DataObjectMessageAck = {
     messageId: string
 }
 
-export type DataObject = DataObjectMessage | DataObjectMessageAck
+export type DataObject<M = any> = DataObjectMessage<M> | DataObjectMessageAck
