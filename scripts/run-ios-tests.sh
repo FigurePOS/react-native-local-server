@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "KOKOT"
+echo "Running iOS unit tests."
 
 xcodebuild \
   -project ios/LocalServer.xcodeproj \
