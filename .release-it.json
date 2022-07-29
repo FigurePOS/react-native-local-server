@@ -23,7 +23,7 @@
                     { "type": "style", "hidden": true },
                     { "type": "refactor", "hidden": false, "section": "Refactoring" },
                     { "type": "perf", "hidden": true },
-                    { "type": "test", "hidden": true }
+                    { "type": "test", "hidden": false, "section": "Tests" }
                 ]
             }
         }
