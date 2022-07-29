@@ -20,21 +20,45 @@
 		1BE5C5AF2893D191009D6F03 /* TCPClientModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A22893D190009D6F03 /* TCPClientModule.m */; };
 		1BE5C5B02893D191009D6F03 /* TCPClientModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A32893D190009D6F03 /* TCPClientModule.swift */; };
 		1BE5C5B12893D191009D6F03 /* TCPServerModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A42893D190009D6F03 /* TCPServerModule.swift */; };
-		1BE5C5D52893D766009D6F03 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5D42893D766009D6F03 /* Tests.swift */; };
-		1BE5C5D62893D766009D6F03 /* libLocalServer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 134814201AA4EA6300B7C361 /* libLocalServer.a */; };
+		1BE5C5E92893DE57009D6F03 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59F2893D190009D6F03 /* TCPServer.swift */; };
+		1BE5C5EA2893DE57009D6F03 /* TCPServerEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59C2893D190009D6F03 /* TCPServerEventName.swift */; };
+		1BE5C5EB2893DE57009D6F03 /* EventEmitterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5992893D190009D6F03 /* EventEmitterWrapper.swift */; };
+		1BE5C5EC2893DE57009D6F03 /* TCPClientModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A22893D190009D6F03 /* TCPClientModule.m */; };
+		1BE5C5ED2893DE57009D6F03 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59D2893D190009D6F03 /* TCPClient.swift */; };
+		1BE5C5EE2893DE57009D6F03 /* LocalServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5972893D190009D6F03 /* LocalServerError.swift */; };
+		1BE5C5EF2893DE57009D6F03 /* TCPServerModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A42893D190009D6F03 /* TCPServerModule.swift */; };
+		1BE5C5F02893DE57009D6F03 /* TCPServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59B2893D190009D6F03 /* TCPServerConnection.swift */; };
+		1BE5C5F12893DE57009D6F03 /* TCPServerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A12893D190009D6F03 /* TCPServerModule.m */; };
+		1BE5C5F22893DE57009D6F03 /* TCPClientModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A32893D190009D6F03 /* TCPClientModule.swift */; };
+		1BE5C5F32893DE57009D6F03 /* TCPClientEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A02893D190009D6F03 /* TCPClientEventName.swift */; };
+		1BE5C5F42893DE57009D6F03 /* JSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5982893D190009D6F03 /* JSEvent.swift */; };
+		1BE5C5F52893DE57009D6F03 /* TCPClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59E2893D190009D6F03 /* TCPClientConnection.swift */; };
+		1BE5C6042893DEAF009D6F03 /* libLocalServerForTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE5C5FB2893DE57009D6F03 /* libLocalServerForTests.a */; };
+		1BE5C60B2893DED3009D6F03 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C60A2893DED3009D6F03 /* Tests.swift */; };
+		1BE5C60E2893DF39009D6F03 /* EventEmitterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C60D2893DF39009D6F03 /* EventEmitterWrapper.swift */; };
+		1BE5C6122893E59E009D6F03 /* TCPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6112893E59E009D6F03 /* TCPClientTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1BE5C5D72893D766009D6F03 /* PBXContainerItemProxy */ = {
+		1BE5C6052893DEAF009D6F03 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 58B511D31A9E6C8500147676 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 58B511DA1A9E6C8500147676;
-			remoteInfo = LocalServer;
+			remoteGlobalIDString = 1BE5C5E72893DE57009D6F03;
+			remoteInfo = LocalServerForTests;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		1BE5C5F72893DE57009D6F03 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -61,17 +85,28 @@
 		1BE5C5A22893D190009D6F03 /* TCPClientModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCPClientModule.m; path = LocalServer/TCPClientModule.m; sourceTree = "<group>"; };
 		1BE5C5A32893D190009D6F03 /* TCPClientModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TCPClientModule.swift; path = LocalServer/TCPClientModule.swift; sourceTree = "<group>"; };
 		1BE5C5A42893D190009D6F03 /* TCPServerModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TCPServerModule.swift; path = LocalServer/TCPServerModule.swift; sourceTree = "<group>"; };
-		1BE5C5D22893D766009D6F03 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1BE5C5D42893D766009D6F03 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		1BE5C5FB2893DE57009D6F03 /* libLocalServerForTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLocalServerForTests.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BE5C6002893DEAF009D6F03 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BE5C60A2893DED3009D6F03 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		1BE5C60D2893DF39009D6F03 /* EventEmitterWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmitterWrapper.swift; sourceTree = "<group>"; };
+		1BE5C6102893E10E009D6F03 /* LocalServerForTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServerForTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		1BE5C6112893E59E009D6F03 /* TCPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientTests.swift; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServer-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1BE5C5CF2893D766009D6F03 /* Frameworks */ = {
+		1BE5C5F62893DE57009D6F03 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BE5C5D62893D766009D6F03 /* libLocalServer.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1BE5C5FD2893DEAF009D6F03 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1BE5C6042893DEAF009D6F03 /* libLocalServerForTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,12 +153,22 @@
 			path = LocalServer/TCP;
 			sourceTree = "<group>";
 		};
-		1BE5C5D32893D766009D6F03 /* Tests */ = {
+		1BE5C6012893DEAF009D6F03 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				1BE5C5D42893D766009D6F03 /* Tests.swift */,
+				1BE5C60C2893DF1B009D6F03 /* Mocks */,
+				1BE5C60A2893DED3009D6F03 /* Tests.swift */,
+				1BE5C6112893E59E009D6F03 /* TCPClientTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		1BE5C60C2893DF1B009D6F03 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				1BE5C60D2893DF39009D6F03 /* EventEmitterWrapper.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		58B511D21A9E6C8500147676 = {
@@ -136,31 +181,50 @@
 				1BE5C5A42893D190009D6F03 /* TCPServerModule.swift */,
 				1BE5C5962893D190009D6F03 /* Utils */,
 				F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */,
-				1BE5C5D32893D766009D6F03 /* Tests */,
+				1BE5C6102893E10E009D6F03 /* LocalServerForTests-Bridging-Header.h */,
+				1BE5C6012893DEAF009D6F03 /* Tests */,
 				134814211AA4EA7D00B7C361 /* Products */,
-				1BE5C5D22893D766009D6F03 /* Tests.xctest */,
+				1BE5C5FB2893DE57009D6F03 /* libLocalServerForTests.a */,
+				1BE5C6002893DEAF009D6F03 /* Tests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1BE5C5D12893D766009D6F03 /* Tests */ = {
+		1BE5C5E72893DE57009D6F03 /* LocalServerForTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1BE5C5DB2893D766009D6F03 /* Build configuration list for PBXNativeTarget "Tests" */;
+			buildConfigurationList = 1BE5C5F82893DE57009D6F03 /* Build configuration list for PBXNativeTarget "LocalServerForTests" */;
 			buildPhases = (
-				1BE5C5CE2893D766009D6F03 /* Sources */,
-				1BE5C5CF2893D766009D6F03 /* Frameworks */,
-				1BE5C5D02893D766009D6F03 /* Resources */,
+				1BE5C5E82893DE57009D6F03 /* Sources */,
+				1BE5C5F62893DE57009D6F03 /* Frameworks */,
+				1BE5C5F72893DE57009D6F03 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				1BE5C5D82893D766009D6F03 /* PBXTargetDependency */,
+			);
+			name = LocalServerForTests;
+			productName = RCTDataManager;
+			productReference = 1BE5C5FB2893DE57009D6F03 /* libLocalServerForTests.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		1BE5C5FF2893DEAF009D6F03 /* Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BE5C6072893DEAF009D6F03 /* Build configuration list for PBXNativeTarget "Tests" */;
+			buildPhases = (
+				1BE5C5FC2893DEAF009D6F03 /* Sources */,
+				1BE5C5FD2893DEAF009D6F03 /* Frameworks */,
+				1BE5C5FE2893DEAF009D6F03 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1BE5C6062893DEAF009D6F03 /* PBXTargetDependency */,
 			);
 			name = Tests;
 			productName = Tests;
-			productReference = 1BE5C5D22893D766009D6F03 /* Tests.xctest */;
+			productReference = 1BE5C6002893DEAF009D6F03 /* Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		58B511DA1A9E6C8500147676 /* LocalServer */ = {
@@ -190,9 +254,10 @@
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Figure, Inc.";
 				TargetAttributes = {
-					1BE5C5D12893D766009D6F03 = {
+					1BE5C5FF2893DEAF009D6F03 = {
 						CreatedOnToolsVersion = 13.2.1;
 						DevelopmentTeam = DQLA65U56C;
+						LastSwiftMigration = 1320;
 						ProvisioningStyle = Automatic;
 					};
 					58B511DA1A9E6C8500147676 = {
@@ -214,13 +279,14 @@
 			projectRoot = "";
 			targets = (
 				58B511DA1A9E6C8500147676 /* LocalServer */,
-				1BE5C5D12893D766009D6F03 /* Tests */,
+				1BE5C5E72893DE57009D6F03 /* LocalServerForTests */,
+				1BE5C5FF2893DEAF009D6F03 /* Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1BE5C5D02893D766009D6F03 /* Resources */ = {
+		1BE5C5FE2893DEAF009D6F03 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -230,11 +296,33 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1BE5C5CE2893D766009D6F03 /* Sources */ = {
+		1BE5C5E82893DE57009D6F03 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BE5C5D52893D766009D6F03 /* Tests.swift in Sources */,
+				1BE5C5E92893DE57009D6F03 /* TCPServer.swift in Sources */,
+				1BE5C5EA2893DE57009D6F03 /* TCPServerEventName.swift in Sources */,
+				1BE5C5EB2893DE57009D6F03 /* EventEmitterWrapper.swift in Sources */,
+				1BE5C60E2893DF39009D6F03 /* EventEmitterWrapper.swift in Sources */,
+				1BE5C5EC2893DE57009D6F03 /* TCPClientModule.m in Sources */,
+				1BE5C5ED2893DE57009D6F03 /* TCPClient.swift in Sources */,
+				1BE5C5EE2893DE57009D6F03 /* LocalServerError.swift in Sources */,
+				1BE5C5EF2893DE57009D6F03 /* TCPServerModule.swift in Sources */,
+				1BE5C5F02893DE57009D6F03 /* TCPServerConnection.swift in Sources */,
+				1BE5C5F12893DE57009D6F03 /* TCPServerModule.m in Sources */,
+				1BE5C5F22893DE57009D6F03 /* TCPClientModule.swift in Sources */,
+				1BE5C5F32893DE57009D6F03 /* TCPClientEventName.swift in Sources */,
+				1BE5C5F42893DE57009D6F03 /* JSEvent.swift in Sources */,
+				1BE5C5F52893DE57009D6F03 /* TCPClientConnection.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1BE5C5FC2893DEAF009D6F03 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1BE5C6122893E59E009D6F03 /* TCPClientTests.swift in Sources */,
+				1BE5C60B2893DED3009D6F03 /* Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,20 +349,74 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1BE5C5D82893D766009D6F03 /* PBXTargetDependency */ = {
+		1BE5C6062893DEAF009D6F03 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 58B511DA1A9E6C8500147676 /* LocalServer */;
-			targetProxy = 1BE5C5D72893D766009D6F03 /* PBXContainerItemProxy */;
+			target = 1BE5C5E72893DE57009D6F03 /* LocalServerForTests */;
+			targetProxy = 1BE5C6052893DEAF009D6F03 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1BE5C5D92893D766009D6F03 /* Debug */ = {
+		1BE5C5F92893DE57009D6F03 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					LocalServer/TCPClientModule.swift,
+					LocalServer/TCPServerModule.swift,
+					LocalServer/Utils/EventEmitterWrapper.swift,
+					LocalServer/TCPServerModule.m,
+					LocalServer/TCPClientModule.m,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "LocalServerForTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		1BE5C5FA2893DE57009D6F03 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					LocalServer/TCPClientModule.swift,
+					LocalServer/TCPServerModule.swift,
+					LocalServer/Utils/EventEmitterWrapper.swift,
+					LocalServer/TCPServerModule.m,
+					LocalServer/TCPClientModule.m,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "LocalServerForTests-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		1BE5C6082893DEAF009D6F03 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -288,6 +430,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -301,12 +444,13 @@
 			};
 			name = Debug;
 		};
-		1BE5C5DA2893D766009D6F03 /* Release */ = {
+		1BE5C6092893DEAF009D6F03 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -321,6 +465,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactnative.localserver.Tests;
@@ -428,6 +573,7 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -447,6 +593,7 @@
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				EXCLUDED_SOURCE_FILE_NAMES = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -465,11 +612,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1BE5C5DB2893D766009D6F03 /* Build configuration list for PBXNativeTarget "Tests" */ = {
+		1BE5C5F82893DE57009D6F03 /* Build configuration list for PBXNativeTarget "LocalServerForTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1BE5C5D92893D766009D6F03 /* Debug */,
-				1BE5C5DA2893D766009D6F03 /* Release */,
+				1BE5C5F92893DE57009D6F03 /* Debug */,
+				1BE5C5FA2893DE57009D6F03 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1BE5C6072893DEAF009D6F03 /* Build configuration list for PBXNativeTarget "Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BE5C6082893DEAF009D6F03 /* Debug */,
+				1BE5C6092893DEAF009D6F03 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

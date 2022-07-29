@@ -28,7 +28,7 @@
         "test:ts": "jest",
         "test:ts:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit",
         "test:android": "cd android && ./gradlew testDebugUnitTest",
-        "test:ios": "cd ios && echo TODO",
+        "test:ios": "sh ./scripts/run-ios-tests.sh",
         "build:ts": "yarn tsc --project tsconfig.build.json",
         "prepare": "bob build",
         "release": "yarn exec ./scripts/release.sh",
