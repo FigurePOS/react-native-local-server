@@ -68,3 +68,7 @@ lib/
 
 # test coverage
 coverage/*
+
+# fastlane
+fastlane/report.xml
+
