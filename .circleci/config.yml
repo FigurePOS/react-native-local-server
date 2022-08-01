@@ -149,9 +149,9 @@ workflows:
       - unit-tests-android:
           requires:
             - install-dependencies
-      - unit-tests-ios:
-          requires:
-            - install-dependencies
+#      - unit-tests-ios:
+#          requires:
+#            - install-dependencies
       - approve-release:
           type: approval
           requires:
@@ -159,7 +159,7 @@ workflows:
             - typescript
             - unit-tests-ts
             - unit-tests-android
-            - unit-tests-ios
+#            - unit-tests-ios
           filters:
             branches:
               only: master
