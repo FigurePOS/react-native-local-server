@@ -33,7 +33,6 @@ jobs:
     executor: default
     steps:
       - checkout
-      - attach_project
       - ruby/install-deps
       - restore_cache:
           keys:
@@ -95,6 +94,7 @@ jobs:
     executor: android
     steps:
       - attach_project
+      - ruby/install-deps
       - run:
           name: Run unit tests (Android)
           command: |
