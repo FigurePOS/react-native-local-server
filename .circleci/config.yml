@@ -111,7 +111,18 @@ jobs:
     executor: ios
     steps:
       - attach_project
-      - ruby/install-deps
+      - run:
+          name: "Set Ruby version"
+          command: echo "ruby-3.1.0" > ~/.ruby-version
+      - run:
+          name: "Configure Bundler"
+          command: |
+            cd ./ios
+            echo $(export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")) >> $BASH_ENV
+            source $BASH_ENV
+            sudo gem install bundler
+            bundle install
+            cd ..
       - run:
           name: Run unit tests (iOS)
           command: |
