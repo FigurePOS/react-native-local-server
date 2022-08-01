@@ -25,12 +25,16 @@ commands:
           root: .
           paths: .
 
+orbs:
+  ruby: circleci/ruby@1.2.0
+
 jobs:
   install-dependencies:
     executor: default
     steps:
       - checkout
       - attach_project
+      - ruby/install-deps
       - restore_cache:
           keys:
             - dependencies-{{ checksum "package.json" }}
