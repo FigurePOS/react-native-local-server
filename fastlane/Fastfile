@@ -1,0 +1,24 @@
+fastlane_version "2.204.2"
+
+before_all do
+    setup_circle_ci
+end
+
+platform :android do
+    lane :test do
+        desc "Running Android unit tests"
+        gradle(task: "testDebugUnitTest", project_dir: 'android')
+    end
+end
+
+platform :ios do
+    lane :test do
+        desc "Running iOS unit tests"
+        Dir.chdir('../ios') do
+            run_tests(
+                project: "./ios/LocalServer.xcodeproj",
+                scheme: "Tests",
+            )
+        end
+    end
+end

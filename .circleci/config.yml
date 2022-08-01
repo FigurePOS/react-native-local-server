@@ -3,7 +3,7 @@ version: 2.1
 executors:
   default:
     docker:
-      - image: circleci/node:16
+      - image: cimg/node:16.16
     working_directory: ~/project
   android:
     docker:
@@ -25,12 +25,14 @@ commands:
           root: .
           paths: .
 
+orbs:
+  ruby: circleci/ruby@1.2.0
+
 jobs:
   install-dependencies:
     executor: default
     steps:
       - checkout
-      - attach_project
       - restore_cache:
           keys:
             - dependencies-{{ checksum "package.json" }}
@@ -91,6 +93,7 @@ jobs:
     executor: android
     steps:
       - attach_project
+      - ruby/install-deps
       - run:
           name: Run unit tests (Android)
           command: |
@@ -108,14 +111,22 @@ jobs:
     executor: ios
     steps:
       - attach_project
-#      - run:
-#          name: Install xcbeautify
-#          command: |
-#            brew install xcbeautify
+      - run:
+          name: "Set Ruby version"
+          command: echo "ruby-3.1.0" > ~/.ruby-version
+      - run:
+          name: "Configure Bundler"
+          command: |
+            echo $(export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")) >> $BASH_ENV
+            source $BASH_ENV
+            sudo gem install bundler
+            bundle install
       - run:
           name: Run unit tests (iOS)
           command: |
             yarn test:ios
+      - store_test_results:
+          path: ~/fastlane/test_output
 
   release:
     executor: default
@@ -149,9 +160,9 @@ workflows:
       - unit-tests-android:
           requires:
             - install-dependencies
-#      - unit-tests-ios:
-#          requires:
-#            - install-dependencies
+      - unit-tests-ios:
+          requires:
+            - install-dependencies
       - approve-release:
           type: approval
           requires:
@@ -159,7 +170,7 @@ workflows:
             - typescript
             - unit-tests-ts
             - unit-tests-android
-#            - unit-tests-ios
+            - unit-tests-ios
           filters:
             branches:
               only: master
