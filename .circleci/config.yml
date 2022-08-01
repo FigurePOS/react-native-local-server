@@ -3,11 +3,11 @@ version: 2.1
 executors:
   default:
     docker:
-      - image: cimg/ruby:3.1-node
+      - image: cimg/node:16.16
     working_directory: ~/project
   android:
     docker:
-      - image: circleci/android:api-30-node
+      - image: cimg/android:2022.04-node
     working_directory: ~/project
   ios:
     macos:
@@ -33,7 +33,6 @@ jobs:
     executor: default
     steps:
       - checkout
-      - ruby/install-deps
       - restore_cache:
           keys:
             - dependencies-{{ checksum "package.json" }}
