@@ -1,3 +1,16 @@
+## [0.3.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.2.2...v0.3.0) (2022-08-01)
+
+
+### Features
+
+* better iOS error handling ([#5](https://github.com/FigurePOS/react-native-local-server/issues/5)) ([80dacb4](https://github.com/FigurePOS/react-native-local-server/commit/80dacb4fbc267309af238db0104aa347518800df))
+
+
+### Tests
+
+* iOS implementation tests ([#7](https://github.com/FigurePOS/react-native-local-server/issues/7)) ([bc6f4eb](https://github.com/FigurePOS/react-native-local-server/commit/bc6f4ebe9652038ad341ea45178634e9c3406695))
+* typescript implementation of TCP server and TCP client tested ([#6](https://github.com/FigurePOS/react-native-local-server/issues/6)) ([4667b4f](https://github.com/FigurePOS/react-native-local-server/commit/4667b4f4155af55ea5c3ffd86ec0d2dfbc46bf9d))
+
 ### [0.2.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.2.1...v0.2.2) (2022-07-27)
 
 
