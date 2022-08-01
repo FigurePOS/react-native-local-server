@@ -55,6 +55,20 @@ class TCPServerManager {
     
     }
     
+    func getServerIds() -> [String] {
+        var keys: [String] = []
+        for k in servers.keys {
+            keys.append(k)
+        }
+        return keys
+    }
+    
+    func getConnectionsFromServer(serverId: String) throws -> [String] {
+        guard let server: TCPServer = servers[serverId] else {
+            throw LocalServerError.ServerDoesNotExist
+        }
+        return server.getConnectionIds()
+    }
     
     func invalidate() {
         print("TCPServerModule - invalidate - \(servers.count) servers")

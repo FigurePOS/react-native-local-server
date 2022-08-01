@@ -67,6 +67,14 @@ class TCPServer {
         connection.stop()
     }
     
+    func getConnectionIds() -> [String] {
+        var keys: [String] = []
+        for k in connectionsByID.keys {
+            keys.append(k)
+        }
+        return keys
+    }
+    
     private func stateDidChange(to newState: NWListener.State) {
         print("TCPServer - stateDidChange \(id)")
         switch newState {

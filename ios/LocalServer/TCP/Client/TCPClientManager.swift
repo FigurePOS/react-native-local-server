@@ -46,6 +46,14 @@ class TCPClientManager {
         client.send(message: message)
     }
     
+    func getClientIds() -> [String] {
+        var keys: [String] = []
+        for k in clients.keys {
+            keys.append(k)
+        }
+        return keys
+    }
+    
     func onConnectionClosed(clientId: String) -> Void {
         clients.removeValue(forKey: clientId)
     }

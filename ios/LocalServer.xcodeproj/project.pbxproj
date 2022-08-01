@@ -28,7 +28,6 @@
 		1BE5C5F52893DE57009D6F03 /* TCPClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59E2893D190009D6F03 /* TCPClientConnection.swift */; };
 		1BE5C6042893DEAF009D6F03 /* libLocalServerForTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE5C5FB2893DE57009D6F03 /* libLocalServerForTests.a */; };
 		1BE5C60E2893DF39009D6F03 /* EventEmitterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C60D2893DF39009D6F03 /* EventEmitterWrapper.swift */; };
-		1BE5C6122893E59E009D6F03 /* TCPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6112893E59E009D6F03 /* TCPClientTests.swift */; };
 		1BE5C6142893F9CC009D6F03 /* E2E.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6132893F9CC009D6F03 /* E2E.swift */; };
 		1BE5C6172893FAAD009D6F03 /* TCPServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */; };
 		1BE5C6182893FAB3009D6F03 /* TCPServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */; };
@@ -100,7 +99,6 @@
 		1BE5C6002893DEAF009D6F03 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BE5C60D2893DF39009D6F03 /* EventEmitterWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmitterWrapper.swift; sourceTree = "<group>"; };
 		1BE5C6102893E10E009D6F03 /* LocalServerForTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServerForTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		1BE5C6112893E59E009D6F03 /* TCPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientTests.swift; sourceTree = "<group>"; };
 		1BE5C6132893F9CC009D6F03 /* E2E.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = E2E.swift; sourceTree = "<group>"; };
 		1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPServerManager.swift; sourceTree = "<group>"; };
 		1BE5C6192893FFB7009D6F03 /* TCPServerEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerEventName.swift; sourceTree = "<group>"; };
@@ -169,7 +167,6 @@
 			isa = PBXGroup;
 			children = (
 				1BE5C60C2893DF1B009D6F03 /* Mocks */,
-				1BE5C6112893E59E009D6F03 /* TCPClientTests.swift */,
 				1BE5C6132893F9CC009D6F03 /* E2E.swift */,
 			);
 			path = Tests;
@@ -366,7 +363,6 @@
 				1BE5C632289404B3009D6F03 /* JSEvent.swift in Sources */,
 				1BE5C630289404A5009D6F03 /* TCPServer.swift in Sources */,
 				1BE5C62A28940495009D6F03 /* TCPServerManager.swift in Sources */,
-				1BE5C6122893E59E009D6F03 /* TCPClientTests.swift in Sources */,
 				1BE5C63328940500009D6F03 /* EventEmitterWrapper.swift in Sources */,
 				1BE5C62D289404A1009D6F03 /* TCPClientConnection.swift in Sources */,
 			);
