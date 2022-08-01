@@ -8,5 +8,9 @@
 import Foundation
 
 enum LocalServerError: Error {
+    case ServerDoesNotExist
+    case ServerDoesAlreadyExist
+    case ClientDoesNotExist
+    case ClientDoesAlreadyExist
     case UnknownConnectionId
 }

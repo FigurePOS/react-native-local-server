@@ -12,10 +12,12 @@ class TCPClientModule: RCTEventEmitter {
 
     private let eventNames: [String]! = TCPClientEventName.allValues
     private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
+    private var manager: TCPClientManager
     
     private var clients: [String: TCPClient] = [:]
     
     override init() {
+        manager = TCPClientManager(eventEmitter: eventEmitter)
         super.init()
         eventEmitter.setEventEmitter(eventEmitter: self)
     }
@@ -26,38 +28,38 @@ class TCPClientModule: RCTEventEmitter {
     
     @objc(createClient:withHost:withPort:withResolver:withRejecter:)
     func createClient(id: String, host: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("TCPClientModule - createClient - started")
-        if (clients[id] != nil) {
+        do {
+            try manager.createClient(id: id, host: host, port: port)
+            resolve(true)
+        } catch LocalServerError.ClientDoesAlreadyExist {
             reject("client.already-exists", "Client with this id already exists", nil)
-            return
+        } catch {
+            reject("client.error", "Failed to create client", error)
+
         }
-        let client: TCPClient = TCPClient(id: id, host: host, port: port, eventEmitter: eventEmitter)
-        clients[id] = client
-        client.setOnClosedCallback(callback: onConnectionClosed(clientId:))
-        client.start()
-        resolve(true)
     }
 
     @objc(stopClient:withResolver:withRejecter:)
     func stopClient(id: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("TCPClientModule - stopClient - started")
-        if let client: TCPClient = clients[id] {
-            client.stop()
-            clients.removeValue(forKey: id)
+        do {
+            try manager.stopClient(id: id)
             resolve(true)
-        } else {
+        } catch LocalServerError.ClientDoesNotExist {
             reject("client.not-exists", "Client with this id does not exist", nil)
+        } catch {
+            reject("client.error", "Failed to stop client", error)
         }
     }
 
     @objc(send:withMessage:withResolver:withRejecter:)
     func send(clientId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        print("TCPClientModule - send - started")
-        if let client: TCPClient = clients[clientId] {
-            client.send(message: message)
+        do {
+            try manager.send(clientId: clientId, message: message)
             resolve(true)
-        } else {
+        } catch LocalServerError.ClientDoesNotExist {
             reject("client.not-exists", "Client with this id does not exist", nil)
+        } catch {
+            reject("client.error", "Failed to send data to client", error)
         }
     }
     
@@ -70,11 +72,7 @@ class TCPClientModule: RCTEventEmitter {
     }
     
     override func invalidate() {
-        print("TCPClientModule - invalidate - \(clients.count) clients")
-        for (_, client) in clients {
-            client.stop()
-        }
-        clients.removeAll()
+        manager.invalidate()
         super.invalidate()
     }
 }

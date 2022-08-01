@@ -12,7 +12,7 @@ target 'LocalServerExample' do
     :hermes_enabled => false
   )
 
-  pod 'react-native-local-server', :path => '../..'
+  pod 'react-native-local-server', :path => '../..', :test_specs => ['Tests']
 
   # Enables Flipper.
   #

@@ -35,7 +35,7 @@ class TCPServer {
         listener.start(queue: self.queue)
     }
     
-    func stop() {
+    func stop() throws {
         print("TCPServer - stop \(id)")
         self.listener.newConnectionHandler = nil
         for connection in self.connectionsByID.values {
@@ -65,6 +65,14 @@ class TCPServer {
             throw LocalServerError.UnknownConnectionId
         }
         connection.stop()
+    }
+    
+    func getConnectionIds() -> [String] {
+        var keys: [String] = []
+        for k in connectionsByID.keys {
+            keys.append(k)
+        }
+        return keys
     }
     
     private func stateDidChange(to newState: NWListener.State) {

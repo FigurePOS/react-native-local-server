@@ -9,6 +9,10 @@ executors:
     docker:
       - image: circleci/android:api-30-node
     working_directory: ~/project
+  ios:
+    macos:
+      xcode: "13.1.0"
+    working_directory: ~/project
 
 commands:
   attach_project:
@@ -100,6 +104,19 @@ jobs:
       - store_test_results:
           path: ~/test-results
 
+  unit-tests-ios:
+    executor: ios
+    steps:
+      - attach_project
+#      - run:
+#          name: Install xcbeautify
+#          command: |
+#            brew install xcbeautify
+      - run:
+          name: Run unit tests (iOS)
+          command: |
+            yarn test:ios
+
   release:
     executor: default
     steps:
@@ -132,6 +149,9 @@ workflows:
       - unit-tests-android:
           requires:
             - install-dependencies
+#      - unit-tests-ios:
+#          requires:
+#            - install-dependencies
       - approve-release:
           type: approval
           requires:
@@ -139,6 +159,7 @@ workflows:
             - typescript
             - unit-tests-ts
             - unit-tests-android
+#            - unit-tests-ios
           filters:
             branches:
               only: master

@@ -23,7 +23,7 @@ class TCPServerConnection {
         self.serverId = serverId
         self.eventEmitter = eventEmitter
         connection = nwConnection
-        id = UUID().uuidString
+        id = UUID().uuidString.lowercased()
     }
 
     var didStopCallback: ((Error?) -> Void)? = nil
@@ -54,11 +54,11 @@ class TCPServerConnection {
                 break
             case .failed(let error):
                 print("\(prefix)\tstate: failure, error: \(error.debugDescription)")
-                self.handleLifecycleEvent(eventName: TCPServerEventName.Stopped, error: error)
+                self.handleLifecycleEvent(eventName: TCPServerEventName.ConnectionClosed, error: error)
                 break
             case .cancelled:
                 print("\(prefix)\tstate: cancelled")
-                self.handleLifecycleEvent(eventName: TCPServerEventName.Stopped, error: nil)
+                self.handleLifecycleEvent(eventName: TCPServerEventName.ConnectionClosed, error: nil)
                 break
             default:
                 print("\(prefix)\tstate: unknown state - \(state)")
@@ -111,7 +111,6 @@ class TCPServerConnection {
     }
 
     private func closeConnection(reason: Error?) {
-        connection.stateUpdateHandler = nil
         connection.cancel()
         if let didStopCallback = didStopCallback {
             self.didStopCallback = nil

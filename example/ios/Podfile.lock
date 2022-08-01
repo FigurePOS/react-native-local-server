@@ -503,6 +503,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-get-random-values"
   react-native-local-server:
     :path: "../.."
+    :test_specs:
+      - Tests
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-perflogger:
@@ -572,7 +574,7 @@ SPEC CHECKSUMS:
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
-  react-native-local-server: 4a24070743421d336fa1fa2130ffd13bef446b0d
+  react-native-local-server: cc489cbf5cc1f386ad6784b33797527be2f374e6
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
   React-RCTActionSheet: 7d3041e6761b4f3044a37079ddcb156575fb6d89
@@ -593,6 +595,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a2d9a6ebc301c208e1da0f3c830c0d34aed90c26
+PODFILE CHECKSUM: 4b4d38cc4bb222e5a83e373dff8cba0041f9286b
 
 COCOAPODS: 1.11.3
