@@ -111,14 +111,13 @@ jobs:
     executor: ios
     steps:
       - attach_project
-#      - run:
-#          name: Install xcbeautify
-#          command: |
-#            brew install xcbeautify
+      - ruby/install-deps
       - run:
           name: Run unit tests (iOS)
           command: |
             yarn test:ios
+      - store_test_results:
+          path: ~/fastlane/test_output
 
   release:
     executor: default
@@ -152,9 +151,9 @@ workflows:
       - unit-tests-android:
           requires:
             - install-dependencies
-#      - unit-tests-ios:
-#          requires:
-#            - install-dependencies
+      - unit-tests-ios:
+          requires:
+            - install-dependencies
       - approve-release:
           type: approval
           requires:
@@ -162,7 +161,7 @@ workflows:
             - typescript
             - unit-tests-ts
             - unit-tests-android
-#            - unit-tests-ios
+            - unit-tests-ios
           filters:
             branches:
               only: master

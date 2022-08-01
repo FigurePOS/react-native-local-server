@@ -28,7 +28,7 @@
         "test:ts": "jest",
         "test:ts:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit",
         "test:android": "bundle exec fastlane android test",
-        "test:ios": "sh ./scripts/run-ios-tests.sh",
+        "test:ios": "bundle exec fastlane ios test",
         "build:ts": "yarn tsc --project tsconfig.build.json",
         "prepare": "bob build",
         "release": "yarn exec ./scripts/release.sh",
