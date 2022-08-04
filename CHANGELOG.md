@@ -1,3 +1,15 @@
+## [0.4.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.3.0...v0.4.0) (2022-08-04)
+
+
+### Features
+
+* getIpAddress ([#9](https://github.com/FigurePOS/react-native-local-server/issues/9)) ([ba7eecc](https://github.com/FigurePOS/react-native-local-server/commit/ba7eeccb0479b96a9124a3c213828b3ac5057635))
+
+
+### Chores
+
+* run native unit tests using fastlane ([#8](https://github.com/FigurePOS/react-native-local-server/issues/8)) ([70288eb](https://github.com/FigurePOS/react-native-local-server/commit/70288eb759ab152c675f03a97955fdbe7caa4abd))
+
 ## [0.3.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.2.2...v0.3.0) (2022-08-01)
 
 
