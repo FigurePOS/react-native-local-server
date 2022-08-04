@@ -1,5 +1,8 @@
 package com.reactnativelocalserver;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,6 +16,9 @@ import com.reactnativelocalserver.tcp.Server;
 import com.reactnativelocalserver.tcp.factory.ServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +29,11 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     private final EventEmitter eventEmitter;
     private final ServerFactory serverFactory;
     private final Map<String, Server> servers = new HashMap();
+    private final ReactApplicationContext reactApplicationContext;
 
     public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, ServerFactory serverFactory) {
         super(reactContext);
+        this.reactApplicationContext = reactContext;
         this.eventEmitter = eventEmitter;
         this.serverFactory = serverFactory;
     }
@@ -104,6 +112,34 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject("server.error", e.getMessage());
         }
+    }
+
+    @ReactMethod
+    public void getLocalIpAddress(final Promise promise) throws Exception {
+        Log.d(NAME, "getLocalIpAddress");
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    WifiManager manager = (WifiManager) reactApplicationContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    if (manager == null) {
+                        promise.resolve(null);
+                        return;
+                    }
+                    WifiInfo info = manager.getConnectionInfo();
+                    String ipAddress = InetAddress.getByAddress(
+                            ByteBuffer
+                                    .allocate(4)
+                                    .order(ByteOrder.LITTLE_ENDIAN)
+                                    .putInt(info.getIpAddress())
+                                    .array())
+                            .getHostAddress();
+                    Log.d(NAME, "getLocalIpAddress: " + ipAddress);
+                    promise.resolve(ipAddress);
+                } catch (Exception e) {
+                    promise.reject("server.error", e.getMessage());
+                }
+            }
+        }).start();
     }
 
     @Override

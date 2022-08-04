@@ -5,10 +5,12 @@ import { ClientConfiguration } from "./ClientConfiguration"
 import { HorizontalLine } from "../horizontalLine"
 import { Text } from "react-native"
 import { Colors, FontSize } from "../../constants"
+import { Maybe } from "../../../types"
 
 type Props = {
     stateLabelServer: string
     initialPortServer: string
+    ipAddressServer: Maybe<string>
 
     stateLabelClient: string
     initialPortClient: string
@@ -32,6 +34,7 @@ export const DoubleConfiguration = (props: Props) => {
                     stateLabel={props.stateLabelServer}
                     isRunning={props.isRunning}
                     initialPort={props.initialPortServer}
+                    ipAddress={props.ipAddressServer}
                     onStarted={props.onServerStarted}
                     onStopped={props.onServerStopped}
                 />

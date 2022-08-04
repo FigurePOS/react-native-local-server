@@ -7,6 +7,7 @@ jest.mock("../module", () => ({
         createServer: jest.fn(),
         stopServer: jest.fn(),
         closeConnection: jest.fn(),
+        getLocalIpAddress: jest.fn(),
     },
 }))
 
@@ -93,6 +94,14 @@ describe("TCPServer", () => {
         TCPServerModule.closeConnection.mockRejectedValue(e)
         await expect(server.closeConnection(connectionId)).rejects.toEqual(e)
         expect(spy).toBeCalledWith(serverId, connectionId)
+        done()
+    })
+
+    it("should get ip address", async (done) => {
+        const spy = jest.spyOn(TCPServerModule, "getLocalIpAddress").mockResolvedValue("192.168.0.100")
+        const result = await server.getLocalIpAddress()
+        expect(spy).toBeCalled()
+        expect(result).toEqual("192.168.0.100")
         done()
     })
 })

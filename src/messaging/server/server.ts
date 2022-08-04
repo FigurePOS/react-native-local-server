@@ -138,6 +138,10 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.tcpServer.setLogger(logger)
     }
 
+    getLocalIpAddress = (): Observable<string | null> => {
+        return defer(() => this.tcpServer.getLocalIpAddress())
+    }
+
     private getSourceData(connectionId: string): MessageSource {
         const config = this.getConfig()
         return {

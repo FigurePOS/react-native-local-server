@@ -28,3 +28,6 @@ export const getCounterServerConnections = (state: StateObject): ServerConnectio
 
 export const getCounterServerReadyConnections = (state: StateObject): ServerConnection[] =>
     getCounterServerStateObject(state).connections.filter((c) => c.state === ServerConnectionState.Ready)
+
+export const getCounterServerIpAddress = (state: StateObject): Maybe<string> =>
+    getCounterServerStateObject(state).ipAddress
