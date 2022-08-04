@@ -1,13 +1,15 @@
 import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observable"
-import { StateAction } from "../../../types"
+import { Maybe, StateAction } from "../../../types"
 import { catchError, concatMap, mergeMap, switchMap } from "rxjs/operators"
 import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
 import { ServerConnectionState, ServerState } from "../../../common/types"
 import {
     COUNTER_SERVER_START_REQUESTED,
+    COUNTER_SERVER_STATE_CHANGED,
     COUNTER_SERVER_STOP_REQUESTED,
     createActionCounterServerConnectionStateChanged,
     createActionCounterServerErrored,
+    createActionCounterServerIpAddressChanged,
     createActionCounterServerStateChanged,
 } from "./actions"
 import { CounterServer } from "./server"
@@ -15,7 +17,6 @@ import { CounterDependencies } from "../common/deps"
 import { rootHandler } from "./rootHandler"
 import { COUNTER_COUNT_CHANGED } from "../data/actionts"
 import { createCounterMessageCountChanged } from "../common/messages"
-import { createActionCounterClientErrored } from "../client/actions"
 import { StateObject } from "../../../rootReducer"
 import { getCounterServerReadyConnections, isCounterServerRunning } from "./selectors"
 import { from } from "rxjs"
@@ -102,7 +103,23 @@ const counterServerCountChanged: Epic = (
                 })
             )
         }),
-        catchError((err) => [createActionCounterClientErrored(err)])
+        catchError((err) => [createActionCounterServerErrored(err)])
     )
 
-export default [counterServerStartRequested, counterServerStopRequested, counterServerCountChanged]
+const counterServerIpAddressEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+    action$.pipe(
+        ofType(COUNTER_SERVER_STATE_CHANGED),
+        switchMap(() => {
+            return CounterServer.getLocalIpAddress().pipe(
+                switchMap((ip: Maybe<string>) => [createActionCounterServerIpAddressChanged(ip)])
+            )
+        }),
+        catchError((err) => [createActionCounterServerErrored(err)])
+    )
+
+export default [
+    counterServerStartRequested,
+    counterServerStopRequested,
+    counterServerCountChanged,
+    counterServerIpAddressEpic,
+]

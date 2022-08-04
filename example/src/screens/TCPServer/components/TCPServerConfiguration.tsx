@@ -13,6 +13,7 @@ export const TCPServerConfiguration = () => {
         <ServerConfiguration
             stateLabel={stateLabel}
             isRunning={isRunning}
+            ipAddress={"TODO"}
             initialPort={reduxPort ?? ""}
             onStarted={(port) => dispatch(createActionBareTcpServerStartRequested(port))}
             onStopped={() => dispatch(createActionBareTcpServerStopRequested())}

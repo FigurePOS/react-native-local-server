@@ -30,6 +30,18 @@ export class TCPServer {
         return this.config
     }
 
+    getLocalIpAddress = async (): Promise<string | null> => {
+        this.logger?.log(`TCPServer [${this.getId()}] - getLocalIpAddress`)
+        try {
+            const ip: string | null = await TCPServerModule.getLocalIpAddress()
+            this.logger?.log(`TCPServer [${this.getId()}] - getLocalIpAddress - success`, { ip: ip })
+            return Promise.resolve(ip)
+        } catch (e) {
+            this.logger?.error(`TCPServer [${this.getId()}] - getLocalIpAddress - error`, e)
+            return Promise.reject(e)
+        }
+    }
+
     start = async (configuration: TCPServerConfiguration): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - start`, configuration)
         this.config = configuration

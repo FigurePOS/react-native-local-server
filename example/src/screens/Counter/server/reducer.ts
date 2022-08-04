@@ -4,6 +4,7 @@ import { ServerConnection, ServerConnectionState, ServerState } from "../../../c
 import {
     COUNTER_SERVER_CONNECTION_STATE_CHANGED,
     COUNTER_SERVER_ERRORED,
+    COUNTER_SERVER_IP_ADDRESS_CHANGED,
     COUNTER_SERVER_START_REQUESTED,
     COUNTER_SERVER_STATE_CHANGED,
     COUNTER_SERVER_STOP_REQUESTED,
@@ -13,6 +14,7 @@ import { append, map, none } from "ramda"
 export type CounterServerStateObject = {
     state: ServerState
     port: Maybe<string>
+    ipAddress: Maybe<string>
     error: Maybe<string>
     connections: ServerConnection[]
 }
@@ -20,6 +22,7 @@ export type CounterServerStateObject = {
 export const createDefaultState = (): CounterServerStateObject => ({
     state: ServerState.StandBy,
     port: "12000",
+    ipAddress: null,
     error: null,
     connections: [],
 })
@@ -62,6 +65,12 @@ export const counterServerReducer: Reducer = (
                     action.payload.connectionId,
                     action.payload.state
                 ),
+            }
+
+        case COUNTER_SERVER_IP_ADDRESS_CHANGED:
+            return {
+                ...state,
+                ipAddress: action.payload.ip,
             }
 
         default:

@@ -2,7 +2,12 @@ import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { DoubleConfiguration } from "../../../../common/components/configuration/DoubleConfiguration"
 import { createActionCounterServerStartRequested, createActionCounterServerStopRequested } from "../../server/actions"
-import { getCounterServerPort, getCounterServerStateLabel, isCounterServerRunning } from "../../server/selectors"
+import {
+    getCounterServerIpAddress,
+    getCounterServerPort,
+    getCounterServerStateLabel,
+    isCounterServerRunning,
+} from "../../server/selectors"
 import {
     getCounterClientHost,
     getCounterClientPort,
@@ -15,6 +20,7 @@ export const CounterConfiguration = () => {
     const dispatch = useDispatch()
     const serverLabel = useSelector(getCounterServerStateLabel)
     const serverPort = useSelector(getCounterServerPort)
+    const serverIp = useSelector(getCounterServerIpAddress)
     const isServerRunning = useSelector(isCounterServerRunning)
 
     const clientLabel = useSelector(getCounterClientStateLabel)
@@ -25,6 +31,7 @@ export const CounterConfiguration = () => {
         <DoubleConfiguration
             stateLabelServer={serverLabel}
             initialPortServer={serverPort ?? ""}
+            ipAddressServer={serverIp}
             stateLabelClient={clientLabel}
             initialPortClient={clientPort ?? ""}
             initialHostClient={clientHost ?? ""}

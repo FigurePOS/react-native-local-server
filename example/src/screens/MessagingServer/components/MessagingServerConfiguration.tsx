@@ -13,6 +13,7 @@ export const MessagingServerConfiguration = () => {
         <ServerConfiguration
             stateLabel={stateLabel}
             isRunning={isRunning}
+            ipAddress={"TODO"}
             initialPort={reduxPort ?? ""}
             onStarted={(port) => dispatch(createActionMessagingServerStartRequested(port))}
             onStopped={() => dispatch(createActionMessagingServerStopRequested())}

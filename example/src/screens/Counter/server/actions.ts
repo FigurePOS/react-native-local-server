@@ -1,4 +1,5 @@
 import { ServerConnectionState, ServerState } from "../../../common/types"
+import { Maybe } from "../../../types"
 
 export const COUNTER_SERVER_START_REQUESTED = "COUNTER_SERVER_START_REQUESTED"
 export const createActionCounterServerStartRequested = (port: string) => ({
@@ -38,5 +39,13 @@ export const createActionCounterServerConnectionStateChanged = (
     payload: {
         connectionId: connectionId,
         state: state,
+    },
+})
+
+export const COUNTER_SERVER_IP_ADDRESS_CHANGED = "COUNTER_SERVER_IP_ADDRESS_CHANGED"
+export const createActionCounterServerIpAddressChanged = (ip: Maybe<string>) => ({
+    type: COUNTER_SERVER_IP_ADDRESS_CHANGED,
+    payload: {
+        ip: ip,
     },
 })
