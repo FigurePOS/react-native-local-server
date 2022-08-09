@@ -25,7 +25,7 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer theme={MyTheme}>
-                <Drawer.Navigator initialRouteName={"Counter"}>
+                <Drawer.Navigator initialRouteName={"Messaging Server"}>
                     <Drawer.Screen name={"TCP Server"} component={TCPServerScreen} />
                     <Drawer.Screen name={"TCP Client"} component={TCPClientScreen} />
                     <Drawer.Screen name={"Messaging Server"} component={MessagingServerScreen} />

@@ -1,6 +1,6 @@
 import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observable"
 import { Maybe, StateAction } from "../../../types"
-import { catchError, concatMap, mergeMap, switchMap } from "rxjs/operators"
+import { catchError, concatMap, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
 import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
 import { ServerConnectionState, ServerState } from "../../../common/types"
 import {
@@ -35,39 +35,36 @@ const counterServerStartRequested: Epic = (action$: ActionsObservable<StateActio
                 port: port,
             }
             return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
-                mergeMap((e) => {
-                    switch (e.type) {
-                        case MessagingServerStatusEventName.Ready:
-                            return [createActionCounterServerStateChanged(ServerState.Ready)]
-                        case MessagingServerStatusEventName.Stopped:
-                            return [createActionCounterServerStateChanged(ServerState.StandBy)]
-                        case MessagingServerStatusEventName.ConnectionAccepted:
-                            return [
-                                createActionCounterServerConnectionStateChanged(
-                                    e.connectionId,
-                                    ServerConnectionState.Accepted
-                                ),
-                            ]
-                        case MessagingServerStatusEventName.ConnectionReady:
-                            return [
-                                createActionCounterServerConnectionStateChanged(
-                                    e.connectionId,
-                                    ServerConnectionState.Ready
-                                ),
-                            ]
-                        case MessagingServerStatusEventName.ConnectionClosed:
-                            return [
-                                createActionCounterServerConnectionStateChanged(
-                                    e.connectionId,
-                                    ServerConnectionState.Closed
-                                ),
-                            ]
-                    }
-                    return []
-                })
+                mergeMapTo([]),
+                catchError((err) => [createActionCounterServerErrored(err)])
             )
         }),
         catchError((err) => [createActionCounterServerErrored(err)])
+    )
+
+const counterServerStatus: Epic = () =>
+    CounterServer.getStatusEvent$().pipe(
+        mergeMap((e) => {
+            switch (e.type) {
+                case MessagingServerStatusEventName.Ready:
+                    return [createActionCounterServerStateChanged(ServerState.Ready)]
+                case MessagingServerStatusEventName.Stopped:
+                    return [createActionCounterServerStateChanged(ServerState.StandBy)]
+                case MessagingServerStatusEventName.ConnectionAccepted:
+                    return [
+                        createActionCounterServerConnectionStateChanged(e.connectionId, ServerConnectionState.Accepted),
+                    ]
+                case MessagingServerStatusEventName.ConnectionReady:
+                    return [
+                        createActionCounterServerConnectionStateChanged(e.connectionId, ServerConnectionState.Ready),
+                    ]
+                case MessagingServerStatusEventName.ConnectionClosed:
+                    return [
+                        createActionCounterServerConnectionStateChanged(e.connectionId, ServerConnectionState.Closed),
+                    ]
+            }
+            return []
+        })
     )
 
 const counterServerStopRequested: Epic = (action$: ActionsObservable<StateAction>) =>
@@ -75,12 +72,10 @@ const counterServerStopRequested: Epic = (action$: ActionsObservable<StateAction
         ofType(COUNTER_SERVER_STOP_REQUESTED),
         switchMap(() => {
             return CounterServer.stop().pipe(
-                switchMap(() => {
-                    return []
-                })
+                mergeMapTo([]),
+                catchError((err) => [createActionCounterServerErrored(err)])
             )
-        }),
-        catchError((err) => [createActionCounterServerErrored(err)])
+        })
     )
 
 const counterServerCountChanged: Epic = (
@@ -119,6 +114,7 @@ const counterServerIpAddressEpic: Epic = (action$: ActionsObservable<StateAction
 
 export default [
     counterServerStartRequested,
+    counterServerStatus,
     counterServerStopRequested,
     counterServerCountChanged,
     counterServerIpAddressEpic,

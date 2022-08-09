@@ -1,6 +1,6 @@
 import { ActionsObservable, Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
-import { catchError, mergeMap, switchMap } from "rxjs/operators"
+import { catchError, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
 import {
     createActionMessagingServerConnectionStateChanged,
     createActionMessagingServerDataReceived,
@@ -22,7 +22,7 @@ import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@f
 const messagingServerStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_SERVER_START_REQUESTED),
-        switchMap((action) => {
+        mergeMap((action) => {
             const port = Number.parseInt(action.payload.port, 10)
             if (!port || Number.isNaN(port)) {
                 return [createActionMessagingServerErrored("Invalid Port")]
@@ -32,52 +32,49 @@ const messagingServerStartRequested: Epic = (action$: ActionsObservable<StateAct
                 port: port,
             }
             return SampleMessagingServer.start(config, rootHandler, SampleMessagingServerDependencies).pipe(
-                mergeMap((e) => {
-                    switch (e.type) {
-                        case MessagingServerStatusEventName.Ready:
-                            return [createActionMessagingServerStateChanged(ServerState.Ready)]
-                        case MessagingServerStatusEventName.Stopped:
-                            return [createActionMessagingServerStateChanged(ServerState.StandBy)]
-                        case MessagingServerStatusEventName.ConnectionAccepted:
-                            return [
-                                createActionMessagingServerConnectionStateChanged(
-                                    e.connectionId,
-                                    ServerConnectionState.Accepted
-                                ),
-                            ]
-                        case MessagingServerStatusEventName.ConnectionReady:
-                            return [
-                                createActionMessagingServerConnectionStateChanged(
-                                    e.connectionId,
-                                    ServerConnectionState.Ready
-                                ),
-                            ]
-                        case MessagingServerStatusEventName.ConnectionClosed:
-                            return [
-                                createActionMessagingServerConnectionStateChanged(
-                                    e.connectionId,
-                                    ServerConnectionState.Closed
-                                ),
-                            ]
-                    }
-                    return []
-                })
+                mergeMapTo([]),
+                catchError((err) => [createActionMessagingServerErrored(err)])
             )
-        }),
-        catchError((err) => [createActionMessagingServerErrored(err)])
+        })
+    )
+
+const messagingServerStatus: Epic = () =>
+    SampleMessagingServer.getStatusEvent$().pipe(
+        mergeMap((e) => {
+            switch (e.type) {
+                case MessagingServerStatusEventName.Ready:
+                    return [createActionMessagingServerStateChanged(ServerState.Ready)]
+                case MessagingServerStatusEventName.Stopped:
+                    return [createActionMessagingServerStateChanged(ServerState.StandBy)]
+                case MessagingServerStatusEventName.ConnectionAccepted:
+                    return [
+                        createActionMessagingServerConnectionStateChanged(
+                            e.connectionId,
+                            ServerConnectionState.Accepted
+                        ),
+                    ]
+                case MessagingServerStatusEventName.ConnectionReady:
+                    return [
+                        createActionMessagingServerConnectionStateChanged(e.connectionId, ServerConnectionState.Ready),
+                    ]
+                case MessagingServerStatusEventName.ConnectionClosed:
+                    return [
+                        createActionMessagingServerConnectionStateChanged(e.connectionId, ServerConnectionState.Closed),
+                    ]
+            }
+            return []
+        })
     )
 
 const messagingServerStopRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_SERVER_STOP_REQUESTED),
-        switchMap(() => {
+        mergeMap(() => {
             return SampleMessagingServer.stop().pipe(
-                switchMap(() => {
-                    return []
-                })
+                mergeMapTo([]),
+                catchError((err) => [createActionMessagingServerErrored(err)])
             )
-        }),
-        catchError((err) => [createActionMessagingServerErrored(err)])
+        })
     )
 
 const messagingServerSendDataRequested: Epic = (action$: ActionsObservable<StateAction>) =>
@@ -107,6 +104,7 @@ const messagingServerCloseConnectionRequested: Epic = (action$: ActionsObservabl
 export default [
     messagingServerStartRequested,
     messagingServerStopRequested,
+    messagingServerStatus,
     messagingServerSendDataRequested,
     messagingServerCloseConnectionRequested,
 ]

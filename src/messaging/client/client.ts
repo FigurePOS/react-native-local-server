@@ -1,6 +1,6 @@
 import { defer, from, Observable, of, Subject, Subscription } from "rxjs"
 import { MessagingClientStatusEvent, TCPClient } from "../../"
-import { catchError, concatMap, map, mapTo, mergeMap, switchMap, timeout, withLatestFrom } from "rxjs/operators"
+import { catchError, concatMap, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
 import { fromClientDataReceived } from "./operators/fromClientDataReceived"
@@ -25,6 +25,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     private readonly error$: Subject<any>
     private readonly dataOutput$: Subject<[DataObject, null]>
     private readonly tcpClient: TCPClient
+    private readonly statusEvent$: Observable<MessagingClientStatusEvent>
 
     private logger: Logger | null = DefaultLogger
     private config: MessagingClientConfiguration | null = null
@@ -37,6 +38,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<[DataObject, null]>()
+        this.statusEvent$ = fromClientStatusEvent(this.clientId)
 
         this.tcpClient = new TCPClient(id)
     }
@@ -45,7 +47,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         config: MessagingClientConfiguration,
         rootHandler: MessageHandler<In, Out>,
         dependencies: Deps
-    ): Observable<MessagingClientStatusEvent> {
+    ): Observable<void> {
         this.logger?.log(`MessagingClient [${this.clientId}] - start`, config)
         this.config = config
         const output$: Observable<boolean> = this.handler$.pipe(
@@ -75,12 +77,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpClient.start(config)).pipe(
-            switchMap(() => {
-                return fromClientStatusEvent(this.clientId)
-            }),
-            log(this.logger, `MessagingClient [${this.clientId}] - status`)
-        )
+        return defer(() => this.tcpClient.start(config))
     }
 
     send(body: Out): Observable<any> {
@@ -90,7 +87,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         return this.sendMessage(body)
     }
 
-    stop(): Observable<any> {
+    stop(): Observable<void> {
         this.logger?.log(`MessagingClient [${this.clientId}] - stop`)
         if (this.mainSubscription) {
             this.mainSubscription.unsubscribe()
@@ -102,6 +99,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
         }
         this.config = null
         return defer(() => this.tcpClient.stop())
+    }
+
+    getStatusEvent$(): Observable<MessagingClientStatusEvent> {
+        return this.statusEvent$
     }
 
     getConfig(): MessagingClientConfiguration | null {

@@ -1,6 +1,6 @@
 import { ActionsObservable, Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
-import { catchError, mergeMap, switchMap } from "rxjs/operators"
+import { catchError, mergeMap, switchMap, switchMapTo } from "rxjs/operators"
 import {
     createActionMessagingClientDataReceived,
     createActionMessagingClientErrored,
@@ -17,7 +17,7 @@ import { MessagingClientConfiguration, MessagingClientStatusEventName } from "@f
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
 
-const messagingServerClientRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const messagingClientStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_START_REQUESTED),
         switchMap((action) => {
@@ -31,17 +31,23 @@ const messagingServerClientRequested: Epic = (action$: ActionsObservable<StateAc
                 host: action.payload.host,
             }
             return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
-                mergeMap((e) => {
-                    switch (e.type) {
-                        case MessagingClientStatusEventName.Ready:
-                            return [createActionMessagingClientStateChanged(ClientState.Ready)]
-                        case MessagingClientStatusEventName.Stopped:
-                            return [createActionMessagingClientStateChanged(ClientState.StandBy)]
-                        default:
-                            return []
-                    }
-                })
+                switchMapTo([]),
+                catchError((err) => [createActionMessagingClientErrored(err)])
             )
+        })
+    )
+
+const messagingClientStatus: Epic = () =>
+    SampleMessagingClient.getStatusEvent$().pipe(
+        mergeMap((e) => {
+            switch (e.type) {
+                case MessagingClientStatusEventName.Ready:
+                    return [createActionMessagingClientStateChanged(ClientState.Ready)]
+                case MessagingClientStatusEventName.Stopped:
+                    return [createActionMessagingClientStateChanged(ClientState.StandBy)]
+                default:
+                    return []
+            }
         }),
         catchError((err) => [createActionMessagingClientErrored(err)])
     )
@@ -51,12 +57,10 @@ const messagingClientStopRequested: Epic = (action$: ActionsObservable<StateActi
         ofType(MESSAGING_CLIENT_STOP_REQUESTED),
         switchMap(() => {
             return SampleMessagingClient.stop().pipe(
-                switchMap(() => {
-                    return []
-                })
+                switchMapTo([]),
+                catchError((err) => [createActionMessagingClientErrored(err)])
             )
-        }),
-        catchError((err) => [createActionMessagingClientErrored(err)])
+        })
     )
 
 const messagingClientDataSendRequested: Epic = (action$: ActionsObservable<StateAction>) =>
@@ -74,4 +78,9 @@ const messagingClientDataSendRequested: Epic = (action$: ActionsObservable<State
         catchError((err) => [createActionMessagingClientErrored(err)])
     )
 
-export default [messagingServerClientRequested, messagingClientStopRequested, messagingClientDataSendRequested]
+export default [
+    messagingClientStartRequested,
+    messagingClientStatus,
+    messagingClientStopRequested,
+    messagingClientDataSendRequested,
+]
