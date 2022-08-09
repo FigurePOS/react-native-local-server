@@ -1,3 +1,14 @@
+### [0.4.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.0...v0.4.1) (2022-08-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* introduce statusEvent$ (MessagingServer and MessagingClient) (#10)
+
+### Bug Fixes
+
+* introduce statusEvent$ (MessagingServer and MessagingClient) ([#10](https://github.com/FigurePOS/react-native-local-server/issues/10)) ([a25d223](https://github.com/FigurePOS/react-native-local-server/commit/a25d223ac40081b9fba89098ec9e35ce9af6cb28))
+
 ## [0.4.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.3.0...v0.4.0) (2022-08-04)
 
 
