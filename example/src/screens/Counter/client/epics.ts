@@ -1,6 +1,6 @@
 import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observable"
 import { StateAction } from "../../../types"
-import { catchError, filter, mergeMap, switchMap } from "rxjs/operators"
+import { catchError, filter, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
 import {
     COUNTER_CLIENT_START_REQUESTED,
     COUNTER_CLIENT_STATE_CHANGED,
@@ -19,7 +19,7 @@ import { filterWithSelector } from "../../../common/operators/filterWithSelector
 import { isCounterClientRunning } from "./selectors"
 import { StateObject } from "../../../rootReducer"
 
-const counterServerClientRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_REQUESTED),
         switchMap((action) => {
@@ -33,19 +33,24 @@ const counterServerClientRequested: Epic = (action$: ActionsObservable<StateActi
                 host: action.payload.host,
             }
             return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
-                mergeMap((e) => {
-                    switch (e.type) {
-                        case MessagingClientStatusEventName.Ready:
-                            return [createActionCounterClientStateChanged(ClientState.Ready)]
-                        case MessagingClientStatusEventName.Stopped:
-                            return [createActionCounterClientStateChanged(ClientState.StandBy)]
-                        default:
-                            return []
-                    }
-                })
+                mergeMapTo([]),
+                catchError((err) => [createActionCounterClientErrored(err)])
             )
-        }),
-        catchError((err) => [createActionCounterClientErrored(err)])
+        })
+    )
+
+const counterClientStatus: Epic = () =>
+    CounterClient.getStatusEvent$().pipe(
+        mergeMap((e) => {
+            switch (e.type) {
+                case MessagingClientStatusEventName.Ready:
+                    return [createActionCounterClientStateChanged(ClientState.Ready)]
+                case MessagingClientStatusEventName.Stopped:
+                    return [createActionCounterClientStateChanged(ClientState.StandBy)]
+                default:
+                    return []
+            }
+        })
     )
 
 const counterClientStopRequested: Epic = (action$: ActionsObservable<StateAction>) =>
@@ -53,12 +58,10 @@ const counterClientStopRequested: Epic = (action$: ActionsObservable<StateAction
         ofType(COUNTER_CLIENT_STOP_REQUESTED),
         switchMap(() => {
             return CounterClient.stop().pipe(
-                switchMap(() => {
-                    return []
-                })
+                mergeMapTo([]),
+                catchError((err) => [createActionCounterClientErrored(err)])
             )
-        }),
-        catchError((err) => [createActionCounterClientErrored(err)])
+        })
     )
 
 const counterClientCountResetRequested: Epic = (
@@ -95,7 +98,8 @@ const counterClientCountRequested: Epic = (action$: ActionsObservable<StateActio
     )
 
 export default [
-    counterServerClientRequested,
+    counterClientStartRequested,
+    counterClientStatus,
     counterClientStopRequested,
     counterClientCountResetRequested,
     counterClientCountRequested,

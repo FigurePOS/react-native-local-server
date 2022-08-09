@@ -1,17 +1,7 @@
 import { defer, from, Observable, of, Subject, Subscription } from "rxjs"
 import { TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
-import {
-    catchError,
-    concatMap,
-    groupBy,
-    map,
-    mapTo,
-    mergeMap,
-    switchMap,
-    timeout,
-    withLatestFrom,
-} from "rxjs/operators"
+import { catchError, concatMap, groupBy, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
 import { ofDataTypeMessage } from "../operators/ofDataType"
 import { deduplicateBy } from "../operators/deduplicateBy"
 import { handleBy } from "../operators/handleBy"
@@ -35,6 +25,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
     private readonly error$: Subject<any>
     private readonly dataOutput$: Subject<[DataObject, MessagingServerMessageAdditionalInfo]>
     private readonly tcpServer: TCPServer
+    private readonly statusEvent$: Observable<MessagingServerStatusEvent>
 
     private logger: Logger | null = DefaultLogger
     private config: MessagingServerConfiguration | null = null
@@ -47,15 +38,17 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<[DataObject, MessagingServerMessageAdditionalInfo]>()
+        this.statusEvent$ = fromServerStatusEvent(id)
 
         this.tcpServer = new TCPServer(id)
+        this.tcpServer.setLogger(this.logger)
     }
 
     start(
         config: MessagingServerConfiguration,
         rootHandler: MessageHandler<In, Out>,
         dependencies: Deps
-    ): Observable<MessagingServerStatusEvent> {
+    ): Observable<void> {
         this.logger?.log(`MessagingServer [${this.serverId}] - start`, config)
         this.config = config
         const output$: Observable<boolean> = this.handler$.pipe(
@@ -92,12 +85,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpServer.start(config)).pipe(
-            switchMap(() => {
-                return fromServerStatusEvent(this.serverId)
-            }),
-            log(this.logger, `MessagingServer [${this.serverId}] - status`)
-        )
+        return defer(() => this.tcpServer.start(config))
     }
 
     send(body: Out, connectionId: string): Observable<any> {
@@ -115,7 +103,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         return defer(() => this.tcpServer.closeConnection(connectionId))
     }
 
-    stop(): Observable<any> {
+    stop(): Observable<void> {
         this.logger?.log(`MessagingServer [${this.serverId}] - stop`)
         if (this.mainSubscription) {
             this.mainSubscription.unsubscribe()
@@ -126,7 +114,11 @@ export class MessagingServer<In, Out = In, Deps = any> {
             this.dataSubscription = null
         }
         this.config = null
-        return defer(() => this.tcpServer.stop())
+        return defer(() => from(this.tcpServer.stop()))
+    }
+
+    getStatusEvent$(): Observable<MessagingServerStatusEvent> {
+        return this.statusEvent$
     }
 
     getConfig(): MessagingServerConfiguration | null {
