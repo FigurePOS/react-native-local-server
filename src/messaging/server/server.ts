@@ -1,4 +1,4 @@
-import { defer, from, Observable, of, Subject, Subscription } from "rxjs"
+import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
 import { TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
 import { catchError, concatMap, groupBy, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
@@ -59,7 +59,13 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     map(parseServerMessage),
                     deduplicateBy(getMessageData(getMessageId)),
                     log(this.logger, `MessagingServer [${this.serverId}] - received message`),
-                    handleBy(handler, deps)
+                    handleBy(handler, deps),
+                    catchError((err) => {
+                        this.logger?.error("fromServerDataReceived - error", {
+                            error: err,
+                        })
+                        return EMPTY
+                    })
                 )
             }),
             log(this.logger, `MessagingServer [${this.serverId}] - reply message`),

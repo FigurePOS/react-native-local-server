@@ -1,4 +1,4 @@
-import { defer, from, Observable, of, Subject, Subscription } from "rxjs"
+import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
 import { MessagingClientStatusEvent, TCPClient } from "../../"
 import { catchError, concatMap, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, MessageHandler, MessageSource } from "../types"
@@ -58,7 +58,13 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     map(parseClientMessage),
                     deduplicateBy(getMessageData(getMessageId)),
                     log(this.logger, `MessagingClient [${this.clientId}] - received message`),
-                    handleBy(handler, deps)
+                    handleBy(handler, deps),
+                    catchError((err) => {
+                        this.logger?.error("fromClientDataReceived - error", {
+                            error: err,
+                        })
+                        return EMPTY
+                    })
                 )
             }),
             log(this.logger, `MessagingClient [${this.clientId}] - reply message`),
