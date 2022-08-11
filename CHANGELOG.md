@@ -1,3 +1,10 @@
+### [0.4.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.1...v0.4.2) (2022-08-11)
+
+
+### Bug Fixes
+
+* Gracefully handle errors in communication ([e884002](https://github.com/FigurePOS/react-native-local-server/commit/e884002f61e2d17d85f230c0bad7075bc6dad9bb))
+
 ### [0.4.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.0...v0.4.1) (2022-08-09)
 
 
