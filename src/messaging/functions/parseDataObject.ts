@@ -1,11 +1,18 @@
 import { DataObject } from "../types"
 import { TCPClientDataReceivedNativeEvent, TCPServerDataReceivedNativeEvent } from "../../"
 import { MessagingServerMessageAdditionalInfo } from "../server/types"
+import { ErrorWithMetadata } from "../../utils/errors"
 
 export const parseDataObject = (
     nativeEvent: TCPClientDataReceivedNativeEvent | TCPServerDataReceivedNativeEvent
 ): DataObject => {
-    return JSON.parse(nativeEvent.data)
+    try {
+        return JSON.parse(nativeEvent.data)
+    } catch (e: any) {
+        throw new ErrorWithMetadata(e.message, {
+            data: nativeEvent.data,
+        })
+    }
 }
 
 export const parseClientDataObject = (nativeEvent: TCPClientDataReceivedNativeEvent): [DataObject, null] => {
