@@ -1,3 +1,10 @@
+### [0.4.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.3...v0.4.4) (2022-08-12)
+
+
+### Bug Fixes
+
+* log metadata on ErrorWithMetadata thrown ([13be55b](https://github.com/FigurePOS/react-native-local-server/commit/13be55b5f7e21b2cdbd43c646a3ae510eb6d9f0d))
+
 ### [0.4.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.2...v0.4.3) (2022-08-11)
 
 
