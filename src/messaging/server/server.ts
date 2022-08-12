@@ -63,6 +63,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     catchError((err) => {
                         this.logger?.error("fromServerDataReceived - error", {
                             error: err,
+                            ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
                         })
                         return EMPTY
                     })
