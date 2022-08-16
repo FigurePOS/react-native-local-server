@@ -12,6 +12,7 @@ import Network
 @available(iOS 12.0, *)
 class TCPClientConnection {
 
+    private let reader: NewLineBufferedReader = NewLineBufferedReader()
     private let eventEmitter: EventEmitterWrapper
     
     var onClosedCallback: ((String) -> ())? = nil
@@ -105,8 +106,10 @@ class TCPClientConnection {
     private func setupReceive() {
         nwConnection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                print("TCPClientConnection - did receive data")
-                self.handleDataReceived(data: data)
+                self.reader.appendData(data: data)
+                while let readyData: String = self.reader.readData() {
+                    self.handleDataReceived(data: readyData)
+                }
             }
             if isComplete {
                 print("TCPClientConnection - is complete")
@@ -129,11 +132,10 @@ class TCPClientConnection {
         eventEmitter.emitEvent(event: event)
     }
 
-    private func handleDataReceived(data: Data) {
-        let parsedData: String = String(decoding: data, as: UTF8.self).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+    private func handleDataReceived(data: String) {
         let event: JSEvent = JSEvent(name: TCPClientEventName.DataReceived)
         event.putString(key: "clientId", value: clientId)
-        event.putString(key: "data", value: parsedData)
+        event.putString(key: "data", value: data)
         eventEmitter.emitEvent(event: event)
     }
 }

@@ -72,6 +72,32 @@ class E2E: XCTestCase {
         stopServer(id: serverId)
     }
     
+    func testServerShouldRecieveDataTwiceInShortPeriod() throws {
+        prepareServer(id: serverId)
+        prepareClient(id: clientId)
+        do {
+            try clientManager?.send(clientId: clientId, message: "This is message 1")
+            try clientManager?.send(clientId: clientId, message: "This is message 2")
+            waitForServerEvent(eventName: TCPServerEventName.DataReceived, serverId: serverId, emitter: serverEventEmitter!)
+            let events = serverEventEmitter?.getEvents()
+            if (events?.count != 5) {
+                XCTFail("Server should receive exaclty 5 events.")
+                return
+            }
+            XCTAssertEqual(events?[0].getName(), TCPServerEventName.Ready)
+            XCTAssertEqual(events?[1].getName(), TCPServerEventName.ConnectionAccepted)
+            XCTAssertEqual(events?[2].getName(), TCPServerEventName.ConnectionReady)
+            XCTAssertEqual(events?[3].getName(), TCPServerEventName.DataReceived)
+            XCTAssertEqual(events?[3].getBody()["data"] as? String, "This is message 1")
+            XCTAssertEqual(events?[4].getName(), TCPServerEventName.DataReceived)
+            XCTAssertEqual(events?[4].getBody()["data"] as? String, "This is message 2")
+        } catch {
+            XCTFail("FAILED WITH ERRROR: \(error)")
+        }
+        stopClient(id: clientId)
+        stopServer(id: serverId)
+    }
+    
     func testServerShouldSendData() throws {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
@@ -89,6 +115,38 @@ class E2E: XCTestCase {
             XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
             XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.DataReceived)
             XCTAssertEqual(clientEvents?[1].getBody()["data"] as? String, "Hello world!")
+        } catch {
+            XCTFail("FAILED WITH ERRROR: \(error)")
+        }
+        stopClient(id: clientId)
+        stopServer(id: serverId)
+    }
+    
+    func testClientShouldRecieveDataTwiceInShortPeriod() throws {
+        prepareServer(id: serverId)
+        prepareClient(id: clientId)
+        do {
+            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
+            let connections = try serverManager?.getConnectionsFromServer(serverId: serverId)
+            XCTAssertTrue(!connections!.isEmpty)
+            let connectionId: String? = connections![0]
+            XCTAssertNotNil(connectionId, "ConnectionID cannot be null")
+            
+            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 1")
+            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 2")
+            waitForClientEvent(eventName: TCPClientEventName.DataReceived, clientId: clientId, emitter: clientEventEmitter!)
+            let clientEvents = clientEventEmitter?.getEvents()
+
+            if (clientEvents?.count != 3) {
+                XCTFail("Client should receive exaclty 3 events.")
+                return
+            }
+            
+            XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
+            XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.DataReceived)
+            XCTAssertEqual(clientEvents?[1].getBody()["data"] as? String, "This is message 1")
+            XCTAssertEqual(clientEvents?[2].getName(), TCPClientEventName.DataReceived)
+            XCTAssertEqual(clientEvents?[2].getBody()["data"] as? String, "This is message 2")
         } catch {
             XCTFail("FAILED WITH ERRROR: \(error)")
         }

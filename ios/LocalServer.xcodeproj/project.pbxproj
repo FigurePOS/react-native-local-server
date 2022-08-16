@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B6CD39B28ABEBA300812D3E /* NewLineBufferedReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6CD39A28ABEBA300812D3E /* NewLineBufferedReader.swift */; };
+		1B6CD39C28ABEBA300812D3E /* NewLineBufferedReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6CD39A28ABEBA300812D3E /* NewLineBufferedReader.swift */; };
+		1B6CD39D28ABEBA300812D3E /* NewLineBufferedReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6CD39A28ABEBA300812D3E /* NewLineBufferedReader.swift */; };
+		1B6CD3A028ABEE7100812D3E /* NewLineBufferedReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6CD39F28ABEE7100812D3E /* NewLineBufferedReaderTests.swift */; };
 		1BE5C5A52893D190009D6F03 /* LocalServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5972893D190009D6F03 /* LocalServerError.swift */; };
 		1BE5C5A62893D190009D6F03 /* JSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5982893D190009D6F03 /* JSEvent.swift */; };
 		1BE5C5A72893D190009D6F03 /* EventEmitterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5992893D190009D6F03 /* EventEmitterWrapper.swift */; };
@@ -85,6 +89,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libLocalServer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLocalServer.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B6CD39A28ABEBA300812D3E /* NewLineBufferedReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLineBufferedReader.swift; sourceTree = "<group>"; };
+		1B6CD39F28ABEE7100812D3E /* NewLineBufferedReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLineBufferedReaderTests.swift; sourceTree = "<group>"; };
 		1BE5C5972893D190009D6F03 /* LocalServerError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalServerError.swift; sourceTree = "<group>"; };
 		1BE5C5982893D190009D6F03 /* JSEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSEvent.swift; sourceTree = "<group>"; };
 		1BE5C5992893D190009D6F03 /* EventEmitterWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventEmitterWrapper.swift; sourceTree = "<group>"; };
@@ -142,12 +148,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1B6CD39E28ABEE2D00812D3E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				1B6CD39F28ABEE7100812D3E /* NewLineBufferedReaderTests.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		1BE5C5962893D190009D6F03 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				1BE5C5972893D190009D6F03 /* LocalServerError.swift */,
 				1BE5C5982893D190009D6F03 /* JSEvent.swift */,
 				1BE5C5992893D190009D6F03 /* EventEmitterWrapper.swift */,
+				1B6CD39A28ABEBA300812D3E /* NewLineBufferedReader.swift */,
 			);
 			name = Utils;
 			path = LocalServer/Utils;
@@ -167,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				1BE5C60C2893DF1B009D6F03 /* Mocks */,
+				1B6CD39E28ABEE2D00812D3E /* Utils */,
 				1BE5C6132893F9CC009D6F03 /* E2E.swift */,
 			);
 			path = Tests;
@@ -351,6 +367,7 @@
 				1BE5C5F42893DE57009D6F03 /* JSEvent.swift in Sources */,
 				1BE5C6242893FFEA009D6F03 /* TCPServerConnection.swift in Sources */,
 				1BE5C6232893FFE5009D6F03 /* TCPServer.swift in Sources */,
+				1B6CD39C28ABEBA300812D3E /* NewLineBufferedReader.swift in Sources */,
 				1BE5C5F52893DE57009D6F03 /* TCPClientConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,8 +378,10 @@
 			files = (
 				1BE5C62C289404A1009D6F03 /* TCPClientEventName.swift in Sources */,
 				1BE5C6142893F9CC009D6F03 /* E2E.swift in Sources */,
+				1B6CD3A028ABEE7100812D3E /* NewLineBufferedReaderTests.swift in Sources */,
 				1BE5C62E289404A5009D6F03 /* TCPServerConnection.swift in Sources */,
 				1BE5C62F289404A5009D6F03 /* TCPServerEventName.swift in Sources */,
+				1B6CD39D28ABEBA300812D3E /* NewLineBufferedReader.swift in Sources */,
 				1BE5C62B289404A1009D6F03 /* TCPClient.swift in Sources */,
 				1BE5C631289404AD009D6F03 /* LocalServerError.swift in Sources */,
 				1BE5C62928940492009D6F03 /* TCPClientManager.swift in Sources */,
@@ -392,6 +411,7 @@
 				1BE5C61D2893FFB7009D6F03 /* TCPServerConnection.swift in Sources */,
 				1BE5C5A62893D190009D6F03 /* JSEvent.swift in Sources */,
 				1BE5C61E2893FFB7009D6F03 /* TCPServer.swift in Sources */,
+				1B6CD39B28ABEBA300812D3E /* NewLineBufferedReader.swift in Sources */,
 				1BE5C5AB2893D191009D6F03 /* TCPClientConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
