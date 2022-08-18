@@ -12,6 +12,7 @@ import Network
 @available(iOS 12.0, *)
 class TCPServerConnection {
     private let eventEmitter: EventEmitterWrapper
+    private let reader: NewLineBufferedReader = NewLineBufferedReader()
 
     //The TCP maximum package size is 64K 65536
     let MTU = 65536
@@ -69,8 +70,10 @@ class TCPServerConnection {
     private func setupReceive() {
         connection.receive(minimumIncompleteLength: 1, maximumLength: MTU) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                print("TCPServerConnection - did receive data")
-                self.handleDataReceived(data: data)
+                self.reader.appendData(data: data)
+                while let readyData: String = self.reader.readData() {
+                    self.handleDataReceived(data: readyData)
+                }
             }
             if isComplete {
                 print("TCPServerConnection - is complete")
@@ -128,12 +131,12 @@ class TCPServerConnection {
         eventEmitter.emitEvent(event: event)
     }
     
-    private func handleDataReceived(data: Data) {
-        let parsedData: String = String(decoding: data, as: UTF8.self).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+    private func handleDataReceived(data: String) {
+        print("TCPServerConnection - did receive data")
         let event: JSEvent = JSEvent(name: TCPServerEventName.DataReceived)
         event.putString(key: "serverId", value: serverId)
         event.putString(key: "connectionId", value: id)
-        event.putString(key: "data", value: parsedData)
+        event.putString(key: "data", value: data)
         eventEmitter.emitEvent(event: event)
     }
 }
