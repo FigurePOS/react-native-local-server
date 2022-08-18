@@ -1,3 +1,10 @@
+## [0.5.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.4...v0.5.0) (2022-08-18)
+
+
+### Bug Fixes
+
+* iOS multiple messages received in one moment ([#11](https://github.com/FigurePOS/react-native-local-server/issues/11)) ([d22485c](https://github.com/FigurePOS/react-native-local-server/commit/d22485c640e2924a027d762f6a2004fa0913f45d))
+
 ### [0.4.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.3...v0.4.4) (2022-08-12)
 
 
