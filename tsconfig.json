@@ -2,7 +2,7 @@
     "compilerOptions": {
         "baseUrl": "./",
         "paths": {
-            "@figuredev/react-native-local-server": ["./src/index"]
+            "@figuredev/react-native-local-server": ["./lib/typescript/src", "./src/index"]
         },
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
