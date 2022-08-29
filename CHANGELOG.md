@@ -1,3 +1,10 @@
+### [0.5.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.0...v0.5.1) (2022-08-29)
+
+
+### Chores
+
+* add declare module ([6511755](https://github.com/FigurePOS/react-native-local-server/commit/65117559fa55f6e7273f81cb5379fa14a85fa9b8))
+
 ## [0.5.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.4.4...v0.5.0) (2022-08-18)
 
 
