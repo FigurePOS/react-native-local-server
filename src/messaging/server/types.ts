@@ -34,11 +34,3 @@ export type MessagingServerConnectionStatusEvent = {
 }
 
 export type MessagingServerStatusEvent = MessagingServerLifecycleStatusEvent | MessagingServerConnectionStatusEvent
-
-/**
- * PRIVATE types
- */
-
-export type MessagingServerMessageAdditionalInfo = {
-    connectionId: string
-}

@@ -13,15 +13,15 @@ describe("ofDataTypeMessage", () => {
     it(
         "should filter messages",
         marbles((m) => {
-            const __in: Observable<[DataObject, null]> = m.hot("-a-b-c-d-|", {
-                a: [DataObjectMessageFixture1, null],
-                b: [DataObjectMessageAckFixture1, null],
-                c: [DataObjectMessageFixture2, null],
-                d: [DataObjectMessageAckFixture2, null],
+            const __in: Observable<DataObject> = m.hot("-a-b-c-d-|", {
+                a: DataObjectMessageFixture1,
+                b: DataObjectMessageAckFixture1,
+                c: DataObjectMessageFixture2,
+                d: DataObjectMessageAckFixture2,
             })
-            const _out: Observable<[DataObject, null]> = m.hot("-a---b---|", {
-                a: [DataObjectMessageFixture1, null],
-                b: [DataObjectMessageFixture2, null],
+            const _out: Observable<DataObject> = m.hot("-a---b---|", {
+                a: DataObjectMessageFixture1,
+                b: DataObjectMessageFixture2,
             })
             // @ts-ignore
             m.expect(__in.pipe(ofDataTypeMessage)).toBeObservable(_out)
@@ -33,15 +33,15 @@ describe("ofDataTypeMessageAck", () => {
     it(
         "should filter message ack",
         marbles((m) => {
-            const __in: Observable<[DataObject, null]> = m.hot("-a-b-c-d-|", {
-                a: [DataObjectMessageFixture1, null],
-                b: [DataObjectMessageAckFixture1, null],
-                c: [DataObjectMessageFixture2, null],
-                d: [DataObjectMessageAckFixture2, null],
+            const __in: Observable<DataObject> = m.hot("-a-b-c-d-|", {
+                a: DataObjectMessageFixture1,
+                b: DataObjectMessageAckFixture1,
+                c: DataObjectMessageFixture2,
+                d: DataObjectMessageAckFixture2,
             })
-            const _out: Observable<[DataObject, null]> = m.hot("---a---b-|", {
-                a: [DataObjectMessageAckFixture1, null],
-                b: [DataObjectMessageAckFixture2, null],
+            const _out: Observable<DataObject> = m.hot("---a---b-|", {
+                a: DataObjectMessageAckFixture1,
+                b: DataObjectMessageAckFixture2,
             })
             // @ts-ignore
             m.expect(__in.pipe(ofDataTypeMessageAck)).toBeObservable(_out)

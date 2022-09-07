@@ -1,25 +1,24 @@
 import { DataObjectMessage, Message } from "../types"
-import { MessagingServerMessageAdditionalInfo } from "../server/types"
+import { ErrorWithMetadata } from "../../utils/errors"
 
 export const parseMessage = <B = any>(data: DataObjectMessage): Message<B> => {
     return data.message
 }
 
-export const parseClientMessage = <B = any>([data, _]: [DataObjectMessage, null]): [Message<B>, null] => {
-    return [parseMessage(data), null]
+export const parseClientMessage = <B = any>(data: DataObjectMessage): Message<B> => {
+    return parseMessage(data)
 }
 
-export const parseServerMessage = <B = any>([data, info]: [DataObjectMessage, MessagingServerMessageAdditionalInfo]): [
-    Message<B>,
-    MessagingServerMessageAdditionalInfo
-] => {
+export const parseServerMessage = <B = any>(data: DataObjectMessage): Message<B> => {
+    if (data.connectionId == null) {
+        throw new ErrorWithMetadata("parseServerMessage - connection id is missing")
+    }
     const parsed = parseMessage(data)
-    const message: Message<B> = {
+    return {
         ...parsed,
         source: {
             ...parsed.source,
-            connectionId: info.connectionId,
+            connectionId: data.connectionId,
         },
     }
-    return [message, info]
 }

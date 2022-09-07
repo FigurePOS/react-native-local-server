@@ -5,11 +5,10 @@ import { createActionMessagingServerDataReceived } from "../actions"
 import { createMessageData } from "../../../common/components/messaging/functions"
 import { MessageHandler } from "@figuredev/react-native-local-server"
 
-export const rootHandler: MessageHandler<
-    LocalCommunicationMessage,
-    LocalCommunicationMessage,
-    SampleMessagingServerDependenciesType
-> = (message$, deps) =>
+export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessagingServerDependenciesType> = (
+    message$,
+    deps
+) =>
     message$.pipe(
         switchMap((message) => {
             if (message.body.type === LocalCommunicationMessageType.TextMessageSent) {
