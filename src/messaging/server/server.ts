@@ -6,13 +6,12 @@ import { ofDataTypeMessage } from "../operators/ofDataType"
 import { deduplicateBy } from "../operators/deduplicateBy"
 import { handleBy } from "../operators/handleBy"
 import { fromServerDataReceived } from "./operators/fromServerDataReceived"
-import { MessagingServerConfiguration, MessagingServerMessageAdditionalInfo, MessagingServerStatusEvent } from "./types"
+import { MessagingServerConfiguration, MessagingServerStatusEvent } from "./types"
 import { getMessageId } from "../functions/getMessageId"
 import { serializeDataObject } from "../functions/serializeDataObject"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { fromServerStatusEvent } from "./operators/fromServerStatusEvent"
 import { parseServerMessage } from "../functions/parseMessage"
-import { getMessageData } from "../functions/getMessageData"
 import { DataObject, MessageHandler, MessageSource } from "../types"
 import { Logger } from "../../utils/types"
 import { DefaultLogger } from "../../utils/logger"
@@ -20,10 +19,10 @@ import { log } from "../operators/log"
 
 export class MessagingServer<In, Out = In, Deps = any> {
     private readonly serverId: string
-    private readonly handler$: Subject<MessageHandler<In, Out>>
+    private readonly handler$: Subject<MessageHandler<In, Deps>>
     private readonly dep$: Subject<Deps>
     private readonly error$: Subject<any>
-    private readonly dataOutput$: Subject<[DataObject, MessagingServerMessageAdditionalInfo]>
+    private readonly dataOutput$: Subject<DataObject>
     private readonly tcpServer: TCPServer
     private readonly statusEvent$: Observable<MessagingServerStatusEvent>
 
@@ -34,10 +33,10 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     constructor(id: string) {
         this.serverId = id
-        this.handler$ = new Subject<MessageHandler<In, Out>>()
+        this.handler$ = new Subject<MessageHandler<In, Deps>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
-        this.dataOutput$ = new Subject<[DataObject, MessagingServerMessageAdditionalInfo]>()
+        this.dataOutput$ = new Subject<DataObject>()
         this.statusEvent$ = fromServerStatusEvent(id)
 
         this.tcpServer = new TCPServer(id)
@@ -46,18 +45,18 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     start(
         config: MessagingServerConfiguration,
-        rootHandler: MessageHandler<In, Out>,
+        rootHandler: MessageHandler<In, Deps>,
         dependencies: Deps
     ): Observable<void> {
         this.logger?.log(`MessagingServer [${this.serverId}] - start`, config)
         this.config = config
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
-            mergeMap(([handler, deps]: [MessageHandler<In, Out>, Deps]) => {
+            mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
                 return fromServerDataReceived(this.serverId).pipe(
                     ofDataTypeMessage,
                     map(parseServerMessage),
-                    deduplicateBy(getMessageData(getMessageId)),
+                    deduplicateBy(getMessageId),
                     log(this.logger, `MessagingServer [${this.serverId}] - received message`),
                     handleBy(handler, deps),
                     catchError((err) => {
@@ -68,20 +67,20 @@ export class MessagingServer<In, Out = In, Deps = any> {
                         return EMPTY
                     })
                 )
-            }),
-            log(this.logger, `MessagingServer [${this.serverId}] - reply message`),
-            mergeMap(([body, info]: [Out, MessagingServerMessageAdditionalInfo]) => {
-                return this.sendMessage(body, info.connectionId)
             })
         )
 
         const data$: Observable<boolean> = this.dataOutput$.pipe(
-            groupBy(([_, info]: [DataObject, MessagingServerMessageAdditionalInfo]) => info.connectionId),
+            groupBy((data: DataObject) => data.connectionId),
             mergeMap((group$) =>
                 group$.pipe(
-                    concatMap(([data, info]: [DataObject, MessagingServerMessageAdditionalInfo]) =>
-                        this.sendData(data, info.connectionId)
-                    )
+                    concatMap((data: DataObject) => {
+                        if (!data.connectionId) {
+                            this.logger?.error("Sending data without connection id")
+                            return of(false)
+                        }
+                        return this.sendData(data, data.connectionId)
+                    })
                 )
             )
         )
@@ -152,11 +151,8 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     private sendMessage(body: Out, connectionId: string): Observable<boolean> {
         const message = composeMessageObject(body, this.getSourceData(connectionId))
-        const data = composeDataMessageObject(message)
-        const info: MessagingServerMessageAdditionalInfo = {
-            connectionId: connectionId,
-        }
-        this.dataOutput$.next([data, info])
+        const data = composeDataMessageObject(message, connectionId)
+        this.dataOutput$.next(data)
         return of(true)
     }
 

@@ -1,20 +1,13 @@
 import { Message, MessageHandler } from "../types"
-import { Observable, of } from "rxjs"
-import { mergeMap, withLatestFrom } from "rxjs/operators"
+import { Observable } from "rxjs"
 
-// TODO
 export const handleBy =
-    <In, Out = In, Deps = any, A = null>(handler: MessageHandler<In, Out>, deps: Deps) =>
-    (source$: Observable<[Message<In>, A]>): Observable<[Out, A]> =>
-        source$.pipe(
-            // (s$: Observable<[Message<In>, A]>): Observable<[Message<Out>, A]> => {
-            //     const out$ = handler(s$.pipe(map(([message, _]) => message)), deps)
-            //     if (!out$) {
-            //         throw new Error("KOKOT")
-            //     }
-            //     return out$
-            // }
-            mergeMap(([message, info]: [Message<In>, A]): Observable<[Out, A]> => {
-                return handler(of(message), deps).pipe(withLatestFrom(of(info)))
-            })
-        )
+    <In, Deps = any>(handler: MessageHandler<In, Deps>, deps: Deps) =>
+    (source$: Observable<Message<In>>): Observable<boolean> =>
+        source$.pipe((s$: Observable<Message<In>>): Observable<boolean> => {
+            const out$ = handler(s$, deps)
+            if (!out$) {
+                throw new Error("Handlers should return Observable")
+            }
+            return out$
+        })

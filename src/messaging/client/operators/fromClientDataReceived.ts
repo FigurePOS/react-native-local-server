@@ -3,7 +3,7 @@ import { DataObject } from "../../types"
 import { TCPClient } from "../../../"
 import { map } from "rxjs/operators"
 import { fromClientEvent } from "./fromClientEvent"
-import { parseClientDataObject } from "../../functions/parseDataObject"
+import { parseDataObject } from "../../functions/parseDataObject"
 
-export const fromClientDataReceived = (clientId: string): Observable<[DataObject, null]> =>
-    fromClientEvent(clientId, TCPClient.EventName.DataReceived).pipe(map(parseClientDataObject))
+export const fromClientDataReceived = (clientId: string): Observable<DataObject> =>
+    fromClientEvent(clientId, TCPClient.EventName.DataReceived).pipe(map(parseDataObject))

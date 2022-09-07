@@ -10,7 +10,6 @@ import { MessagingClientConfiguration } from "./types"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { serializeDataObject } from "../functions/serializeDataObject"
 import { getMessageId } from "../functions/getMessageId"
-import { getMessageData } from "../functions/getMessageData"
 import { parseClientMessage } from "../functions/parseMessage"
 import { fromClientStatusEvent } from "./operators/fromClientStatusEvent"
 import { composeMessageObject } from "../functions/composeMessageObject"
@@ -20,10 +19,10 @@ import { log } from "../operators/log"
 
 export class MessagingClient<In, Out = In, Deps = any> {
     private readonly clientId: string
-    private readonly handler$: Subject<MessageHandler<In, Out>>
+    private readonly handler$: Subject<MessageHandler<In, Deps>>
     private readonly dep$: Subject<Deps>
     private readonly error$: Subject<any>
-    private readonly dataOutput$: Subject<[DataObject, null]>
+    private readonly dataOutput$: Subject<DataObject>
     private readonly tcpClient: TCPClient
     private readonly statusEvent$: Observable<MessagingClientStatusEvent>
 
@@ -34,10 +33,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
 
     constructor(id: string) {
         this.clientId = id
-        this.handler$ = new Subject<MessageHandler<In, Out>>()
+        this.handler$ = new Subject<MessageHandler<In, Deps>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
-        this.dataOutput$ = new Subject<[DataObject, null]>()
+        this.dataOutput$ = new Subject<DataObject>()
         this.statusEvent$ = fromClientStatusEvent(this.clientId)
 
         this.tcpClient = new TCPClient(id)
@@ -45,18 +44,18 @@ export class MessagingClient<In, Out = In, Deps = any> {
 
     start(
         config: MessagingClientConfiguration,
-        rootHandler: MessageHandler<In, Out>,
+        rootHandler: MessageHandler<In, Deps>,
         dependencies: Deps
     ): Observable<void> {
         this.logger?.log(`MessagingClient [${this.clientId}] - start`, config)
         this.config = config
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
-            mergeMap(([handler, deps]: [MessageHandler<In, Out>, Deps]) => {
+            mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
                 return fromClientDataReceived(this.clientId).pipe(
                     ofDataTypeMessage,
                     map(parseClientMessage),
-                    deduplicateBy(getMessageData(getMessageId)),
+                    deduplicateBy(getMessageId),
                     log(this.logger, `MessagingClient [${this.clientId}] - received message`),
                     handleBy(handler, deps),
                     catchError((err) => {
@@ -67,16 +66,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
                         return EMPTY
                     })
                 )
-            }),
-            log(this.logger, `MessagingClient [${this.clientId}] - reply message`),
-            mergeMap(([body, _]: [Out, null]) => {
-                return this.sendMessage(body)
             })
         )
 
-        const data$: Observable<boolean> = this.dataOutput$.pipe(
-            concatMap(([data, _]: [DataObject, null]) => this.sendData(data))
-        )
+        const data$: Observable<boolean> = this.dataOutput$.pipe(concatMap((data: DataObject) => this.sendData(data)))
 
         this.mainSubscription = output$.subscribe()
         this.dataSubscription = data$.subscribe()
@@ -133,7 +126,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     private sendMessage(body: Out): Observable<boolean> {
         const message = composeMessageObject(body, this.getSourceData())
         const data = composeDataMessageObject(message)
-        this.dataOutput$.next([data, null])
+        this.dataOutput$.next(data)
         return of(true)
     }
 

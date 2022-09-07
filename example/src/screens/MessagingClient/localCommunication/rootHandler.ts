@@ -5,11 +5,10 @@ import { SampleMessagingClientDependenciesType } from "./deps"
 import { createActionMessagingClientDataReceived } from "../actions"
 import { createMessageData } from "../../../common/components/messaging/functions"
 
-export const rootHandler: MessageHandler<
-    LocalCommunicationMessage,
-    LocalCommunicationMessage,
-    SampleMessagingClientDependenciesType
-> = (message$, deps) =>
+export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessagingClientDependenciesType> = (
+    message$,
+    deps
+) =>
     message$.pipe(
         switchMap((message) => {
             if (message.body.type === LocalCommunicationMessageType.TextMessageSent) {

@@ -11,10 +11,7 @@ export type Message<B = any> = {
     body: B
 }
 
-export type MessageHandler<In, Out = In, Deps = any> = (
-    message$: Observable<Message<In>>,
-    deps: Deps
-) => Observable<Out>
+export type MessageHandler<In, Deps = any> = (message$: Observable<Message<In>>, deps: Deps) => Observable<any>
 
 /**
  * PRIVATE types
@@ -33,11 +30,13 @@ export enum DataObjectType {
 export type DataObjectMessage<M = any> = {
     type: DataObjectType.Message
     message: Message<M>
+    connectionId?: string
 }
 
 export type DataObjectMessageAck = {
     type: DataObjectType.MessageAck
     messageId: string
+    connectionId?: string
 }
 
 export type DataObject<M = any> = DataObjectMessage<M> | DataObjectMessageAck

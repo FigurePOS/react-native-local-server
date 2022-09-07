@@ -4,11 +4,10 @@ import { SampleMessagingClientDependenciesType } from "../../MessagingClient/loc
 import { switchMap } from "rxjs/operators"
 import { createActionCounterCountChanged } from "../data/actionts"
 
-export const counterChangedHandler: MessageHandler<
-    CounterMessage,
-    CounterMessage,
-    SampleMessagingClientDependenciesType
-> = (message$, deps) =>
+export const counterChangedHandler: MessageHandler<CounterMessage, SampleMessagingClientDependenciesType> = (
+    message$,
+    deps
+) =>
     message$.pipe(
         switchMap((message) => {
             if (message.body.type === CounterMessageType.CountChanged) {
