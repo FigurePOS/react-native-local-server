@@ -1,3 +1,10 @@
+### [0.5.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.2...v0.5.3) (2022-09-07)
+
+
+### Refactoring
+
+* refactored API - output of handlers is not being sent anymore ([#12](https://github.com/FigurePOS/react-native-local-server/issues/12)) ([afbf7d4](https://github.com/FigurePOS/react-native-local-server/commit/afbf7d4c5258df8f88f8b765646e471109d9c68e))
+
 ### [0.5.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.1...v0.5.2) (2022-08-29)
 
 
