@@ -25,6 +25,7 @@ export type MessageSource = {
 export enum DataObjectType {
     Message = "message",
     MessageAck = "message-ack",
+    Ping = "ping",
 }
 
 export type DataObjectMessage<M = any> = {
@@ -39,4 +40,16 @@ export type DataObjectMessageAck = {
     connectionId?: string
 }
 
-export type DataObject<M = any> = DataObjectMessage<M> | DataObjectMessageAck
+export type DataObjectPing = {
+    type: DataObjectType.Ping
+    pingId: string
+    connectionId?: string
+}
+
+export const composeDataObjectPing = (pingId: string, connectionId?: string): DataObjectPing => ({
+    type: DataObjectType.Ping,
+    pingId: pingId,
+    ...(connectionId ? { connectionId: connectionId } : null),
+})
+
+export type DataObject<M = any> = DataObjectMessage<M> | DataObjectMessageAck | DataObjectPing
