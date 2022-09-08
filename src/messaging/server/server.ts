@@ -98,9 +98,9 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     this.statusEvent$,
                     fromServerDataReceived(this.serverId),
                     this.dataOutput$,
-                    PING_INTERVAL,
-                    PING_INTERVAL / 2,
-                    PING_RETRY
+                    this.config?.pingInterval ?? PING_INTERVAL,
+                    this.config?.pingTimeout ?? PING_INTERVAL / 2,
+                    this.config?.pingRetryCount ?? PING_RETRY
                 ).pipe(
                     catchError((err) => {
                         this.logger?.error(`Error in ping stream - closing the connection ${connectionId}`, err)

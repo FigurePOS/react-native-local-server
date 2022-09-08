@@ -1,6 +1,6 @@
 import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
-import { MessagingClientStatusEvent, TCPClient } from "../../"
-import { catchError, concatMap, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
+import { MessagingClientStatusEvent, MessagingClientStatusEventName, TCPClient } from "../../"
+import { catchError, concatMap, map, mapTo, mergeMap, switchMap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
 import { fromClientDataReceived } from "./operators/fromClientDataReceived"
@@ -16,6 +16,9 @@ import { composeMessageObject } from "../functions/composeMessageObject"
 import { Logger } from "../../utils/types"
 import { DefaultLogger } from "../../utils/logger"
 import { log } from "../operators/log"
+import { ofClientStatusEvent } from "./operators/ofClientStatusEvent"
+import { pingClient } from "./operators/pingClient"
+import { PING_INTERVAL, PING_RETRY } from "../constants"
 
 export class MessagingClient<In, Out = In, Deps = any> {
     private readonly clientId: string
@@ -30,6 +33,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     private config: MessagingClientConfiguration | null = null
     private mainSubscription: Subscription | null = null
     private dataSubscription: Subscription | null = null
+    private pingSubscription: Subscription | null = null
 
     constructor(id: string) {
         this.clientId = id
@@ -71,8 +75,21 @@ export class MessagingClient<In, Out = In, Deps = any> {
 
         const data$: Observable<boolean> = this.dataOutput$.pipe(concatMap((data: DataObject) => this.sendData(data)))
 
+        const ping$: Observable<boolean> = this.statusEvent$.pipe(
+            ofClientStatusEvent(MessagingClientStatusEventName.Ready),
+            switchMap(() => {
+                return pingClient(
+                    this.statusEvent$,
+                    fromClientDataReceived(this.clientId),
+                    this.dataOutput$,
+                    this.config?.pingTimeout ?? PING_INTERVAL * PING_RETRY
+                )
+            })
+        )
+
         this.mainSubscription = output$.subscribe()
         this.dataSubscription = data$.subscribe()
+        this.pingSubscription = ping$.subscribe()
 
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
@@ -96,6 +113,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
         if (this.dataSubscription) {
             this.dataSubscription.unsubscribe()
             this.dataSubscription = null
+        }
+        if (this.pingSubscription) {
+            this.pingSubscription.unsubscribe()
+            this.pingSubscription = null
         }
         this.config = null
         return defer(() => this.tcpClient.stop())

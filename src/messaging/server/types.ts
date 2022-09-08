@@ -6,6 +6,10 @@ export type MessagingServerConfiguration = {
     port: number
     name?: string
     serviceId?: string
+
+    pingInterval?: number
+    pingTimeout?: number
+    pingRetryCount?: number
 }
 
 export enum MessagingServerStatusEventName {
