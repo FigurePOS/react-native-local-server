@@ -67,7 +67,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     log(this.logger, `MessagingClient [${this.clientId}] - received message`, this.loggerVerbosity),
                     handleBy(handler, deps),
                     catchError((err) => {
-                        this.logger?.error("fromClientDataReceived - error", {
+                        this.logger?.error(`MessagingClient [${this.clientId}] fromClientDataReceived - error`, {
                             error: err,
                             ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
                         })
@@ -87,6 +87,17 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     fromClientDataReceived(this.clientId),
                     this.dataOutput$,
                     this.config?.pingTimeout ?? PING_INTERVAL * PING_RETRY
+                ).pipe(
+                    catchError((err) => {
+                        this.logger?.error(`MessagingClient [${this.clientId}] ping timed out`, err)
+                        return defer(() => this.tcpClient.stop()).pipe(
+                            mapTo(false),
+                            catchError((e) => {
+                                this.logger?.error(`MessagingClient [${this.clientId}] stop client failed - error`, e)
+                                return of(false)
+                            })
+                        )
+                    })
                 )
             })
         )
