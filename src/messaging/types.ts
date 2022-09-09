@@ -13,6 +13,12 @@ export type Message<B = any> = {
 
 export type MessageHandler<In, Deps = any> = (message$: Observable<Message<In>>, deps: Deps) => Observable<any>
 
+export enum LoggerVerbosity {
+    JustError = "just-error",
+    Messaging = "messaging",
+    TCP = "tcp",
+}
+
 /**
  * PRIVATE types
  */
