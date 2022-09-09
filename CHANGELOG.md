@@ -1,3 +1,16 @@
+### [0.5.5](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.4...v0.5.5) (2022-09-09)
+
+
+### Features
+
+* logger verbosity ([d63aba7](https://github.com/FigurePOS/react-native-local-server/commit/d63aba7a68efa09e5e8f3743ddc1acf2839036ca))
+
+
+### Bug Fixes
+
+* fromEvent throwing a warning ([441da99](https://github.com/FigurePOS/react-native-local-server/commit/441da99ff0323e874c1f7a0111f35a9663e8196b))
+* stop messaging client on ping timeout ([29e47ff](https://github.com/FigurePOS/react-native-local-server/commit/29e47ff7eee52990372f6fed3c33b3ac640f029d))
+
 ### [0.5.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.3...v0.5.4) (2022-09-09)
 
 
