@@ -1,3 +1,10 @@
+### [0.5.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.3...v0.5.4) (2022-09-09)
+
+
+### Features
+
+* ping functionality ([#13](https://github.com/FigurePOS/react-native-local-server/issues/13)) ([fc05d66](https://github.com/FigurePOS/react-native-local-server/commit/fc05d66211f81df33ef2676bdc103a72bb271bf2))
+
 ### [0.5.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.2...v0.5.3) (2022-09-07)
 
 
