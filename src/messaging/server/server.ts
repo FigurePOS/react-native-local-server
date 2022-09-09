@@ -1,12 +1,12 @@
 import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
-import { TCPServer } from "../../"
+import { MessagingServerConnectionStatusEvent, TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
 import { catchError, concatMap, groupBy, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
 import { ofDataTypeMessage } from "../operators/ofDataType"
 import { deduplicateBy } from "../operators/deduplicateBy"
 import { handleBy } from "../operators/handleBy"
 import { fromServerDataReceived } from "./operators/fromServerDataReceived"
-import { MessagingServerConfiguration, MessagingServerStatusEvent } from "./types"
+import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
 import { getMessageId } from "../functions/getMessageId"
 import { serializeDataObject } from "../functions/serializeDataObject"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
@@ -16,6 +16,9 @@ import { DataObject, MessageHandler, MessageSource } from "../types"
 import { Logger } from "../../utils/types"
 import { DefaultLogger } from "../../utils/logger"
 import { log } from "../operators/log"
+import { ofServerStatusEvent } from "./operators/ofServerStatusEvent"
+import { pingServerConnection } from "./operators/pingServerConnection"
+import { PING_INTERVAL, PING_RETRY } from "../constants"
 
 export class MessagingServer<In, Out = In, Deps = any> {
     private readonly serverId: string
@@ -30,6 +33,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
     private config: MessagingServerConfiguration | null = null
     private mainSubscription: Subscription | null = null
     private dataSubscription: Subscription | null = null
+    private pingSubscription: Subscription | null = null
 
     constructor(id: string) {
         this.serverId = id
@@ -85,8 +89,30 @@ export class MessagingServer<In, Out = In, Deps = any> {
             )
         )
 
+        const ping$: Observable<boolean> = this.statusEvent$.pipe(
+            ofServerStatusEvent(MessagingServerStatusEventName.ConnectionReady),
+            map((e: MessagingServerConnectionStatusEvent) => e.connectionId),
+            mergeMap((connectionId: string) => {
+                return pingServerConnection(
+                    connectionId,
+                    this.statusEvent$,
+                    fromServerDataReceived(this.serverId),
+                    this.dataOutput$,
+                    this.config?.pingInterval ?? PING_INTERVAL,
+                    this.config?.pingTimeout ?? PING_INTERVAL / 2,
+                    this.config?.pingRetryCount ?? PING_RETRY
+                ).pipe(
+                    catchError((err) => {
+                        this.logger?.error(`Error in ping stream - closing the connection ${connectionId}`, err)
+                        return defer(() => this.tcpServer.closeConnection(connectionId)).pipe(mapTo(false))
+                    })
+                )
+            })
+        )
+
         this.mainSubscription = output$.subscribe()
         this.dataSubscription = data$.subscribe()
+        this.pingSubscription = ping$.subscribe()
 
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
@@ -118,6 +144,10 @@ export class MessagingServer<In, Out = In, Deps = any> {
         if (this.dataSubscription) {
             this.dataSubscription.unsubscribe()
             this.dataSubscription = null
+        }
+        if (this.pingSubscription) {
+            this.pingSubscription.unsubscribe()
+            this.pingSubscription = null
         }
         this.config = null
         return defer(() => from(this.tcpServer.stop()))

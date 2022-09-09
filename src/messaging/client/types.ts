@@ -3,6 +3,8 @@ export type MessagingClientConfiguration = {
     serviceId?: string
     host: string
     port: number
+
+    pingTimeout?: number
 }
 
 export enum MessagingClientStatusEventName {
