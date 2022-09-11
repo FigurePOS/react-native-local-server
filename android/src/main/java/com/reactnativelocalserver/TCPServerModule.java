@@ -12,8 +12,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
-import com.reactnativelocalserver.tcp.Server;
-import com.reactnativelocalserver.tcp.factory.ServerFactory;
+import com.reactnativelocalserver.tcp.TCPServer;
+import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
@@ -29,18 +29,18 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     public static final String NAME = "TCPServerModule";
 
     private final EventEmitter eventEmitter;
-    private final ServerFactory serverFactory;
-    private final Map<String, Server> servers = new HashMap();
+    private final TCPServerFactory serverFactory;
+    private final Map<String, TCPServer> servers = new HashMap();
     private final ReactApplicationContext reactApplicationContext;
 
-    public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, ServerFactory serverFactory) {
+    public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPServerFactory serverFactory) {
         super(reactContext);
         this.reactApplicationContext = reactContext;
         this.eventEmitter = eventEmitter;
         this.serverFactory = serverFactory;
     }
 
-    public Map<String, Server> getServers() {
+    public Map<String, TCPServer> getServers() {
         return servers;
     }
 
@@ -54,25 +54,25 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     public void createServer(String id, int port, Promise promise) {
         Log.d(NAME, "createServer started for id: " + id);
         if (servers.get(id) != null) {
-            promise.reject("server.already-exists", "Server with this id already exists");
+            promise.reject("tcp.server.already-exists", "Server with this id already exists");
             return;
         }
         try {
-            Server server = serverFactory.of(id, port, eventEmitter);
+            TCPServer server = serverFactory.of(id, port, eventEmitter);
             server.start();
             servers.put(id, server);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("server.error", e.getMessage());
+            promise.reject("tcp.server.error", e.getMessage());
         }
     }
 
     @ReactMethod
     public void stopServer(String id, String reason, Promise promise) {
         Log.d(NAME, "stopServer started for id: " + id);
-        Server server = servers.get(id);
+        TCPServer server = servers.get(id);
         if (server == null) {
-            promise.reject("server.not-exists", "Server with this id does not exist");
+            promise.reject("tcp.server.not-exists", "Server with this id does not exist");
             return;
         }
         try {
@@ -80,39 +80,39 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             servers.remove(id);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("server.error", e.getMessage());
+            promise.reject("tcp.server.error", e.getMessage());
         }
     }
 
     @ReactMethod
     public void send(String serverId, String connectionId, String message, Promise promise) {
         Log.d(NAME, "send started for server: " + serverId);
-        Server server = servers.get(serverId);
+        TCPServer server = servers.get(serverId);
         if (server == null) {
-            promise.reject("server.not-exists", "Server with this id does not exist");
+            promise.reject("tcp.server.not-exists", "Server with this id does not exist");
             return;
         }
         try {
             server.send(connectionId, message);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("server.error", e.getMessage());
+            promise.reject("tcp.server.error", e.getMessage());
         }
     }
 
     @ReactMethod
     public void closeConnection(String serverId, String connectionId, String reason, Promise promise) {
         Log.d(NAME, "close connection started for server: " + serverId);
-        Server server = servers.get(serverId);
+        TCPServer server = servers.get(serverId);
         if (server == null) {
-            promise.reject("server.not-exists", "Server with this id does not exist");
+            promise.reject("tcp.server.not-exists", "Server with this id does not exist");
             return;
         }
         try {
             server.closeConnection(connectionId, reason);
             promise.resolve(true);
         } catch (Exception e) {
-            promise.reject("server.error", e.getMessage());
+            promise.reject("tcp.server.error", e.getMessage());
         }
     }
 
@@ -150,7 +150,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
                     Log.d(NAME, "getLocalIpAddress: " + ipAddress);
                     promise.resolve(ipAddress);
                 } catch (Exception e) {
-                    promise.reject("server.error", e.getMessage());
+                    promise.reject("tcp.server.error", e.getMessage());
                 }
             }
         }).start();
@@ -159,7 +159,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     @Override
     public void invalidate() {
         Log.d(NAME, "invalidate - number of servers: " + servers.size());
-        for (Map.Entry<String, Server> entry : servers.entrySet()) {
+        for (Map.Entry<String, TCPServer> entry : servers.entrySet()) {
             try {
                 entry.getValue().stop(StopReasonEnum.Invalidation);
             } catch (Exception e) {

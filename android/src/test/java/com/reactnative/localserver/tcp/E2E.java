@@ -1,4 +1,4 @@
-package com.reactnative.localserver;
+package com.reactnative.localserver.tcp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -9,8 +9,8 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.reactnativelocalserver.TCPClientModule;
 import com.reactnativelocalserver.TCPServerModule;
-import com.reactnativelocalserver.tcp.factory.ClientFactory;
-import com.reactnativelocalserver.tcp.factory.ServerFactory;
+import com.reactnativelocalserver.tcp.factory.TCPClientFactory;
+import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
 import com.reactnativelocalserver.utils.StopReasonEnum;
@@ -52,8 +52,8 @@ public class E2E {
 
     @Before
     public void setup() {
-        serverModule = new TCPServerModule(context, serverEventEmitter, new ServerFactory());
-        clientModule = new TCPClientModule(context, clientEventEmitter, new ClientFactory());
+        serverModule = new TCPServerModule(context, serverEventEmitter, new TCPServerFactory());
+        clientModule = new TCPClientModule(context, clientEventEmitter, new TCPClientFactory());
     }
 
     @After

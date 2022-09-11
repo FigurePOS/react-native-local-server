@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.reactnativelocalserver.TCPClientModule;
-import com.reactnativelocalserver.tcp.Client;
-import com.reactnativelocalserver.tcp.factory.ClientFactory;
+import com.reactnativelocalserver.tcp.TCPClient;
+import com.reactnativelocalserver.tcp.factory.TCPClientFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
@@ -33,9 +33,9 @@ public class TCPClientModuleTest {
     @Mock
     ReactApplicationContext context;
     @Mock
-    ClientFactory clientFactory;
+    TCPClientFactory clientFactory;
     @Mock
-    Client client;
+    TCPClient client;
     @Mock
     EventEmitter eventEmitter;
 

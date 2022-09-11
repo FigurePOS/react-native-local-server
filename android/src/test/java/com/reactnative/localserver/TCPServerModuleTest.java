@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.reactnativelocalserver.TCPServerModule;
-import com.reactnativelocalserver.tcp.Server;
-import com.reactnativelocalserver.tcp.factory.ServerFactory;
+import com.reactnativelocalserver.tcp.TCPServer;
+import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
@@ -33,9 +33,9 @@ public class TCPServerModuleTest {
     @Mock
     ReactApplicationContext context;
     @Mock
-    ServerFactory serverFactory;
+    TCPServerFactory serverFactory;
     @Mock
-    Server server;
+    TCPServer server;
     @Mock
     EventEmitter eventEmitter;
 

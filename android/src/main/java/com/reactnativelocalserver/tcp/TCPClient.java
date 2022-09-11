@@ -2,23 +2,23 @@ package com.reactnativelocalserver.tcp;
 
 import android.util.Log;
 
-import com.reactnativelocalserver.tcp.factory.ClientConnectionFactory;
+import com.reactnativelocalserver.tcp.factory.TCPClientConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 
 import java.util.function.Consumer;
 
-public class Client {
+public class TCPClient {
     private final static String TAG = "TCPClient";
     private final String id;
     private final String host;
     private final int port;
-    private final ClientConnection connection;
+    private final TCPClientConnection connection;
 
-    public Client(String id, String host, int port, EventEmitter eventEmitter) {
-        this(id, host, port, eventEmitter, new ClientConnectionFactory());
+    public TCPClient(String id, String host, int port, EventEmitter eventEmitter) {
+        this(id, host, port, eventEmitter, new TCPClientConnectionFactory());
     }
 
-    public Client(String id, String host, int port, EventEmitter eventEmitter, ClientConnectionFactory connectionFactory) {
+    public TCPClient(String id, String host, int port, EventEmitter eventEmitter, TCPClientConnectionFactory connectionFactory) {
         this.id = id;
         this.host = host;
         this.port = port;

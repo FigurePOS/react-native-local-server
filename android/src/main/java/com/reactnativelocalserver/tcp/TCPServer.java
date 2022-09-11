@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class Server {
+public class TCPServer {
     private final static String TAG = "TCPServer";
-    private final ServerConnectionManager connectionManager;
+    private final TCPServerConnectionManager connectionManager;
     private final ServerSocketFactory socketFactory;
     private final EventEmitter eventEmitter;
 
@@ -31,11 +31,11 @@ public class Server {
     private String lastStopReason = null;
 
 
-    public Server(String id, int port, EventEmitter eventEmitter) {
-        this(id, port, eventEmitter, new ServerSocketFactory(), new ServerConnectionManager());
+    public TCPServer(String id, int port, EventEmitter eventEmitter) {
+        this(id, port, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
     }
 
-    public Server(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, ServerConnectionManager connectionManager) {
+    public TCPServer(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
         this.id = id;
         this.port = port;
         this.eventEmitter = eventEmitter;
@@ -51,7 +51,7 @@ public class Server {
         return port;
     }
 
-    public Map<String, ServerConnection> getConnections() {
+    public Map<String, TCPServerConnection> getConnections() {
         return connectionManager.getConnections();
     }
 
@@ -69,7 +69,7 @@ public class Server {
         try {
             serverSocket = socketFactory.of(port);
             runnable = new TCPRunnable();
-            thread = new Thread(runnable, "com.react-native-messaging.server." + id);
+            thread = new Thread(runnable, "com.react-native-messaging.tcp.server." + id);
             thread.start();
         } catch (IOException e) {
             Log.e(TAG, "start failed", e);
@@ -90,7 +90,7 @@ public class Server {
 
     public void send(String connectionId, String message) throws Exception {
         Log.d(TAG, "send: " + id + "\n\tto: " + connectionId + "\n\tmessage: " + message);
-        ServerConnection connection = connectionManager.get(connectionId);
+        TCPServerConnection connection = connectionManager.get(connectionId);
         if (connection == null) {
             throw new Exception("Unknown connection: " + connectionId);
         }
@@ -99,7 +99,7 @@ public class Server {
 
     public void closeConnection(String connectionId, String reason) throws Exception {
         Log.d(TAG, "close connection: " + id + "\n\tconnectionId: " + connectionId);
-        ServerConnection connection = connectionManager.get(connectionId);
+        TCPServerConnection connection = connectionManager.get(connectionId);
         if (connection == null) {
             throw new Exception("Unknown connection: " + connectionId);
         }

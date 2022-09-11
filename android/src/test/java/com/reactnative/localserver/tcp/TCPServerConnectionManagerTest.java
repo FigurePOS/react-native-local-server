@@ -7,9 +7,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.reactnativelocalserver.tcp.ServerConnection;
-import com.reactnativelocalserver.tcp.ServerConnectionManager;
-import com.reactnativelocalserver.tcp.factory.ServerConnectionFactory;
+import com.reactnativelocalserver.tcp.TCPServerConnection;
+import com.reactnativelocalserver.tcp.TCPServerConnectionManager;
+import com.reactnativelocalserver.tcp.factory.TCPServerConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
@@ -21,13 +21,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.net.Socket;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServerConnectionManagerTest {
+public class TCPServerConnectionManagerTest {
     @Mock
-    ServerConnectionFactory connectionFactory;
+    TCPServerConnectionFactory connectionFactory;
     @Mock
-    ServerConnection connection;
+    TCPServerConnection connection;
     @Mock
-    ServerConnection connection2;
+    TCPServerConnection connection2;
     @Mock
     EventEmitter eventEmitter;
     @Mock
@@ -42,7 +42,7 @@ public class ServerConnectionManagerTest {
         when(connectionFactory.of(serverId, eventEmitter)).thenReturn(connection);
         when(connection.getId()).thenReturn(connectionId);
 
-        ServerConnectionManager manager = new ServerConnectionManager(connectionFactory);
+        TCPServerConnectionManager manager = new TCPServerConnectionManager(connectionFactory);
         String connectionIdFromMethod = manager.create(serverId, eventEmitter);
 
         assertThat(connectionIdFromMethod).isEqualTo(connectionId);
@@ -55,7 +55,7 @@ public class ServerConnectionManagerTest {
         when(connectionFactory.of(serverId, eventEmitter)).thenReturn(connection);
         when(connection.getId()).thenReturn(connectionId);
 
-        ServerConnectionManager manager = new ServerConnectionManager(connectionFactory);
+        TCPServerConnectionManager manager = new TCPServerConnectionManager(connectionFactory);
         String connectionIdFromMethod = manager.create(serverId, eventEmitter);
 
         manager.start(connectionIdFromMethod, socket);
@@ -65,7 +65,7 @@ public class ServerConnectionManagerTest {
 
     @Test
     public void shouldNotStartConnection_UnknownConnection() {
-        ServerConnectionManager manager = new ServerConnectionManager();
+        TCPServerConnectionManager manager = new TCPServerConnectionManager();
         try {
             manager.start(connectionId, socket);
             fail("manager.start() did not throw exception.");
@@ -81,7 +81,7 @@ public class ServerConnectionManagerTest {
         when(connection2.getId()).thenReturn(connection2Id);
         doThrow(new Exception()).when(connection2).stop(StopReasonEnum.Invalidation);
 
-        ServerConnectionManager manager = new ServerConnectionManager(connectionFactory);
+        TCPServerConnectionManager manager = new TCPServerConnectionManager(connectionFactory);
 
         when(connectionFactory.of(serverId, eventEmitter)).thenReturn(connection);
         manager.create(serverId, eventEmitter);
