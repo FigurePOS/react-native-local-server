@@ -13,6 +13,7 @@ import com.reactnativelocalserver.TCPClientModule;
 import com.reactnativelocalserver.tcp.Client;
 import com.reactnativelocalserver.tcp.factory.ClientFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,9 +95,9 @@ public class TCPClientModuleTest {
         when(clientFactory.of("client-1", "localhost", 12000, eventEmitter)).thenReturn(client);
 
         module.createClient("client-1", "localhost", 12000, promise);
-        module.stopClient("client-1", promise2);
+        module.stopClient("client-1", StopReasonEnum.Manual, promise2);
 
-        verify(client).stop();
+        verify(client).stop(StopReasonEnum.Manual);
         verify(promise2).resolve(true);
         assertThat(module.getClients()).doesNotContainEntry("client-1", client);
     }
@@ -104,7 +105,7 @@ public class TCPClientModuleTest {
     @Test
     public void shouldNotStopClient_ClientDoesNotExist() throws Exception {
         TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
-        module.stopClient("client-1", promise);
+        module.stopClient("client-1", StopReasonEnum.Manual, promise);
         verify(promise).reject("client.not-exists", "Client with this id does not exist");
     }
 
@@ -113,12 +114,12 @@ public class TCPClientModuleTest {
         Exception exception = new Exception("Failed to stop client");
         TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
         when(clientFactory.of("client-1", "localhost", 12000, eventEmitter)).thenReturn(client);
-        doThrow(exception).when(client).stop();
+        doThrow(exception).when(client).stop(StopReasonEnum.Manual);
 
         module.createClient("client-1", "localhost", 12000, promise);
-        module.stopClient("client-1", promise2);
+        module.stopClient("client-1", StopReasonEnum.Manual, promise2);
 
-        verify(client).stop();
+        verify(client).stop(StopReasonEnum.Manual);
         verify(promise2).reject("client.error", exception.getMessage());
         assertThat(module.getClients()).containsEntry("client-1", client);
     }
@@ -168,7 +169,7 @@ public class TCPClientModuleTest {
         module.createClient("client-1", "localhost", 12000, promise);
 
         module.invalidate();
-        verify(client).stop();
+        verify(client).stop(StopReasonEnum.Invalidation);
         assertThat(module.getClients()).isEmpty();
     }
 
@@ -177,12 +178,12 @@ public class TCPClientModuleTest {
         Exception exception = new Exception("Failed to stop client");
         TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
         when(clientFactory.of("client-1", "localhost", 12000, eventEmitter)).thenReturn(client);
-        doThrow(exception).when(client).stop();
+        doThrow(exception).when(client).stop(StopReasonEnum.Invalidation);
 
         module.createClient("client-1", "localhost", 12000, promise);
 
         module.invalidate();
-        verify(client).stop();
+        verify(client).stop(StopReasonEnum.Invalidation);
         assertThat(module.getClients()).isEmpty();
     }
 

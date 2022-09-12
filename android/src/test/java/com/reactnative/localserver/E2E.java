@@ -114,7 +114,7 @@ public class E2E {
         prepareClient("client");
 
         Promise promise = mockPromise();
-        clientModule.stopClient("client", promise);
+        clientModule.stopClient("client", null, promise);
         verify(promise).resolve(true);
 
         TimeUnit.MILLISECONDS.sleep(100);
@@ -153,7 +153,7 @@ public class E2E {
         prepareClient("client");
 
         Promise promise = mockPromise();
-        serverModule.stopServer("server", promise);
+        serverModule.stopServer("server", null, promise);
         verify(promise).resolve(true);
 
         TimeUnit.MILLISECONDS.sleep(100);
@@ -171,6 +171,31 @@ public class E2E {
         assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
         assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
     }
+    @Test
+    public void serverShouldStopWithCustomReason() throws Exception {
+        prepareServer("server");
+        prepareClient("client");
+
+        Promise promise = mockPromise();
+        serverModule.stopServer("server", "custom-reason", promise);
+        verify(promise).resolve(true);
+
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(serverEventEmitter, times(5)).emitEvent(serverEventCaptor.capture());
+        List<JSEvent> serverEvents = serverEventCaptor.getAllValues();
+        assertThat(serverEvents.get(0).getName()).isEqualTo(TCPServerEventName.Ready);
+        assertThat(serverEvents.get(1).getName()).isEqualTo(TCPServerEventName.ConnectionAccepted);
+        assertThat(serverEvents.get(2).getName()).isEqualTo(TCPServerEventName.ConnectionReady);
+        assertThat(serverEvents.get(3).getName()).isEqualTo(TCPServerEventName.Stopped);
+        assertThat(serverEvents.get(3).getBody().get("reason")).isEqualTo("custom-reason");
+        assertThat(serverEvents.get(4).getName()).isEqualTo(TCPServerEventName.ConnectionClosed);
+
+        verify(clientEventEmitter, times(2)).emitEvent(clientEventCaptor.capture());
+        List<JSEvent> clientEvents = clientEventCaptor.getAllValues();
+        assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
+        assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
+    }
 
     @Test
     public void serverShouldNotSendDataToClosedConnection() throws Exception {
@@ -178,7 +203,7 @@ public class E2E {
         prepareClient("client");
 
         Promise stopPromise = mockPromise();
-        clientModule.stopClient("client", stopPromise);
+        clientModule.stopClient("client", null, stopPromise);
         verify(stopPromise).resolve(true);
 
         TimeUnit.MILLISECONDS.sleep(100);
@@ -207,7 +232,7 @@ public class E2E {
         prepareClient("client");
 
         Promise promise = mockPromise();
-        serverModule.stopServer("server", promise);
+        serverModule.stopServer("server", null, promise);
         verify(promise).resolve(true);
 
         TimeUnit.MILLISECONDS.sleep(100);
@@ -241,7 +266,7 @@ public class E2E {
         String connectionId = serverEventsBefore.get(2).getBody().get("connectionId");
 
         Promise promise = mockPromise();
-        serverModule.closeConnection("server", connectionId, promise);
+        serverModule.closeConnection("server", connectionId, null, promise);
         verify(promise).resolve(true);
 
         TimeUnit.MILLISECONDS.sleep(100);
@@ -257,6 +282,35 @@ public class E2E {
         assertThat(serverEventsAfter.get(4).getName()).isEqualTo(TCPServerEventName.ConnectionAccepted);
         assertThat(serverEventsAfter.get(5).getName()).isEqualTo(TCPServerEventName.ConnectionReady);
         assertThat(serverEventsAfter.get(6).getName()).isEqualTo(TCPServerEventName.ConnectionClosed);
+    }
+
+    @Test
+    public void serverShouldCloseConnectionWithCustomReason() throws Exception {
+        prepareServer("server");
+        prepareClient("client");
+
+        verify(serverEventEmitter, times(3)).emitEvent(serverEventCaptor.capture());
+        List<JSEvent> serverEventsBefore = serverEventCaptor.getAllValues();
+        String connectionId = serverEventsBefore.get(2).getBody().get("connectionId");
+
+        Promise promise = mockPromise();
+        serverModule.closeConnection("server", connectionId, "custom-reason", promise);
+        verify(promise).resolve(true);
+
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(clientEventEmitter, times(2)).emitEvent(clientEventCaptor.capture());
+        List<JSEvent> clientEvents = clientEventCaptor.getAllValues();
+        assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
+        assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
+
+        verify(serverEventEmitter, times(4)).emitEvent(serverEventCaptor.capture());
+        List<JSEvent> serverEventsAfter = serverEventCaptor.getAllValues();
+        assertThat(serverEventsAfter.get(3).getName()).isEqualTo(TCPServerEventName.Ready);
+        assertThat(serverEventsAfter.get(4).getName()).isEqualTo(TCPServerEventName.ConnectionAccepted);
+        assertThat(serverEventsAfter.get(5).getName()).isEqualTo(TCPServerEventName.ConnectionReady);
+        assertThat(serverEventsAfter.get(6).getName()).isEqualTo(TCPServerEventName.ConnectionClosed);
+        assertThat(serverEventsAfter.get(6).getBody().get("reason")).isEqualTo("custom-reason");
     }
 
     private void prepareServer(String id) throws Exception {

@@ -12,6 +12,7 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.Client;
 import com.reactnativelocalserver.tcp.factory.ClientFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stopClient(String id, Promise promise) {
+    public void stopClient(String id, String reason, Promise promise) {
         Log.d(NAME, "stopClient started for id:" + id);
         Client client = clients.get(id);
         if (client == null) {
@@ -69,7 +70,7 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             return;
         }
         try {
-            client.stop();
+            client.stop(reason);
             clients.remove(id);
             promise.resolve(true);
         } catch (Exception e) {
@@ -98,7 +99,7 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         Log.d(NAME, "invalidate - number of clients: " + clients.size());
         for (Map.Entry<String, Client> entry : clients.entrySet()) {
             try {
-                entry.getValue().stop();
+                entry.getValue().stop(StopReasonEnum.Invalidation);
             } catch (Exception e) {
                 Log.e(NAME, "invalidate - failed to stop client: " + entry.getKey(), e);
             }

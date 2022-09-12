@@ -27,6 +27,7 @@ public class Server {
     private ServerSocket serverSocket;
     private TCPRunnable runnable;
     private Thread thread;
+    private String lastStopReason = null;
 
 
     public Server(String id, int port, EventEmitter eventEmitter) {
@@ -71,9 +72,10 @@ public class Server {
         }
     }
 
-    public void stop() throws Exception {
+    public void stop(String reason) throws Exception {
         Log.d(TAG, "stop: " + id);
         try {
+            lastStopReason = reason;
             serverSocket.close();
         } catch (IOException e) {
             Log.e(TAG, "close server socket error", e);
@@ -90,13 +92,13 @@ public class Server {
         connection.send(message);
     }
 
-    public void closeConnection(String connectionId) throws Exception {
+    public void closeConnection(String connectionId, String reason) throws Exception {
         Log.d(TAG, "close connection: " + id + "\n\tconnectionId: " + connectionId);
         ServerConnection connection = connectionManager.get(connectionId);
         if (connection == null) {
             throw new Exception("Unknown connection: " + connectionId);
         }
-        connection.stop();
+        connection.stop(reason);
     }
 
     private void cleanUp(String reason) {
@@ -105,10 +107,12 @@ public class Server {
         if (thread != null && !thread.isInterrupted()) {
             thread.interrupt();
         }
+        String reasonToStop = lastStopReason != null ? lastStopReason : reason;
         thread = null;
         runnable = null;
         serverSocket = null;
-        handleLifecycleEvent(TCPServerEventName.Stopped, reason);
+        lastStopReason = null;
+        handleLifecycleEvent(TCPServerEventName.Stopped, reasonToStop);
     }
 
     private void handleConnectionAccepted(String connectionId) {
