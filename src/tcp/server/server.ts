@@ -3,6 +3,7 @@ import { TCPServerModule } from "./module"
 import { NativeEventEmitter } from "react-native"
 import { TCPServerEventName } from "./nativeEvents"
 import { Logger } from "../../utils/types"
+import { StopReason, StopReasonEnum } from "../types"
 
 const eventEmitter = new NativeEventEmitter(TCPServerModule)
 
@@ -67,10 +68,10 @@ export class TCPServer {
         }
     }
 
-    closeConnection = async (connectionId: string): Promise<void> => {
+    closeConnection = async (connectionId: string, reason?: StopReason): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - closeConnection`, { connectionId: connectionId })
         try {
-            await TCPServerModule.closeConnection(this.getId(), connectionId)
+            await TCPServerModule.closeConnection(this.getId(), connectionId, reason ?? StopReasonEnum.Manual)
             this.logger?.log(`TCPServer [${this.getId()}] - closeConnection - success`)
             return Promise.resolve()
         } catch (e) {
@@ -79,10 +80,10 @@ export class TCPServer {
         }
     }
 
-    stop = async (): Promise<void> => {
+    stop = async (reason?: StopReason): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - stop`)
         try {
-            await TCPServerModule.stopServer(this.getId())
+            await TCPServerModule.stopServer(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger?.log(`TCPServer [${this.getId()}] - stop - success`)
             return Promise.resolve()
         } catch (e) {
