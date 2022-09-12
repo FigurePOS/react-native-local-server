@@ -1,3 +1,10 @@
+## [0.6.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.5...v0.6.0) (2022-09-12)
+
+
+### Features
+
+* reason on stopped events ([#14](https://github.com/FigurePOS/react-native-local-server/issues/14)) ([3f26fb7](https://github.com/FigurePOS/react-native-local-server/commit/3f26fb7dba1a11c2b91d86ebf222f806446b7de8))
+
 ### [0.5.5](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.4...v0.5.5) (2022-09-09)
 
 
