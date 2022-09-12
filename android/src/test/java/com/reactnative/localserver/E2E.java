@@ -12,6 +12,7 @@ import com.reactnativelocalserver.tcp.factory.ClientFactory;
 import com.reactnativelocalserver.tcp.factory.ServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 import com.reactnativelocalserver.utils.TCPClientEventName;
 import com.reactnativelocalserver.utils.TCPServerEventName;
 
@@ -130,6 +131,7 @@ public class E2E {
         assertThat(serverEvents.get(1).getName()).isEqualTo(TCPServerEventName.ConnectionAccepted);
         assertThat(serverEvents.get(2).getName()).isEqualTo(TCPServerEventName.ConnectionReady);
         assertThat(serverEvents.get(3).getName()).isEqualTo(TCPServerEventName.ConnectionClosed);
+        assertThat(serverEvents.get(3).getBody().get("reason")).isEqualTo(StopReasonEnum.ClosedByPeer);
     }
 
     @Test
@@ -170,6 +172,7 @@ public class E2E {
         List<JSEvent> clientEvents = clientEventCaptor.getAllValues();
         assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
         assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
+        assertThat(clientEvents.get(1).getBody().get("reason")).isEqualTo(StopReasonEnum.ClosedByPeer);
     }
     @Test
     public void serverShouldStopWithCustomReason() throws Exception {
@@ -195,6 +198,7 @@ public class E2E {
         List<JSEvent> clientEvents = clientEventCaptor.getAllValues();
         assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
         assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
+        assertThat(clientEvents.get(1).getBody().get("reason")).isEqualTo(StopReasonEnum.ClosedByPeer);
     }
 
     @Test

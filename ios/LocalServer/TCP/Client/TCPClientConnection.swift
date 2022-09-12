@@ -16,6 +16,7 @@ class TCPClientConnection {
     private let eventEmitter: EventEmitterWrapper
     
     var onClosedCallback: ((String) -> ())? = nil
+    var lastReasonToStop: String? = nil
 
     let clientId: String
     let nwConnection: NWConnection
@@ -48,20 +49,22 @@ class TCPClientConnection {
         nwConnection.send(content: preparedData, completion: .contentProcessed( { error in
             if let error = error {
                 print("TCPClientConnection - send - failure")
-                self.closeConnection(reason: error)
+                self.closeConnection(reason: error.debugDescription)
                 return
             }
             print("TCPClientConnection - send - success")
         }))
     }
 
-    func stop() {
+    func stop(reason: String) {
         print("TCPClientConnection - stop: \(clientId)")
-        closeConnection(reason: nil)
+        lastReasonToStop = reason
+        closeConnection(reason: reason)
     }
     
-    private func closeConnection(reason: Error?) {
+    private func closeConnection(reason: String? = nil) {
         print("TCPClientConnection - close connection")
+        lastReasonToStop = reason
         if (nwConnection.state == NWConnection.State.cancelled) {
             print("TCPClientConnection - close connection - already cancelled")
             return
@@ -79,7 +82,7 @@ class TCPClientConnection {
                 break
             case .waiting(let error):
                 print("TCPClientConnection - stateDidChange - waiting - \(error)")
-                closeConnection(reason: error)
+                closeConnection(reason: error.debugDescription)
                 break
             case .ready:
                 print("TCPClientConnection - stateDidChange - ready")
@@ -87,19 +90,20 @@ class TCPClientConnection {
                 break
             case .failed(let error):
                 print("TCPClientConnection - stateDidChange - failed - \(error)")
-                onClosed(error: error)
+                onClosed(reason: error.debugDescription)
                 break
             case .cancelled:
                 print("TCPClientConnection - stateDidChange - cancelled")
-                onClosed(error: nil)
+                onClosed(reason: nil)
                 break
             default:
                 break
         }
     }
     
-    private func onClosed(error: Error?) {
-        handleLifecycleEvent(eventName: TCPClientEventName.Stopped, error: error)
+    private func onClosed(reason: String?) {
+        let reasonToStop: String? = lastReasonToStop != nil ? lastReasonToStop : reason
+        handleLifecycleEvent(eventName: TCPClientEventName.Stopped, reason: reasonToStop)
         onClosedCallback?(clientId)
     }
 
@@ -113,21 +117,21 @@ class TCPClientConnection {
             }
             if isComplete {
                 print("TCPClientConnection - is complete")
-                self.closeConnection(reason: nil)
+                self.onClosed(reason: StopReasonEnum.ClosedByPeer)
             } else if let error = error {
                 print("TCPClientConnection - error when receiving data \n\treason: \(error)")
-                self.closeConnection(reason: error)
+                self.onClosed(reason: error.debugDescription)
             } else {
                 self.setupReceive()
             }
         }
     }
 
-    private func handleLifecycleEvent(eventName: String, error: Error? = nil) {
+    private func handleLifecycleEvent(eventName: String, reason: String? = nil) {
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "clientId", value: clientId)
-        if (error != nil) {
-            event.putString(key: "reason", value: error.debugDescription)
+        if (reason != nil) {
+            event.putString(key: "reason", value: reason!)
         }
         eventEmitter.emitEvent(event: event)
     }

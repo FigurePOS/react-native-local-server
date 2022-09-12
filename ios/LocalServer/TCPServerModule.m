@@ -17,6 +17,7 @@ RCT_EXTERN_METHOD(createServer:(NSString *)id
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(stopServer:(NSString *)id
+                  withReason:(NSString *)reason
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
@@ -28,6 +29,7 @@ RCT_EXTERN_METHOD(send:(NSString *)id
 
 RCT_EXTERN_METHOD(closeConnection:(NSString *)id
                   withConnectionId:(NSString *)message
+                  withReason:(NSString *)reason
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 

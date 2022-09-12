@@ -160,16 +160,23 @@ class E2E: XCTestCase {
         do {
             waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
             
-            stopClient(id: clientId)
+            stopClient(id: clientId, reason: "custom-reason")
             
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
             XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
             XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
             XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
-            
+            XCTAssertEqual(serverEvents?[3].getBody()["reason"] as? String, StopReasonEnum.ClosedByPeer)
+
             let connections = try serverManager?.getConnectionsFromServer(serverId: serverId)
             XCTAssertTrue(connections!.isEmpty)
+            
+            let clientEvents = clientEventEmitter?.getEvents()
+            XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
+            XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
+            XCTAssertEqual(clientEvents?[1].getBody()["reason"] as? String, "custom-reason")
+            XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
         } catch {
             XCTFail("FAILED WITH ERRROR: \(error)")
         }
@@ -207,7 +214,7 @@ class E2E: XCTestCase {
         
         waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
 
-        stopServer(id: serverId)
+        stopServer(id: serverId, reason: "custom-reason")
 
         let serverEvents = serverEventEmitter?.getEvents()
         XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
@@ -215,11 +222,13 @@ class E2E: XCTestCase {
         XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
         XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
         XCTAssertEqual(serverEvents?[4].getName(), TCPServerEventName.Stopped)
+        XCTAssertEqual(serverEvents?[4].getBody()["reason"] as? String, "custom-reason")
         XCTAssert(serverManager!.getServerIds().isEmpty, "There should be no servers in server manager")
         
         let clientEvents = clientEventEmitter?.getEvents()
         XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
         XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
+        XCTAssertEqual(clientEvents?[1].getBody()["reason"] as? String, StopReasonEnum.ClosedByPeer)
         XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
     }
     
@@ -262,7 +271,7 @@ class E2E: XCTestCase {
             waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
             let connectionId: String = try getFirstConnectionId(serverId: serverId)
 
-            try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId)
+            try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId, reason: StopReasonEnum.Manual)
             waitForServerEvent(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId, emitter: serverEventEmitter!)
             
             let serverEvents = serverEventEmitter?.getEvents()
@@ -270,10 +279,40 @@ class E2E: XCTestCase {
             XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
             XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
             XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
+            XCTAssertEqual(serverEvents?[3].getBody()["reason"] as? String, StopReasonEnum.Manual)
 
             let clientEvents = clientEventEmitter?.getEvents()
             XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
             XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
+            XCTAssertEqual(clientEvents?[1].getBody()["reason"] as? String, StopReasonEnum.ClosedByPeer)
+            XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
+        } catch {
+            XCTFail("FAILED WITH ERRROR: \(error)")
+        }
+        stopServer(id: serverId)
+    }
+    
+    func testServerShouldCloseConnectionWithCustomReason() {
+        prepareServer(id: serverId)
+        prepareClient(id: clientId)
+        do {
+            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
+            let connectionId: String = try getFirstConnectionId(serverId: serverId)
+
+            try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId, reason: "custom-reason")
+            waitForServerEvent(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId, emitter: serverEventEmitter!)
+            
+            let serverEvents = serverEventEmitter?.getEvents()
+            XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
+            XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
+            XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
+            XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
+            XCTAssertEqual(serverEvents?[3].getBody()["reason"] as? String, "custom-reason")
+
+            let clientEvents = clientEventEmitter?.getEvents()
+            XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
+            XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
+            XCTAssertEqual(clientEvents?[1].getBody()["reason"] as? String, StopReasonEnum.ClosedByPeer)
             XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
         } catch {
             XCTFail("FAILED WITH ERRROR: \(error)")
@@ -288,7 +327,7 @@ class E2E: XCTestCase {
             waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
             let connectionId: String = try getFirstConnectionId(serverId: serverId)
 
-            try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId)
+            try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId, reason: StopReasonEnum.Manual)
             waitForServerEvent(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId, emitter: serverEventEmitter!)
             
             let serverEvents = serverEventEmitter?.getEvents()
@@ -321,8 +360,12 @@ class E2E: XCTestCase {
     }
     
     func stopServer(id: String) {
+        stopServer(id: id, reason: StopReasonEnum.Manual)
+    }
+    
+    func stopServer(id: String, reason: String) {
         do {
-            try serverManager?.stopServer(id: id)
+            try serverManager?.stopServer(id: id, reason: reason)
             waitForServerEvent(eventName: TCPServerEventName.Stopped, serverId: id, emitter: serverEventEmitter!)
         } catch {
             XCTFail("Failed to stop server \(id): \(error)")
@@ -339,8 +382,12 @@ class E2E: XCTestCase {
     }
     
     func stopClient(id: String) {
+        stopClient(id: id, reason: StopReasonEnum.Manual)
+    }
+    
+    func stopClient(id: String, reason: String) {
         do {
-            try clientManager?.stopClient(id: id)
+            try clientManager?.stopClient(id: id, reason: reason)
             waitForClientEvent(eventName: TCPClientEventName.Stopped, clientId: id, emitter: clientEventEmitter!)
         } catch {
             XCTFail("Failed to stop client \(id): \(error)")
