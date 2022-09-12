@@ -1,3 +1,5 @@
+import { MessagingStoppedReason } from "../types"
+
 export type MessagingClientConfiguration = {
     name?: string
     serviceId?: string
@@ -19,6 +21,7 @@ export type MessagingClientLifecycleStatusEvent = {
         | MessagingClientStatusEventName.Ready
         | MessagingClientStatusEventName.Stopped
         | MessagingClientStatusEventName.Unknown
+    reason?: MessagingStoppedReason | string
 }
 
 export type MessagingClientStatusEvent = MessagingClientLifecycleStatusEvent

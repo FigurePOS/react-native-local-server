@@ -4,20 +4,24 @@ import {
     MessagingServerStatusEvent,
     MessagingServerStatusEventName,
 } from "./types"
-import { TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
+import { StopReason, TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
 
 export const composeMessagingServerLifecycleStatusEvent = (
-    type: MessagingServerLifecycleStatusEvent["type"]
+    type: MessagingServerLifecycleStatusEvent["type"],
+    reason?: StopReason
 ): MessagingServerLifecycleStatusEvent => ({
     type: type,
+    ...(reason ? { reason: reason } : null),
 })
 
 export const composeMessagingServerConnectionStatusEvent = (
     type: MessagingServerConnectionStatusEvent["type"],
-    connectionId: string
+    connectionId: string,
+    reason?: StopReason
 ): MessagingServerConnectionStatusEvent => ({
     type: type,
     connectionId: connectionId,
+    ...(reason ? { reason: reason } : null),
 })
 
 export const composeMessagingServerStatusEvent = (nativeEvent: TCPServerNativeEvent): MessagingServerStatusEvent => {
@@ -25,7 +29,10 @@ export const composeMessagingServerStatusEvent = (nativeEvent: TCPServerNativeEv
         case TCPServerEventName.Ready:
             return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Ready)
         case TCPServerEventName.Stopped:
-            return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Stopped)
+            return composeMessagingServerLifecycleStatusEvent(
+                MessagingServerStatusEventName.Stopped,
+                nativeEvent.reason
+            )
         case TCPServerEventName.ConnectionAccepted:
             return composeMessagingServerConnectionStatusEvent(
                 MessagingServerStatusEventName.ConnectionAccepted,
@@ -39,7 +46,8 @@ export const composeMessagingServerStatusEvent = (nativeEvent: TCPServerNativeEv
         case TCPServerEventName.ConnectionClosed:
             return composeMessagingServerConnectionStatusEvent(
                 MessagingServerStatusEventName.ConnectionClosed,
-                nativeEvent.connectionId
+                nativeEvent.connectionId,
+                nativeEvent.reason
             )
         default:
             return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Unknown)

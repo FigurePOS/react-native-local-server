@@ -1,3 +1,5 @@
+import { MessagingStoppedReason } from "../types"
+
 /**
  * PUBLIC types
  */
@@ -27,6 +29,7 @@ export type MessagingServerLifecycleStatusEvent = {
         | MessagingServerStatusEventName.Ready
         | MessagingServerStatusEventName.Stopped
         | MessagingServerStatusEventName.Unknown
+    reason?: MessagingStoppedReason | string
 }
 
 export type MessagingServerConnectionStatusEvent = {
@@ -35,6 +38,7 @@ export type MessagingServerConnectionStatusEvent = {
         | MessagingServerStatusEventName.ConnectionReady
         | MessagingServerStatusEventName.ConnectionClosed
     connectionId: string
+    reason?: MessagingStoppedReason | string
 }
 
 export type MessagingServerStatusEvent = MessagingServerLifecycleStatusEvent | MessagingServerConnectionStatusEvent
