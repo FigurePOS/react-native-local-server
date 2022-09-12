@@ -15,6 +15,7 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.Server;
 import com.reactnativelocalserver.tcp.factory.ServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
@@ -66,7 +67,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stopServer(String id, Promise promise) {
+    public void stopServer(String id, String reason, Promise promise) {
         Log.d(NAME, "stopServer started for id: " + id);
         Server server = servers.get(id);
         if (server == null) {
@@ -74,7 +75,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             return;
         }
         try {
-            server.stop();
+            server.stop(reason);
             servers.remove(id);
             promise.resolve(true);
         } catch (Exception e) {
@@ -99,7 +100,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void closeConnection(String serverId, String connectionId, Promise promise) {
+    public void closeConnection(String serverId, String connectionId, String reason, Promise promise) {
         Log.d(NAME, "close connection started for server: " + serverId);
         Server server = servers.get(serverId);
         if (server == null) {
@@ -107,7 +108,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
             return;
         }
         try {
-            server.closeConnection(connectionId);
+            server.closeConnection(connectionId, reason);
             promise.resolve(true);
         } catch (Exception e) {
             promise.reject("server.error", e.getMessage());
@@ -147,7 +148,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         Log.d(NAME, "invalidate - number of servers: " + servers.size());
         for (Map.Entry<String, Server> entry : servers.entrySet()) {
             try {
-                entry.getValue().stop();
+                entry.getValue().stop(StopReasonEnum.Invalidation);
             } catch (Exception e) {
                 Log.e(NAME, "invalidate - failed to stop server: " + entry.getKey(), e);
             }

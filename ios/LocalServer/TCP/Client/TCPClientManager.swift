@@ -29,12 +29,12 @@ class TCPClientManager {
         client.start()
     }
 
-    func stopClient(id: String) throws {
+    func stopClient(id: String, reason: String) throws {
         print("TCPClientModule - stopClient - started")
         guard let client: TCPClient = clients[id] else  {
             throw LocalServerError.ClientDoesNotExist
         }
-        client.stop()
+        client.stop(reason: reason)
         clients.removeValue(forKey: id)
     }
 
@@ -62,7 +62,7 @@ class TCPClientManager {
     func invalidate() {
         print("TCPClientModule - invalidate - \(clients.count) clients")
         for (_, client) in clients {
-            client.stop()
+            client.stop(reason: StopReasonEnum.Invalidation)
         }
         clients.removeAll()
     }

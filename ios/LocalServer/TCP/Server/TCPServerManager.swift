@@ -28,12 +28,12 @@ class TCPServerManager {
         servers[id] = server
     }
 
-    func stopServer(id: String) throws {
+    func stopServer(id: String, reason: String) throws {
         print("TCPServerModule - stopServer - started")
         guard let server: TCPServer = servers[id] else {
             throw LocalServerError.ServerDoesNotExist
         }
-        try server.stop()
+        try server.stop(reason: reason)
         servers.removeValue(forKey: id)
     }
 
@@ -46,12 +46,12 @@ class TCPServerManager {
     }
 
 
-    func closeConnection(serverId: String, connectionId: String) throws {
+    func closeConnection(serverId: String, connectionId: String, reason: String) throws {
         print("TCPServerModule - closeConnection - started")
         guard let server: TCPServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
-        try server.closeConnection(connectionId: connectionId)
+        try server.closeConnection(connectionId: connectionId, reason: reason)
     
     }
     
@@ -74,7 +74,7 @@ class TCPServerManager {
         print("TCPServerModule - invalidate - \(servers.count) servers")
         for (key, server) in servers {
             do {
-                try server.stop()
+                try server.stop(reason: StopReasonEnum.Invalidation)
             } catch {
                 print("TCPServerModule - invalidate - \(key) error: \(error)")
             }

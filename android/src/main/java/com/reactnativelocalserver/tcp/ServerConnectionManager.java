@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.reactnativelocalserver.tcp.factory.ServerConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import java.net.Socket;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class ServerConnectionManager {
     public void clear() {
         for (Map.Entry<String, ServerConnection> entry : connections.entrySet()) {
             try {
-                entry.getValue().stop();
+                entry.getValue().stop(StopReasonEnum.Invalidation);
             } catch (Exception e) {
                 Log.e(TAG, "failed to stop connection: " + entry.getKey(), e);
             }

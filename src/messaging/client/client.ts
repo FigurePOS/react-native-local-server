@@ -1,5 +1,5 @@
 import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
-import { MessagingClientStatusEvent, MessagingClientStatusEventName, TCPClient } from "../../"
+import { MessagingClientStatusEvent, MessagingClientStatusEventName, MessagingStoppedReason, TCPClient } from "../../"
 import { catchError, concatMap, map, mapTo, mergeMap, switchMap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, DataObjectType, LoggerVerbosity, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
@@ -90,7 +90,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
                 ).pipe(
                     catchError((err) => {
                         this.logger?.error(`MessagingClient [${this.clientId}] ping timed out`, err)
-                        return defer(() => this.tcpClient.stop()).pipe(
+                        return defer(() => this.tcpClient.stop(MessagingStoppedReason.PingTimedOut)).pipe(
                             mapTo(false),
                             catchError((e) => {
                                 this.logger?.error(`MessagingClient [${this.clientId}] stop client failed - error`, e)

@@ -13,6 +13,7 @@ import com.reactnativelocalserver.TCPServerModule;
 import com.reactnativelocalserver.tcp.Server;
 import com.reactnativelocalserver.tcp.factory.ServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,9 +95,9 @@ public class TCPServerModuleTest {
         when(serverFactory.of("server-1", 12000, eventEmitter)).thenReturn(server);
 
         module.createServer("server-1", 12000, promise);
-        module.stopServer("server-1", promise2);
+        module.stopServer("server-1", null, promise2);
 
-        verify(server).stop();
+        verify(server).stop(null);
         verify(promise2).resolve(true);
         assertThat(module.getServers()).doesNotContainEntry("server-1", server);
     }
@@ -104,7 +105,7 @@ public class TCPServerModuleTest {
     @Test
     public void shouldNotStopServer_ServerDoesNotExist() throws Exception {
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory);
-        module.stopServer("server-1", promise);
+        module.stopServer("server-1", null, promise);
         verify(promise).reject("server.not-exists", "Server with this id does not exist");
     }
 
@@ -113,12 +114,12 @@ public class TCPServerModuleTest {
         Exception exception = new Exception("Failed to stop server");
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory);
         when(serverFactory.of("server-1", 12000, eventEmitter)).thenReturn(server);
-        doThrow(exception).when(server).stop();
+        doThrow(exception).when(server).stop(null);
 
         module.createServer("server-1", 12000, promise);
-        module.stopServer("server-1", promise2);
+        module.stopServer("server-1", null, promise2);
 
-        verify(server).stop();
+        verify(server).stop(null);
         verify(promise2).reject("server.error", exception.getMessage());
         assertThat(module.getServers()).containsEntry("server-1", server);
     }
@@ -168,7 +169,7 @@ public class TCPServerModuleTest {
         module.createServer("server-1", 12000, promise);
 
         module.invalidate();
-        verify(server).stop();
+        verify(server).stop(StopReasonEnum.Invalidation);
         assertThat(module.getServers()).isEmpty();
     }
 
@@ -177,12 +178,12 @@ public class TCPServerModuleTest {
         Exception exception = new Exception("Failed to stop server");
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory);
         when(serverFactory.of("server-1", 12000, eventEmitter)).thenReturn(server);
-        doThrow(exception).when(server).stop();
+        doThrow(exception).when(server).stop(StopReasonEnum.Invalidation);
 
         module.createServer("server-1", 12000, promise);
 
         module.invalidate();
-        verify(server).stop();
+        verify(server).stop(StopReasonEnum.Invalidation);
         assertThat(module.getServers()).isEmpty();
     }
 

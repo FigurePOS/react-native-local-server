@@ -1,3 +1,5 @@
+import { StopReason } from "../types"
+
 export enum TCPServerEventName {
     Ready = "RN_Local_Communication__TCP_Server_Ready",
     Stopped = "RN_Local_Communication__TCP_Server_Stopped",
@@ -15,7 +17,7 @@ export type TCPServerReadyNativeEvent = {
 export type TCPServerStoppedNativeEvent = {
     type: TCPServerEventName.Stopped
     serverId: string
-    reason?: string
+    reason?: StopReason
 }
 
 export type TCPServerConnectionAcceptedNativeEvent = {
@@ -34,7 +36,7 @@ export type TCPServerConnectionClosedNativeEvent = {
     type: TCPServerEventName.ConnectionClosed
     serverId: string
     connectionId: string
-    reason?: string
+    reason?: StopReason
 }
 
 export type TCPServerDataReceivedNativeEvent = {

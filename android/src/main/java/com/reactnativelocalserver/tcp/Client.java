@@ -42,9 +42,9 @@ public class Client {
         connection.start();
     }
 
-    public void stop() throws Exception {
+    public void stop(String reason) throws Exception {
         Log.d(TAG, "stop: " + id);
-        connection.stop();
+        connection.stop(reason);
     }
 
     public void send(String message) throws Exception {

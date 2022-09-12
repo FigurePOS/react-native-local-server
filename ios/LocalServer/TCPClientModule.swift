@@ -39,10 +39,10 @@ class TCPClientModule: RCTEventEmitter {
         }
     }
 
-    @objc(stopClient:withResolver:withRejecter:)
-    func stopClient(id: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc(stopClient:withReason:withResolver:withRejecter:)
+    func stopClient(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         do {
-            try manager.stopClient(id: id)
+            try manager.stopClient(id: id, reason: reason)
             resolve(true)
         } catch LocalServerError.ClientDoesNotExist {
             reject("client.not-exists", "Client with this id does not exist", nil)

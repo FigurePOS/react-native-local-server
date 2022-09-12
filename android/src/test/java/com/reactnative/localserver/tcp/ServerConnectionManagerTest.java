@@ -11,6 +11,7 @@ import com.reactnativelocalserver.tcp.ServerConnection;
 import com.reactnativelocalserver.tcp.ServerConnectionManager;
 import com.reactnativelocalserver.tcp.factory.ServerConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,7 +79,7 @@ public class ServerConnectionManagerTest {
     public void shouldClearConnectionsAndNotThrow() throws Exception {
         when(connection.getId()).thenReturn(connectionId);
         when(connection2.getId()).thenReturn(connection2Id);
-        doThrow(new Exception()).when(connection2).stop();
+        doThrow(new Exception()).when(connection2).stop(StopReasonEnum.Invalidation);
 
         ServerConnectionManager manager = new ServerConnectionManager(connectionFactory);
 
@@ -93,8 +94,8 @@ public class ServerConnectionManagerTest {
 
         manager.clear();
 
-        verify(connection, times(1)).stop();
-        verify(connection2, times(1)).stop();
+        verify(connection, times(1)).stop(StopReasonEnum.Invalidation);
+        verify(connection2, times(1)).stop(StopReasonEnum.Invalidation);
         assertThat(manager.getConnections()).isEmpty();
     }
 }

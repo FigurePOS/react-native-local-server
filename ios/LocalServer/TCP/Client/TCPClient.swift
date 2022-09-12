@@ -24,9 +24,9 @@ class TCPClient {
         connection.start()
     }
 
-    func stop() {
+    func stop(reason: String) {
         print("TCPClient - stop: \(id)")
-        connection.stop()
+        connection.stop(reason: reason)
     }
 
     func send(message: String) {

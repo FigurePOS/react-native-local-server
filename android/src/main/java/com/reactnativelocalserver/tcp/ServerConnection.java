@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
 import com.reactnativelocalserver.utils.SocketWrapper;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 import com.reactnativelocalserver.utils.TCPServerEventName;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class ServerConnection {
     private SocketWrapper socket;
     private TCPRunnable runnable;
     private Thread thread;
+    private String lastStopReason = null;
 
     public ServerConnection(String serverId, EventEmitter eventEmitter) {
         this.serverId = serverId;
@@ -59,9 +61,10 @@ public class ServerConnection {
         thread.start();
     }
 
-    public void stop() throws Exception {
+    public void stop(String reason) throws Exception {
         Log.d(TAG, "stop: " + id);
         try {
+            lastStopReason = reason;
             socket.close();
         } catch (IOException e) {
             Log.e(TAG, "stop error: " + id, e);
@@ -75,10 +78,12 @@ public class ServerConnection {
         if (thread != null && !thread.isInterrupted()) {
             thread.interrupt();
         }
+        String reasonToStop = lastStopReason != null ? lastStopReason : reason;
         thread = null;
         runnable = null;
         socket = null;
-        handleLifecycleEvent(TCPServerEventName.ConnectionClosed, reason);
+        lastStopReason = null;
+        handleLifecycleEvent(TCPServerEventName.ConnectionClosed, reasonToStop);
         if (onConnectionClosed != null) {
             onConnectionClosed.accept(id);
         }
@@ -115,7 +120,7 @@ public class ServerConnection {
                 while (true) {
                     String dataFromClient = socket.read();
                     if (dataFromClient == null) {
-                        throw new SocketException("Connection closed by peer");
+                        throw new SocketException(StopReasonEnum.ClosedByPeer);
                     }
                     Log.d(TAG, "received data: " + id + "\n\tdata: " + dataFromClient);
                     handleDataReceived(dataFromClient);

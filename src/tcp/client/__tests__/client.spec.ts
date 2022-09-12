@@ -1,5 +1,6 @@
 import { TCPClient, TCPClientConfiguration } from "../"
 import { TCPClientModule } from "../module"
+import { StopReasonEnum } from "../../.."
 
 jest.mock("../module", () => ({
     TCPClientModule: {
@@ -67,7 +68,7 @@ describe("TCPClient", () => {
     it("should stop client", async (done) => {
         const spy = jest.spyOn(TCPClientModule, "stopClient")
         await client.stop()
-        expect(spy).toBeCalledWith(clientId)
+        expect(spy).toBeCalledWith(clientId, StopReasonEnum.Manual)
         done()
     })
 
@@ -76,7 +77,7 @@ describe("TCPClient", () => {
         const e = new Error("failed")
         TCPClientModule.stopClient.mockRejectedValue(e)
         await expect(client.stop()).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(clientId)
+        expect(spy).toBeCalledWith(clientId, StopReasonEnum.Manual)
         done()
     })
 })

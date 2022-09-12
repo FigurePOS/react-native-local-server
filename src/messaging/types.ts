@@ -19,6 +19,13 @@ export enum LoggerVerbosity {
     TCP = "tcp",
 }
 
+export enum MessagingStoppedReason {
+    Manual = "manual",
+    ClosedByPeer = "closed-by-peer",
+    Invalidation = "invalidation",
+    PingTimedOut = "ping-timed-out",
+}
+
 /**
  * PRIVATE types
  */

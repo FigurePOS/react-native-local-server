@@ -3,6 +3,7 @@ import { TCPClientModule } from "./module"
 import { NativeEventEmitter } from "react-native"
 import { TCPClientEventName } from "./nativeEvents"
 import { Logger } from "../../utils/types"
+import { StopReason, StopReasonEnum } from "../types"
 
 const eventEmitter = new NativeEventEmitter(TCPClientModule)
 
@@ -55,10 +56,10 @@ export class TCPClient {
         }
     }
 
-    stop = async (): Promise<void> => {
+    stop = async (reason?: StopReason): Promise<void> => {
         this.logger?.log(`TCPClient [${this.getId()}] - stop`)
         try {
-            await TCPClientModule.stopClient(this.getId())
+            await TCPClientModule.stopClient(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger?.log(`TCPClient [${this.getId()}] - stop - success`)
             return Promise.resolve()
         } catch (e) {

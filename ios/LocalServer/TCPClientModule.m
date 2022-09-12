@@ -18,6 +18,7 @@ RCT_EXTERN_METHOD(createClient:(NSString *)id
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(stopClient:(NSString *)id
+                  withReason:(NSString *)reason
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 

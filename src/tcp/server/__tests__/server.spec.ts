@@ -1,5 +1,6 @@
 import { TCPServer, TCPServerConfiguration } from "../"
 import { TCPServerModule } from "../module"
+import { StopReasonEnum } from "../../.."
 
 jest.mock("../module", () => ({
     TCPServerModule: {
@@ -68,7 +69,7 @@ describe("TCPServer", () => {
     it("should stop server", async (done) => {
         const spy = jest.spyOn(TCPServerModule, "stopServer")
         await server.stop()
-        expect(spy).toBeCalledWith(serverId)
+        expect(spy).toBeCalledWith(serverId, StopReasonEnum.Manual)
         done()
     })
 
@@ -77,14 +78,14 @@ describe("TCPServer", () => {
         const e = new Error("failed")
         TCPServerModule.stopServer.mockRejectedValue(e)
         await expect(server.stop()).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(serverId)
+        expect(spy).toBeCalledWith(serverId, StopReasonEnum.Manual)
         done()
     })
 
     it("should close connection", async (done) => {
         const spy = jest.spyOn(TCPServerModule, "closeConnection")
         await server.closeConnection(connectionId)
-        expect(spy).toBeCalledWith(serverId, connectionId)
+        expect(spy).toBeCalledWith(serverId, connectionId, StopReasonEnum.Manual)
         done()
     })
 
@@ -93,7 +94,7 @@ describe("TCPServer", () => {
         const e = new Error("failed")
         TCPServerModule.closeConnection.mockRejectedValue(e)
         await expect(server.closeConnection(connectionId)).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(serverId, connectionId)
+        expect(spy).toBeCalledWith(serverId, connectionId, StopReasonEnum.Manual)
         done()
     })
 

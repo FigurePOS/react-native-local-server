@@ -11,6 +11,7 @@ import com.reactnativelocalserver.tcp.Client;
 import com.reactnativelocalserver.tcp.ClientConnection;
 import com.reactnativelocalserver.tcp.factory.ClientConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,24 +81,33 @@ public class ClientTest {
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
         Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
 
-        client.stop();
-        verify(connection, times(1)).stop();
+        client.stop(StopReasonEnum.Manual);
+        verify(connection, times(1)).stop(StopReasonEnum.Manual);
+    }
+
+    @Test
+    public void shouldStopClientWithCustomReason() throws Exception {
+        when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
+        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+
+        client.stop("custom-reason");
+        verify(connection, times(1)).stop("custom-reason");
     }
 
     @Test
     public void shouldNotStopClient_ConnectionStartThrowsError() throws Exception {
         Exception exception = new Exception("Failed to stop connection");
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
-        doThrow(exception).when(connection).stop();
+        doThrow(exception).when(connection).stop(StopReasonEnum.Manual);
         Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
 
         try {
-            client.stop();
+            client.stop(StopReasonEnum.Manual);
             fail("client.stop() did not throw exception");
         } catch (Exception e) {
             assertThat(e).isEqualTo(exception);
         }
-        verify(connection, times(1)).stop();
+        verify(connection, times(1)).stop(StopReasonEnum.Manual);
     }
 
     @Test

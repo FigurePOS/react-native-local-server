@@ -17,6 +17,7 @@ class TCPServer {
     let port: NWEndpoint.Port
     let listener: NWListener
     let queue: DispatchQueue
+    var lastReasonToStop: String? = nil
     
     private var connectionsByID: [String: TCPServerConnection] = [:]
     
@@ -35,12 +36,13 @@ class TCPServer {
         listener.start(queue: self.queue)
     }
     
-    func stop() throws {
+    func stop(reason: String) throws {
         print("TCPServer - stop \(id)")
         self.listener.newConnectionHandler = nil
+        self.lastReasonToStop = reason
         for connection in self.connectionsByID.values {
             connection.didStopCallback = nil
-            connection.stop()
+            connection.stop(reason: StopReasonEnum.Invalidation)
         }
         self.connectionsByID.removeAll()
         self.listener.cancel()
@@ -58,13 +60,13 @@ class TCPServer {
         connection.send(data: (preparedMessage.data(using: .utf8))!)
     }
     
-    func closeConnection(connectionId: String) throws {
+    func closeConnection(connectionId: String, reason: String) throws {
         print("TCPServer - close connection: \(connectionId)")
         guard let connection = connectionsByID[connectionId] else {
             print("TCPServer - closeConnection - no connection")
             throw LocalServerError.UnknownConnectionId
         }
-        connection.stop()
+        connection.stop(reason: reason)
     }
     
     func getConnectionIds() -> [String] {
@@ -90,7 +92,7 @@ class TCPServer {
                 break
             case .failed(let error):
                 print("\tstate: failure, error: \(error.debugDescription)")
-                self.handleLifecycleEvent(eventName: TCPServerEventName.Stopped, error: error)
+                self.handleLifecycleEvent(eventName: TCPServerEventName.Stopped, reason: error.debugDescription)
                 break
             case .cancelled:
                 print("\tstate: cancelled")
@@ -102,21 +104,22 @@ class TCPServer {
         }
     }
     
-    private func handleLifecycleEvent(eventName: String, error: Error? = nil) {
+    private func handleLifecycleEvent(eventName: String, reason: String? = nil) {
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "serverId", value: id)
-        if (error != nil) {
-            event.putString(key: "reason", value: error.debugDescription)
+        let reasonToStop: String? = lastReasonToStop != nil ? lastReasonToStop : reason
+        if (reasonToStop != nil) {
+            event.putString(key: "reason", value: reasonToStop!)
         }
         eventEmitter.emitEvent(event: event)
     }
     
-    private func handleConnectionLifecycleEvent(connectionId: String, eventName: String, error: Error? = nil) {
+    private func handleConnectionLifecycleEvent(connectionId: String, eventName: String, reason: String? = nil) {
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "serverId", value: id)
         event.putString(key: "connectionId", value: connectionId)
-        if (error != nil) {
-            event.putString(key: "reason", value: error.debugDescription)
+        if (reason != nil) {
+            event.putString(key: "reason", value: reason!)
         }
         eventEmitter.emitEvent(event: event)
     }
@@ -126,15 +129,14 @@ class TCPServer {
         print("TCPServer - connection accepted - \(connection.id)")
         self.handleConnectionLifecycleEvent(connectionId: connection.id, eventName: TCPServerEventName.ConnectionAccepted)
         self.connectionsByID[connection.id] = connection
-        connection.didStopCallback = { error in
-            self.connectionDidStop(connection: connection, error: error)
+        connection.didStopCallback = { reason in
+            self.connectionDidStop(connection: connection, reason: reason)
         }
         connection.start()
     }
 
-    private func connectionDidStop(connection: TCPServerConnection, error: Error?) {
-        print("TCPServer - connection did stop - \(connection.id) \n\treason: \(error.debugDescription)")
+    private func connectionDidStop(connection: TCPServerConnection, reason: String?) {
+        print("TCPServer - connection did stop - \(connection.id) \n\treason: \(reason)")
         self.connectionsByID.removeValue(forKey: connection.id)
-        self.handleConnectionLifecycleEvent(connectionId: connection.id, eventName: TCPServerEventName.ConnectionClosed, error: error)
     }
 }

@@ -164,7 +164,7 @@ public class ServerTest {
 
         server.start();
         TimeUnit.MILLISECONDS.sleep(300);
-        server.stop();
+        server.stop(null);
         TimeUnit.MILLISECONDS.sleep(300);
 
         verify(eventEmitter, times(2)).emitEvent(eventCaptor.capture());
