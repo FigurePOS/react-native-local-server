@@ -1,5 +1,5 @@
 import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
-import { MessagingServerConnectionStatusEvent, TCPServer } from "../../"
+import { MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
 import { catchError, concatMap, groupBy, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
 import { ofDataTypeMessage } from "../operators/ofDataType"
@@ -106,7 +106,9 @@ export class MessagingServer<In, Out = In, Deps = any> {
                 ).pipe(
                     catchError((err) => {
                         this.logger?.error(`Error in ping stream - closing the connection ${connectionId}`, err)
-                        return defer(() => this.tcpServer.closeConnection(connectionId)).pipe(mapTo(false))
+                        return defer(() =>
+                            this.tcpServer.closeConnection(connectionId, MessagingStoppedReason.PingTimedOut)
+                        ).pipe(mapTo(false))
                     })
                 )
             })
