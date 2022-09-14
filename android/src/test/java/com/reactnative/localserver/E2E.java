@@ -174,6 +174,47 @@ public class E2E {
         assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
         assertThat(clientEvents.get(1).getBody().get("reason")).isEqualTo(StopReasonEnum.ClosedByPeer);
     }
+
+    @Test
+    public void serverShouldNotStartPortAlreadyInUse() throws Exception {
+        prepareServer("server-1");
+
+        Promise promise = mockPromise();
+        serverModule.createServer("server-2", port, promise);
+        verify(promise).reject("server.error", "Port 12000 already in use.");
+
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(serverEventEmitter, times(1)).emitEvent(serverEventCaptor.capture());
+        List<JSEvent> serverEvents = serverEventCaptor.getAllValues();
+        assertThat(serverEvents.get(0).getName()).isEqualTo(TCPServerEventName.Ready);
+        assertThat(serverEvents.get(0).getBody().get("serverId")).isEqualTo("server-1");
+    }
+
+    @Test
+    public void clientShouldNotConnectToUnknownHost() throws Exception {
+        Promise promise = mockPromise();
+        clientModule.createClient("client", "unknown-host", port, promise);
+        verify(promise).reject("client.error", "unknown-host: nodename nor servname provided, or not known");
+
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(clientEventEmitter, times(0)).emitEvent(clientEventCaptor.capture());
+    }
+
+    @Test
+    public void clientShouldNotConnectToUnknownPort() throws Exception {
+        prepareServer("server");
+
+        Promise promise = mockPromise();
+        clientModule.createClient("client", "localhost", port + 1, promise);
+        verify(promise).reject("client.error", "Connection refused (Connection refused)");
+
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(clientEventEmitter, times(0)).emitEvent(clientEventCaptor.capture());
+    }
+
     @Test
     public void serverShouldStopWithCustomReason() throws Exception {
         prepareServer("server");
