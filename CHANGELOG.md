@@ -1,3 +1,22 @@
+### [0.6.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.6.0...v0.6.1) (2022-09-14)
+
+
+### Features
+
+* log status event ([3132bf6](https://github.com/FigurePOS/react-native-local-server/commit/3132bf611aed68f19374d35a6ea0205a0ec84f3d))
+* restart function for MessagingServer and MessagingClient ([ba8494a](https://github.com/FigurePOS/react-native-local-server/commit/ba8494ac11ba16ccaa4c4642fa822ac44a8c8729))
+
+
+### Refactoring
+
+* improve logger messages ([5f609ca](https://github.com/FigurePOS/react-native-local-server/commit/5f609caeba5bb8af7bf588e1e07fbcb790e99423))
+* improve ping configuration ([9290b4a](https://github.com/FigurePOS/react-native-local-server/commit/9290b4a4008e3095b46ba52e3063fc0f27dfa31a))
+
+
+### Tests
+
+* Android tests for network edge cases ([8f3ce25](https://github.com/FigurePOS/react-native-local-server/commit/8f3ce25d768e009bfdf30ec58c147e6b6fc04d16))
+
 ## [0.6.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.5.5...v0.6.0) (2022-09-12)
 
 
