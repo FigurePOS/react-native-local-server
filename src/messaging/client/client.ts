@@ -86,7 +86,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     this.statusEvent$,
                     fromClientDataReceived(this.clientId),
                     this.dataOutput$,
-                    this.config?.pingTimeout ?? PING_INTERVAL * PING_RETRY
+                    this.config?.ping?.timeout ?? PING_INTERVAL * PING_RETRY
                 ).pipe(
                     catchError((err) => {
                         this.logger?.error(`MessagingClient [${this.clientId}] - ping timed out`, err)

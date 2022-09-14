@@ -102,9 +102,9 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     this.statusEvent$,
                     fromServerDataReceived(this.serverId),
                     this.dataOutput$,
-                    this.config?.pingInterval ?? PING_INTERVAL,
-                    this.config?.pingTimeout ?? PING_INTERVAL / 2,
-                    this.config?.pingRetryCount ?? PING_RETRY
+                    this.config?.ping?.interval ?? PING_INTERVAL,
+                    this.config?.ping?.timeout ?? PING_INTERVAL,
+                    this.config?.ping?.retryCount ?? PING_RETRY
                 ).pipe(
                     catchError((err) => {
                         this.logger?.error(

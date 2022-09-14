@@ -6,7 +6,9 @@ export type MessagingClientConfiguration = {
     host: string
     port: number
 
-    pingTimeout?: number
+    ping?: {
+        timeout?: number
+    }
 }
 
 export enum MessagingClientStatusEventName {
