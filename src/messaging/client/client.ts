@@ -89,11 +89,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     this.config?.pingTimeout ?? PING_INTERVAL * PING_RETRY
                 ).pipe(
                     catchError((err) => {
-                        this.logger?.error(`MessagingClient [${this.clientId}] ping timed out`, err)
+                        this.logger?.error(`MessagingClient [${this.clientId}] - ping timed out`, err)
                         return defer(() => this.tcpClient.stop(MessagingStoppedReason.PingTimedOut)).pipe(
                             mapTo(false),
                             catchError((e) => {
-                                this.logger?.error(`MessagingClient [${this.clientId}] stop client failed - error`, e)
+                                this.logger?.error(`MessagingClient [${this.clientId}] - stop client failed - error`, e)
                                 return of(false)
                             })
                         )

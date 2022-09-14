@@ -82,7 +82,9 @@ export class MessagingServer<In, Out = In, Deps = any> {
                 group$.pipe(
                     concatMap((data: DataObject) => {
                         if (!data.connectionId) {
-                            this.logger?.error("Sending data without connection id")
+                            this.logger?.error(
+                                `MessagingServer [${this.serverId}] - sending data without connection id`
+                            )
                             return of(false)
                         }
                         return this.sendData(data, data.connectionId)
@@ -105,7 +107,10 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     this.config?.pingRetryCount ?? PING_RETRY
                 ).pipe(
                     catchError((err) => {
-                        this.logger?.error(`Error in ping stream - closing the connection ${connectionId}`, err)
+                        this.logger?.error(
+                            `MessagingServer [${this.serverId}] - error in ping stream - closing the connection ${connectionId}`,
+                            err
+                        )
                         return defer(() =>
                             this.tcpServer.closeConnection(connectionId, MessagingStoppedReason.PingTimedOut)
                         ).pipe(mapTo(false))
