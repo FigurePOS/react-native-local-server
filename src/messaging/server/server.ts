@@ -1,4 +1,4 @@
-import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
+import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError } from "rxjs"
 import { LoggerVerbosity, MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
 import { catchError, concatMap, groupBy, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
@@ -167,6 +167,28 @@ export class MessagingServer<In, Out = In, Deps = any> {
         }
         this.config = null
         return defer(() => from(this.tcpServer.stop()))
+    }
+
+    restart(): Observable<void> {
+        return concat(
+            defer(() => this.tcpServer.stop(MessagingStoppedReason.Restart)).pipe(
+                catchError((err) => {
+                    this.logger?.error(`MessagingServer [${this.serverId}] - restart - failed to stop`, err)
+                    return []
+                })
+            ),
+            defer(() => {
+                if (this.config == null) {
+                    return throwError(`MessagingServer [${this.serverId}] - restart - no config`)
+                }
+                return this.tcpServer.start(this.config)
+            }).pipe(
+                catchError((err) => {
+                    this.logger?.error(`MessagingServer [${this.serverId}] - restart - failed to start`, err)
+                    return throwError(err)
+                })
+            )
+        )
     }
 
     getStatusEvent$(): Observable<MessagingServerStatusEvent> {

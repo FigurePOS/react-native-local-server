@@ -15,6 +15,7 @@ export type MessageHandler<In, Deps = any> = (message$: Observable<Message<In>>,
 
 export enum MessagingStoppedReason {
     Manual = "manual",
+    Restart = "restart",
     ClosedByPeer = "closed-by-peer",
     Invalidation = "invalidation",
     PingTimedOut = "ping-timed-out",

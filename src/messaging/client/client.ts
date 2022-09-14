@@ -1,4 +1,4 @@
-import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
+import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError } from "rxjs"
 import {
     LoggerVerbosity,
     MessagingClientStatusEvent,
@@ -146,6 +146,28 @@ export class MessagingClient<In, Out = In, Deps = any> {
         }
         this.config = null
         return defer(() => this.tcpClient.stop())
+    }
+
+    restart(): Observable<void> {
+        return concat(
+            defer(() => this.tcpClient.stop(MessagingStoppedReason.Restart)).pipe(
+                catchError((err) => {
+                    this.logger?.error(`MessagingClient [${this.clientId}] - restart - failed to stop`, err)
+                    return []
+                })
+            ),
+            defer(() => {
+                if (this.config == null) {
+                    return throwError(`MessagingClient [${this.clientId}] - restart - no config`)
+                }
+                return this.tcpClient.start(this.config)
+            }).pipe(
+                catchError((err) => {
+                    this.logger?.error(`MessagingClient [${this.clientId}] - restart - failed to start`, err)
+                    return throwError(err)
+                })
+            )
+        )
     }
 
     getStatusEvent$(): Observable<MessagingClientStatusEvent> {
