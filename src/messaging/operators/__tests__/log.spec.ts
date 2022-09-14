@@ -1,6 +1,6 @@
 import { marbles } from "rxjs-marbles"
 import { log } from "../log"
-import { LoggerVerbosity } from "../../types"
+import { LoggerVerbosity } from "../../../"
 import spyOn = jest.spyOn
 
 describe("log", () => {
@@ -21,6 +21,7 @@ describe("log", () => {
         "should log the data with the message",
         marbles((m) => {
             const logger = {
+                verbosity: LoggerVerbosity.Messaging,
                 log: jest.fn(),
             }
             const spy = spyOn(logger, "log")
@@ -33,7 +34,7 @@ describe("log", () => {
                 b: "data 2",
             })
             // @ts-ignore
-            m.expect(__in.pipe(log(logger, "This is the message", LoggerVerbosity.Messaging))).toBeObservable(_out)
+            m.expect(__in.pipe(log(logger, "This is the message"))).toBeObservable(_out)
             m.flush()
             expect(spy).toBeCalledWith("This is the message", "data 1")
             expect(spy).toBeCalledWith("This is the message", "data 2")
@@ -43,6 +44,7 @@ describe("log", () => {
         "should not log the data because of verbosity",
         marbles((m) => {
             const logger = {
+                verbosity: LoggerVerbosity.JustError,
                 log: jest.fn(),
             }
             const spy = spyOn(logger, "log")
@@ -55,7 +57,7 @@ describe("log", () => {
                 b: "data 2",
             })
             // @ts-ignore
-            m.expect(__in.pipe(log(logger, "This is the message", LoggerVerbosity.JustError))).toBeObservable(_out)
+            m.expect(__in.pipe(log(logger, "This is the message"))).toBeObservable(_out)
             m.flush()
             expect(spy).toBeCalledTimes(0)
         })

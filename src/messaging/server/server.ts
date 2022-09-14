@@ -1,5 +1,5 @@
 import { defer, EMPTY, from, Observable, of, Subject, Subscription } from "rxjs"
-import { MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
+import { LoggerVerbosity, MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
 import { catchError, concatMap, groupBy, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
 import { ofDataTypeMessage } from "../operators/ofDataType"
@@ -12,7 +12,7 @@ import { serializeDataObject } from "../functions/serializeDataObject"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { fromServerStatusEvent } from "./operators/fromServerStatusEvent"
 import { parseServerMessage } from "../functions/parseMessage"
-import { DataObject, DataObjectType, LoggerVerbosity, MessageHandler, MessageSource } from "../types"
+import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
 import { Logger } from "../../utils/types"
 import { DefaultLogger } from "../../utils/logger"
 import { log } from "../operators/log"
@@ -30,7 +30,6 @@ export class MessagingServer<In, Out = In, Deps = any> {
     private readonly statusEvent$: Observable<MessagingServerStatusEvent>
 
     private logger: Logger | null = DefaultLogger
-    private loggerVerbosity: LoggerVerbosity = LoggerVerbosity.Messaging
     private config: MessagingServerConfiguration | null = null
     private mainSubscription: Subscription | null = null
     private dataSubscription: Subscription | null = null
@@ -42,7 +41,9 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
-        this.statusEvent$ = fromServerStatusEvent(id)
+        this.statusEvent$ = fromServerStatusEvent(id).pipe(
+            log(this.logger, `MessagingServer [${this.serverId}] - status event`)
+        )
         this.tcpServer = new TCPServer(id)
         this.tcpServer.setLogger(null)
     }
@@ -52,7 +53,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         rootHandler: MessageHandler<In, Deps>,
         dependencies: Deps
     ): Observable<void> {
-        if (this.loggerVerbosity !== LoggerVerbosity.JustError) {
+        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingServer [${this.serverId}] - start`, config)
         }
         this.config = config
@@ -63,7 +64,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
                     ofDataTypeMessage,
                     map(parseServerMessage),
                     deduplicateBy(getMessageId),
-                    log(this.logger, `MessagingServer [${this.serverId}] - received message`, this.loggerVerbosity),
+                    log(this.logger, `MessagingServer [${this.serverId}] - received message`),
                     handleBy(handler, deps),
                     catchError((err) => {
                         this.logger?.error("fromServerDataReceived - error", {
@@ -130,7 +131,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
     }
 
     send(body: Out, connectionId: string): Observable<any> {
-        if (this.loggerVerbosity !== LoggerVerbosity.JustError) {
+        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingServer [${this.serverId}] - sending message`, {
                 body: body,
                 connectionId: connectionId,
@@ -140,7 +141,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
     }
 
     closeConnection(connectionId: string): Observable<any> {
-        if (this.loggerVerbosity !== LoggerVerbosity.JustError) {
+        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingServer [${this.serverId}] - closing connection`, {
                 connectionId: connectionId,
             })
@@ -149,7 +150,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
     }
 
     stop(): Observable<void> {
-        if (this.loggerVerbosity !== LoggerVerbosity.JustError) {
+        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingServer [${this.serverId}] - stop`)
         }
         if (this.mainSubscription) {
@@ -176,10 +177,9 @@ export class MessagingServer<In, Out = In, Deps = any> {
         return this.config
     }
 
-    setLogger(logger: Logger | null, verbosity?: LoggerVerbosity): void {
+    setLogger(logger: Logger | null): void {
         this.logger = logger
-        this.loggerVerbosity = verbosity ? verbosity : this.loggerVerbosity
-        if (this.loggerVerbosity === LoggerVerbosity.TCP) {
+        if (this.logger?.verbosity === LoggerVerbosity.TCP) {
             this.tcpServer.setLogger(logger)
         } else {
             this.tcpServer.setLogger(null)
@@ -208,7 +208,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     private sendData(data: DataObject, connectionId: string, t: number = 500): Observable<boolean> {
         return defer(() => {
-            if (this.loggerVerbosity !== LoggerVerbosity.JustError && data.type !== DataObjectType.Ping) {
+            if (this.logger?.verbosity !== LoggerVerbosity.JustError && data.type !== DataObjectType.Ping) {
                 this.logger?.log(`MessagingServer [${this.serverId}] - sending data`, {
                     data: data,
                     connectionId: connectionId,

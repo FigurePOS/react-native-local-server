@@ -1,6 +1,7 @@
-import { Logger } from "./types"
+import { Logger, LoggerVerbosity } from "./types"
 
 export const DefaultLogger: Logger = {
+    verbosity: LoggerVerbosity.Messaging,
     log: (message, data) => {
         console.log(message, data)
     },
