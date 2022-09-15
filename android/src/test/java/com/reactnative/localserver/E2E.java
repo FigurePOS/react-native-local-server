@@ -195,7 +195,7 @@ public class E2E {
     public void clientShouldNotConnectToUnknownHost() throws Exception {
         Promise promise = mockPromise();
         clientModule.createClient("client", "unknown-host", port, promise);
-        verify(promise).reject("client.error", "unknown-host: nodename nor servname provided, or not known");
+        verify(promise).reject("client.error", "unknown host: unknown-host");
 
         TimeUnit.MILLISECONDS.sleep(100);
 

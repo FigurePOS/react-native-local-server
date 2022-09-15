@@ -14,6 +14,7 @@ import com.reactnativelocalserver.tcp.factory.ClientFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +57,8 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             client.start();
             clients.put(id, client);
             promise.resolve(true);
+        } catch (UnknownHostException e) {
+            promise.reject("client.error", "unknown host: " + host);
         } catch (Exception e) {
             promise.reject("client.error", e.getMessage());
         }
