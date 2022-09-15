@@ -85,7 +85,7 @@ public class TCPClientModuleTest {
 
         verify(clientFactory, times(1)).of("client-1", "localhost", 12000, eventEmitter);
         verify(client, times(1)).start();
-        verify(promise, times(1)).reject("client.error", exception.getMessage());
+        verify(promise, times(1)).reject("client.error", "unknown host: localhost");
         assertThat(module.getClients()).doesNotContainEntry("client-1", client);
     }
 

@@ -6,17 +6,13 @@ import {
     MessagingStoppedReason,
     TCPClient,
 } from "../../"
-import { catchError, concatMap, map, mapTo, mergeMap, switchMap, timeout, withLatestFrom } from "rxjs/operators"
+import { catchError, concatMap, mapTo, mergeMap, share, switchMap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
 import { fromClientDataReceived } from "./operators/fromClientDataReceived"
-import { ofDataTypeMessage } from "../operators/ofDataType"
-import { deduplicateBy } from "../operators/deduplicateBy"
 import { MessagingClientConfiguration } from "./types"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { serializeDataObject } from "../functions/serializeDataObject"
-import { getMessageId } from "../functions/getMessageId"
-import { parseClientMessage } from "../functions/parseMessage"
 import { fromClientStatusEvent } from "./operators/fromClientStatusEvent"
 import { composeMessageObject } from "../functions/composeMessageObject"
 import { Logger } from "../../utils/types"
@@ -25,6 +21,7 @@ import { log } from "../operators/log"
 import { ofClientStatusEvent } from "./operators/ofClientStatusEvent"
 import { pingClient } from "./operators/pingClient"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
+import { fromClientMessageReceived } from "./operators/fromClientMessageReceived"
 
 export class MessagingClient<In, Out = In, Deps = any> {
     private readonly clientId: string
@@ -48,7 +45,8 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
         this.statusEvent$ = fromClientStatusEvent(this.clientId).pipe(
-            log(this.logger, `MessagingClient [${this.clientId}] - status event`)
+            log(this.logger, `MessagingClient [${this.clientId}] - status event`),
+            share()
         )
 
         this.tcpClient = new TCPClient(id)
@@ -67,11 +65,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
             mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
-                return fromClientDataReceived(this.clientId).pipe(
-                    ofDataTypeMessage,
-                    map(parseClientMessage),
-                    deduplicateBy(getMessageId),
-                    log(this.logger, `MessagingClient [${this.clientId}] - received message`),
+                return fromClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
                     catchError((err) => {
                         this.logger?.error(`MessagingClient [${this.clientId}] fromClientDataReceived - error`, {
