@@ -1,17 +1,13 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError } from "rxjs"
 import { LoggerVerbosity, MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
-import { catchError, concatMap, groupBy, map, mapTo, mergeMap, timeout, withLatestFrom } from "rxjs/operators"
-import { ofDataTypeMessage } from "../operators/ofDataType"
-import { deduplicateBy } from "../operators/deduplicateBy"
+import { catchError, concatMap, groupBy, map, mapTo, mergeMap, share, timeout, withLatestFrom } from "rxjs/operators"
 import { handleBy } from "../operators/handleBy"
 import { fromServerDataReceived } from "./operators/fromServerDataReceived"
 import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
-import { getMessageId } from "../functions/getMessageId"
 import { serializeDataObject } from "../functions/serializeDataObject"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { fromServerStatusEvent } from "./operators/fromServerStatusEvent"
-import { parseServerMessage } from "../functions/parseMessage"
 import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
 import { Logger } from "../../utils/types"
 import { DefaultLogger } from "../../utils/logger"
@@ -19,6 +15,7 @@ import { log } from "../operators/log"
 import { ofServerStatusEvent } from "./operators/ofServerStatusEvent"
 import { pingServerConnection } from "./operators/pingServerConnection"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
+import { fromServerMessageReceived } from "./operators/fromServerMessageReceived"
 
 export class MessagingServer<In, Out = In, Deps = any> {
     private readonly serverId: string
@@ -42,7 +39,8 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
         this.statusEvent$ = fromServerStatusEvent(id).pipe(
-            log(this.logger, `MessagingServer [${this.serverId}] - status event`)
+            log(this.logger, `MessagingServer [${this.serverId}] - status event`),
+            share()
         )
         this.tcpServer = new TCPServer(id)
         this.tcpServer.setLogger(null)
@@ -60,11 +58,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
             mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
-                return fromServerDataReceived(this.serverId).pipe(
-                    ofDataTypeMessage,
-                    map(parseServerMessage),
-                    deduplicateBy(getMessageId),
-                    log(this.logger, `MessagingServer [${this.serverId}] - received message`),
+                return fromServerMessageReceived<In>(this.serverId, this.logger).pipe(
                     handleBy(handler, deps),
                     catchError((err) => {
                         this.logger?.error("fromServerDataReceived - error", {

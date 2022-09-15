@@ -1,8 +1,9 @@
-import { Logger } from "@figuredev/react-native-local-server"
+import { Logger, LoggerVerbosity } from "@figuredev/react-native-local-server"
 import { store } from "../../../configureStore"
 import { createActionCounterLogged } from "../data/actionts"
 
 export const CounterLogger: Logger = {
+    verbosity: LoggerVerbosity.TCP,
     log: (message, data) => {
         store.dispatch(createActionCounterLogged({ type: "info", message: message, data: data }))
     },
