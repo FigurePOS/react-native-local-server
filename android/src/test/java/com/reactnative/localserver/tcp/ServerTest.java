@@ -24,7 +24,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -154,6 +157,23 @@ public class ServerTest {
         } catch (Exception e) {
             assertThat(e.getMessage()).isEqualTo("Unknown connection: " + connectionId);
         }
+    }
+
+    @Test
+    public void shouldReturnEmptyConnectionIds() throws Exception {
+        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        when(connectionManager.getConnections()).thenReturn(new HashMap<>());
+        assertThat(server.getConnectionIds()).isEqualTo(new HashSet<>());
+    }
+
+    @Test
+    public void shouldReturnConnectionIds() throws Exception {
+        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        Map<String, ServerConnection> connections = new HashMap<>();
+        connections.put("connection-1", null);
+        connections.put("connection-2", null);
+        when(connectionManager.getConnections()).thenReturn(connections);
+        assertThat(server.getConnectionIds()).containsExactly("connection-1", "connection-2");
     }
 
     @Test(timeout = 1000)

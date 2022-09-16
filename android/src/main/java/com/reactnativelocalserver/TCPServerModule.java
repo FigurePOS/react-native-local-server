@@ -22,6 +22,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @ReactModule(name = TCPServerModule.NAME)
 public class TCPServerModule extends ReactContextBaseJavaModule {
@@ -113,6 +114,18 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject("server.error", e.getMessage());
         }
+    }
+
+    @ReactMethod
+    public void getConnectionIds(String serverId, Promise promise) {
+        Log.d(NAME, "get connection ids for server: " + serverId);
+        Server server = servers.get(serverId);
+        if (server == null) {
+            promise.reject("server.not-exists", "Server with this id does not exist");
+            return;
+        }
+        Set<String> ids = server.getConnectionIds();
+        promise.resolve(ids);
     }
 
     @ReactMethod

@@ -1,6 +1,7 @@
 package com.reactnative.localserver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -173,6 +174,23 @@ public class E2E {
         assertThat(clientEvents.get(0).getName()).isEqualTo(TCPClientEventName.Ready);
         assertThat(clientEvents.get(1).getName()).isEqualTo(TCPClientEventName.Stopped);
         assertThat(clientEvents.get(1).getBody().get("reason")).isEqualTo(StopReasonEnum.ClosedByPeer);
+    }
+
+    @Test
+    public void serverShouldReturnConnectionIds() throws Exception {
+        prepareServer("server");
+        prepareClient("client");
+
+        Promise promise = mockPromise();
+        serverModule.getConnectionIds("server", promise);
+        verify(promise).resolve(anySet());
+    }
+
+    @Test
+    public void serverShouldNotReturnConnectionIdsUnknownServer() throws Exception {
+        Promise promise = mockPromise();
+        serverModule.getConnectionIds("server", promise);
+        verify(promise).reject("server.error", "Server with this id does not exist");
     }
 
     @Test
