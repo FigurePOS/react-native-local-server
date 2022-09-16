@@ -443,9 +443,7 @@ class E2E: XCTestCase {
     // HELPER FUNCTIONS
     func prepareServer(id: String) {
         do {
-            try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: {_ in
-                XCTFail("Failed to prepare client \(id)")
-            })
+            try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: {_ in})
             waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, emitter: serverEventEmitter!)
         } catch {
             XCTFail("Failed to prepare server \(id): \(error)")
@@ -467,9 +465,7 @@ class E2E: XCTestCase {
     
     func prepareClient(id: String) {
         do {
-            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: {}, onFailure: {_ in
-                XCTFail("Failed to prepare client \(id)")
-            })
+            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: {}, onFailure: {_ in})
             waitForClientEvent(eventName: TCPClientEventName.Ready, clientId: id, emitter: clientEventEmitter!)
         } catch {
             XCTFail("Failed to prepare client \(id): \(error)")
