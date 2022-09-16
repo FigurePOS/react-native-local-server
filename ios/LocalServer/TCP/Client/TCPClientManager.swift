@@ -18,14 +18,18 @@ class TCPClientManager {
         self.eventEmitter = eventEmitter;
     }
     
-    func createClient(id: String, host: String, port: UInt16) throws {
+    func createClient(id: String, host: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (String) -> ()) throws {
         print("TCPClientModule - createClient - started")
         if (clients[id] != nil) {
             throw LocalServerError.ClientDoesAlreadyExist
         }
         let client: TCPClient = TCPClient(id: id, host: host, port: port, eventEmitter: eventEmitter)
-        clients[id] = client
-        client.setOnClosedCallback(callback: onConnectionClosed(clientId:))
+        client.onFinished = onConnectionClosed(clientId:)
+        client.onStartSucceeded = {
+            self.clients[id] = client
+            onSuccess()
+        }
+        client.onStartFailed = onFailure
         client.start()
     }
 
@@ -57,7 +61,6 @@ class TCPClientManager {
     func onConnectionClosed(clientId: String) -> Void {
         clients.removeValue(forKey: clientId)
     }
-
     
     func invalidate() {
         print("TCPClientModule - invalidate - \(clients.count) clients")

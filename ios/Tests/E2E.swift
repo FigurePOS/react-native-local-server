@@ -46,11 +46,55 @@ class E2E: XCTestCase {
     func testShouldFailCreatingTwoClientsWithSameId() throws {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
-        XCTAssertThrowsError(try clientManager?.createClient(id: clientId, host: "localhost", port: 12001)) { error in
+        XCTAssertThrowsError(try clientManager?.createClient(id: clientId, host: "localhost", port: 12001, onSuccess: {}, onFailure: {_ in})) { error in
             XCTAssertEqual(error as! LocalServerError, LocalServerError.ClientDoesAlreadyExist)
         }
         stopClient(id: clientId)
         stopServer(id: serverId)
+    }
+    
+    func testShouldFailCreatingClientWithUnknownHost() throws {
+        let id = "client-1"
+        let exp = expectation(description: "dsadas")
+        var succeeded: Bool = false
+        var failed: Bool = false
+        let onSuccess = {
+            succeeded = true
+        }
+        let onFailure = { (r: String) in
+            exp.fulfill()
+            failed = true
+        }
+        do {
+            try clientManager?.createClient(id: id, host: "unknown-host", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [exp], timeout: 5)
+            XCTAssertTrue(failed)
+            XCTAssertFalse(succeeded)
+        } catch {
+            XCTFail("Failed to prepare client \(id): \(error)")
+        }
+    }
+    
+    func testShouldFailCreatingClientWithUnknownPort() throws {
+        let id = "client-1"
+        let exp = expectation(description: "dsadas")
+        var succeeded: Bool = false
+        var failed: Bool = false
+        let onSuccess = {
+            succeeded = true
+        }
+        let onFailure = { (r: String) in
+            exp.fulfill()
+            failed = true
+        }
+        do {
+            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [exp], timeout: 5)
+            XCTAssertTrue(failed)
+            XCTAssertFalse(succeeded)
+        } catch {
+            XCTFail("Failed to prepare client \(id): \(error)")
+        }
     }
     
     func testClientShouldSendData() throws {
@@ -374,7 +418,9 @@ class E2E: XCTestCase {
     
     func prepareClient(id: String) {
         do {
-            try clientManager?.createClient(id: id, host: "localhost", port: 12000)
+            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: {}, onFailure: {_ in
+                XCTFail("Failed to prepare client \(id)")
+            })
             waitForClientEvent(eventName: TCPClientEventName.Ready, clientId: id, emitter: clientEventEmitter!)
         } catch {
             XCTFail("Failed to prepare client \(id): \(error)")
