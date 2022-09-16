@@ -83,6 +83,18 @@ class TCPServerModule: RCTEventEmitter {
             reject("server.error", "Failed to close connection", error)
         }
     }
+
+    @objc(getConnectionIds:withResolver:withRejecter:)
+    func getConnectionIds(serverId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        do {
+            let connectionIds: [String] = try manager.getConnectionIds(serverId: serverId)
+            resolve(connectionIds)
+        } catch LocalServerError.ServerDoesNotExist {
+            reject("server.not-exists", "Server with this id does not exist", nil)
+        } catch {
+            reject("server.error", "Failed to get connections", error)
+        }
+    }
     
     @objc(getLocalIpAddress:withRejecter:)
     func getLocalIpAddress(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {

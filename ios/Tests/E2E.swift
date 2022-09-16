@@ -97,6 +97,20 @@ class E2E: XCTestCase {
         }
     }
     
+    func testServerShouldReturnConnectionIds() throws {
+        prepareServer(id: serverId)
+        prepareClient(id: clientId)
+        do {
+            let connections: [String] = try serverManager?.getConnectionIds(serverId: serverId) as! [String]
+            XCTAssertEqual(connections.count, 1)
+        } catch {
+            XCTFail("Failed to get connection ids: \(error)")
+        }
+        
+        stopClient(id: clientId)
+        stopServer(id: serverId)
+    }
+    
     func testClientShouldSendData() throws {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
