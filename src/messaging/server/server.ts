@@ -143,6 +143,13 @@ export class MessagingServer<In, Out = In, Deps = any> {
         return defer(() => this.tcpServer.closeConnection(connectionId))
     }
 
+    getConnectionIds(): Observable<string[]> {
+        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
+            this.logger?.log(`MessagingServer [${this.serverId}] - get connection ids`)
+        }
+        return defer(() => this.tcpServer.getConnectionIds())
+    }
+
     stop(): Observable<void> {
         if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingServer [${this.serverId}] - stop`)
