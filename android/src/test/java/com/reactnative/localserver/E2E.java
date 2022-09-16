@@ -190,7 +190,7 @@ public class E2E {
     public void serverShouldNotReturnConnectionIdsUnknownServer() throws Exception {
         Promise promise = mockPromise();
         serverModule.getConnectionIds("server", promise);
-        verify(promise).reject("server.error", "Server with this id does not exist");
+        verify(promise).reject("server.not-exists", "Server with this id does not exist");
     }
 
     @Test
