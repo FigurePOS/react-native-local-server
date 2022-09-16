@@ -46,15 +46,16 @@ class TCPClientConnection {
         nwConnection.start(queue: self.queue)
     }
     
-    func send(data: String) {
+    func send(data: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) {
         print("TCPClientConnection - send: \(clientId)")
         let preparedData: Data = data.data(using: .utf8)!
         nwConnection.send(content: preparedData, completion: .contentProcessed( { error in
-            // TODO
-//            if let error = error {
-//                print("TCPClientConnection - send - failure")
-//                return
-//            }
+            if let error = error {
+                print("TCPClientConnection - send - failure")
+                onFailure(error.debugDescription)
+                return
+            }
+            onSuccess()
             print("TCPClientConnection - send - success")
         }))
     }

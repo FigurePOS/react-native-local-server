@@ -43,10 +43,10 @@ class TCPClient {
         connection.stop()
     }
 
-    func send(message: String) {
+    func send(message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) {
         let preparedMessage = message + "\r\n"
         print("TCPClient - send \(preparedMessage)")
-        connection.send(data: preparedMessage)
+        connection.send(data: preparedMessage, onSuccess: onSuccess, onFailure: onFailure)
     }
     
     private func handleConnectionStarted() {

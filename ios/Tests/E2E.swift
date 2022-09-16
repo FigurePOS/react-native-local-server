@@ -101,9 +101,15 @@ class E2E: XCTestCase {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
         do {
-            try clientManager?.send(clientId: clientId, message: "Hello world!")
+            let exp = expectation(description: "Data send success")
+            let onSuccess = {
+                exp.fulfill()
+            }
+            try clientManager?.send(clientId: clientId, message: "Hello world!", onSuccess: onSuccess, onFailure: {_ in})
+            wait(for: [exp], timeout: 5)
             waitForServerEvent(eventName: TCPServerEventName.DataReceived, serverId: serverId, emitter: serverEventEmitter!)
             let events = serverEventEmitter?.getEvents()
+            XCTAssertEqual(events?.count, 4)
             XCTAssertEqual(events?[0].getName(), TCPServerEventName.Ready)
             XCTAssertEqual(events?[1].getName(), TCPServerEventName.ConnectionAccepted)
             XCTAssertEqual(events?[2].getName(), TCPServerEventName.ConnectionReady)
@@ -120,8 +126,11 @@ class E2E: XCTestCase {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
         do {
-            try clientManager?.send(clientId: clientId, message: "This is message 1")
-            try clientManager?.send(clientId: clientId, message: "This is message 2")
+            let exp1 = expectation(description: "First data sent")
+            let exp2 = expectation(description: "Second data sent")
+            try clientManager?.send(clientId: clientId, message: "This is message 1", onSuccess: {exp1.fulfill()}, onFailure: {_ in})
+            try clientManager?.send(clientId: clientId, message: "This is message 2", onSuccess: {exp2.fulfill()}, onFailure: {_ in})
+            wait(for: [exp1, exp2], timeout: 5)
             waitForServerEvent(eventName: TCPServerEventName.DataReceived, serverId: serverId, emitter: serverEventEmitter!)
             let events = serverEventEmitter?.getEvents()
             if (events?.count != 5) {
@@ -384,7 +393,7 @@ class E2E: XCTestCase {
             XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
             XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
             
-            XCTAssertThrowsError(try clientManager?.send(clientId: clientId, message: "this is the message")) { error in
+            XCTAssertThrowsError(try clientManager?.send(clientId: clientId, message: "this is the message", onSuccess: {}, onFailure: {_ in})) { error in
                 XCTAssertEqual(error as! LocalServerError, LocalServerError.ClientDoesNotExist)
             }
         } catch {

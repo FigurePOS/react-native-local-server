@@ -58,8 +58,13 @@ class TCPClientModule: RCTEventEmitter {
     @objc(send:withMessage:withResolver:withRejecter:)
     func send(clientId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         do {
-            try manager.send(clientId: clientId, message: message)
-            resolve(true)
+            var onSuccess = {
+                resolve(true)
+            }
+            var onFailure = { (reason: String) in
+                reject("client.error", reason, nil)
+            }
+            try manager.send(clientId: clientId, message: message, onSuccess, onFailure)
         } catch LocalServerError.ClientDoesNotExist {
             reject("client.not-exists", "Client with this id does not exist", nil)
         } catch {
