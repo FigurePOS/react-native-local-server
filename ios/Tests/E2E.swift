@@ -446,7 +446,7 @@ class E2E: XCTestCase {
                 exp.fulfill()
             }
             let onFailure = { (_ reason: String) in
-                XCTFail("Server nor started: \(reason)")
+                XCTFail("Server not started: \(reason)")
             }
             try serverManager?.createServer(id: id, port: 12000, onSuccess: onSuccess, onFailure: onFailure)
             wait(for: [exp], timeout: 5)
@@ -476,7 +476,7 @@ class E2E: XCTestCase {
                 exp.fulfill()
             }
             let onFailure = { (_ reason: String) in
-                XCTFail("Client nor started: \(reason)")
+                XCTFail("Client not started: \(reason)")
             }
             try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
             wait(for: [exp], timeout: 5)
