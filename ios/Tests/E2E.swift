@@ -30,7 +30,6 @@ class E2E: XCTestCase {
     override func tearDownWithError() throws {
         clientManager?.invalidate()
         serverManager?.invalidate()
-        
     }
 
     // TESTS
@@ -248,7 +247,6 @@ class E2E: XCTestCase {
             XCTFail("FAILED WITH ERRROR: \(error)")
         }
         stopServer(id: serverId)
-
     }
     
     func testServerShouldAcceptMultipleConnections() throws {
@@ -443,7 +441,15 @@ class E2E: XCTestCase {
     // HELPER FUNCTIONS
     func prepareServer(id: String) {
         do {
-            try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: {_ in})
+            let exp = expectation(description: "Server \(id) should start")
+            let onSuccess = {
+                exp.fulfill()
+            }
+            let onFailure = { (_ reason: String) in
+                XCTFail("Server nor started: \(reason)")
+            }
+            try serverManager?.createServer(id: id, port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [exp], timeout: 5)
             waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, emitter: serverEventEmitter!)
         } catch {
             XCTFail("Failed to prepare server \(id): \(error)")
@@ -465,7 +471,15 @@ class E2E: XCTestCase {
     
     func prepareClient(id: String) {
         do {
-            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: {}, onFailure: {_ in})
+            let exp = expectation(description: "Client \(id) should start")
+            let onSuccess = {
+                exp.fulfill()
+            }
+            let onFailure = { (_ reason: String) in
+                XCTFail("Client nor started: \(reason)")
+            }
+            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [exp], timeout: 5)
             waitForClientEvent(eventName: TCPClientEventName.Ready, clientId: id, emitter: clientEventEmitter!)
         } catch {
             XCTFail("Failed to prepare client \(id): \(error)")
