@@ -13,7 +13,4 @@ enum LocalServerError: Error {
     case ClientDoesNotExist
     case ClientDoesAlreadyExist
     case UnknownConnectionId
-    
-    // used just in tests
-    case TestError
 }

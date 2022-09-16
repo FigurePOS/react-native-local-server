@@ -36,7 +36,7 @@ class E2E: XCTestCase {
     // TESTS
     func testShouldFailCreatingTwoServersWithSameId() throws {
         prepareServer(id: serverId)
-        XCTAssertThrowsError(try serverManager?.createServer(id: serverId, port: 12001)) { error in
+        XCTAssertThrowsError(try serverManager?.createServer(id: serverId, port: 12001, onSuccess: {}, onFailure: {_ in})) { error in
             XCTAssertEqual(error as! LocalServerError, LocalServerError.ServerDoesAlreadyExist)
         }
         stopServer(id: serverId)
@@ -55,7 +55,7 @@ class E2E: XCTestCase {
     
     func testShouldFailCreatingClientWithUnknownHost() throws {
         let id = "client-1"
-        let exp = expectation(description: "dsadas")
+        let exp = expectation(description: "Client should not start")
         var succeeded: Bool = false
         var failed: Bool = false
         let onSuccess = {
@@ -77,7 +77,7 @@ class E2E: XCTestCase {
     
     func testShouldFailCreatingClientWithUnknownPort() throws {
         let id = "client-1"
-        let exp = expectation(description: "dsadas")
+        let exp = expectation(description: "Client should not start")
         var succeeded: Bool = false
         var failed: Bool = false
         let onSuccess = {
@@ -161,7 +161,7 @@ class E2E: XCTestCase {
             let connectionId: String? = connections![0]
             XCTAssertNotNil(connectionId, "ConnectionID cannot be null")
             
-            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "Hello world!")
+            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "Hello world!", onSuccess: {}, onFailure: {_ in})
             
             waitForClientEvent(eventName: TCPClientEventName.DataReceived, clientId: clientId, emitter: clientEventEmitter!)
             let clientEvents = clientEventEmitter?.getEvents()
@@ -185,8 +185,8 @@ class E2E: XCTestCase {
             let connectionId: String? = connections![0]
             XCTAssertNotNil(connectionId, "ConnectionID cannot be null")
             
-            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 1")
-            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 2")
+            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 1", onSuccess: {}, onFailure: {_ in})
+            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 2", onSuccess: {}, onFailure: {_ in})
             waitForClientEvent(eventName: TCPClientEventName.DataReceived, clientId: clientId, emitter: clientEventEmitter!)
             let clientEvents = clientEventEmitter?.getEvents()
 
@@ -261,6 +261,30 @@ class E2E: XCTestCase {
         stopServer(id: serverId)
     }
     
+    func testServerShouldNotStartOnUsedPort() throws {
+        prepareServer(id: serverId)
+        let id = "server-2"
+        let exp = expectation(description: "Server should not start")
+        var succeeded: Bool = false
+        var failed: Bool = false
+        let onSuccess = {
+            succeeded = true
+        }
+        let onFailure = { (r: String) in
+            exp.fulfill()
+            failed = true
+        }
+        do {
+            try serverManager?.createServer(id: id, port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [exp], timeout: 5)
+            XCTAssertTrue(failed)
+            XCTAssertFalse(succeeded)
+        } catch {
+            XCTFail("Failed to prepare client \(id): \(error)")
+        }
+        stopServer(id: serverId)
+    }
+    
     func testServerShouldStop() throws {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
@@ -308,7 +332,7 @@ class E2E: XCTestCase {
             let connections = try serverManager?.getConnectionsFromServer(serverId: serverId)
             XCTAssertTrue(connections!.isEmpty)
             
-            XCTAssertThrowsError(try serverManager?.send(serverId: serverId, connectionId: connectionId, message: "this is the message")) { error in
+            XCTAssertThrowsError(try serverManager?.send(serverId: serverId, connectionId: connectionId, message: "this is the message", onSuccess: {}, onFailure: {_ in})) { error in
                 XCTAssertEqual(error as! LocalServerError, LocalServerError.UnknownConnectionId)
             }
         } catch {
@@ -405,7 +429,9 @@ class E2E: XCTestCase {
     // HELPER FUNCTIONS
     func prepareServer(id: String) {
         do {
-            try serverManager?.createServer(id: id, port: 12000)
+            try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: {_ in
+                XCTFail("Failed to prepare client \(id)")
+            })
             waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, emitter: serverEventEmitter!)
         } catch {
             XCTFail("Failed to prepare server \(id): \(error)")

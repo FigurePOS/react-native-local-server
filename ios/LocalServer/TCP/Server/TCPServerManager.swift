@@ -18,14 +18,23 @@ class TCPServerManager {
         self.eventEmitter = eventEmitter;
     }
 
-    func createServer(id: String, port: UInt16) throws {
+    func createServer(id: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("TCPServerModule - createServer - started")
         if let _: TCPServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
         let server: TCPServer = try TCPServer(id: id, port: port, eventEmitter: eventEmitter)
+        server.onStartSucceeded = {
+            self.servers[id] = server
+            onSuccess()
+        }
+        server.onStartFailed = { (_ reason: String) in
+            onFailure(reason)
+        }
+        server.onStopped = { (_ serverId: String) in
+            self.servers.removeValue(forKey: serverId)
+        }
         try server.start()
-        servers[id] = server
     }
 
     func stopServer(id: String, reason: String) throws {
@@ -34,15 +43,14 @@ class TCPServerManager {
             throw LocalServerError.ServerDoesNotExist
         }
         try server.stop(reason: reason)
-        servers.removeValue(forKey: id)
     }
 
-    func send(serverId: String, connectionId: String, message: String) throws {
+    func send(serverId: String, connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("TCPServerModule - send - started")
         guard let server: TCPServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
-        try server.send(connectionId: connectionId, message: message)
+        try server.send(connectionId: connectionId, message: message, onSuccess: onSuccess, onFailure: onFailure)
     }
 
 

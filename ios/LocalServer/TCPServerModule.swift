@@ -40,8 +40,13 @@ class TCPServerModule: RCTEventEmitter {
     @objc(stopServer:withReason:withResolver:withRejecter:)
     func stopServer(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         do {
-            try manager.stopServer(id: id, reason: reason)
-            resolve(true)
+            var onSuccess = {
+                resolve(true)
+            }
+            var onFailure = { (reason: String) in
+                reject("server.error", reason, nil)
+            }
+            try manager.stopServer(id: id, reason: reason, onSuccess, onFailure)
         } catch LocalServerError.ServerDoesNotExist {
             reject("server.not-exists", "Server with this id does not exist", nil)
         } catch {
@@ -52,8 +57,13 @@ class TCPServerModule: RCTEventEmitter {
     @objc(send:withConnectionId:withMessage:withResolver:withRejecter:)
     func send(serverId: String, connectionId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         do {
-            try manager.send(serverId: serverId, connectionId: connectionId, message: message)
-            resolve(true)
+            var onSuccess = {
+                resolve(true)
+            }
+            var onFailure = { (reason: String) in
+                reject("server.error", reason, nil)
+            }
+            try manager.send(serverId: serverId, connectionId: connectionId, message: message, onSuccess, onFailure)
         } catch LocalServerError.ServerDoesNotExist {
             reject("server.not-exists", "Server with this id does not exist", nil)
         } catch {

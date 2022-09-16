@@ -20,7 +20,6 @@ class TCPClientConnection {
     var onStartFailed: ((_ reason: String) -> ())? = nil
     
     var onDataReceived: ((_ data: String) -> ())? = nil
-    var onDataSent: ((_ success: Bool) -> ())? = nil
     var onClosed: ((_ reason: String) -> ())? = nil
     
     let clientId: String
