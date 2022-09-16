@@ -12,6 +12,7 @@ executors:
   ios:
     macos:
       xcode: "13.2.1"
+    resource_class: large
     working_directory: ~/project
 
 commands:
