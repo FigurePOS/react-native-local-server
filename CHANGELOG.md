@@ -1,3 +1,10 @@
+## [0.8.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.7.0...v0.8.0) (2022-09-19)
+
+
+### Bug Fixes
+
+* ios native module ([cc7e435](https://github.com/FigurePOS/react-native-local-server/commit/cc7e435c19b35a1759443d167c0281b92d7830fe))
+
 ## [0.7.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.6.1...v0.7.0) (2022-09-19)
 
 
