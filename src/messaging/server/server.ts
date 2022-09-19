@@ -1,7 +1,18 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError } from "rxjs"
 import { LoggerVerbosity, MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
 import { composeMessageObject } from "../functions/composeMessageObject"
-import { catchError, concatMap, groupBy, map, mapTo, mergeMap, share, timeout, withLatestFrom } from "rxjs/operators"
+import {
+    catchError,
+    concatMap,
+    groupBy,
+    map,
+    mapTo,
+    mergeMap,
+    share,
+    tap,
+    timeout,
+    withLatestFrom,
+} from "rxjs/operators"
 import { handleBy } from "../operators/handleBy"
 import { fromServerDataReceived } from "./operators/fromServerDataReceived"
 import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
@@ -40,6 +51,11 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.dataOutput$ = new Subject<DataObject>()
         this.statusEvent$ = fromServerStatusEvent(id).pipe(
             log(this.logger, `MessagingServer [${this.serverId}] - status event`),
+            tap((event) => {
+                if (event.type === MessagingServerStatusEventName.Stopped) {
+                    this.cleanSubscriptions()
+                }
+            }),
             share()
         )
         this.tcpServer = new TCPServer(id)
@@ -55,6 +71,8 @@ export class MessagingServer<In, Out = In, Deps = any> {
             this.logger?.log(`MessagingServer [${this.serverId}] - start`, config)
         }
         this.config = config
+        this.cleanSubscriptions()
+
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
             mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
@@ -154,18 +172,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingServer [${this.serverId}] - stop`)
         }
-        if (this.mainSubscription) {
-            this.mainSubscription.unsubscribe()
-            this.mainSubscription = null
-        }
-        if (this.dataSubscription) {
-            this.dataSubscription.unsubscribe()
-            this.dataSubscription = null
-        }
-        if (this.pingSubscription) {
-            this.pingSubscription.unsubscribe()
-            this.pingSubscription = null
-        }
+        this.cleanSubscriptions()
         this.config = null
         return defer(() => from(this.tcpServer.stop()))
     }
@@ -211,6 +218,15 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     getLocalIpAddress = (): Observable<string | null> => {
         return defer(() => this.tcpServer.getLocalIpAddress())
+    }
+
+    private cleanSubscriptions() {
+        this.mainSubscription?.unsubscribe()
+        this.mainSubscription = null
+        this.dataSubscription?.unsubscribe()
+        this.dataSubscription = null
+        this.pingSubscription?.unsubscribe()
+        this.pingSubscription = null
     }
 
     private getSourceData(connectionId: string): MessageSource {

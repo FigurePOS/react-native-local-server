@@ -6,7 +6,7 @@ import {
     MessagingStoppedReason,
     TCPClient,
 } from "../../"
-import { catchError, concatMap, mapTo, mergeMap, share, switchMap, timeout, withLatestFrom } from "rxjs/operators"
+import { catchError, concatMap, mapTo, mergeMap, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
 import { fromClientDataReceived } from "./operators/fromClientDataReceived"
@@ -46,6 +46,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dataOutput$ = new Subject<DataObject>()
         this.statusEvent$ = fromClientStatusEvent(this.clientId).pipe(
             log(this.logger, `MessagingClient [${this.clientId}] - status event`),
+            tap((event) => {
+                if (event.type === MessagingClientStatusEventName.Stopped) {
+                    this.cleanSubscriptions()
+                }
+            }),
             share()
         )
 
@@ -62,6 +67,8 @@ export class MessagingClient<In, Out = In, Deps = any> {
             this.logger?.log(`MessagingClient [${this.clientId}] - start`, config)
         }
         this.config = config
+        this.cleanSubscriptions()
+
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
             mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
@@ -126,18 +133,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingClient [${this.clientId}] - stop`)
         }
-        if (this.mainSubscription) {
-            this.mainSubscription.unsubscribe()
-            this.mainSubscription = null
-        }
-        if (this.dataSubscription) {
-            this.dataSubscription.unsubscribe()
-            this.dataSubscription = null
-        }
-        if (this.pingSubscription) {
-            this.pingSubscription.unsubscribe()
-            this.pingSubscription = null
-        }
+        this.cleanSubscriptions()
         this.config = null
         return defer(() => this.tcpClient.stop())
     }
@@ -179,6 +175,15 @@ export class MessagingClient<In, Out = In, Deps = any> {
         } else {
             this.tcpClient.setLogger(null)
         }
+    }
+
+    private cleanSubscriptions() {
+        this.mainSubscription?.unsubscribe()
+        this.mainSubscription = null
+        this.dataSubscription?.unsubscribe()
+        this.dataSubscription = null
+        this.pingSubscription?.unsubscribe()
+        this.pingSubscription = null
     }
 
     private getSourceData(): MessageSource {
