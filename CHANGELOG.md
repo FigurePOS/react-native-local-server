@@ -1,3 +1,10 @@
+### [0.8.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.8.0...v0.8.1) (2022-09-19)
+
+
+### Bug Fixes
+
+* messaging - clean subscriptions ([38eef43](https://github.com/FigurePOS/react-native-local-server/commit/38eef430facc21f9e29099034461182cc52e1198))
+
 ## [0.8.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.7.0...v0.8.0) (2022-09-19)
 
 
