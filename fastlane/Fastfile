@@ -21,6 +21,7 @@ platform :ios do
                 clean: true,
                 include_simulator_logs: true,
                 disable_concurrent_testing: true,
+                buildlog_path: "./ios/build_test",
             )
         end
     end
