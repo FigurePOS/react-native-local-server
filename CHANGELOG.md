@@ -1,3 +1,20 @@
+## [0.7.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.6.1...v0.7.0) (2022-09-19)
+
+
+### Features
+
+* TCPServer get connection ids method ([#17](https://github.com/FigurePOS/react-native-local-server/issues/17)) ([99083d7](https://github.com/FigurePOS/react-native-local-server/commit/99083d7d7f3f9c4f1851c96408227f1ec643c9b7))
+
+
+### Bug Fixes
+
+* status events and received messages are logged just once ([#15](https://github.com/FigurePOS/react-native-local-server/issues/15)) ([3fa9b53](https://github.com/FigurePOS/react-native-local-server/commit/3fa9b5341de5e70448e463b75b9c3cb26bdb696b))
+
+
+### Refactoring
+
+* iOS native TCP module refactored - reject promises instead of using events ([#16](https://github.com/FigurePOS/react-native-local-server/issues/16)) ([233bc43](https://github.com/FigurePOS/react-native-local-server/commit/233bc43da15f4feeead78a3be0dfc16cce355e74))
+
 ### [0.6.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.6.0...v0.6.1) (2022-09-14)
 
 
