@@ -63,6 +63,13 @@ class TCPServerManager {
     
     }
     
+    func getConnectionIds(serverId: String) throws -> [String] {
+        guard let server: TCPServer = servers[serverId] else {
+            throw LocalServerError.ServerDoesNotExist
+        }
+        return server.getConnectionIds()
+    }
+    
     func getServerIds() -> [String] {
         var keys: [String] = []
         for k in servers.keys {

@@ -11,7 +11,7 @@ executors:
     working_directory: ~/project
   ios:
     macos:
-      xcode: "13.1.0"
+      xcode: "13.2.1"
     working_directory: ~/project
 
 commands:

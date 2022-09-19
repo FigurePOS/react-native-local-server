@@ -80,6 +80,18 @@ export class TCPServer {
         }
     }
 
+    getConnectionIds = async (): Promise<string[]> => {
+        this.logger?.log(`TCPServer [${this.getId()}] - getConnectionIds`)
+        try {
+            const result: string[] = await TCPServerModule.getConnectionIds(this.getId())
+            this.logger?.log(`TCPServer [${this.getId()}] - getConnectionIds - success`, result)
+            return Promise.resolve(result)
+        } catch (e) {
+            this.logger?.error(`TCPServer [${this.getId()}] - getConnectionIds - error`, e)
+            return Promise.reject(e)
+        }
+    }
+
     stop = async (reason?: StopReason): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - stop`)
         try {

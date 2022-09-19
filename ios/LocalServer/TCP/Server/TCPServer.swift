@@ -92,7 +92,6 @@ class TCPServer {
                 break
             case .waiting(let error):
                 print("\tstate: waiting \(error)")
-                self.stopServer()
                 break
             case .ready:
                 print("\tstate: ready")
