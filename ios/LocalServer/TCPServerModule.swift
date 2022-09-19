@@ -26,10 +26,15 @@ class TCPServerModule: RCTEventEmitter {
     }
     
     @objc(createServer:withPort:withResolver:withRejecter:)
-    func createServer(id: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func createServer(id: String, port: UInt16, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            try manager.createServer(id: id, port: port)
-            resolve(true)
+            let onSuccess = {
+                resolve(true)
+            }
+            let onFailure = { (reason: String) in
+                reject("server.error", reason, nil)
+            }
+            try manager.createServer(id: id, port: port, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesAlreadyExist {
             reject("server.already-exists", "Server with this id already exists", nil)
         } catch {
@@ -40,13 +45,8 @@ class TCPServerModule: RCTEventEmitter {
     @objc(stopServer:withReason:withResolver:withRejecter:)
     func stopServer(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         do {
-            var onSuccess = {
-                resolve(true)
-            }
-            var onFailure = { (reason: String) in
-                reject("server.error", reason, nil)
-            }
-            try manager.stopServer(id: id, reason: reason, onSuccess, onFailure)
+            try manager.stopServer(id: id, reason: reason)
+            resolve(true)
         } catch LocalServerError.ServerDoesNotExist {
             reject("server.not-exists", "Server with this id does not exist", nil)
         } catch {
@@ -55,15 +55,15 @@ class TCPServerModule: RCTEventEmitter {
     }
 
     @objc(send:withConnectionId:withMessage:withResolver:withRejecter:)
-    func send(serverId: String, connectionId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func send(serverId: String, connectionId: String, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            var onSuccess = {
+            let onSuccess = {
                 resolve(true)
             }
-            var onFailure = { (reason: String) in
+            let onFailure = { (reason: String) in
                 reject("server.error", reason, nil)
             }
-            try manager.send(serverId: serverId, connectionId: connectionId, message: message, onSuccess, onFailure)
+            try manager.send(serverId: serverId, connectionId: connectionId, message: message, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesNotExist {
             reject("server.not-exists", "Server with this id does not exist", nil)
         } catch {

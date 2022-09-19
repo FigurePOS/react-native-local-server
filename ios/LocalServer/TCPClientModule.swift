@@ -27,15 +27,15 @@ class TCPClientModule: RCTEventEmitter {
     }
     
     @objc(createClient:withHost:withPort:withResolver:withRejecter:)
-    func createClient(id: String, host: String, port: UInt16, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func createClient(id: String, host: String, port: UInt16, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            var onSuccess = {
+            let onSuccess = {
                 resolve(true)
             }
-            var onFailure = { (reason: String) in
+            let onFailure = { (reason: String) in
                 reject("client.error", reason, nil)
             }
-            try manager.createClient(id: id, host: host, port: port, onSuccess, onFailure)
+            try manager.createClient(id: id, host: host, port: port, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ClientDoesAlreadyExist {
             reject("client.already-exists", "Client with this id already exists", nil)
         } catch {
@@ -56,15 +56,15 @@ class TCPClientModule: RCTEventEmitter {
     }
 
     @objc(send:withMessage:withResolver:withRejecter:)
-    func send(clientId: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func send(clientId: String, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            var onSuccess = {
+            let onSuccess = {
                 resolve(true)
             }
-            var onFailure = { (reason: String) in
+            let onFailure = { (reason: String) in
                 reject("client.error", reason, nil)
             }
-            try manager.send(clientId: clientId, message: message, onSuccess, onFailure)
+            try manager.send(clientId: clientId, message: message, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ClientDoesNotExist {
             reject("client.not-exists", "Client with this id does not exist", nil)
         } catch {
