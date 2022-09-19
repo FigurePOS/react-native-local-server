@@ -20,7 +20,7 @@ platform :ios do
                 scheme: "Tests",
                 clean: true,
                 include_simulator_logs: true,
-                suppress_xcode_output: true,
+                disable_concurrent_testing: true,
             )
         end
     end
