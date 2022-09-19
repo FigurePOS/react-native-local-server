@@ -52,49 +52,49 @@ class E2E: XCTestCase {
         stopServer(id: serverId)
     }
     
-    func testShouldFailCreatingClientWithUnknownHost() throws {
-        let id = "client-1"
-        let exp = expectation(description: "Client should not start")
-        var succeeded: Bool = false
-        var failed: Bool = false
-        let onSuccess = {
-            succeeded = true
-        }
-        let onFailure = { (r: String) in
-            exp.fulfill()
-            failed = true
-        }
-        do {
-            try clientManager?.createClient(id: id, host: "unknown-host", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
-            wait(for: [exp], timeout: 5)
-            XCTAssertTrue(failed)
-            XCTAssertFalse(succeeded)
-        } catch {
-            XCTFail("Failed to prepare client \(id): \(error)")
-        }
-    }
-    
-    func testShouldFailCreatingClientWithUnknownPort() throws {
-        let id = "client-1"
-        let exp = expectation(description: "Client should not start")
-        var succeeded: Bool = false
-        var failed: Bool = false
-        let onSuccess = {
-            succeeded = true
-        }
-        let onFailure = { (r: String) in
-            exp.fulfill()
-            failed = true
-        }
-        do {
-            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
-            wait(for: [exp], timeout: 5)
-            XCTAssertTrue(failed)
-            XCTAssertFalse(succeeded)
-        } catch {
-            XCTFail("Failed to prepare client \(id): \(error)")
-        }
-    }
+//    func testShouldFailCreatingClientWithUnknownHost() throws {
+//        let id = "client-1"
+//        let exp = expectation(description: "Client should not start")
+//        var succeeded: Bool = false
+//        var failed: Bool = false
+//        let onSuccess = {
+//            succeeded = true
+//        }
+//        let onFailure = { (r: String) in
+//            exp.fulfill()
+//            failed = true
+//        }
+//        do {
+//            try clientManager?.createClient(id: id, host: "unknown-host", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+//            wait(for: [exp], timeout: 5)
+//            XCTAssertTrue(failed)
+//            XCTAssertFalse(succeeded)
+//        } catch {
+//            XCTFail("Failed to prepare client \(id): \(error)")
+//        }
+//    }
+//    
+//    func testShouldFailCreatingClientWithUnknownPort() throws {
+//        let id = "client-1"
+//        let exp = expectation(description: "Client should not start")
+//        var succeeded: Bool = false
+//        var failed: Bool = false
+//        let onSuccess = {
+//            succeeded = true
+//        }
+//        let onFailure = { (r: String) in
+//            exp.fulfill()
+//            failed = true
+//        }
+//        do {
+//            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+//            wait(for: [exp], timeout: 5)
+//            XCTAssertTrue(failed)
+//            XCTAssertFalse(succeeded)
+//        } catch {
+//            XCTFail("Failed to prepare client \(id): \(error)")
+//        }
+//    }
     
     func testServerShouldReturnConnectionIds() throws {
         prepareServer(id: serverId)
@@ -273,29 +273,29 @@ class E2E: XCTestCase {
         stopServer(id: serverId)
     }
     
-    func testServerShouldNotStartOnUsedPort() throws {
-        prepareServer(id: serverId)
-        let id = "server-2"
-        let exp = expectation(description: "Server should not start")
-        var succeeded: Bool = false
-        var failed: Bool = false
-        let onSuccess = {
-            succeeded = true
-        }
-        let onFailure = { (r: String) in
-            exp.fulfill()
-            failed = true
-        }
-        do {
-            try serverManager?.createServer(id: id, port: 12000, onSuccess: onSuccess, onFailure: onFailure)
-            wait(for: [exp], timeout: 5)
-            XCTAssertTrue(failed)
-            XCTAssertFalse(succeeded)
-        } catch {
-            XCTFail("Failed to prepare client \(id): \(error)")
-        }
-        stopServer(id: serverId)
-    }
+//    func testServerShouldNotStartOnUsedPort() throws {
+//        prepareServer(id: serverId)
+//        let id = "server-2"
+//        let exp = expectation(description: "Server should not start")
+//        var succeeded: Bool = false
+//        var failed: Bool = false
+//        let onSuccess = {
+//            succeeded = true
+//        }
+//        let onFailure = { (r: String) in
+//            exp.fulfill()
+//            failed = true
+//        }
+//        do {
+//            try serverManager?.createServer(id: id, port: 12000, onSuccess: onSuccess, onFailure: onFailure)
+//            wait(for: [exp], timeout: 5)
+//            XCTAssertTrue(failed)
+//            XCTAssertFalse(succeeded)
+//        } catch {
+//            XCTFail("Failed to prepare client \(id): \(error)")
+//        }
+//        stopServer(id: serverId)
+//    }
     
     func testServerShouldStop() throws {
         prepareServer(id: serverId)
