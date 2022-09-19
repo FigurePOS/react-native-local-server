@@ -18,6 +18,8 @@ platform :ios do
             run_tests(
                 project: "./ios/LocalServer.xcodeproj",
                 scheme: "Tests",
+                clean: true,
+                include_simulator_logs: true,
             )
         end
     end
