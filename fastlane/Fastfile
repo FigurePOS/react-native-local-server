@@ -18,10 +18,8 @@ platform :ios do
             run_tests(
                 project: "./ios/LocalServer.xcodeproj",
                 scheme: "Tests",
-                clean: true,
-                include_simulator_logs: true,
-                disable_concurrent_testing: true,
-                buildlog_path: "./ios/build_test",
+                # use this for debugging
+                # buildlog_path: "./ios/Build/TestLogs",
             )
         end
     end
