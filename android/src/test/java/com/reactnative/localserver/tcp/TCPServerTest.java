@@ -6,9 +6,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.reactnativelocalserver.tcp.Server;
-import com.reactnativelocalserver.tcp.ServerConnection;
-import com.reactnativelocalserver.tcp.ServerConnectionManager;
+import com.reactnativelocalserver.tcp.TCPServer;
+import com.reactnativelocalserver.tcp.TCPServerConnection;
+import com.reactnativelocalserver.tcp.TCPServerConnectionManager;
 import com.reactnativelocalserver.tcp.factory.ServerSocketFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
@@ -31,12 +31,12 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServerTest {
+public class TCPServerTest {
 
     @Mock
-    ServerConnectionManager connectionManager;
+    TCPServerConnectionManager connectionManager;
     @Mock
-    ServerConnection connection;
+    TCPServerConnection connection;
 
     @Mock
     ServerSocketFactory socketFactory;
@@ -56,7 +56,7 @@ public class ServerTest {
 
     @Test
     public void shouldCreateServer() {
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
 
         assertThat(server.getId()).isEqualTo(serverId);
         assertThat(server.getPort()).isEqualTo(port);
@@ -65,7 +65,7 @@ public class ServerTest {
 
     @Test
     public void shouldCreateServerWithDefaultFactory() {
-        Server server = new Server(serverId, port, eventEmitter);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter);
 
         assertThat(server.getId()).isEqualTo(serverId);
         assertThat(server.getPort()).isEqualTo(port);
@@ -78,7 +78,7 @@ public class ServerTest {
         when(serverSocket.accept()).thenReturn(connectionSocket);
         when(connectionManager.create(serverId, eventEmitter)).thenReturn(connectionId);
 
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
         server.start(1);
         TimeUnit.MILLISECONDS.sleep(500);
 
@@ -101,7 +101,7 @@ public class ServerTest {
         IOException exception = new IOException();
         when(socketFactory.of(port)).thenThrow(exception);
 
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
         try {
             server.start();
             fail("server.start() did not throw exception.");
@@ -117,7 +117,7 @@ public class ServerTest {
         when(socketFactory.of(port)).thenReturn(serverSocket);
         when(serverSocket.accept()).thenThrow(exception);
 
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
         server.start(1);
         TimeUnit.MILLISECONDS.sleep(500);
 
@@ -139,7 +139,7 @@ public class ServerTest {
         String message = "This is the message";
         when(connectionManager.get(connectionId)).thenReturn(connection);
 
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
         server.send(connectionId, message);
 
         verify(connection, times(1)).send(message);
@@ -150,7 +150,7 @@ public class ServerTest {
         String message = "This is the message";
         when(connectionManager.get(connectionId)).thenReturn(null);
 
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
         try {
             server.send(connectionId, message);
             fail("server.send() did not throw exception");
@@ -161,15 +161,15 @@ public class ServerTest {
 
     @Test
     public void shouldReturnEmptyConnectionIds() throws Exception {
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
         when(connectionManager.getConnections()).thenReturn(new HashMap<>());
         assertThat(server.getConnectionIds()).isEqualTo(new HashSet<>());
     }
 
     @Test
     public void shouldReturnConnectionIds() throws Exception {
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
-        Map<String, ServerConnection> connections = new HashMap<>();
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
+        Map<String, TCPServerConnection> connections = new HashMap<>();
         connections.put("connection-1", null);
         connections.put("connection-2", null);
         when(connectionManager.getConnections()).thenReturn(connections);
@@ -180,7 +180,7 @@ public class ServerTest {
     public void shouldStopServer() throws Exception {
         when(socketFactory.of(port)).thenCallRealMethod();
 
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
 
         server.start();
         TimeUnit.MILLISECONDS.sleep(300);

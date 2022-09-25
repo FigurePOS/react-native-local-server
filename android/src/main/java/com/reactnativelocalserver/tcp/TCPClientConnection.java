@@ -17,7 +17,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.function.Consumer;
 
-public class ClientConnection {
+public class TCPClientConnection {
     private static final String TAG = "TCPClientConnection";
     private final String clientId;
     private final String host;
@@ -30,7 +30,7 @@ public class ClientConnection {
     private Thread thread;
     private String lastStopReason = null;
 
-    public ClientConnection(String clientId, String host, int port, EventEmitter eventEmitter) {
+    public TCPClientConnection(String clientId, String host, int port, EventEmitter eventEmitter) {
         this.clientId = clientId;
         this.host = host;
         this.port = port;
@@ -45,7 +45,7 @@ public class ClientConnection {
         InetAddress serverAddress = InetAddress.getByName(host);
         socket = new SocketWrapper(new Socket(serverAddress, port));
         runnable = new TCPRunnable();
-        thread = new Thread(runnable, "com.react-native-messaging.client." + clientId);
+        thread = new Thread(runnable, "com.react-native-messaging.tcp.client." + clientId);
         thread.start();
     }
 

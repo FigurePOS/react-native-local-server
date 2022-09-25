@@ -17,7 +17,7 @@ import java.net.SocketException;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class ServerConnection {
+public class TCPServerConnection {
     private static final String TAG = "TCPServerConnection";
     private final String serverId;
     private final String id;
@@ -29,7 +29,7 @@ public class ServerConnection {
     private Thread thread;
     private String lastStopReason = null;
 
-    public ServerConnection(String serverId, EventEmitter eventEmitter) {
+    public TCPServerConnection(String serverId, EventEmitter eventEmitter) {
         this.serverId = serverId;
         this.eventEmitter = eventEmitter;
         this.id = UUID.randomUUID().toString();
@@ -57,7 +57,7 @@ public class ServerConnection {
         }
         this.socket = new SocketWrapper(socket);
         runnable = new TCPRunnable();
-        thread = new Thread(runnable, "com.react-native-messaging.server-connection." + id);
+        thread = new Thread(runnable, "com.react-native-messaging.tcp.server-connection." + id);
         thread.start();
     }
 

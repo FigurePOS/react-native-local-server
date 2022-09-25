@@ -7,9 +7,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.reactnativelocalserver.tcp.Client;
-import com.reactnativelocalserver.tcp.ClientConnection;
-import com.reactnativelocalserver.tcp.factory.ClientConnectionFactory;
+import com.reactnativelocalserver.tcp.TCPClient;
+import com.reactnativelocalserver.tcp.TCPClientConnection;
+import com.reactnativelocalserver.tcp.factory.TCPClientConnectionFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
@@ -19,11 +19,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClientTest {
+public class TCPClientTest {
     @Mock
-    ClientConnectionFactory connectionFactory;
+    TCPClientConnectionFactory connectionFactory;
     @Mock
-    ClientConnection connection;
+    TCPClientConnection connection;
     @Mock
     EventEmitter eventEmitter;
 
@@ -34,7 +34,7 @@ public class ClientTest {
     @Test
     public void shouldCreateClient() {
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         assertThat(client.getId()).isEqualTo(clientId);
         assertThat(client.getHost()).isEqualTo(host);
@@ -44,7 +44,7 @@ public class ClientTest {
 
     @Test
     public void shouldCreateClientWithoutFactory() {
-        Client client = new Client(clientId, host, port, eventEmitter);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter);
 
         assertThat(client.getId()).isEqualTo(clientId);
         assertThat(client.getHost()).isEqualTo(host);
@@ -54,7 +54,7 @@ public class ClientTest {
     @Test
     public void shouldStartClient() throws Exception {
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         client.start();
         verify(connection, times(1)).start();
@@ -65,7 +65,7 @@ public class ClientTest {
         Exception exception = new Exception("Failed to start connection");
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
         doThrow(exception).when(connection).start();
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         try {
             client.start();
@@ -79,7 +79,7 @@ public class ClientTest {
     @Test
     public void shouldStopClient() throws Exception {
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         client.stop(StopReasonEnum.Manual);
         verify(connection, times(1)).stop(StopReasonEnum.Manual);
@@ -88,7 +88,7 @@ public class ClientTest {
     @Test
     public void shouldStopClientWithCustomReason() throws Exception {
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         client.stop("custom-reason");
         verify(connection, times(1)).stop("custom-reason");
@@ -99,7 +99,7 @@ public class ClientTest {
         Exception exception = new Exception("Failed to stop connection");
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
         doThrow(exception).when(connection).stop(StopReasonEnum.Manual);
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         try {
             client.stop(StopReasonEnum.Manual);
@@ -113,7 +113,7 @@ public class ClientTest {
     @Test
     public void shouldSend() throws Exception {
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         client.send("message");
         verify(connection, times(1)).send("message");
@@ -124,7 +124,7 @@ public class ClientTest {
         Exception exception = new Exception("Failed to send");
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
         doThrow(exception).when(connection).send("message");
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         try {
             client.send("message");

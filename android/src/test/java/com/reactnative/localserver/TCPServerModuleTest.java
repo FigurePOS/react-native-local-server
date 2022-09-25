@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.reactnativelocalserver.TCPServerModule;
-import com.reactnativelocalserver.tcp.Server;
-import com.reactnativelocalserver.tcp.factory.ServerFactory;
+import com.reactnativelocalserver.tcp.TCPServer;
+import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
@@ -33,9 +33,9 @@ public class TCPServerModuleTest {
     @Mock
     ReactApplicationContext context;
     @Mock
-    ServerFactory serverFactory;
+    TCPServerFactory serverFactory;
     @Mock
-    Server server;
+    TCPServer server;
     @Mock
     EventEmitter eventEmitter;
 
@@ -69,7 +69,7 @@ public class TCPServerModuleTest {
         verify(serverFactory, times(1)).of("server-1", 12000, eventEmitter);
         verify(server, times(1)).start();
         verify(promise, times(1)).resolve(true);
-        verify(promise, times(1)).reject("server.already-exists", "Server with this id already exists");
+        verify(promise, times(1)).reject("tcp.server.already-exists", "Server with this id already exists");
         assertThat(module.getServers()).containsEntry("server-1", server);
     }
 
@@ -85,7 +85,7 @@ public class TCPServerModuleTest {
 
         verify(serverFactory, times(1)).of("server-1", 12000, eventEmitter);
         verify(server, times(1)).start();
-        verify(promise, times(1)).reject("server.error", exception.getMessage());
+        verify(promise, times(1)).reject("tcp.server.error", exception.getMessage());
         assertThat(module.getServers()).doesNotContainEntry("server-1", server);
     }
 
@@ -106,7 +106,7 @@ public class TCPServerModuleTest {
     public void shouldNotStopServer_ServerDoesNotExist() throws Exception {
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory);
         module.stopServer("server-1", null, promise);
-        verify(promise).reject("server.not-exists", "Server with this id does not exist");
+        verify(promise).reject("tcp.server.not-exists", "Server with this id does not exist");
     }
 
     @Test
@@ -120,7 +120,7 @@ public class TCPServerModuleTest {
         module.stopServer("server-1", null, promise2);
 
         verify(server).stop(null);
-        verify(promise2).reject("server.error", exception.getMessage());
+        verify(promise2).reject("tcp.server.error", exception.getMessage());
         assertThat(module.getServers()).containsEntry("server-1", server);
     }
 
@@ -148,7 +148,7 @@ public class TCPServerModuleTest {
         module.send("server-1", "connection-1", message, promise2);
 
         verify(server).send("connection-1", message);
-        verify(promise2).reject("server.error", exception.getMessage());
+        verify(promise2).reject("tcp.server.error", exception.getMessage());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TCPServerModuleTest {
         module.send("server-1", "connection-1", message, promise2);
 
         verify(server, never()).send("connection-1", message);
-        verify(promise2).reject("server.not-exists", "Server with this id does not exist");
+        verify(promise2).reject("tcp.server.not-exists", "Server with this id does not exist");
     }
 
     @Test
