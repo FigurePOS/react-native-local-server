@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClientTest {
+public class TCPClientTest {
     @Mock
     TCPClientConnectionFactory connectionFactory;
     @Mock
@@ -88,7 +88,7 @@ public class ClientTest {
     @Test
     public void shouldStopClientWithCustomReason() throws Exception {
         when(connectionFactory.of(clientId, host, port, eventEmitter)).thenReturn(connection);
-        Client client = new Client(clientId, host, port, eventEmitter, connectionFactory);
+        TCPClient client = new TCPClient(clientId, host, port, eventEmitter, connectionFactory);
 
         client.stop("custom-reason");
         verify(connection, times(1)).stop("custom-reason");

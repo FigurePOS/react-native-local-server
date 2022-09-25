@@ -190,7 +190,7 @@ public class E2E {
     public void serverShouldNotReturnConnectionIdsUnknownServer() throws Exception {
         Promise promise = mockPromise();
         serverModule.getConnectionIds("server", promise);
-        verify(promise).reject("server.not-exists", "Server with this id does not exist");
+        verify(promise).reject("tcp.server.not-exists", "Server with this id does not exist");
     }
 
     @Test
@@ -199,7 +199,7 @@ public class E2E {
 
         Promise promise = mockPromise();
         serverModule.createServer("server-2", port, promise);
-        verify(promise).reject("server.error", "Port 12000 already in use.");
+        verify(promise).reject("tcp.server.error", "Port 12000 already in use.");
 
         TimeUnit.MILLISECONDS.sleep(100);
 
@@ -213,7 +213,7 @@ public class E2E {
     public void clientShouldNotConnectToUnknownHost() throws Exception {
         Promise promise = mockPromise();
         clientModule.createClient("client", "unknown-host", port, promise);
-        verify(promise).reject("client.error", "unknown host: unknown-host");
+        verify(promise).reject("tcp.client.error", "unknown host: unknown-host");
 
         TimeUnit.MILLISECONDS.sleep(100);
 
@@ -226,7 +226,7 @@ public class E2E {
 
         Promise promise = mockPromise();
         clientModule.createClient("client", "localhost", port + 1, promise);
-        verify(promise).reject("client.error", "Connection refused (Connection refused)");
+        verify(promise).reject("tcp.client.error", "Connection refused (Connection refused)");
 
         TimeUnit.MILLISECONDS.sleep(100);
 
@@ -286,7 +286,7 @@ public class E2E {
         String connectionId = serverEvents.get(3).getBody().get("connectionId");
         Promise sendPromise = mockPromise();
         serverModule.send("server", connectionId, "message", sendPromise);
-        verify(sendPromise).reject("server.error", "Unknown connection: " + connectionId);
+        verify(sendPromise).reject("tcp.server.error", "Unknown connection: " + connectionId);
     }
 
     @Test
@@ -315,7 +315,7 @@ public class E2E {
 
         Promise sendPromise = mockPromise();
         clientModule.send("client", "message", sendPromise);
-        verify(sendPromise).reject("client.not-exists", "Client with this id does not exist");
+        verify(sendPromise).reject("tcp.client.not-exists", "Client with this id does not exist");
     }
 
 

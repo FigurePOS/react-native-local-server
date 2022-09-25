@@ -161,15 +161,15 @@ public class TCPServerTest {
 
     @Test
     public void shouldReturnEmptyConnectionIds() throws Exception {
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
         when(connectionManager.getConnections()).thenReturn(new HashMap<>());
         assertThat(server.getConnectionIds()).isEqualTo(new HashSet<>());
     }
 
     @Test
     public void shouldReturnConnectionIds() throws Exception {
-        Server server = new Server(serverId, port, eventEmitter, socketFactory, connectionManager);
-        Map<String, ServerConnection> connections = new HashMap<>();
+        TCPServer server = new TCPServer(serverId, port, eventEmitter, socketFactory, connectionManager);
+        Map<String, TCPServerConnection> connections = new HashMap<>();
         connections.put("connection-1", null);
         connections.put("connection-2", null);
         when(connectionManager.getConnections()).thenReturn(connections);

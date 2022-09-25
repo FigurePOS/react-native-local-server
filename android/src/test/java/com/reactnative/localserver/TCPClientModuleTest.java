@@ -69,7 +69,7 @@ public class TCPClientModuleTest {
         verify(clientFactory, times(1)).of("client-1", "localhost", 12000, eventEmitter);
         verify(client, times(1)).start();
         verify(promise, times(1)).resolve(true);
-        verify(promise, times(1)).reject("client.already-exists", "Client with this id already exists");
+        verify(promise, times(1)).reject("tcp.client.already-exists", "Client with this id already exists");
         assertThat(module.getClients()).containsEntry("client-1", client);
     }
 
@@ -85,7 +85,7 @@ public class TCPClientModuleTest {
 
         verify(clientFactory, times(1)).of("client-1", "localhost", 12000, eventEmitter);
         verify(client, times(1)).start();
-        verify(promise, times(1)).reject("client.error", "unknown host: localhost");
+        verify(promise, times(1)).reject("tcp.client.error", "unknown host: localhost");
         assertThat(module.getClients()).doesNotContainEntry("client-1", client);
     }
 
@@ -106,7 +106,7 @@ public class TCPClientModuleTest {
     public void shouldNotStopClient_ClientDoesNotExist() throws Exception {
         TCPClientModule module = new TCPClientModule(context, eventEmitter, clientFactory);
         module.stopClient("client-1", StopReasonEnum.Manual, promise);
-        verify(promise).reject("client.not-exists", "Client with this id does not exist");
+        verify(promise).reject("tcp.client.not-exists", "Client with this id does not exist");
     }
 
     @Test
@@ -120,7 +120,7 @@ public class TCPClientModuleTest {
         module.stopClient("client-1", StopReasonEnum.Manual, promise2);
 
         verify(client).stop(StopReasonEnum.Manual);
-        verify(promise2).reject("client.error", exception.getMessage());
+        verify(promise2).reject("tcp.client.error", exception.getMessage());
         assertThat(module.getClients()).containsEntry("client-1", client);
     }
 
@@ -148,7 +148,7 @@ public class TCPClientModuleTest {
         module.send("client-1", message, promise2);
 
         verify(client).send(message);
-        verify(promise2).reject("client.error", exception.getMessage());
+        verify(promise2).reject("tcp.client.error", exception.getMessage());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TCPClientModuleTest {
         module.send("client-1", message, promise2);
 
         verify(client, never()).send(message);
-        verify(promise2).reject("client.not-exists", "Client with this id does not exist");
+        verify(promise2).reject("tcp.client.not-exists", "Client with this id does not exist");
     }
 
     @Test

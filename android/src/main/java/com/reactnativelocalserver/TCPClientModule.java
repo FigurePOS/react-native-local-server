@@ -58,7 +58,7 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             clients.put(id, client);
             promise.resolve(true);
         } catch (UnknownHostException e) {
-            promise.reject("client.error", "unknown host: " + host);
+            promise.reject("tcp.client.error", "unknown host: " + host);
         } catch (Exception e) {
             promise.reject("tcp.client.error", e.getMessage());
         }

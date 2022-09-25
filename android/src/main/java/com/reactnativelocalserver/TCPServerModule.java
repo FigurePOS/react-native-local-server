@@ -119,9 +119,9 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getConnectionIds(String serverId, Promise promise) {
         Log.d(NAME, "get connection ids for server: " + serverId);
-        Server server = servers.get(serverId);
+        TCPServer server = servers.get(serverId);
         if (server == null) {
-            promise.reject("server.not-exists", "Server with this id does not exist");
+            promise.reject("tcp.server.not-exists", "Server with this id does not exist");
             return;
         }
         Set<String> ids = server.getConnectionIds();
