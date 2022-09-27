@@ -7,6 +7,7 @@ import { store } from "./configureStore"
 import { Colors } from "./common/constants"
 import { TCPServerScreen } from "./screens/TCPServer"
 import { TCPClientScreen } from "./screens/TCPClient"
+import { UDPServerScreen } from "./screens/UDPServer"
 import { MessagingServerScreen } from "./screens/MessagingServer"
 import { MessagingClientScreen } from "./screens/MessagingClient"
 import { CounterScreen } from "./screens/Counter"
@@ -25,9 +26,10 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer theme={MyTheme}>
-                <Drawer.Navigator initialRouteName={"Messaging Server"}>
+                <Drawer.Navigator initialRouteName={"UDP Server"}>
                     <Drawer.Screen name={"TCP Server"} component={TCPServerScreen} />
                     <Drawer.Screen name={"TCP Client"} component={TCPClientScreen} />
+                    <Drawer.Screen name={"UDP Server"} component={UDPServerScreen} />
                     <Drawer.Screen name={"Messaging Server"} component={MessagingServerScreen} />
                     <Drawer.Screen name={"Messaging Client"} component={MessagingClientScreen} />
                     <Drawer.Screen name={"Counter"} component={CounterScreen} />

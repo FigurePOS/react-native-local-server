@@ -1,14 +1,12 @@
-import React from "react"
+import React, { PropsWithChildren } from "react"
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native"
 import { MessageData } from "./types"
 import { MessageRow } from "./MessageRow"
 import { HorizontalLine } from "../horizontalLine"
-import { MessageControl } from "./MessageControl"
 
-type Props = {
+type Props = PropsWithChildren<{
     data: MessageData[]
-    onSent: (message: string) => void
-}
+}>
 
 export const MessageView = (props: Props) => {
     return (
@@ -25,7 +23,7 @@ export const MessageView = (props: Props) => {
                     ItemSeparatorComponent={() => <HorizontalLine opacity={0.5} />}
                 />
                 <HorizontalLine />
-                <MessageControl onSent={props.onSent} />
+                {props.children}
             </View>
         </KeyboardAvoidingView>
     )
