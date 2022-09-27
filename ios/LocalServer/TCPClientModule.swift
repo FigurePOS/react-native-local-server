@@ -33,13 +33,13 @@ class TCPClientModule: RCTEventEmitter {
                 resolve(true)
             }
             let onFailure = { (reason: String) in
-                reject("client.error", reason, nil)
+                reject("tcp.client.error", reason, nil)
             }
             try manager.createClient(id: id, host: host, port: port, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ClientDoesAlreadyExist {
-            reject("client.already-exists", "Client with this id already exists", nil)
+            reject("tcp.client.already-exists", "Client with this id already exists", nil)
         } catch {
-            reject("client.error", "Failed to create client", error)
+            reject("tcp.client.error", "Failed to create client", error)
         }
     }
 
@@ -49,9 +49,9 @@ class TCPClientModule: RCTEventEmitter {
             try manager.stopClient(id: id, reason: reason)
             resolve(true)
         } catch LocalServerError.ClientDoesNotExist {
-            reject("client.not-exists", "Client with this id does not exist", nil)
+            reject("tcp.client.not-exists", "Client with this id does not exist", nil)
         } catch {
-            reject("client.error", "Failed to stop client", error)
+            reject("tcp.client.error", "Failed to stop client", error)
         }
     }
 
@@ -62,13 +62,13 @@ class TCPClientModule: RCTEventEmitter {
                 resolve(true)
             }
             let onFailure = { (reason: String) in
-                reject("client.error", reason, nil)
+                reject("tcp.client.error", reason, nil)
             }
             try manager.send(clientId: clientId, message: message, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ClientDoesNotExist {
-            reject("client.not-exists", "Client with this id does not exist", nil)
+            reject("tcp.client.not-exists", "Client with this id does not exist", nil)
         } catch {
-            reject("client.error", "Failed to send data to client", error)
+            reject("tcp.client.error", "Failed to send data to client", error)
         }
     }
     

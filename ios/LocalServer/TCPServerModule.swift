@@ -32,13 +32,13 @@ class TCPServerModule: RCTEventEmitter {
                 resolve(true)
             }
             let onFailure = { (reason: String) in
-                reject("server.error", reason, nil)
+                reject("tcp.server.error", reason, nil)
             }
             try manager.createServer(id: id, port: port, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesAlreadyExist {
-            reject("server.already-exists", "Server with this id already exists", nil)
+            reject("tcp.server.already-exists", "Server with this id already exists", nil)
         } catch {
-            reject("server.error", "Failed to create server", error)
+            reject("tcp.server.error", "Failed to create server", error)
         }
     }
 
@@ -48,9 +48,9 @@ class TCPServerModule: RCTEventEmitter {
             try manager.stopServer(id: id, reason: reason)
             resolve(true)
         } catch LocalServerError.ServerDoesNotExist {
-            reject("server.not-exists", "Server with this id does not exist", nil)
+            reject("tcp.server.not-exists", "Server with this id does not exist", nil)
         } catch {
-            reject("server.error", "Failed to stop server", error)
+            reject("tcp.server.error", "Failed to stop server", error)
         }
     }
 
@@ -61,13 +61,13 @@ class TCPServerModule: RCTEventEmitter {
                 resolve(true)
             }
             let onFailure = { (reason: String) in
-                reject("server.error", reason, nil)
+                reject("tcp.server.error", reason, nil)
             }
             try manager.send(serverId: serverId, connectionId: connectionId, message: message, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesNotExist {
-            reject("server.not-exists", "Server with this id does not exist", nil)
+            reject("tcp.server.not-exists", "Server with this id does not exist", nil)
         } catch {
-            reject("server.error", "Failed to send data", error)
+            reject("tcp.server.error", "Failed to send data", error)
         }
     }
 
@@ -78,9 +78,9 @@ class TCPServerModule: RCTEventEmitter {
             try manager.closeConnection(serverId: serverId, connectionId: connectionId, reason: reason)
             resolve(true)
         } catch LocalServerError.ServerDoesNotExist {
-            reject("server.not-exists", "Server with this id does not exist", nil)
+            reject("tcp.server.not-exists", "Server with this id does not exist", nil)
         } catch {
-            reject("server.error", "Failed to close connection", error)
+            reject("tcp.server.error", "Failed to close connection", error)
         }
     }
 
@@ -90,9 +90,9 @@ class TCPServerModule: RCTEventEmitter {
             let connectionIds: [String] = try manager.getConnectionIds(serverId: serverId)
             resolve(connectionIds)
         } catch LocalServerError.ServerDoesNotExist {
-            reject("server.not-exists", "Server with this id does not exist", nil)
+            reject("tcp.server.not-exists", "Server with this id does not exist", nil)
         } catch {
-            reject("server.error", "Failed to get connections", error)
+            reject("tcp.server.error", "Failed to get connections", error)
         }
     }
     
@@ -106,14 +106,14 @@ class TCPServerModule: RCTEventEmitter {
                 defer { ptr = ptr?.pointee.ifa_next } // memory has been renamed to pointee in swift 3 so changed memory to pointee
                
                 guard let interface = ptr?.pointee else {
-                    reject("server.error", "getIpAddress - no interfaces", nil)
+                    reject("tcp.server.error", "getIpAddress - no interfaces", nil)
                     return
                 }
                 let addrFamily = interface.ifa_addr.pointee.sa_family
                 if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
                    
                     guard let ifa_name = interface.ifa_name else {
-                        reject("server.error", "getIpAddress - no name", nil)
+                        reject("tcp.server.error", "getIpAddress - no name", nil)
                         return
                     }
                     let name: String = String(cString: ifa_name)
