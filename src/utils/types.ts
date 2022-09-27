@@ -10,3 +10,11 @@ export type Logger = {
     warn: (message: string, data: any) => void
     error: (message: string, data?: any) => void
 }
+
+export enum StopReasonEnum {
+    Manual = "manual",
+    ClosedByPeer = "closed-by-peer",
+    Invalidation = "invalidation",
+}
+
+export type StopReason = StopReasonEnum | string

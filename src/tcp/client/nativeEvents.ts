@@ -1,4 +1,4 @@
-import { StopReason } from "../types"
+import { StopReason } from "../../utils/types"
 
 export enum TCPClientEventName {
     Ready = "RN_Local_Communication__TCP_Client_Ready",

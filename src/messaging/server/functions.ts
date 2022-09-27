@@ -4,7 +4,8 @@ import {
     MessagingServerStatusEvent,
     MessagingServerStatusEventName,
 } from "./types"
-import { StopReason, TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
+import { TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
+import { StopReason } from "../../utils/types"
 
 export const composeMessagingServerLifecycleStatusEvent = (
     type: MessagingServerLifecycleStatusEvent["type"],

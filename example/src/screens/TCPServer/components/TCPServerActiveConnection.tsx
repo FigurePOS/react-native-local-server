@@ -7,6 +7,7 @@ import { Colors, FontSize } from "../../../common/constants"
 import { createActionBareTcpServerDataSendRequested } from "../actions"
 import { MessageView } from "../../../common/components/messaging/MessageView"
 import { MessageData } from "../../../common/components/messaging/types"
+import { MessageControl } from "../../../common/components/messaging/MessageControl"
 
 export const TCPServerActiveConnection = () => {
     const dispatch = useDispatch()
@@ -28,7 +29,11 @@ export const TCPServerActiveConnection = () => {
         )
     }
     // 120 140
-    return <MessageView data={data} onSent={onDataSent} />
+    return (
+        <MessageView data={data}>
+            <MessageControl onSent={onDataSent} />
+        </MessageView>
+    )
 }
 
 const styles = StyleSheet.create({
