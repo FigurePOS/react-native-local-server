@@ -6,16 +6,10 @@ import static org.mockito.Mockito.verify;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.reactnativelocalserver.TCPClientModule;
-import com.reactnativelocalserver.TCPServerModule;
 import com.reactnativelocalserver.UDPServerModule;
-import com.reactnativelocalserver.tcp.factory.TCPClientFactory;
-import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.udp.factory.UDPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
-import com.reactnativelocalserver.utils.TCPClientEventName;
-import com.reactnativelocalserver.utils.TCPServerEventName;
 import com.reactnativelocalserver.utils.UDPServerEventName;
 
 import org.junit.After;
@@ -70,7 +64,7 @@ public class E2E {
         prepareServer("server-2", 12001);
 
         Promise promise = mockPromise();
-        serverModule.send("server-1", "localhost", 12001, "Hello there", promise);
+        serverModule.send("localhost", 12001, "Hello there", promise);
         verify(promise).resolve(true);
         TimeUnit.MILLISECONDS.sleep(100);
 
@@ -83,7 +77,7 @@ public class E2E {
         assertThat(serverEvents.get(2).getName()).isEqualTo(UDPServerEventName.DataReceived);
         assertThat(serverEvents.get(2).getBody().get("serverId")).isEqualTo("server-2");
         assertThat(serverEvents.get(2).getBody().get("data")).isEqualTo("Hello there");
-        assertThat(serverEvents.get(2).getBody().get("port")).isEqualTo("12000");
+        assertThat(serverEvents.get(2).getBody().get("port")).isInstanceOfAny(String.class);
         assertThat(serverEvents.get(2).getBody().get("host")).isEqualTo("127.0.0.1");
     }
 
