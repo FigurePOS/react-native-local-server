@@ -11,21 +11,23 @@ import Network
 
 
 class UDPServerManager: ServerDelegateProtocol {
+    private let clientManager: UDPOneTimeClientManager
     private let eventEmitter: EventEmitterWrapper
-    private var servers: [String: Server] = [:]
+    private var servers: [String: GeneralNetworkServer] = [:]
 
     init(eventEmitter: EventEmitterWrapper) {
         self.eventEmitter = eventEmitter;
+        self.clientManager = UDPOneTimeClientManager();
     }
 
     func createServer(id: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("UDPServerManager - createServer - started")
-        if let _: Server = servers[id] {
+        if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
         let params: NWParameters = .udp
         params.allowFastOpen = true
-        let server: Server = try Server(id: id, port: port, params: params, delegate: self)
+        let server: GeneralNetworkServer = try GeneralNetworkServer(id: id, port: port, params: params, delegate: self)
         let onStartSucceeded = {
             self.servers[id] = server
             onSuccess()
@@ -39,24 +41,20 @@ class UDPServerManager: ServerDelegateProtocol {
 
     func stopServer(id: String, reason: String) throws {
         print("UDPServerManager - stopServer - started")
-        guard let server: Server = servers[id] else {
+        guard let server: GeneralNetworkServer = servers[id] else {
             throw LocalServerError.ServerDoesNotExist
         }
         try server.stop(reason: reason)
     }
 
-    func send(serverId: String, connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
+    func send(host: String, port: UInt16, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String?) -> ()) throws {
         print("UDPServerManager - send - started")
-        guard let server: Server = servers[serverId] else {
-            throw LocalServerError.ServerDoesNotExist
-        }
-        try server.send(connectionId: connectionId, message: message, onSuccess: onSuccess, onFailure: onFailure)
+        try clientManager.send(host: host, port: port, message: message, onSuccess: onSuccess, onFailure: onFailure)
     }
-
 
     func closeConnection(serverId: String, connectionId: String, reason: String) throws {
         print("UDPServerManager - closeConnection - started")
-        guard let server: Server = servers[serverId] else {
+        guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         try server.closeConnection(connectionId: connectionId, reason: reason)
@@ -64,7 +62,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
     
     func getConnectionIds(serverId: String) throws -> [String] {
-        guard let server: Server = servers[serverId] else {
+        guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         return server.getConnectionIds()
@@ -79,7 +77,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
     
     func getConnectionsFromServer(serverId: String) throws -> [String] {
-        guard let server: Server = servers[serverId] else {
+        guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         return server.getConnectionIds()

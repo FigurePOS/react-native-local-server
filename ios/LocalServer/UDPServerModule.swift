@@ -54,14 +54,18 @@ class UDPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(send:withHost:withPort:withMessage:withResolver:withRejecter:)
-    func send(serverId: String, host: String, port: UInt16, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc(send:withPort:withMessage:withResolver:withRejecter:)
+    func send(host: String, port: UInt16, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            resolve(true)
-        } catch LocalServerError.ServerDoesNotExist {
-            reject("udp.server.not-exists", "Server with this id does not exist", nil)
+            let onSuccess = {
+                resolve(true)
+            }
+            let onFailure = { (reason: String?) in
+                reject("udp.server.error", reason ?? "UNKNOWN REASON", nil)
+            }
+            try manager.send(host: host, port: port, message: message, onSuccess: onSuccess, onFailure: onFailure)
         } catch {
-            reject("udp.server.error", "Failed to send data", error)
+            reject("udp.server.error", "Failed to send", error)
         }
     }
     

@@ -21,8 +21,7 @@ RCT_EXTERN_METHOD(stopServer:(NSString *)id
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(send:(NSString *)id
-                  withHost:(NSString *)host
+RCT_EXTERN_METHOD(send:(NSString *)host
                   withPort:(int)port
                   withMessage:(NSString *)message
                   withResolver:(RCTPromiseResolveBlock)resolve

@@ -46,7 +46,7 @@ export class UDPServer {
     sendData = async (host: string, port: number, data: string): Promise<void> => {
         this.logger?.log(`UDPServer [${this.getId()}] - sendData`, { host: host, port: port, data: data })
         try {
-            await UDPServerModule.send(this.getId(), host, port, data)
+            await UDPServerModule.send(host, port, data)
             this.logger?.log(`UDPServer [${this.getId()}] - sendData - success`)
             return Promise.resolve()
         } catch (e) {

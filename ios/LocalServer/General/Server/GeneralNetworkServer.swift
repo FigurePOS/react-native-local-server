@@ -11,10 +11,10 @@ import Foundation
 import Network
 
 @available(iOS 12.0, *)
-class Server: ServerConnectionDelegateProtocol {
+class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     
     private let delegate: ServerDelegateProtocol
-    private var connectionsByID: [String: ServerConnection] = [:]
+    private var connectionsByID: [String: GeneralNetworkServerConnection] = [:]
 
     private var wasReady: Bool = false
     private var onStartSucceeded: (() -> ())? = nil
@@ -35,7 +35,7 @@ class Server: ServerConnectionDelegateProtocol {
     }
     
     func start(onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("Server - start \(id)")
+        print("GeneralNetworkServer - start \(id)")
         onStartSucceeded = onSuccess
         onStartFailed = onFailure
         listener.stateUpdateHandler = stateDidChange(to:)
@@ -44,17 +44,17 @@ class Server: ServerConnectionDelegateProtocol {
     }
     
     func stop(reason: String) throws {
-        print("Server - stop \(id)")
+        print("GeneralNetworkServer - stop \(id)")
         self.lastReasonToStop = reason
         self.stopServer()
     }
     
     func send(connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("Server - send \(id)")
+        print("GeneralNetworkServer - send \(id)")
         print("\tconnection: \(connectionId)")
         print("\tmessage: \(message)")
         guard let connection = connectionsByID[connectionId] else {
-            print("Server - send - no connection")
+            print("GeneralNetworkServer - send - no connection")
             throw LocalServerError.UnknownConnectionId
         }
         let preparedMessage = message + "\r\n"
@@ -62,9 +62,9 @@ class Server: ServerConnectionDelegateProtocol {
     }
     
     func closeConnection(connectionId: String, reason: String) throws {
-        print("Server - close connection: \(connectionId)")
+        print("GeneralNetworkServer - close connection: \(connectionId)")
         guard let connection = connectionsByID[connectionId] else {
-            print("Server - closeConnection - no connection")
+            print("GeneralNetworkServer - closeConnection - no connection")
             throw LocalServerError.UnknownConnectionId
         }
         connection.stop(reason: reason)
@@ -87,7 +87,7 @@ class Server: ServerConnectionDelegateProtocol {
     }
     
     private func stateDidChange(to newState: NWListener.State) {
-        print("Server - stateDidChange \(id)")
+        print("GeneralNetworkServer - stateDidChange \(id)")
         switch newState {
             case .setup:
                 print("\tstate: setup")
@@ -116,8 +116,8 @@ class Server: ServerConnectionDelegateProtocol {
     }
     
     private func handleConnectionAccepted(nwConnection: NWConnection) {
-        let connection = ServerConnection(nwConnection: nwConnection, delegate: self)
-        print("Server - connection accepted - \(connection.id)")
+        let connection = GeneralNetworkServerConnection(nwConnection: nwConnection, delegate: self)
+        print("GeneralNetworkServer - connection accepted - \(connection.id)")
         delegate.handleConnectionAccepted(serverId: id, connectionId: connection.id)
         self.connectionsByID[connection.id] = connection
         connection.start()

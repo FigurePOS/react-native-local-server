@@ -1,5 +1,5 @@
 //
-//  E2E.swift
+//  TCP_E2E.swift
 //  Tests
 //
 //  Created by David Lang on 29.07.2022.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import LocalServerForTests
 
-class E2E: XCTestCase {
+class TCP_E2E: XCTestCase {
     
     var clientEventEmitter: EventEmitterWrapper? = nil
     var clientManager: TCPClientManager? = nil

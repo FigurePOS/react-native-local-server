@@ -1,5 +1,5 @@
 //
-//  ServerConnection.swift
+//  GeneralNetworkServerConnection.swift
 //  LocalServer
 //
 //  Created by David Lang on 27.09.2022.
@@ -10,7 +10,7 @@ import Foundation
 import Network
 
 @available(iOS 12.0, *)
-class ServerConnection {
+class GeneralNetworkServerConnection {
     private let reader: NewLineBufferedReader = NewLineBufferedReader()
     private let delegate: ServerConnectionDelegateProtocol
     private let queue: DispatchQueue
@@ -30,7 +30,7 @@ class ServerConnection {
     }
 
     func start() {
-        print("ServerConnection - start \(id)")
+        print("GeneralNetworkServerConnection - start \(id)")
         connection.stateUpdateHandler = self.stateDidChange(to:)
         connection.start(queue: self.queue)
     }
@@ -42,12 +42,12 @@ class ServerConnection {
                 return
             }
             onSuccess()
-            print("connection \(self.id) did send, data: \(data as NSData)")
+            print("GeneralNetworkServerConnection \(self.id) did send, data: \(data as NSData)")
         }))
     }
 
     func stop(reason: String) {
-        print("connection \(id) will stop")
+        print("GeneralNetworkServerConnection \(id) will stop")
         lastReasonToStop = reason
         closeConnection()
     }
@@ -57,7 +57,7 @@ class ServerConnection {
     }
     
     private func stateDidChange(to state: NWConnection.State) {
-        let prefix = "ServerConnection - stateDidChange \(id)\n"
+        let prefix = "GeneralNetworkServerConnection - stateDidChange \(id)\n"
         switch state {
             case .setup:
                 print("\(prefix)\tstate: setup")
@@ -97,10 +97,10 @@ class ServerConnection {
                 }
             }
             if isComplete {
-                print("ServerConnection - is complete")
+                print("GeneralNetworkServerConnection - is complete")
                 self.delegate.handleConnectionStopped(connectionId: self.id, reason: StopReasonEnum.ClosedByPeer)
             } else if let error = error {
-                print("ServerConnection - error when receiving data \n\treason: \(error)")
+                print("GeneralNetworkServerConnection - error when receiving data \n\treason: \(error)")
             } else {
                 self.setupReceive()
             }
