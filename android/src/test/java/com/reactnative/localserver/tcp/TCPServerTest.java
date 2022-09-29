@@ -65,7 +65,7 @@ public class TCPServerTest {
 
     @Test
     public void shouldCreateServerWithDefaultFactory() {
-        TCPServer server = new TCPServer(serverId, port, eventEmitter);
+        TCPServer server = new TCPServer(serverId, port, null, eventEmitter);
 
         assertThat(server.getId()).isEqualTo(serverId);
         assertThat(server.getPort()).isEqualTo(port);

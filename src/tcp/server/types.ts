@@ -4,4 +4,8 @@
  */
 export type TCPServerConfiguration = {
     port: number
+    discovery?: {
+        name: string
+        group: string
+    }
 }

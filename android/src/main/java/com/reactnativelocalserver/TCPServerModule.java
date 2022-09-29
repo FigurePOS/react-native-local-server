@@ -1,6 +1,8 @@
 package com.reactnativelocalserver;
 
 import android.content.Context;
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -15,6 +17,7 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.TCPServer;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.NsdServiceInfoFactory;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import java.net.InetAddress;
@@ -50,16 +53,22 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         return NAME;
     }
 
-    @ReactMethod
     public void createServer(String id, int port, Promise promise) {
+        createServer(id, port, null, null, promise);
+    }
+
+    @ReactMethod
+    public void createServer(String id, int port, String discoveryGroup, String discoveryName, Promise promise) {
         Log.d(NAME, "createServer started for id: " + id);
         if (servers.get(id) != null) {
             promise.reject("tcp.server.already-exists", "Server with this id already exists");
             return;
         }
+        NsdServiceInfo discoveryConfig = NsdServiceInfoFactory.of(discoveryName, discoveryGroup, port);
         try {
-            TCPServer server = serverFactory.of(id, port, eventEmitter);
-            server.start();
+            TCPServer server = serverFactory.of(id, port, discoveryConfig, eventEmitter);
+            NsdManager manager = (NsdManager) reactApplicationContext.getApplicationContext().getSystemService(Context.NSD_SERVICE);
+            server.start(manager);
             servers.put(id, server);
             promise.resolve(true);
         } catch (Exception e) {

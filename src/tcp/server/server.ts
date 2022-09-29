@@ -76,11 +76,40 @@ export class TCPServer {
         this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - start`, configuration)
         this.config = configuration
         try {
-            await TCPServerModule.createServer(this.getId(), this.config.port)
+            await TCPServerModule.createServer(
+                this.getId(),
+                this.config.port,
+                this.config.discovery?.group,
+                this.config.discovery?.name
+            )
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - start - success`)
             return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - start - error`, e)
+            return Promise.reject(e)
+        }
+    }
+
+    registerBonjourService = async (name: string, type: string): Promise<void> => {
+        this.logger?.log(`TCPServer [${this.getId()}] - registerBonjourService`)
+        try {
+            await TCPServerModule.registerBonjourService(this.getId(), name, type)
+            this.logger?.log(`TCPServer [${this.getId()}] - registerBonjourService - success`)
+            return Promise.resolve()
+        } catch (e) {
+            this.logger?.error(`TCPServer [${this.getId()}] - registerBonjourService - error`, e)
+            return Promise.reject(e)
+        }
+    }
+
+    unregisterBonjourService = async (): Promise<void> => {
+        this.logger?.log(`TCPServer [${this.getId()}] - unregisterBonjourService`)
+        try {
+            await TCPServerModule.unregisterBonjourService(this.getId())
+            this.logger?.log(`TCPServer [${this.getId()}] - unregisterBonjourService - success`)
+            return Promise.resolve()
+        } catch (e) {
+            this.logger?.error(`TCPServer [${this.getId()}] - unregisterBonjourService - error`, e)
             return Promise.reject(e)
         }
     }

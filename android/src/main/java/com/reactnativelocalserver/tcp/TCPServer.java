@@ -1,9 +1,12 @@
 package com.reactnativelocalserver.tcp;
 
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
 import com.reactnativelocalserver.tcp.factory.ServerSocketFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.EventHandler;
 import com.reactnativelocalserver.utils.JSEvent;
 import com.reactnativelocalserver.utils.TCPServerEventName;
 
@@ -14,15 +17,16 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class TCPServer {
+public class TCPServer implements EventHandler {
     private final static String TAG = "TCPServer";
     private final TCPServerConnectionManager connectionManager;
     private final ServerSocketFactory socketFactory;
     private final EventEmitter eventEmitter;
-
+    private final TCPServerDiscovery discovery;
     private final String id;
     private final int port;
 
+    private NsdManager nsdManager;
     private Integer maxConnections = null;
     private Integer connectionCount = 0;
     private ServerSocket serverSocket;
@@ -31,13 +35,18 @@ public class TCPServer {
     private String lastStopReason = null;
 
 
-    public TCPServer(String id, int port, EventEmitter eventEmitter) {
-        this(id, port, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
+    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter) {
+        this(id, port, discoveryConfig, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
     }
 
     public TCPServer(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
+        this(id, port, null, eventEmitter, socketFactory, connectionManager);
+    }
+
+    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
         this.id = id;
         this.port = port;
+        this.discovery = new TCPServerDiscovery(discoveryConfig, this);
         this.eventEmitter = eventEmitter;
         this.socketFactory = socketFactory;
         this.connectionManager = connectionManager;
@@ -60,12 +69,21 @@ public class TCPServer {
     }
 
     public void start() throws Exception {
-        this.start(null);
+        this.start(null, null);
     }
 
     public void start(Integer maxConnections) throws Exception {
+        this.start(maxConnections);
+    }
+
+    public void start(NsdManager manager) throws Exception {
+        this.start(null, manager);
+    }
+
+    public void start(Integer maxConnections, NsdManager manager) throws Exception {
         Log.d(TAG, "start: " + id);
         this.maxConnections = maxConnections;
+        this.nsdManager = manager;
         try {
             serverSocket = socketFactory.of(port);
             runnable = new TCPRunnable();
@@ -108,6 +126,9 @@ public class TCPServer {
 
     private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
+        if (nsdManager != null) {
+            discovery.unregister(nsdManager);
+        }
         connectionManager.clear();
         if (thread != null && !thread.isInterrupted()) {
             thread.interrupt();
@@ -128,11 +149,11 @@ public class TCPServer {
         this.eventEmitter.emitEvent(event);
     }
 
-    private void handleLifecycleEvent(String eventName) {
+    public void handleLifecycleEvent(String eventName) {
         handleLifecycleEvent(eventName, null);
     }
 
-    private void handleLifecycleEvent(String eventName, String reason) {
+    public void handleLifecycleEvent(String eventName, String reason) {
         JSEvent event = new JSEvent(eventName);
         event.putString("serverId", id);
         if (reason != null) {
@@ -145,6 +166,9 @@ public class TCPServer {
         @Override
         public void run() {
             handleLifecycleEvent(TCPServerEventName.Ready);
+            if (nsdManager != null) {
+                discovery.register(nsdManager);
+            }
             try {
                 while (serverSocket != null && (maxConnections == null || connectionCount < maxConnections)) {
                     Socket s = serverSocket.accept();
