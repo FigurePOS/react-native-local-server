@@ -28,23 +28,18 @@ class UDP_E2E: XCTestCase {
 
     // TESTS
     func testShouldStartServer() {
-        XCTAssertTrue(true)
-//        prepareServer(id: "server")
+        prepareServer(id: "server")
     }
     
     // HELPER FUNCTIONS
     func prepareServer(id: String) {
         do {
-            let exp = expectation(description: "Server \(id) should start")
-            let onSuccess = {
-                exp.fulfill()
-            }
-            let onFailure = { (_ reason: String) in
-                XCTFail("Server not started: \(reason)")
-            }
-            try serverManager?.createServer(id: id, port: 12000, onSuccess: onSuccess, onFailure: onFailure)
-            wait(for: [exp], timeout: 5)
-            waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, {
+                let onFailure = { (_ reason: String) in
+                    XCTFail("Server not started: \(reason)")
+                }
+                try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: onFailure)
+            })
         } catch {
             XCTFail("Failed to prepare server \(id): \(error)")
         }
@@ -56,34 +51,38 @@ class UDP_E2E: XCTestCase {
     
     func stopServer(id: String, reason: String) {
         do {
-            try serverManager?.stopServer(id: id, reason: reason)
-            waitForServerEvent(eventName: TCPServerEventName.Stopped, serverId: id, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.Stopped, serverId: id, {
+                try serverManager?.stopServer(id: id, reason: reason)
+            })
         } catch {
             XCTFail("Failed to stop server \(id): \(error)")
         }
     }
     
-    func waitForServerEvent(eventName: String, serverId: String, emitter: EventEmitterWrapper) {
-        let predicate = NSPredicate { (evaluatedObject, _) in
-            return (evaluatedObject as! EventEmitterWrapper).getEvents().contains(where: {(event) in
-                return eventName == event.getName() && serverId == event.getBody()["serverId"] as! String
-            })
-        }
-        let exp = XCTNSPredicateExpectation(predicate: predicate, object: emitter)
-        exp.expectationDescription = "Waiting for event \(eventName) on emitter (\(emitter.name))."
-        wait(for: [exp], timeout: 5)
+    func prepareServerExpectation(eventName: String, serverId: String) -> XCTestExpectation {
+        return prepareServerExpectation(eventName: eventName, serverId: serverId, extraPredicate: {_ in return true})
+    }
+    
+    func prepareServerExpectation(eventName: String, serverId: String, extraPredicate: @escaping (_ event: JSEvent) -> Bool) -> XCTestExpectation {
+        let exp = expectation(description: "Waiting for event \(eventName) on server emitter.")
+        serverEventEmitter?.addOnEvent(callback: { (event: JSEvent) in
+            if (eventName == event.getName() && serverId == event.getBody()["serverId"] as! String && extraPredicate(event)) {
+                exp.fulfill()
+                return false
+            }
+            return true
+        })
+        return exp
     }
     
     
-    func waitForEvent(eventName: String, body: Dictionary<String, Any>, emitter: EventEmitterWrapper) {
-        let predicate = NSPredicate { (evaluatedObject, _) in
-            return (evaluatedObject as! EventEmitterWrapper).getEvents().contains(where: {(event) in
-                return eventName == event.getName() && (body as NSDictionary).isEqual(to: event.getBody())
-            })
-        }
-        let exp = XCTNSPredicateExpectation(predicate: predicate, object: emitter)
-        exp.expectationDescription = "Waiting for event \(eventName) on emitter (\(emitter.name))."
-        wait(for: [exp], timeout: 5)
+    func waitForServerEvent(eventName: String, serverId: String, _ operation: () throws -> ()) throws {
+        try waitForServerEvent(eventName: eventName, serverId: serverId, extraPredicate: {_ in return true} , operation)
     }
-
+    
+    func waitForServerEvent(eventName: String, serverId: String, extraPredicate: @escaping (_ event: JSEvent) -> Bool, _ operation: () throws -> ()) throws {
+        let exp = prepareServerExpectation(eventName: eventName, serverId: serverId, extraPredicate: extraPredicate)
+        try operation()
+        wait(for: [exp], timeout: 1)
+    }
 }

@@ -230,7 +230,9 @@ class TCP_E2E: XCTestCase {
                 prepareClient(id: clientId)
             })
 
-            stopClient(id: clientId, reason: "custom-reason")
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId, {
+                stopClient(id: clientId, reason: "custom-reason")
+            })
 
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
@@ -471,7 +473,7 @@ class TCP_E2E: XCTestCase {
         do {
             try waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, {
                 let onFailure = { (_ reason: String) in
-//                    XCTFail("Server not started: \(reason)")
+                    XCTFail("Server not started: \(reason)")
                 }
                 try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: onFailure)
             })
@@ -498,7 +500,7 @@ class TCP_E2E: XCTestCase {
         do {
             try waitForClientEvent(eventName: TCPClientEventName.Ready, clientId: id, {
                 let onFailure = { (_ reason: String) in
-//                    XCTFail("Client not started: \(reason)")
+                    XCTFail("Client not started: \(reason)")
                 }
                 try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: {}, onFailure: onFailure)
             })
