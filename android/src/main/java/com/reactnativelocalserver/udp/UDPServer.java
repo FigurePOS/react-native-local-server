@@ -11,10 +11,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 
 
 public class UDPServer {
@@ -30,7 +28,7 @@ public class UDPServer {
     private DatagramSocket serverSocket;
     private UDPRunnable runnable;
     private Thread thread;
-
+    private String lastStopReason = null;
 
     public UDPServer(String id, int port, EventEmitter eventEmitter) {
         this(id, port, eventEmitter, new DatagramSocketFactory());
@@ -64,8 +62,9 @@ public class UDPServer {
         }
     }
 
-    public void stop() throws Exception {
+    public void stop(String reason) throws Exception {
         Log.d(TAG, "stop: " + id);
+        lastStopReason = reason;
         try {
             serverSocket.close();
         } catch (Exception e) {
@@ -95,10 +94,12 @@ public class UDPServer {
         if (thread != null && !thread.isInterrupted()) {
             thread.interrupt();
         }
+        String reasonToStop = lastStopReason != null ? lastStopReason : reason;
+        lastStopReason = null;
         thread = null;
         runnable = null;
         serverSocket = null;
-        handleLifecycleEvent(UDPServerEventName.Stopped, reason);
+        handleLifecycleEvent(UDPServerEventName.Stopped, reasonToStop);
     }
 
     private void handleDataReceived(String data, InetAddress address, int port) {
@@ -106,7 +107,7 @@ public class UDPServer {
         event.putString("serverId", id);
         event.putString("data", data);
         event.putString("host", address.getHostAddress());
-        event.putString("port", ""  + port);
+        event.putString("port", "" + port);
         this.eventEmitter.emitEvent(event);
     }
 

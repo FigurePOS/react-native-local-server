@@ -12,6 +12,7 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.udp.UDPServer;
 import com.reactnativelocalserver.udp.factory.UDPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -71,7 +72,7 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
             return;
         }
         try {
-            server.stop();
+            server.stop(reason);
             servers.remove(id);
             promise.resolve(true);
         } catch (Exception e) {
@@ -104,7 +105,7 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
         Log.d(NAME, "invalidate - number of servers: " + servers.size());
         for (Map.Entry<String, UDPServer> entry : servers.entrySet()) {
             try {
-                entry.getValue().stop();
+                entry.getValue().stop(StopReasonEnum.Invalidation);
             } catch (Exception e) {
                 Log.e(NAME, "invalidate - failed to stop server: " + entry.getKey(), e);
             }

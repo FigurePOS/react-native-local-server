@@ -97,6 +97,22 @@ public class E2E {
         verify(promise).reject("udp.server.already-exists", "Server with this id already exists");
     }
 
+    @Test
+    public void serverShouldStopWithReason() throws Exception {
+        prepareServer("server-1", 12000);
+        Promise promise = mockPromise();
+        serverModule.stopServer("server-1", "custom-reason", promise);
+        verify(promise).resolve(true);
+        TimeUnit.MILLISECONDS.sleep(100);
+
+        verify(eventEmitter, times(2)).emitEvent(eventCaptor.capture());
+        List<JSEvent> serverEvents = eventCaptor.getAllValues();
+        assertThat(serverEvents.get(0).getName()).isEqualTo(UDPServerEventName.Ready);
+        assertThat(serverEvents.get(0).getBody().get("serverId")).isEqualTo("server-1");
+        assertThat(serverEvents.get(1).getName()).isEqualTo(UDPServerEventName.Stopped);
+        assertThat(serverEvents.get(1).getBody().get("serverId")).isEqualTo("server-1");
+    }
+
     private void prepareServer(String id, int port) throws Exception {
         Promise promise = mockPromise();
         serverModule.createServer(id, port, promise);
