@@ -13,13 +13,13 @@ class UDP_E2E: XCTestCase {
     
 
     var serverEventEmitter: EventEmitterWrapper? = nil
-    var serverManager: TCPServerManager? = nil
+    var serverManager: UDPServerManager? = nil
     let serverId: String = "test-server"
 
     // SETUP
     override func setUpWithError() throws {
         serverEventEmitter = EventEmitterWrapper(name: "serverEventEmitter")
-        serverManager = TCPServerManager(eventEmitter: serverEventEmitter!)
+        serverManager = UDPServerManager(eventEmitter: serverEventEmitter!)
     }
 
     override func tearDownWithError() throws {
@@ -27,8 +27,9 @@ class UDP_E2E: XCTestCase {
     }
 
     // TESTS
-    func testShould() {
+    func testShouldStartServer() {
         XCTAssertTrue(true)
+//        prepareServer(id: "server")
     }
     
     // HELPER FUNCTIONS

@@ -20,14 +20,14 @@ class TCP_E2E: XCTestCase {
     let serverId: String = "test-server"
 
     // SETUP
-    override func setUpWithError() throws {
+    override func setUp() {
         clientEventEmitter = EventEmitterWrapper(name: "clientEventEmitter")
         clientManager = TCPClientManager(eventEmitter: clientEventEmitter!)
         serverEventEmitter = EventEmitterWrapper(name: "serverEventEmitter")
         serverManager = TCPServerManager(eventEmitter: serverEventEmitter!)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         clientManager?.invalidate()
         serverManager?.invalidate()
     }
@@ -41,7 +41,7 @@ class TCP_E2E: XCTestCase {
         stopServer(id: serverId)
     }
 
-    
+
     func testShouldFailCreatingTwoClientsWithSameId() throws {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
@@ -51,7 +51,7 @@ class TCP_E2E: XCTestCase {
         stopClient(id: clientId)
         stopServer(id: serverId)
     }
-    
+
     func testShouldFailCreatingClientWithUnknownHost() throws {
         let id = "client-1"
         let exp = expectation(description: "Client should not start")
@@ -73,7 +73,7 @@ class TCP_E2E: XCTestCase {
             XCTFail("Failed to prepare client \(id): \(error)")
         }
     }
-    
+
     func testShouldFailCreatingClientWithUnknownPort() throws {
         let id = "client-1"
         let exp = expectation(description: "Client should not start")
@@ -95,32 +95,30 @@ class TCP_E2E: XCTestCase {
             XCTFail("Failed to prepare client \(id): \(error)")
         }
     }
-    
+
     func testServerShouldReturnConnectionIds() throws {
         prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
             let connections: [String] = try serverManager?.getConnectionIds(serverId: serverId) as! [String]
             XCTAssertEqual(connections.count, 1)
         } catch {
             XCTFail("Failed to get connection ids: \(error)")
         }
-        
+
         stopClient(id: clientId)
         stopServer(id: serverId)
     }
-    
+
     func testClientShouldSendData() throws {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
         do {
-            let exp = expectation(description: "Data send success")
-            let onSuccess = {
-                exp.fulfill()
-            }
-            try clientManager?.send(clientId: clientId, message: "Hello world!", onSuccess: onSuccess, onFailure: {_ in})
-            wait(for: [exp], timeout: 5)
-            waitForServerEvent(eventName: TCPServerEventName.DataReceived, serverId: serverId, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.DataReceived, serverId: serverId, {
+                try clientManager?.send(clientId: clientId, message: "Hello world!", onSuccess: {}, onFailure: {_ in})
+            })
             let events = serverEventEmitter?.getEvents()
             XCTAssertEqual(events?.count, 4)
             XCTAssertEqual(events?[0].getName(), TCPServerEventName.Ready)
@@ -134,17 +132,17 @@ class TCP_E2E: XCTestCase {
         stopClient(id: clientId)
         stopServer(id: serverId)
     }
-    
+
     func testServerShouldRecieveDataTwiceInShortPeriod() throws {
         prepareServer(id: serverId)
         prepareClient(id: clientId)
         do {
-            let exp1 = expectation(description: "First data sent")
-            let exp2 = expectation(description: "Second data sent")
-            try clientManager?.send(clientId: clientId, message: "This is message 1", onSuccess: {exp1.fulfill()}, onFailure: {_ in})
-            try clientManager?.send(clientId: clientId, message: "This is message 2", onSuccess: {exp2.fulfill()}, onFailure: {_ in})
-            wait(for: [exp1, exp2], timeout: 5)
-            waitForServerEvent(eventName: TCPServerEventName.DataReceived, serverId: serverId, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.DataReceived, serverId: serverId, extraPredicate: { (_ event: JSEvent) in
+                return event.getBody()["data"] as! String == "This is message 2"
+            }, {
+                try clientManager?.send(clientId: clientId, message: "This is message 1", onSuccess: {}, onFailure: {_ in})
+                try clientManager?.send(clientId: clientId, message: "This is message 2", onSuccess: {}, onFailure: {_ in})
+            })
             let events = serverEventEmitter?.getEvents()
             if (events?.count != 5) {
                 XCTFail("Server should receive exaclty 5 events.")
@@ -163,20 +161,21 @@ class TCP_E2E: XCTestCase {
         stopClient(id: clientId)
         stopServer(id: serverId)
     }
-    
+
     func testServerShouldSendData() throws {
         prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
             let connections = try serverManager?.getConnectionsFromServer(serverId: serverId)
             XCTAssertTrue(!connections!.isEmpty)
             let connectionId: String? = connections![0]
             XCTAssertNotNil(connectionId, "ConnectionID cannot be null")
-            
-            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "Hello world!", onSuccess: {}, onFailure: {_ in})
-            
-            waitForClientEvent(eventName: TCPClientEventName.DataReceived, clientId: clientId, emitter: clientEventEmitter!)
+
+            try waitForClientEvent(eventName: TCPClientEventName.DataReceived, clientId: clientId, {
+                try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "Hello world!", onSuccess: {}, onFailure: {_ in})
+            })
             let clientEvents = clientEventEmitter?.getEvents()
             XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
             XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.DataReceived)
@@ -187,27 +186,31 @@ class TCP_E2E: XCTestCase {
         stopClient(id: clientId)
         stopServer(id: serverId)
     }
-    
+
     func testClientShouldRecieveDataTwiceInShortPeriod() throws {
         prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
             let connections = try serverManager?.getConnectionsFromServer(serverId: serverId)
             XCTAssertTrue(!connections!.isEmpty)
             let connectionId: String? = connections![0]
             XCTAssertNotNil(connectionId, "ConnectionID cannot be null")
             
-            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 1", onSuccess: {}, onFailure: {_ in})
-            try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 2", onSuccess: {}, onFailure: {_ in})
-            waitForClientEvent(eventName: TCPClientEventName.DataReceived, clientId: clientId, emitter: clientEventEmitter!)
+            try waitForClientEvent(eventName: TCPClientEventName.DataReceived, clientId: clientId, extraPredicate: { (_ event: JSEvent) in
+                return event.getBody()["data"] as! String == "This is message 2"
+            }, {
+                try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 1", onSuccess: {}, onFailure: {_ in})
+                try serverManager?.send(serverId: serverId, connectionId: connectionId!, message: "This is message 2", onSuccess: {}, onFailure: {_ in})
+            })
             let clientEvents = clientEventEmitter?.getEvents()
 
             if (clientEvents?.count != 3) {
-                XCTFail("Client should receive exaclty 3 events.")
+                XCTFail("Client should receive exaclty 3 events. Actual: \(clientEvents?.count)")
                 return
             }
-            
+
             XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
             XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.DataReceived)
             XCTAssertEqual(clientEvents?[1].getBody()["data"] as? String, "This is message 1")
@@ -219,15 +222,16 @@ class TCP_E2E: XCTestCase {
         stopClient(id: clientId)
         stopServer(id: serverId)
     }
-    
+
     func testClientShouldDisconnect() throws {
         prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
-            
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
+
             stopClient(id: clientId, reason: "custom-reason")
-            
+
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
             XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
@@ -237,7 +241,7 @@ class TCP_E2E: XCTestCase {
 
             let connections = try serverManager?.getConnectionsFromServer(serverId: serverId)
             XCTAssertTrue(connections!.isEmpty)
-            
+
             let clientEvents = clientEventEmitter?.getEvents()
             XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
             XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
@@ -248,13 +252,16 @@ class TCP_E2E: XCTestCase {
         }
         stopServer(id: serverId)
     }
-    
+
     func testServerShouldAcceptMultipleConnections() throws {
-        prepareServer(id: serverId)
-        prepareClient(id: "client-1")
-        prepareClient(id: "client-2")
-        
         do {
+            prepareServer(id: serverId)
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: "client-1")
+            })
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: "client-2")
+            })
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
             XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
@@ -267,12 +274,12 @@ class TCP_E2E: XCTestCase {
         } catch {
             XCTFail("FAILED WITH ERRROR: \(error)")
         }
-        
+
         stopClient(id: "client-1")
         stopClient(id: "client-2")
         stopServer(id: serverId)
     }
-    
+
     func testServerShouldNotStartOnUsedPort() throws {
         prepareServer(id: serverId)
         let id = "server-2"
@@ -296,54 +303,65 @@ class TCP_E2E: XCTestCase {
         }
         stopServer(id: serverId)
     }
-    
+
     func testServerShouldStop() throws {
-        prepareServer(id: serverId)
-        prepareClient(id: clientId)
-        
-        waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
-
-        stopServer(id: serverId, reason: "custom-reason")
-
-        let serverEvents = serverEventEmitter?.getEvents()
-        XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
-        XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
-        XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
-        XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
-        XCTAssertEqual(serverEvents?[4].getName(), TCPServerEventName.Stopped)
-        XCTAssertEqual(serverEvents?[4].getBody()["reason"] as? String, "custom-reason")
-        XCTAssert(serverManager!.getServerIds().isEmpty, "There should be no servers in server manager")
-        
-        let clientEvents = clientEventEmitter?.getEvents()
-        XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
-        XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
-        XCTAssertEqual(clientEvents?[1].getBody()["reason"] as? String, StopReasonEnum.ClosedByPeer)
-        XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
-    }
-    
-    func testServerShouldNotSendDataToClosedConnection() throws {
-        prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
-            let connectionId: String = try getFirstConnectionId(serverId: serverId)
-            
-            stopClient(id: clientId)
-            
-            let clientEvents = clientEventEmitter?.getEvents()
-            XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
-            XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
-            XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
-            
+            prepareServer(id: serverId)
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
+
+            try waitForClientEvent(eventName: TCPClientEventName.Stopped, clientId: clientId, {
+                stopServer(id: serverId, reason: "custom-reason")
+            })
+
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
             XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
             XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
             XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
-            
+            XCTAssertEqual(serverEvents?[4].getName(), TCPServerEventName.Stopped)
+            XCTAssertEqual(serverEvents?[4].getBody()["reason"] as? String, "custom-reason")
+            XCTAssert(serverManager!.getServerIds().isEmpty, "There should be no servers in server manager")
+
+            let clientEvents = clientEventEmitter?.getEvents()
+            XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
+            XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
+            XCTAssertEqual(clientEvents?[1].getBody()["reason"] as? String, StopReasonEnum.ClosedByPeer)
+            XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
+        } catch {
+            XCTFail("FAILED WITH ERRROR: \(error)")
+        }
+        
+    }
+
+    func testServerShouldNotSendDataToClosedConnection() throws {
+        prepareServer(id: serverId)
+        do {
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
+            let connectionId: String = try getFirstConnectionId(serverId: serverId)
+
+            let serverExp = prepareServerExpectation(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId)
+            let clientExp = prepareClientExpectation(eventName: TCPClientEventName.Stopped, clientId: clientId)
+            try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId, reason: StopReasonEnum.Manual)
+            wait(for: [serverExp, clientExp], timeout: 1)
+
+            let clientEvents = clientEventEmitter?.getEvents()
+            XCTAssertEqual(clientEvents?[0].getName(), TCPClientEventName.Ready)
+            XCTAssertEqual(clientEvents?[1].getName(), TCPClientEventName.Stopped)
+            XCTAssert(clientManager!.getClientIds().isEmpty, "There should be no clients in client manager")
+
+            let serverEvents = serverEventEmitter?.getEvents()
+            XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
+            XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
+            XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
+            XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
+
             let connections = try serverManager?.getConnectionsFromServer(serverId: serverId)
             XCTAssertTrue(connections!.isEmpty)
-            
+
             XCTAssertThrowsError(try serverManager?.send(serverId: serverId, connectionId: connectionId, message: "this is the message", onSuccess: {}, onFailure: {_ in})) { error in
                 XCTAssertEqual(error as! LocalServerError, LocalServerError.UnknownConnectionId)
             }
@@ -352,16 +370,19 @@ class TCP_E2E: XCTestCase {
         }
         stopServer(id: serverId)
     }
-    
+
     func testServerShouldCloseConnection() {
         prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
             let connectionId: String = try getFirstConnectionId(serverId: serverId)
 
+            let serverExp = prepareServerExpectation(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId)
+            let clientExp = prepareClientExpectation(eventName: TCPClientEventName.Stopped, clientId: clientId)
             try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId, reason: StopReasonEnum.Manual)
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId, emitter: serverEventEmitter!)
+            wait(for: [serverExp, clientExp], timeout: 1)
             
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
@@ -380,17 +401,21 @@ class TCP_E2E: XCTestCase {
         }
         stopServer(id: serverId)
     }
-    
+
     func testServerShouldCloseConnectionWithCustomReason() {
         prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
             let connectionId: String = try getFirstConnectionId(serverId: serverId)
 
+            let serverExp = prepareServerExpectation(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId)
+            let clientExp = prepareClientExpectation(eventName: TCPClientEventName.Stopped, clientId: clientId)
             try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId, reason: "custom-reason")
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId, emitter: serverEventEmitter!)
+            wait(for: [serverExp, clientExp], timeout: 1)
             
+
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
             XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
@@ -408,16 +433,19 @@ class TCP_E2E: XCTestCase {
         }
         stopServer(id: serverId)
     }
-    
+
     func testClientShouldNotSendDataToClosedConnection() throws {
-        prepareServer(id: serverId)
-        prepareClient(id: clientId)
         do {
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, emitter: serverEventEmitter!)
+            prepareServer(id: serverId)
+            try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {
+                prepareClient(id: clientId)
+            })
             let connectionId: String = try getFirstConnectionId(serverId: serverId)
 
+            let serverExp = prepareServerExpectation(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId)
+            let clientExp = prepareClientExpectation(eventName: TCPClientEventName.Stopped, clientId: clientId)
             try serverManager?.closeConnection(serverId: serverId, connectionId: connectionId, reason: StopReasonEnum.Manual)
-            waitForServerEvent(eventName: TCPServerEventName.ConnectionClosed, serverId: serverId, emitter: serverEventEmitter!)
+            wait(for: [serverExp, clientExp], timeout: 1)
             
             let serverEvents = serverEventEmitter?.getEvents()
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
@@ -441,16 +469,12 @@ class TCP_E2E: XCTestCase {
     // HELPER FUNCTIONS
     func prepareServer(id: String) {
         do {
-            let exp = expectation(description: "Server \(id) should start")
-            let onSuccess = {
-                exp.fulfill()
-            }
-            let onFailure = { (_ reason: String) in
-                XCTFail("Server not started: \(reason)")
-            }
-            try serverManager?.createServer(id: id, port: 12000, onSuccess: onSuccess, onFailure: onFailure)
-            wait(for: [exp], timeout: 5)
-            waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, {
+                let onFailure = { (_ reason: String) in
+//                    XCTFail("Server not started: \(reason)")
+                }
+                try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: onFailure)
+            })
         } catch {
             XCTFail("Failed to prepare server \(id): \(error)")
         }
@@ -462,8 +486,9 @@ class TCP_E2E: XCTestCase {
     
     func stopServer(id: String, reason: String) {
         do {
-            try serverManager?.stopServer(id: id, reason: reason)
-            waitForServerEvent(eventName: TCPServerEventName.Stopped, serverId: id, emitter: serverEventEmitter!)
+            try waitForServerEvent(eventName: TCPServerEventName.Stopped, serverId: id, {
+                try serverManager?.stopServer(id: id, reason: reason)
+            })
         } catch {
             XCTFail("Failed to stop server \(id): \(error)")
         }
@@ -471,16 +496,12 @@ class TCP_E2E: XCTestCase {
     
     func prepareClient(id: String) {
         do {
-            let exp = expectation(description: "Client \(id) should start")
-            let onSuccess = {
-                exp.fulfill()
-            }
-            let onFailure = { (_ reason: String) in
-                XCTFail("Client not started: \(reason)")
-            }
-            try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: onSuccess, onFailure: onFailure)
-            wait(for: [exp], timeout: 5)
-            waitForClientEvent(eventName: TCPClientEventName.Ready, clientId: id, emitter: clientEventEmitter!)
+            try waitForClientEvent(eventName: TCPClientEventName.Ready, clientId: id, {
+                let onFailure = { (_ reason: String) in
+//                    XCTFail("Client not started: \(reason)")
+                }
+                try clientManager?.createClient(id: id, host: "localhost", port: 12000, onSuccess: {}, onFailure: onFailure)
+            })
         } catch {
             XCTFail("Failed to prepare client \(id): \(error)")
         }
@@ -492,8 +513,9 @@ class TCP_E2E: XCTestCase {
     
     func stopClient(id: String, reason: String) {
         do {
-            try clientManager?.stopClient(id: id, reason: reason)
-            waitForClientEvent(eventName: TCPClientEventName.Stopped, clientId: id, emitter: clientEventEmitter!)
+            try waitForClientEvent(eventName: TCPClientEventName.Stopped, clientId: id, {
+                try clientManager?.stopClient(id: id, reason: reason)
+            })
         } catch {
             XCTFail("Failed to stop client \(id): \(error)")
         }
@@ -507,39 +529,56 @@ class TCP_E2E: XCTestCase {
         return connectionId!
     }
     
-    func waitForServerEvent(eventName: String, serverId: String, emitter: EventEmitterWrapper) {
-        let predicate = NSPredicate { (evaluatedObject, _) in
-            return (evaluatedObject as! EventEmitterWrapper).getEvents().contains(where: {(event) in
-                return eventName == event.getName() && serverId == event.getBody()["serverId"] as! String
-            })
-        }
-        let exp = XCTNSPredicateExpectation(predicate: predicate, object: emitter)
-        exp.expectationDescription = "Waiting for event \(eventName) on emitter (\(emitter.name))."
-        wait(for: [exp], timeout: 5)
+    func prepareServerExpectation(eventName: String, serverId: String) -> XCTestExpectation {
+        return prepareServerExpectation(eventName: eventName, serverId: serverId, extraPredicate: {_ in return true})
+    }
+    
+    func prepareServerExpectation(eventName: String, serverId: String, extraPredicate: @escaping (_ event: JSEvent) -> Bool) -> XCTestExpectation {
+        let exp = expectation(description: "Waiting for event \(eventName) on server emitter.")
+        serverEventEmitter?.addOnEvent(callback: { (event: JSEvent) in
+            if (eventName == event.getName() && serverId == event.getBody()["serverId"] as! String && extraPredicate(event)) {
+                exp.fulfill()
+                return false
+            }
+            return true
+        })
+        return exp
+    }
+    
+    func prepareClientExpectation(eventName: String, clientId: String) -> XCTestExpectation {
+        return prepareClientExpectation(eventName: eventName, clientId: clientId, extraPredicate: {_ in return true})
+    }
+    
+    func prepareClientExpectation(eventName: String, clientId: String, extraPredicate: @escaping (_ event: JSEvent) -> Bool) -> XCTestExpectation {
+        let exp = expectation(description: "Waiting for event \(eventName) on client emitter.")
+        clientEventEmitter?.addOnEvent(callback: { (event: JSEvent) in
+            if (eventName == event.getName() && clientId == event.getBody()["clientId"] as! String && extraPredicate(event)) {
+                exp.fulfill()
+                return false
+            }
+            return true
+        })
+        return exp
+    }
+    
+    func waitForServerEvent(eventName: String, serverId: String, _ operation: () throws -> ()) throws {
+        try waitForServerEvent(eventName: eventName, serverId: serverId, extraPredicate: {_ in return true} , operation)
+    }
+    
+    func waitForServerEvent(eventName: String, serverId: String, extraPredicate: @escaping (_ event: JSEvent) -> Bool, _ operation: () throws -> ()) throws {
+        let exp = prepareServerExpectation(eventName: eventName, serverId: serverId, extraPredicate: extraPredicate)
+        try operation()
+        wait(for: [exp], timeout: 1)
     }
     
     
-    func waitForClientEvent(eventName: String, clientId: String, emitter: EventEmitterWrapper) {
-        let predicate = NSPredicate { (evaluatedObject, _) in
-            return (evaluatedObject as! EventEmitterWrapper).getEvents().contains(where: {(event) in
-                return eventName == event.getName() && clientId == event.getBody()["clientId"] as! String
-            })
-        }
-        let exp = XCTNSPredicateExpectation(predicate: predicate, object: emitter)
-        exp.expectationDescription = "Waiting for event \(eventName) on emitter (\(emitter.name))."
-        wait(for: [exp], timeout: 5)
+    func waitForClientEvent(eventName: String, clientId: String, _ operation: () throws -> ()) throws {
+        try waitForClientEvent(eventName: eventName, clientId: clientId, extraPredicate: {_ in return true}, operation)
     }
     
-    
-    func waitForEvent(eventName: String, body: Dictionary<String, Any>, emitter: EventEmitterWrapper) {
-        let predicate = NSPredicate { (evaluatedObject, _) in
-            return (evaluatedObject as! EventEmitterWrapper).getEvents().contains(where: {(event) in
-                return eventName == event.getName() && (body as NSDictionary).isEqual(to: event.getBody())
-            })
-        }
-        let exp = XCTNSPredicateExpectation(predicate: predicate, object: emitter)
-        exp.expectationDescription = "Waiting for event \(eventName) on emitter (\(emitter.name))."
-        wait(for: [exp], timeout: 5)
+    func waitForClientEvent(eventName: String, clientId: String, extraPredicate: @escaping (_ event: JSEvent) -> Bool, _ operation: () throws -> ()) throws {
+        let exp = prepareClientExpectation(eventName: eventName, clientId: clientId, extraPredicate: extraPredicate)
+        try operation()
+        wait(for: [exp], timeout: 1)
     }
-
 }
