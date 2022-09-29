@@ -27,14 +27,104 @@ class UDP_E2E: XCTestCase {
     }
 
     // TESTS
-    func testShouldStartServer() {
+    func testServerShouldStart() {
         prepareServer(id: "server")
+    }
+    
+    func testServerShouldStop() {
+        prepareServer(id: "server")
+        stopServer(id: "server")
+    }
+    
+    func testServerShouldNotStartWithSameId() {
+        do {
+            prepareServer(id: "server-1")
+            try serverManager?.createServer(id: "server-1", port: 12001, onSuccess: {}, onFailure: {_ in})
+            XCTFail("Create server did not throw")
+        } catch {
+            XCTAssertTrue(true)
+        }
+    }
+    
+    func testServerShouldSendBroadcast() {
+        do {
+            let exp = expectation(description: "Server should not start")
+            let onSuccess = {
+                exp.fulfill()
+            }
+            let onFailure = { (_ err: String?) in
+                XCTFail("Failed to send message")
+            }
+            try serverManager?.send(host: "255.255.255.255", port: 12000, message: "This is a message", onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [exp], timeout: 5)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
+    func testServerShouldNotSendDataToInvalidAddress() {
+        do {
+            let exp = expectation(description: "Server should not send data")
+            var succeeded: Bool = false
+            var failed: Bool = false
+            let onSuccess = {
+                succeeded = true
+            }
+            let onFailure = { (r: String?) in
+                exp.fulfill()
+                failed = true
+            }
+            try serverManager?.send(host: "255.255.255.300", port: 12000, message: "This is a message", onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [exp], timeout: 5)
+            XCTAssertTrue(failed)
+            XCTAssertFalse(succeeded)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
+    func testServerShouldReceiveData() {
+        do {
+            prepareServer(id: "server")
+            let sendExp = expectation(description: "Server should send data")
+            let onSuccess = {
+                sendExp.fulfill()
+            }
+            let onFailure = { (r: String?) in
+            }
+            let receiveExp = prepareServerExpectation(eventName: UDPServerEventName.DataReceived, serverId: "server", extraPredicate: {(_ event: JSEvent) in
+                return event.getBody()["data"] as! String == "This is a message"
+            })
+            try serverManager?.send(host: "localhost", port: 12000, message: "This is a message", onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [sendExp, receiveExp], timeout: 5)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
+    func testServerShouldReceiveBroadcast() {
+        do {
+            prepareServer(id: "server")
+            let sendExp = expectation(description: "Server should send data")
+            let onSuccess = {
+                sendExp.fulfill()
+            }
+            let onFailure = { (r: String?) in
+            }
+            let receiveExp = prepareServerExpectation(eventName: UDPServerEventName.DataReceived, serverId: "server", extraPredicate: {(_ event: JSEvent) in
+                return event.getBody()["data"] as! String == "This is a message"
+            })
+            try serverManager?.send(host: "255.255.255.255", port: 12000, message: "This is a message", onSuccess: onSuccess, onFailure: onFailure)
+            wait(for: [sendExp, receiveExp], timeout: 5)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
     }
     
     // HELPER FUNCTIONS
     func prepareServer(id: String) {
         do {
-            try waitForServerEvent(eventName: TCPServerEventName.Ready, serverId: id, {
+            try waitForServerEvent(eventName: UDPServerEventName.Ready, serverId: id, {
                 let onFailure = { (_ reason: String) in
                     XCTFail("Server not started: \(reason)")
                 }
@@ -51,7 +141,7 @@ class UDP_E2E: XCTestCase {
     
     func stopServer(id: String, reason: String) {
         do {
-            try waitForServerEvent(eventName: TCPServerEventName.Stopped, serverId: id, {
+            try waitForServerEvent(eventName: UDPServerEventName.Stopped, serverId: id, {
                 try serverManager?.stopServer(id: id, reason: reason)
             })
         } catch {

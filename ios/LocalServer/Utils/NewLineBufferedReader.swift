@@ -27,4 +27,11 @@ class NewLineBufferedReader {
         return result
     }
     
+    func readLastData() -> String? {
+        if (buffer.isEmpty) {
+            return nil
+        }
+        return buffer
+    }
+    
 }

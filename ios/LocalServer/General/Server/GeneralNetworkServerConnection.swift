@@ -91,6 +91,7 @@ class GeneralNetworkServerConnection {
     private func setupReceive() {
         connection.receive(minimumIncompleteLength: 1, maximumLength: MTU) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
+                print("GeneralNetworkServerConnection - received data")
                 self.reader.appendData(data: data)
                 while let readData: String = self.reader.readData() {
                     self.delegate.handleDataReceived(connectionId: self.id, data: readData)
@@ -98,6 +99,9 @@ class GeneralNetworkServerConnection {
             }
             if isComplete {
                 print("GeneralNetworkServerConnection - is complete")
+                if let lastData = self.reader.readLastData() {
+                    self.delegate.handleDataReceived(connectionId: self.id, data: lastData)
+                }
                 self.delegate.handleConnectionStopped(connectionId: self.id, reason: StopReasonEnum.ClosedByPeer)
             } else if let error = error {
                 print("GeneralNetworkServerConnection - error when receiving data \n\treason: \(error)")
