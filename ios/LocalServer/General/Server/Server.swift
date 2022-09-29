@@ -32,7 +32,6 @@ class Server: ServerConnectionDelegateProtocol {
         self.id = id
         self.port = NWEndpoint.Port(rawValue: port)!
         self.listener = try NWListener(using: params, on: self.port)
-        self.listener.service = 
     }
     
     func start(onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
