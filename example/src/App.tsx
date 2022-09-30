@@ -11,6 +11,7 @@ import { UDPServerScreen } from "./screens/UDPServer"
 import { MessagingServerScreen } from "./screens/MessagingServer"
 import { MessagingClientScreen } from "./screens/MessagingClient"
 import { CounterScreen } from "./screens/Counter"
+import { CallerIDServerScreen } from "./screens/CallerId"
 
 const Drawer = createDrawerNavigator()
 
@@ -22,17 +23,28 @@ const MyTheme = {
     },
 }
 
+export enum ScreenNames {
+    TCPServer = "TCP Server",
+    TCPClient = "TCP Client",
+    UDPServer = "UDP Server",
+    MessagingServer = "Messaging Server",
+    MessagingClient = "Messaging Client",
+    Counter = "Counter",
+    CallerID = "Caller ID",
+}
+
 export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer theme={MyTheme}>
-                <Drawer.Navigator initialRouteName={"UDP Server"}>
-                    <Drawer.Screen name={"TCP Server"} component={TCPServerScreen} />
-                    <Drawer.Screen name={"TCP Client"} component={TCPClientScreen} />
-                    <Drawer.Screen name={"UDP Server"} component={UDPServerScreen} />
-                    <Drawer.Screen name={"Messaging Server"} component={MessagingServerScreen} />
-                    <Drawer.Screen name={"Messaging Client"} component={MessagingClientScreen} />
-                    <Drawer.Screen name={"Counter"} component={CounterScreen} />
+                <Drawer.Navigator initialRouteName={ScreenNames.CallerID}>
+                    <Drawer.Screen name={ScreenNames.TCPServer} component={TCPServerScreen} />
+                    <Drawer.Screen name={ScreenNames.TCPClient} component={TCPClientScreen} />
+                    <Drawer.Screen name={ScreenNames.UDPServer} component={UDPServerScreen} />
+                    <Drawer.Screen name={ScreenNames.MessagingServer} component={MessagingServerScreen} />
+                    <Drawer.Screen name={ScreenNames.MessagingClient} component={MessagingClientScreen} />
+                    <Drawer.Screen name={ScreenNames.Counter} component={CounterScreen} />
+                    <Drawer.Screen name={ScreenNames.CallerID} component={CallerIDServerScreen} />
                 </Drawer.Navigator>
             </NavigationContainer>
         </Provider>

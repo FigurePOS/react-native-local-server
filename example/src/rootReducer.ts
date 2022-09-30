@@ -5,6 +5,7 @@ import { MessagingServerReducer } from "./screens/MessagingServer/reducer"
 import { MessagingClientReducer } from "./screens/MessagingClient/reducer"
 import { counterReducer } from "./screens/Counter/reducer"
 import { UDPServerReducer } from "./screens/UDPServer/reducer"
+import { CallerIdServerReducer } from "./screens/CallerId/reducer"
 
 export const rootReducer = combineReducers({
     TCPServer: TCPServerReducer,
@@ -13,6 +14,7 @@ export const rootReducer = combineReducers({
     MessagingServer: MessagingServerReducer,
     MessagingClient: MessagingClientReducer,
     Counter: counterReducer,
+    CallerID: CallerIdServerReducer,
 })
 
 export type StateObject = ReturnType<typeof rootReducer>

@@ -8,7 +8,7 @@ import { Maybe } from "../../../types"
 type Props = {
     stateLabel: string
     isRunning: boolean
-    initialPort: string
+    initialPort: Maybe<string>
     ipAddress: Maybe<string>
     style?: any
 
@@ -17,21 +17,23 @@ type Props = {
 }
 
 export const ServerConfiguration = (props: Props) => {
-    const [port, setPort] = useState<string>(props.initialPort)
+    const [port, setPort] = useState<Maybe<string>>(props.initialPort)
     return (
         <View style={[styles.container, props.style]}>
-            <FormTextInput
-                editable={!props.isRunning}
-                label={"Port"}
-                value={port}
-                onChangeText={setPort}
-                keyboardType={"numeric"}
-                containerStyle={styles.input}
-            />
+            {port != null ? (
+                <FormTextInput
+                    editable={!props.isRunning}
+                    label={"Port"}
+                    value={port}
+                    onChangeText={setPort}
+                    keyboardType={"numeric"}
+                    containerStyle={styles.input}
+                />
+            ) : null}
             <Text style={styles.info}>{`IP: ${props.ipAddress ?? "UNKNOWN"}`}</Text>
             <Text style={styles.info}>{`State: ${props.stateLabel}`}</Text>
             <View style={styles.space} />
-            <Button label={"Start"} onPress={() => props.onStarted(port)} />
+            <Button label={"Start"} onPress={() => props.onStarted(port ?? "")} />
             <Button label={"Stop"} onPress={props.onStopped} />
         </View>
     )
