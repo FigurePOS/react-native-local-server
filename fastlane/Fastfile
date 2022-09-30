@@ -18,6 +18,7 @@ platform :ios do
             run_tests(
                 project: "./ios/LocalServer.xcodeproj",
                 scheme: "Tests",
+                parallel_testing: false,
                 # use this for debugging
                 # buildlog_path: "./ios/Build/TestLogs",
             )

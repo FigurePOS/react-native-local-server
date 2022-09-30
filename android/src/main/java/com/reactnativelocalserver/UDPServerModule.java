@@ -12,7 +12,13 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.udp.UDPServer;
 import com.reactnativelocalserver.udp.factory.UDPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.StopReasonEnum;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +64,7 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stopServer(String id, Promise promise) {
+    public void stopServer(String id, String reason, Promise promise) {
         Log.d(NAME, "stopServer started for id: " + id);
         UDPServer server = servers.get(id);
         if (server == null) {
@@ -66,7 +72,7 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
             return;
         }
         try {
-            server.stop();
+            server.stop(reason);
             servers.remove(id);
             promise.resolve(true);
         } catch (Exception e) {
@@ -75,17 +81,20 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void send(String serverId, String host, int port, String message, Promise promise) {
-        Log.d(NAME, "send started for server: " + serverId);
-        UDPServer server = servers.get(serverId);
-        if (server == null) {
-            promise.reject("udp.server.not-exists", "Server with this id does not exist");
-            return;
-        }
+    public void send(String host, int port, String message, Promise promise) {
+        Log.d(NAME, "send started: " + host);
         try {
-            server.send(host, port, message);
+            DatagramSocket socket = new DatagramSocket();
+            InetAddress address = InetAddress.getByName(host);
+            byte[] buffer = message.getBytes();
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
+            socket.send(packet);
             promise.resolve(true);
-        } catch (Exception e) {
+        } catch (UnknownHostException e) {
+            Log.e(NAME, "Unknown host: " + host, e);
+            promise.reject("udp.server.error", "Unknown host: " + host);
+        } catch (IOException e) {
+            Log.e(NAME, "Failed to send data", e);
             promise.reject("udp.server.error", e.getMessage());
         }
     }
@@ -96,7 +105,7 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
         Log.d(NAME, "invalidate - number of servers: " + servers.size());
         for (Map.Entry<String, UDPServer> entry : servers.entrySet()) {
             try {
-                entry.getValue().stop();
+                entry.getValue().stop(StopReasonEnum.Invalidation);
             } catch (Exception e) {
                 Log.e(NAME, "invalidate - failed to stop server: " + entry.getKey(), e);
             }

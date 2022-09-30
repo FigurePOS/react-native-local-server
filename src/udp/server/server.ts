@@ -1,5 +1,5 @@
 import { NativeEventEmitter } from "react-native"
-import { Logger } from "../../utils/types"
+import { Logger, StopReason, StopReasonEnum } from "../../utils/types"
 import { UDPServerModule } from "./module"
 import { UDPServerEventName } from "./nativeEvents"
 import { UDPServerConfiguration } from "./types"
@@ -46,7 +46,7 @@ export class UDPServer {
     sendData = async (host: string, port: number, data: string): Promise<void> => {
         this.logger?.log(`UDPServer [${this.getId()}] - sendData`, { host: host, port: port, data: data })
         try {
-            await UDPServerModule.send(this.getId(), host, port, data)
+            await UDPServerModule.send(host, port, data)
             this.logger?.log(`UDPServer [${this.getId()}] - sendData - success`)
             return Promise.resolve()
         } catch (e) {
@@ -55,11 +55,10 @@ export class UDPServer {
         }
     }
 
-    // TODO stop reason as in TCP
-    stop = async (): Promise<void> => {
+    stop = async (reason?: StopReason): Promise<void> => {
         this.logger?.log(`UDPServer [${this.getId()}] - stop`)
         try {
-            await UDPServerModule.stopServer(this.getId())
+            await UDPServerModule.stopServer(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger?.log(`UDPServer [${this.getId()}] - stop - success`)
             return Promise.resolve()
         } catch (e) {
