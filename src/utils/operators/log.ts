@@ -1,4 +1,4 @@
-import { Logger, LoggerVerbosity } from "../../utils/types"
+import { Logger, LoggerVerbosity } from "../types"
 import { tap } from "rxjs/operators"
 
 export const log = <T = any>(logger: Logger | null, message: string) =>

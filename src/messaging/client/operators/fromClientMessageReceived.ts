@@ -6,7 +6,7 @@ import { ofDataTypeMessage } from "../../operators/ofDataType"
 import { parseClientMessage } from "../../functions/parseMessage"
 import { deduplicateBy } from "../../operators/deduplicateBy"
 import { getMessageId } from "../../functions/getMessageId"
-import { log } from "../../operators/log"
+import { log } from "../../../utils/operators/log"
 import { Logger } from "@figuredev/react-native-local-server"
 
 export const fromClientMessageReceived = <Body>(clientId: string, logger: Logger | null): Observable<Message<Body>> =>

@@ -20,7 +20,6 @@ export type UDPServerStoppedNativeEvent = {
 export type UDPServerDataReceivedNativeEvent = {
     type: UDPServerEventName.DataReceived
     serverId: string
-    connectionId: string
     data: string
 }
 
