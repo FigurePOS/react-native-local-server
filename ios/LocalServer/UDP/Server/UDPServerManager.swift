@@ -26,7 +26,6 @@ class UDPServerManager: ServerDelegateProtocol {
             throw LocalServerError.ServerDoesAlreadyExist
         }
         let params: NWParameters = .udp
-        params.allowFastOpen = true
         let server: GeneralNetworkServer = try GeneralNetworkServer(id: id, port: port, params: params, delegate: self)
         let onStartSucceeded = {
             self.servers[id] = server

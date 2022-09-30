@@ -102,7 +102,36 @@ class UDP_E2E: XCTestCase {
         }
     }
     
-    func testServerShouldReceiveBroadcast() {
+    func testServerShouldReceiveDataMultipleTimes() {
+        do {
+            prepareServer(id: "server")
+            let sendExp1 = expectation(description: "Server should send data 1")
+            let onSuccess1 = {
+                sendExp1.fulfill()
+            }
+            let onFailure = { (r: String?) in
+            }
+            let receiveExp1 = prepareServerExpectation(eventName: UDPServerEventName.DataReceived, serverId: "server", extraPredicate: {(_ event: JSEvent) in
+                return event.getBody()["data"] as! String == "This is a message 1"
+            })
+            try serverManager?.send(host: "localhost", port: 12000, message: "This is a message 1", onSuccess: onSuccess1, onFailure: onFailure)
+            
+            let sendExp2 = expectation(description: "Server should send data 2")
+            let onSuccess2 = {
+                sendExp2.fulfill()
+            }
+            let receiveExp2 = prepareServerExpectation(eventName: UDPServerEventName.DataReceived, serverId: "server", extraPredicate: {(_ event: JSEvent) in
+                return event.getBody()["data"] as! String == "This is a message 2"
+            })
+            try serverManager?.send(host: "localhost", port: 12000, message: "This is a message 2", onSuccess: onSuccess2, onFailure: onFailure)
+            
+            wait(for: [sendExp1, receiveExp1, sendExp2, receiveExp2], timeout: 5)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
+    func testServerShouldReceiveDataBroadcast() {
         do {
             prepareServer(id: "server")
             let sendExp = expectation(description: "Server should send data")

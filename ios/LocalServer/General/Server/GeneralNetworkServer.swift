@@ -137,6 +137,13 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         delegate.handleConnectionReady(serverId: id, connectionId: connectionId)
     }
     
+    internal func handleConnectionCompleted(connectionId: String) {
+        guard let connection = self.connectionsByID[connectionId] else {
+            return
+        }
+        connection.stop(reason: StopReasonEnum.ClosedByPeer)
+    }
+    
     internal func handleConnectionStopped(connectionId: String, reason: String?) {
         self.connectionsByID.removeValue(forKey: connectionId)
         delegate.handleConnectionStopped(serverId: id, connectionId: connectionId, reason: reason)

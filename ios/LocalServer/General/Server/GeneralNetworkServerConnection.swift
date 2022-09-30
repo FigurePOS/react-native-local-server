@@ -102,7 +102,7 @@ class GeneralNetworkServerConnection {
                 if let lastData = self.reader.readLastData() {
                     self.delegate.handleDataReceived(connectionId: self.id, data: lastData)
                 }
-                self.delegate.handleConnectionStopped(connectionId: self.id, reason: StopReasonEnum.ClosedByPeer)
+                self.delegate.handleConnectionCompleted(connectionId: self.id)
             } else if let error = error {
                 print("GeneralNetworkServerConnection - error when receiving data \n\treason: \(error)")
             } else {
