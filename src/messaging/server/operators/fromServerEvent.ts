@@ -1,7 +1,7 @@
 import { Observable } from "rxjs"
 import { TCPServer, TCPServerEventName, TCPServerNativeEvent } from "../../../"
 import { filter } from "rxjs/operators"
-import { fromEventFixed } from "../../operators/fromEventFixed"
+import { fromEventFixed } from "../../../utils/operators/fromEventFixed"
 
 export const fromServerEvent = <T extends TCPServerEventName>(
     serverId: string,

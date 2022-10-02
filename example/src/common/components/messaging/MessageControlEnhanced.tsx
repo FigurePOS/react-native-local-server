@@ -15,7 +15,13 @@ export const MessageControlEnhanced = (props: Props) => {
     return (
         <View style={styles.container}>
             <FormTextInput placeholder={"Host"} value={host} containerStyle={styles.host} onChangeText={setHost} />
-            <FormTextInput placeholder={"Port"} value={port} containerStyle={styles.port} onChangeText={setPort} />
+            <FormTextInput
+                placeholder={"Port"}
+                value={port}
+                keyboardType={"numeric"}
+                containerStyle={styles.port}
+                onChangeText={setPort}
+            />
             <FormTextInput
                 placeholder={"Enter Message"}
                 value={data}
