@@ -6,6 +6,9 @@ import { UDPServerConfiguration } from "./types"
 
 const eventEmitter = new NativeEventEmitter(UDPServerModule)
 
+/**
+ * Implementation of UDP protocol
+ */
 export class UDPServer {
     private readonly id: string
     static readonly EventName = UDPServerEventName
@@ -14,22 +17,41 @@ export class UDPServer {
     private logger: Logger | null = null
     private config: UDPServerConfiguration | null = null
 
+    /**
+     * Constructor for the class
+     * @param id - unique id, it's not possible to run two servers with the same id at the same time
+     */
     constructor(id: string) {
         this.id = id
     }
 
+    /**
+     * Returns id of the server
+     */
     getId = (): string => {
         return this.id
     }
 
+    /**
+     * This method sets logger.
+     * @param logger - logger object to be used when logging
+     */
     setLogger = (logger: Logger | null) => {
         this.logger = logger
     }
 
+    /**
+     * This method returns last configuration of the server
+     */
     getConfiguration = (): UDPServerConfiguration | null => {
         return this.config
     }
 
+    /**
+     * This method starts the server.
+     * Once the UDPServerReadyNativeEvent event is emitted the server is ready to receive data.
+     * @param configuration - configuration of the server
+     */
     start = async (configuration: UDPServerConfiguration): Promise<void> => {
         this.logger?.log(`UDPServer [${this.getId()}] - start`, configuration)
         this.config = configuration
@@ -43,6 +65,12 @@ export class UDPServer {
         }
     }
 
+    /**
+     * This method sends data to some host.
+     * @param host - target host address
+     * @param port - target port
+     * @param data - data to be sent
+     */
     sendData = async (host: string, port: number, data: string): Promise<void> => {
         this.logger?.log(`UDPServer [${this.getId()}] - sendData`, { host: host, port: port, data: data })
         try {
@@ -55,6 +83,10 @@ export class UDPServer {
         }
     }
 
+    /**
+     * This method stops the server from receiving data.
+     * @param reason - reason for stopping the server
+     */
     stop = async (reason?: StopReason): Promise<void> => {
         this.logger?.log(`UDPServer [${this.getId()}] - stop`)
         try {

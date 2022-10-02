@@ -102,7 +102,7 @@ export class CallerIdServer {
     }
 
     /**
-     * This method set logger.
+     * This method sets logger.
      * @param logger - logger object to be used when logging
      */
     setLogger(logger: Logger | null): void {
