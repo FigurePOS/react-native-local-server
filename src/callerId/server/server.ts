@@ -18,6 +18,9 @@ import { fromCallerIdServerStatusEvent } from "./operators/fromCallerIdServerSta
 
 export const CALLER_ID_PORT = 3520
 
+/**
+ * Implementation of caller id protocol (Whozz calling?)
+ */
 export class CallerIdServer {
     private readonly serverId: string
     private readonly config: UDPServerConfiguration
@@ -27,6 +30,10 @@ export class CallerIdServer {
 
     private logger: Logger | null = DefaultLogger
 
+    /**
+     * Constructor for the class
+     * @param id - unique id, it's not possible to run two servers with the same id at the same time
+     */
     constructor(id: string) {
         this.serverId = id
         this.config = {
@@ -51,16 +58,28 @@ export class CallerIdServer {
         this.udpServer.setLogger(null)
     }
 
+    /**
+     * This method starts the server. You should catch any error that may occur when starting the server.
+     * After starting the server there should be a CallerIdServerStatusEventName.Ready event.
+     */
     start(): Observable<boolean> {
         this.logger?.log(`CallerIdServer [${this.serverId}] - start`)
         return defer(() => from(this.udpServer.start(this.config))).pipe(mapTo(true))
     }
 
+    /**
+     * This method stops the server. You should catch any error that may occur when stopping the server.
+     * After stopping the server there should be a CallerIdServerStatusEventName.Stopped event.
+     */
     stop(): Observable<boolean> {
         this.logger?.log(`CallerIdServer [${this.serverId}] - stop`)
         return defer(() => from(this.udpServer.stop())).pipe(mapTo(true))
     }
 
+    /**
+     * This method allows you to simulate incoming call on the local network.
+     * @param call - information about the call you want to simulate
+     */
     simulateCall(call: PhoneCall): Observable<boolean> {
         this.logger?.log(`CallerIdServer [${this.serverId}] - simulate call`, call)
         return defer(() =>
@@ -68,14 +87,24 @@ export class CallerIdServer {
         ).pipe(mapTo(true))
     }
 
+    /**
+     * This method returns stream of all status events of the server.
+     */
     getStatusEvent$(): Observable<CallerIdServerStatusEvent> {
         return this.statusEvent$
     }
 
+    /**
+     * This method returns stream of all incoming calls.
+     */
     getIncomingCall$(): Observable<PhoneCall> {
         return this.incomingCall$
     }
 
+    /**
+     * This method set logger.
+     * @param logger - logger object to be used when logging
+     */
     setLogger(logger: Logger | null): void {
         this.logger = logger
         if (this.logger?.verbosity === LoggerVerbosity.TCP) {
