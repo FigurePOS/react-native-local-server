@@ -85,7 +85,7 @@ export class UDPServer {
 
     /**
      * This method stops the server from receiving data.
-     * @param reason - reason for stopping the server
+     * @param reason - internal reason for stopping the client (it will be reported in UDPServerStoppedNativeEvent)
      */
     stop = async (reason?: StopReason): Promise<void> => {
         this.logger?.log(`UDPServer [${this.getId()}] - stop`)
