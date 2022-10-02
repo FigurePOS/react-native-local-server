@@ -6,6 +6,9 @@ import { Logger, StopReason, StopReasonEnum } from "../../utils/types"
 
 const eventEmitter = new NativeEventEmitter(TCPServerModule)
 
+/**
+ * Implementation of TCP protocol (server)
+ */
 export class TCPServer {
     private readonly id: string
     static readonly EventName = TCPServerEventName
@@ -14,22 +17,40 @@ export class TCPServer {
     private logger: Logger | null = null
     private config: TCPServerConfiguration | null = null
 
+    /**
+     * Constructor for the class
+     * @param id - unique id, it's not possible to run two servers with the same id at the same time
+     */
     constructor(id: string) {
         this.id = id
     }
 
+    /**
+     * Returns id of the server.
+     */
     getId = (): string => {
         return this.id
     }
 
+    /**
+     * This method sets logger.
+     * @param logger - logger object to be used when logging
+     */
     setLogger = (logger: Logger | null) => {
         this.logger = logger
     }
 
+    /**
+     * This method returns last configuration of the server.
+     */
     getConfiguration = (): TCPServerConfiguration | null => {
         return this.config
     }
 
+    /**
+     * This method returns local IP address.
+     * If the device is not connected to any Wi-Fi it returns null.
+     */
     getLocalIpAddress = async (): Promise<string | null> => {
         this.logger?.log(`TCPServer [${this.getId()}] - getLocalIpAddress`)
         try {
@@ -42,6 +63,11 @@ export class TCPServer {
         }
     }
 
+    /**
+     * This method starts the server.
+     * Once the TCPServerReadyNativeEvent event is emitted the server is ready to accept connections.
+     * @param configuration - configuration of the server
+     */
     start = async (configuration: TCPServerConfiguration): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - start`, configuration)
         this.config = configuration
@@ -55,6 +81,11 @@ export class TCPServer {
         }
     }
 
+    /**
+     * This method sends data to active connection.
+     * @param connectionId - target connection id
+     * @param data - data to be sent
+     */
     sendData = async (connectionId: string, data: string): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - sendData`, { connectionId: connectionId, data: data })
         try {
@@ -67,6 +98,11 @@ export class TCPServer {
         }
     }
 
+    /**
+     * This method closes active connection.
+     * @param connectionId - target connection id
+     * @param reason - internal reason for closing the connection (it will be reported in TCPServerConnectionClosedNativeEvent)
+     */
     closeConnection = async (connectionId: string, reason?: StopReason): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - closeConnection`, { connectionId: connectionId })
         try {
@@ -79,6 +115,9 @@ export class TCPServer {
         }
     }
 
+    /**
+     * This method returns an array of all active connection ids.
+     */
     getConnectionIds = async (): Promise<string[]> => {
         this.logger?.log(`TCPServer [${this.getId()}] - getConnectionIds`)
         try {
@@ -91,6 +130,10 @@ export class TCPServer {
         }
     }
 
+    /**
+     * This method closes all active connections and stops the server from accepting new connections.
+     * @param reason - reason for stopping the server
+     */
     stop = async (reason?: StopReason): Promise<void> => {
         this.logger?.log(`TCPServer [${this.getId()}] - stop`)
         try {

@@ -1,14 +1,27 @@
 import { MessagingStoppedReason } from "../types"
 
+/**
+ * Object containing configuration of messaging client
+ * @property host - target host address
+ * @property port - target port
+ * @property name - name of the server
+ * @property serviceId - public id of the client
+ * @property ping - ping configuration of the client
+ */
 export type MessagingClientConfiguration = {
-    name?: string
-    serviceId?: string
     host: string
     port: number
 
-    ping?: {
-        timeout?: number
-    }
+    name?: string
+    serviceId?: string
+    ping?: MessagingClientPingConfiguration
+}
+
+/**
+ * @property timeout - defines how long should client wait for the ping (in ms)
+ */
+export type MessagingClientPingConfiguration = {
+    timeout?: number
 }
 
 export enum MessagingClientStatusEventName {
