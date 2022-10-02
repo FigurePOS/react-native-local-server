@@ -4,16 +4,30 @@ import { MessagingStoppedReason } from "../types"
  * PUBLIC types
  */
 
+/**
+ * Object containing configuration of TCP server
+ * @property port - port to listen on
+ * @property name - name of the server
+ * @property serviceId - public id of the server
+ * @property ping - ping configuration of the server
+ */
 export type MessagingServerConfiguration = {
     port: number
     name?: string
     serviceId?: string
 
-    ping?: {
-        interval?: number
-        timeout?: number
-        retryCount?: number
-    }
+    ping?: MessagingServerPingConfiguration
+}
+
+/**
+ * @property interval - defines how often is ping sent
+ * @property timeout - defines how long should the server wait for response to ping
+ * @property retryCount - defines how many pings can fail in a row before closing the connection
+ */
+export type MessagingServerPingConfiguration = {
+    interval?: number
+    timeout?: number
+    retryCount?: number
 }
 
 export enum MessagingServerStatusEventName {

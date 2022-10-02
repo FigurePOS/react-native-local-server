@@ -116,7 +116,7 @@ export class TCPServer {
     }
 
     /**
-     * This method returns array of all active connection ids.
+     * This method returns an array of all active connection ids.
      */
     getConnectionIds = async (): Promise<string[]> => {
         this.logger?.log(`TCPServer [${this.getId()}] - getConnectionIds`)
