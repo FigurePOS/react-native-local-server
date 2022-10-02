@@ -68,7 +68,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     /**
      * This method starts the server.
-     * Once the TCPServerReadyNativeEvent event is emitted the server is ready to accept connections.
+     * Once the MessagingServerStatusEventName.Ready event is emitted the server is ready to accept connections.
      * @param configuration - configuration of the server
      * @param rootHandler - handler for incoming messages
      * @param dependencies - additional dependencies to pass into the handler
@@ -155,7 +155,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
 
     /**
      * This method sends a message to target connection.
-     * @param body - a message body
+     * @param body - a message body to be sent
      * @param connectionId - target connection id
      */
     send(body: Out, connectionId: string): Observable<any> {

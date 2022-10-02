@@ -33,11 +33,15 @@ export class MessagingClient<In, Out = In, Deps = any> {
     private readonly statusEvent$: Observable<MessagingClientStatusEvent>
 
     private logger: Logger | null = DefaultLogger
-    private config: MessagingClientConfiguration | null = null
+    private configuration: MessagingClientConfiguration | null = null
     private mainSubscription: Subscription | null = null
     private dataSubscription: Subscription | null = null
     private pingSubscription: Subscription | null = null
 
+    /**
+     * Constructor for the class
+     * @param id - unique id, it's not possible to run two servers with the same id at the same time
+     */
     constructor(id: string) {
         this.clientId = id
         this.handler$ = new Subject<MessageHandler<In, Deps>>()
@@ -58,15 +62,22 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.tcpClient.setLogger(null)
     }
 
+    /**
+     * This method starts the client and connects to the server.
+     * Once the MessagingClientStatusEventName.Ready event is emitted the client is ready to receive and send data.
+     * @param configuration - configuration of the server
+     * @param rootHandler - handler for incoming messages
+     * @param dependencies - additional dependencies to pass into the handler
+     */
     start(
-        config: MessagingClientConfiguration,
+        configuration: MessagingClientConfiguration,
         rootHandler: MessageHandler<In, Deps>,
         dependencies: Deps
     ): Observable<void> {
         if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
-            this.logger?.log(`MessagingClient [${this.clientId}] - start`, config)
+            this.logger?.log(`MessagingClient [${this.clientId}] - start`, configuration)
         }
-        this.config = config
+        this.configuration = configuration
         this.cleanSubscriptions()
 
         const output$: Observable<boolean> = this.handler$.pipe(
@@ -94,7 +105,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     this.statusEvent$,
                     fromClientDataReceived(this.clientId),
                     this.dataOutput$,
-                    this.config?.ping?.timeout ?? PING_INTERVAL * PING_RETRY
+                    this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY
                 ).pipe(
                     catchError((err) => {
                         this.logger?.error(`MessagingClient [${this.clientId}] - ping timed out`, err)
@@ -117,9 +128,13 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpClient.start(config))
+        return defer(() => this.tcpClient.start(configuration))
     }
 
+    /**
+     * This method sends a message to the server.
+     * @param body - a message body to be sent
+     */
     send(body: Out): Observable<any> {
         if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
             this.logger?.log(`MessagingClient [${this.clientId}] - sending message`, {
@@ -129,15 +144,24 @@ export class MessagingClient<In, Out = In, Deps = any> {
         return this.sendMessage(body)
     }
 
-    stop(): Observable<void> {
+    /**
+     * This method disconnects from the server.
+     * @param reason - internal reason for closing the connection
+     */
+    stop(reason?: string): Observable<void> {
         if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
-            this.logger?.log(`MessagingClient [${this.clientId}] - stop`)
+            this.logger?.log(`MessagingClient [${this.clientId}] - stop`, {
+                reason: reason,
+            })
         }
         this.cleanSubscriptions()
-        this.config = null
-        return defer(() => this.tcpClient.stop())
+        this.configuration = null
+        return defer(() => this.tcpClient.stop(reason))
     }
 
+    /**
+     * This method restarts the connection to the server.
+     */
     restart(): Observable<void> {
         return concat(
             defer(() => this.tcpClient.stop(MessagingStoppedReason.Restart)).pipe(
@@ -147,10 +171,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
                 })
             ),
             defer(() => {
-                if (this.config == null) {
+                if (this.configuration == null) {
                     return throwError(`MessagingClient [${this.clientId}] - restart - no config`)
                 }
-                return this.tcpClient.start(this.config)
+                return this.tcpClient.start(this.configuration)
             }).pipe(
                 catchError((err) => {
                     this.logger?.error(`MessagingClient [${this.clientId}] - restart - failed to start`, err)
@@ -160,14 +184,24 @@ export class MessagingClient<In, Out = In, Deps = any> {
         )
     }
 
+    /**
+     * This method returns stream of all status events of the client.
+     */
     getStatusEvent$(): Observable<MessagingClientStatusEvent> {
         return this.statusEvent$
     }
 
-    getConfig(): MessagingClientConfiguration | null {
-        return this.config
+    /**
+     * This method returns last configuration of the client.
+     */
+    getConfiguration(): MessagingClientConfiguration | null {
+        return this.configuration
     }
 
+    /**
+     * This method sets logger.
+     * @param logger - logger object to be used when logging
+     */
     setLogger(logger: Logger | null): void {
         this.logger = logger
         if (this.logger?.verbosity === LoggerVerbosity.TCP) {
@@ -187,7 +221,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     }
 
     private getSourceData(): MessageSource {
-        const config = this.getConfig()
+        const config = this.getConfiguration()
         return {
             ...(config ? { name: config.name } : null),
             ...(config ? { serviceId: config.serviceId } : null),
