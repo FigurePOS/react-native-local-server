@@ -3,9 +3,9 @@ import { catchError, mergeMap, takeUntil, timeout } from "rxjs/operators"
 import { MessagingClientStatusEvent, MessagingClientStatusEventName } from "../types"
 import { DataObject, DataObjectPing } from "../../types"
 import { ofDataTypePing } from "../../operators/ofDataType"
-import { ofClientStatusEvent } from "./ofClientStatusEvent"
+import { ofMessagingClientStatusEvent } from "./"
 
-export const pingClient = (
+export const pingMessagingClient = (
     statusEvent$: Observable<MessagingClientStatusEvent>,
     dataInput$: Observable<DataObject>,
     dataOutput$: Subject<DataObject>,
@@ -14,7 +14,7 @@ export const pingClient = (
 ): Observable<boolean> => {
     return dataInput$.pipe(
         ofDataTypePing,
-        takeUntil(statusEvent$.pipe(ofClientStatusEvent(MessagingClientStatusEventName.Stopped))),
+        takeUntil(statusEvent$.pipe(ofMessagingClientStatusEvent(MessagingClientStatusEventName.Stopped))),
         timeout(pingTimeout, scheduler),
         catchError((err) => {
             if (err instanceof TimeoutError) {

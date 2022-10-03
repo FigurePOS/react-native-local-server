@@ -14,19 +14,20 @@ import {
     withLatestFrom,
 } from "rxjs/operators"
 import { handleBy } from "../operators/handleBy"
-import { fromServerDataReceived } from "./operators/fromServerDataReceived"
+import {
+    fromMessagingServerDataReceived,
+    fromMessagingServerMessageReceived,
+    fromMessagingServerStatusEvent,
+    ofMessagingServerStatusEvent,
+    pingMessagingServerConnection,
+} from "./operators"
 import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
 import { serializeDataObject } from "../functions/serializeDataObject"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
-import { fromServerStatusEvent } from "./operators/fromServerStatusEvent"
 import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
 import { log } from "../../utils/operators/log"
-import { ofServerStatusEvent } from "./operators/ofServerStatusEvent"
-import { pingServerConnection } from "./operators/pingServerConnection"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
-import { fromServerMessageReceived } from "./operators/fromServerMessageReceived"
-import { Logger } from "../../utils/logger/types"
-import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
+import { Logger, LoggerWrapper } from "../../utils/logger"
 
 export class MessagingServer<In, Out = In, Deps = any> {
     private readonly serverId: string
@@ -53,7 +54,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
-        this.statusEvent$ = fromServerStatusEvent(id).pipe(
+        this.statusEvent$ = fromMessagingServerStatusEvent(id).pipe(
             log(LoggerVerbosity.Low, this.logger, `MessagingServer [${this.serverId}] - status event`),
             tap((event) => {
                 if (event.type === MessagingServerStatusEventName.Stopped) {
@@ -85,7 +86,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
             mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
-                return fromServerMessageReceived<In>(this.serverId, this.logger).pipe(
+                return fromMessagingServerMessageReceived<In>(this.serverId, this.logger).pipe(
                     handleBy(handler, deps),
                     catchError((err) => {
                         this.logger.error(LoggerVerbosity.Low, "fromServerDataReceived - error", {
@@ -117,13 +118,13 @@ export class MessagingServer<In, Out = In, Deps = any> {
         )
 
         const ping$: Observable<boolean> = this.statusEvent$.pipe(
-            ofServerStatusEvent(MessagingServerStatusEventName.ConnectionReady),
+            ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionReady),
             map((e: MessagingServerConnectionStatusEvent) => e.connectionId),
             mergeMap((connectionId: string) => {
-                return pingServerConnection(
+                return pingMessagingServerConnection(
                     connectionId,
                     this.statusEvent$,
-                    fromServerDataReceived(this.serverId),
+                    fromMessagingServerDataReceived(this.serverId),
                     this.dataOutput$,
                     this.configuration?.ping?.interval ?? PING_INTERVAL,
                     this.configuration?.ping?.timeout ?? PING_INTERVAL,

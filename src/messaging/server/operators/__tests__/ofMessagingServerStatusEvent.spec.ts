@@ -1,6 +1,6 @@
 import { marbles } from "rxjs-marbles"
 import { Observable } from "rxjs"
-import { ofServerStatusEvent } from "../ofServerStatusEvent"
+import { ofMessagingServerStatusEvent } from "../ofMessagingServerStatusEvent"
 import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../../types"
 import {
     MessagingServerStatusEventConnectionAccepted,
@@ -25,7 +25,7 @@ describe("ofServerStatusEvent", () => {
                 a: MessagingServerStatusEventReady,
             })
             // @ts-ignore
-            m.expect(__in.pipe(ofServerStatusEvent(MessagingServerStatusEventName.Ready))).toBeObservable(_out)
+            m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Ready))).toBeObservable(_out)
         })
     )
     it(
@@ -41,9 +41,10 @@ describe("ofServerStatusEvent", () => {
             const _out: Observable<any> = m.hot("---------a-|", {
                 a: MessagingServerStatusEventStopped,
             })
-            // @ts-ignore
-
-            m.expect(__in.pipe(ofServerStatusEvent(MessagingServerStatusEventName.Stopped))).toBeObservable(_out)
+            m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped))).toBeObservable(
+                // @ts-ignore
+                _out
+            )
         })
     )
     it(
@@ -60,7 +61,9 @@ describe("ofServerStatusEvent", () => {
                 a: MessagingServerStatusEventConnectionAccepted,
             })
 
-            m.expect(__in.pipe(ofServerStatusEvent(MessagingServerStatusEventName.ConnectionAccepted))).toBeObservable(
+            m.expect(
+                __in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionAccepted))
+            ).toBeObservable(
                 // @ts-ignore
                 _out
             )

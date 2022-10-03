@@ -3,8 +3,7 @@ import { StopReason, StopReasonEnum } from "../../utils/types"
 import { UDPServerModule } from "./module"
 import { UDPServerEventName } from "./nativeEvents"
 import { UDPServerConfiguration } from "./types"
-import { Logger, LoggerVerbosity } from "../../utils/logger/types"
-import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
+import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 
 const eventEmitter = new NativeEventEmitter(UDPServerModule)
 

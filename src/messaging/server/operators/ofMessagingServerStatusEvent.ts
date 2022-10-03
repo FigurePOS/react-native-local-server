@@ -6,16 +6,16 @@ import {
     MessagingServerStatusEventName,
 } from "../types"
 
-export const ofServerStatusEvent =
+export const ofMessagingServerStatusEvent =
     <T extends MessagingServerStatusEventName>(...types: T[]) =>
     (source$: Observable<MessagingServerStatusEvent>): Observable<Extract<MessagingServerStatusEvent, { type: T }>> =>
         // @ts-ignore
         source$.pipe(filter((e: MessagingServerStatusEvent): boolean => types.includes(e.type)))
 
-export const ofServerConnectionClosed =
+export const ofMessagingServerConnectionClosed =
     (connectionId: string) =>
     (source$: Observable<MessagingServerStatusEvent>): Observable<MessagingServerConnectionStatusEvent> =>
         source$.pipe(
-            ofServerStatusEvent(MessagingServerStatusEventName.ConnectionClosed),
+            ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionClosed),
             filter((e: MessagingServerConnectionStatusEvent) => e.connectionId === connectionId)
         )

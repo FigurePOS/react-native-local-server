@@ -1,9 +1,9 @@
 import { Observable } from "rxjs"
-import { TCPServer, TCPServerEventName, TCPServerNativeEvent } from "../../../"
 import { filter } from "rxjs/operators"
+import { TCPServer, TCPServerEventName, TCPServerNativeEvent } from "../../"
 import { fromEventFixed } from "../../../utils/operators/fromEventFixed"
 
-export const fromServerEvent = <T extends TCPServerEventName>(
+export const fromTCPServerEvent = <T extends TCPServerEventName>(
     serverId: string,
     eventName: T
 ): Observable<Extract<TCPServerNativeEvent, { type: T }>> =>

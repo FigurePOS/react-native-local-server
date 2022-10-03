@@ -3,7 +3,7 @@ import * as uuid from "uuid"
 import { Observable, Subject } from "rxjs"
 import { MessagingClientStatusEvent } from "../../types"
 import { composeDataObjectPing, DataObject } from "../../../types"
-import { pingClient } from "../pingClient"
+import { pingMessagingClient } from "../"
 import { MessagingClientStatusEventStopped } from "../../../__fixtures__/clientStatusEvent"
 
 jest.mock("uuid", () => ({
@@ -31,7 +31,7 @@ describe("pingClient", () => {
             const _out: Observable<boolean> = m.hot(____out, {}, "Server ping timed out")
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
+            const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
@@ -63,7 +63,7 @@ describe("pingClient", () => {
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
+            const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
@@ -98,7 +98,7 @@ describe("pingClient", () => {
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
+            const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
@@ -128,7 +128,7 @@ describe("pingClient", () => {
             })
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
+            const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
