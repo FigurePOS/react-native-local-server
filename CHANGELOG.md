@@ -1,3 +1,10 @@
+## [0.10.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.9.0...v0.10.0) (2022-10-03)
+
+
+### Bug Fixes
+
+* add iOS tag [@available](https://github.com/available)(iOS 12.0, *) ([794b411](https://github.com/FigurePOS/react-native-local-server/commit/794b4115bbe89bcdfad811d294ea59d0fca5d69b))
+
 ## [0.9.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.8.1...v0.9.0) (2022-10-03)
 
 
