@@ -1,3 +1,25 @@
+## [0.9.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.8.1...v0.9.0) (2022-10-03)
+
+
+### Features
+
+* Caller ID server ([#21](https://github.com/FigurePOS/react-native-local-server/issues/21)) ([65a4ff5](https://github.com/FigurePOS/react-native-local-server/commit/65a4ff53b2be41da4b5505c5d4278426045d7704))
+* UDP server - Android ([#18](https://github.com/FigurePOS/react-native-local-server/issues/18)) ([28dd29a](https://github.com/FigurePOS/react-native-local-server/commit/28dd29a6d027e778773881346cac388bee9476d2))
+* UDP server - iOS ([#20](https://github.com/FigurePOS/react-native-local-server/issues/20)) ([dcb18a9](https://github.com/FigurePOS/react-native-local-server/commit/dcb18a9c85aca5312f8157de3e43093c6796f408))
+* UDP Server - TypeScript ([#19](https://github.com/FigurePOS/react-native-local-server/issues/19)) ([cebd213](https://github.com/FigurePOS/react-native-local-server/commit/cebd2134eb19a14943f1c44e860fdb75374d5430))
+
+
+### Docs
+
+* README.md and class documentation updated ([#22](https://github.com/FigurePOS/react-native-local-server/issues/22)) ([15faf55](https://github.com/FigurePOS/react-native-local-server/commit/15faf5543f4303ec50f1ae7e3e44cbccb5468a50))
+
+
+### Refactoring
+
+* Refactor internal operator names ([#24](https://github.com/FigurePOS/react-native-local-server/issues/24)) ([6cf885c](https://github.com/FigurePOS/react-native-local-server/commit/6cf885cf4e32caa9de5c8cfec99bca99d8756567))
+* Refactor the way we use LoggerVerbosity ([#23](https://github.com/FigurePOS/react-native-local-server/issues/23)) ([b558fce](https://github.com/FigurePOS/react-native-local-server/commit/b558fce974a6be9605f2e30ed3d2191792d5086f))
+* TCP server and client uses generic iOS implementation ([#25](https://github.com/FigurePOS/react-native-local-server/issues/25)) ([587d194](https://github.com/FigurePOS/react-native-local-server/commit/587d1942e7ceb204b1b712adeb9e249776de881d))
+
 ### [0.8.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.8.0...v0.8.1) (2022-09-19)
 
 
