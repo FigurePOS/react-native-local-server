@@ -52,41 +52,29 @@
 		1B5FF7DE28E5B55B002657D9 /* GeneralNetworkServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BACA28E58C3E002A243E /* GeneralNetworkServerConnection.swift */; };
 		1B5FF7DF28E5B55B002657D9 /* ServerConnectionDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BACC28E58C3E002A243E /* ServerConnectionDelegateProtocol.swift */; };
 		1B6CD3A028ABEE7100812D3E /* NewLineBufferedReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6CD39F28ABEE7100812D3E /* NewLineBufferedReaderTests.swift */; };
-		1BE5C5AA2893D190009D6F03 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59D2893D190009D6F03 /* TCPClient.swift */; };
-		1BE5C5AB2893D191009D6F03 /* TCPClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59E2893D190009D6F03 /* TCPClientConnection.swift */; };
 		1BE5C5AD2893D191009D6F03 /* TCPClientEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A02893D190009D6F03 /* TCPClientEventName.swift */; };
 		1BE5C5AE2893D191009D6F03 /* TCPServerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A12893D190009D6F03 /* TCPServerModule.m */; };
 		1BE5C5AF2893D191009D6F03 /* TCPClientModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A22893D190009D6F03 /* TCPClientModule.m */; };
 		1BE5C5B02893D191009D6F03 /* TCPClientModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A32893D190009D6F03 /* TCPClientModule.swift */; };
 		1BE5C5B12893D191009D6F03 /* TCPServerModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A42893D190009D6F03 /* TCPServerModule.swift */; };
 		1BE5C5EC2893DE57009D6F03 /* TCPClientModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A22893D190009D6F03 /* TCPClientModule.m */; };
-		1BE5C5ED2893DE57009D6F03 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59D2893D190009D6F03 /* TCPClient.swift */; };
 		1BE5C5EF2893DE57009D6F03 /* TCPServerModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A42893D190009D6F03 /* TCPServerModule.swift */; };
 		1BE5C5F12893DE57009D6F03 /* TCPServerModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A12893D190009D6F03 /* TCPServerModule.m */; };
 		1BE5C5F22893DE57009D6F03 /* TCPClientModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A32893D190009D6F03 /* TCPClientModule.swift */; };
 		1BE5C5F32893DE57009D6F03 /* TCPClientEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A02893D190009D6F03 /* TCPClientEventName.swift */; };
-		1BE5C5F52893DE57009D6F03 /* TCPClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59E2893D190009D6F03 /* TCPClientConnection.swift */; };
 		1BE5C6042893DEAF009D6F03 /* libLocalServerForTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE5C5FB2893DE57009D6F03 /* libLocalServerForTests.a */; };
 		1BE5C60E2893DF39009D6F03 /* EventEmitterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C60D2893DF39009D6F03 /* EventEmitterWrapper.swift */; };
 		1BE5C6142893F9CC009D6F03 /* TCP_E2E.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6132893F9CC009D6F03 /* TCP_E2E.swift */; };
 		1BE5C6172893FAAD009D6F03 /* TCPServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */; };
 		1BE5C6182893FAB3009D6F03 /* TCPServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */; };
 		1BE5C61C2893FFB7009D6F03 /* TCPServerEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6192893FFB7009D6F03 /* TCPServerEventName.swift */; };
-		1BE5C61D2893FFB7009D6F03 /* TCPServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C61A2893FFB7009D6F03 /* TCPServerConnection.swift */; };
-		1BE5C61E2893FFB7009D6F03 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C61B2893FFB7009D6F03 /* TCPServer.swift */; };
 		1BE5C6212893FFDC009D6F03 /* TCPClientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6202893FFDC009D6F03 /* TCPClientManager.swift */; };
 		1BE5C6222893FFDC009D6F03 /* TCPClientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6202893FFDC009D6F03 /* TCPClientManager.swift */; };
-		1BE5C6232893FFE5009D6F03 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C61B2893FFB7009D6F03 /* TCPServer.swift */; };
-		1BE5C6242893FFEA009D6F03 /* TCPServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C61A2893FFB7009D6F03 /* TCPServerConnection.swift */; };
 		1BE5C6252893FFEE009D6F03 /* TCPServerEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6192893FFB7009D6F03 /* TCPServerEventName.swift */; };
 		1BE5C62928940492009D6F03 /* TCPClientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6202893FFDC009D6F03 /* TCPClientManager.swift */; };
 		1BE5C62A28940495009D6F03 /* TCPServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */; };
-		1BE5C62B289404A1009D6F03 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59D2893D190009D6F03 /* TCPClient.swift */; };
 		1BE5C62C289404A1009D6F03 /* TCPClientEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C5A02893D190009D6F03 /* TCPClientEventName.swift */; };
-		1BE5C62D289404A1009D6F03 /* TCPClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C59E2893D190009D6F03 /* TCPClientConnection.swift */; };
-		1BE5C62E289404A5009D6F03 /* TCPServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C61A2893FFB7009D6F03 /* TCPServerConnection.swift */; };
 		1BE5C62F289404A5009D6F03 /* TCPServerEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C6192893FFB7009D6F03 /* TCPServerEventName.swift */; };
-		1BE5C630289404A5009D6F03 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C61B2893FFB7009D6F03 /* TCPServer.swift */; };
 		1BE5C63328940500009D6F03 /* EventEmitterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE5C60D2893DF39009D6F03 /* EventEmitterWrapper.swift */; };
 /* End PBXBuildFile section */
 
@@ -142,8 +130,6 @@
 		1B17BAF128E599B4002A243E /* CallbackHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallbackHolder.swift; sourceTree = "<group>"; };
 		1B17BAF728E5B230002A243E /* UDP_E2E.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDP_E2E.swift; sourceTree = "<group>"; };
 		1B6CD39F28ABEE7100812D3E /* NewLineBufferedReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLineBufferedReaderTests.swift; sourceTree = "<group>"; };
-		1BE5C59D2893D190009D6F03 /* TCPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClient.swift; sourceTree = "<group>"; };
-		1BE5C59E2893D190009D6F03 /* TCPClientConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientConnection.swift; sourceTree = "<group>"; };
 		1BE5C5A02893D190009D6F03 /* TCPClientEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientEventName.swift; sourceTree = "<group>"; };
 		1BE5C5A12893D190009D6F03 /* TCPServerModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCPServerModule.m; path = LocalServer/TCPServerModule.m; sourceTree = "<group>"; };
 		1BE5C5A22893D190009D6F03 /* TCPClientModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCPClientModule.m; path = LocalServer/TCPClientModule.m; sourceTree = "<group>"; };
@@ -156,8 +142,6 @@
 		1BE5C6132893F9CC009D6F03 /* TCP_E2E.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCP_E2E.swift; sourceTree = "<group>"; };
 		1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPServerManager.swift; sourceTree = "<group>"; };
 		1BE5C6192893FFB7009D6F03 /* TCPServerEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerEventName.swift; sourceTree = "<group>"; };
-		1BE5C61A2893FFB7009D6F03 /* TCPServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerConnection.swift; sourceTree = "<group>"; };
-		1BE5C61B2893FFB7009D6F03 /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServer.swift; sourceTree = "<group>"; };
 		1BE5C6202893FFDC009D6F03 /* TCPClientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientManager.swift; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServer-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -300,8 +284,6 @@
 			isa = PBXGroup;
 			children = (
 				1BE5C6162893FAAD009D6F03 /* TCPServerManager.swift */,
-				1BE5C61B2893FFB7009D6F03 /* TCPServer.swift */,
-				1BE5C61A2893FFB7009D6F03 /* TCPServerConnection.swift */,
 				1BE5C6192893FFB7009D6F03 /* TCPServerEventName.swift */,
 			);
 			path = Server;
@@ -311,8 +293,6 @@
 			isa = PBXGroup;
 			children = (
 				1BE5C6202893FFDC009D6F03 /* TCPClientManager.swift */,
-				1BE5C59D2893D190009D6F03 /* TCPClient.swift */,
-				1BE5C59E2893D190009D6F03 /* TCPClientConnection.swift */,
 				1BE5C5A02893D190009D6F03 /* TCPClientEventName.swift */,
 			);
 			path = Client;
@@ -462,7 +442,6 @@
 				1BE5C60E2893DF39009D6F03 /* EventEmitterWrapper.swift in Sources */,
 				1BE5C5EC2893DE57009D6F03 /* TCPClientModule.m in Sources */,
 				1B5FF7D828E5B55B002657D9 /* ServerDelegateProtocol.swift in Sources */,
-				1BE5C5ED2893DE57009D6F03 /* TCPClient.swift in Sources */,
 				1BE5C6252893FFEE009D6F03 /* TCPServerEventName.swift in Sources */,
 				1BE5C6182893FAB3009D6F03 /* TCPServerManager.swift in Sources */,
 				1B17BAE728E58E21002A243E /* ClientDelegateProtocol.swift in Sources */,
@@ -479,11 +458,8 @@
 				1B5FF7DB28E5B55B002657D9 /* ServerConnectionDelegateProtocol.swift in Sources */,
 				1B17BAF328E599B4002A243E /* CallbackHolder.swift in Sources */,
 				1B5FF7DA28E5B55B002657D9 /* GeneralNetworkServerConnection.swift in Sources */,
-				1BE5C6242893FFEA009D6F03 /* TCPServerConnection.swift in Sources */,
 				1B17BB0028E5B2B1002A243E /* LocalServerError.swift in Sources */,
-				1BE5C6232893FFE5009D6F03 /* TCPServer.swift in Sources */,
 				1B5FF7D028E5B52B002657D9 /* UDPServerManager.swift in Sources */,
-				1BE5C5F52893DE57009D6F03 /* TCPClientConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,21 +475,17 @@
 				1B17BB0728E5B2B1002A243E /* NewLineBufferedReader.swift in Sources */,
 				1BE5C6142893F9CC009D6F03 /* TCP_E2E.swift in Sources */,
 				1B6CD3A028ABEE7100812D3E /* NewLineBufferedReaderTests.swift in Sources */,
-				1BE5C62E289404A5009D6F03 /* TCPServerConnection.swift in Sources */,
 				1B17BAEC28E5924D002A243E /* UDPOneTimeClientManager.swift in Sources */,
 				1BE5C62F289404A5009D6F03 /* TCPServerEventName.swift in Sources */,
 				1B17BAE428E58E08002A243E /* GeneralNetworkClient.swift in Sources */,
 				1B17BAF428E599B4002A243E /* CallbackHolder.swift in Sources */,
-				1BE5C62B289404A1009D6F03 /* TCPClient.swift in Sources */,
 				1B17BB0528E5B2B1002A243E /* LocalServerError.swift in Sources */,
 				1B17BAE828E58E21002A243E /* ClientDelegateProtocol.swift in Sources */,
 				1BE5C62928940492009D6F03 /* TCPClientManager.swift in Sources */,
-				1BE5C630289404A5009D6F03 /* TCPServer.swift in Sources */,
 				1BE5C62A28940495009D6F03 /* TCPServerManager.swift in Sources */,
 				1B5FF7DE28E5B55B002657D9 /* GeneralNetworkServerConnection.swift in Sources */,
 				1BE5C63328940500009D6F03 /* EventEmitterWrapper.swift in Sources */,
 				1B17BB0428E5B2B1002A243E /* StopReasonEnum.swift in Sources */,
-				1BE5C62D289404A1009D6F03 /* TCPClientConnection.swift in Sources */,
 				1B17BB0628E5B2B1002A243E /* JSEvent.swift in Sources */,
 				1B5FF7DD28E5B55B002657D9 /* GeneralNetworkServer.swift in Sources */,
 				1B5FF7D228E5B52B002657D9 /* UDPServerManager.swift in Sources */,
@@ -531,7 +503,6 @@
 				1B5FF7D428E5B55A002657D9 /* ServerDelegateProtocol.swift in Sources */,
 				1BE5C5AF2893D191009D6F03 /* TCPClientModule.m in Sources */,
 				1BE5C6172893FAAD009D6F03 /* TCPServerManager.swift in Sources */,
-				1BE5C5AA2893D190009D6F03 /* TCPClient.swift in Sources */,
 				1B17BAE628E58E21002A243E /* ClientDelegateProtocol.swift in Sources */,
 				1BE5C5B12893D191009D6F03 /* TCPServerModule.swift in Sources */,
 				1B17BAE228E58E08002A243E /* GeneralNetworkClient.swift in Sources */,
@@ -544,11 +515,8 @@
 				1BE5C6212893FFDC009D6F03 /* TCPClientManager.swift in Sources */,
 				1B17BAF228E599B4002A243E /* CallbackHolder.swift in Sources */,
 				1B5FF7D728E5B55A002657D9 /* ServerConnectionDelegateProtocol.swift in Sources */,
-				1BE5C61D2893FFB7009D6F03 /* TCPServerConnection.swift in Sources */,
 				1B5FF7D628E5B55A002657D9 /* GeneralNetworkServerConnection.swift in Sources */,
-				1BE5C61E2893FFB7009D6F03 /* TCPServer.swift in Sources */,
 				1B17BAFA28E5B2B0002A243E /* StopReasonEnum.swift in Sources */,
-				1BE5C5AB2893D191009D6F03 /* TCPClientConnection.swift in Sources */,
 				1B5FF7CE28E5B52A002657D9 /* UDPServerManager.swift in Sources */,
 				1B17BAFC28E5B2B0002A243E /* JSEvent.swift in Sources */,
 			);

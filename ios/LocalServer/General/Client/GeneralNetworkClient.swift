@@ -46,7 +46,8 @@ class GeneralNetworkClient {
     
     func send(data: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) {
         print("GeneralNetworkClient - send: \(id)")
-        let preparedData: Data = data.data(using: .utf8)!
+        let preparedMessage = data + "\r\n"
+        let preparedData: Data = preparedMessage.data(using: .utf8)!
         nwConnection.send(content: preparedData, completion: .contentProcessed( { error in
             if let error = error {
                 print("GeneralNetworkClient - send - failure")
@@ -60,6 +61,7 @@ class GeneralNetworkClient {
 
     func stop(reason: String?) {
         print("GeneralNetworkClient - stop: \(id)")
+        lastReasonToStop = reason
         closeConnection(reason: reason)
     }
     
@@ -73,10 +75,10 @@ class GeneralNetworkClient {
             }
             if isComplete {
                 print("GeneralNetworkClient - is complete")
-                self.delegate.handleClientStopped(clientId: self.id, reason: StopReasonEnum.ClosedByPeer)
+                self.delegate.handleConnectionCompleted(clientId: self.id)
             } else if let error = error {
                 print("GeneralNetworkClient - error when receiving data \n\treason: \(error)")
-                self.delegate.handleClientStopped(clientId: self.id, reason: error.debugDescription)
+                self.handleConnectionFailed(error: error)
             } else {
                 self.setupReceive()
             }
@@ -85,7 +87,6 @@ class GeneralNetworkClient {
     
     private func closeConnection(reason: String?) {
         print("GeneralNetworkClient - close connection")
-        lastReasonToStop = reason
         if (nwConnection.state == NWConnection.State.cancelled) {
             print("GeneralNetworkClient - close connection - already cancelled")
             return
@@ -126,7 +127,7 @@ class GeneralNetworkClient {
     }
     
     private func handleConnectionFailed(error: NWError) {
-        self.delegate.handleClientStopped(clientId: id, reason: error.debugDescription)
+        self.delegate.handleClientStopped(clientId: id, reason: lastReasonToStop ?? error.debugDescription)
     }
     
     private func handleConnectionCancelled() {

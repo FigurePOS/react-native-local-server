@@ -1,5 +1,5 @@
 import { MessagingClient } from "@figuredev/react-native-local-server"
-import { CounterLogger } from "../common/logger"
+import { ConsoleLogger } from "../../../common/ConsoleLogger"
 
 export const CounterClient = new MessagingClient("counter-client")
-CounterClient.setLogger(CounterLogger)
+CounterClient.setLogger(ConsoleLogger)

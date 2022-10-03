@@ -9,10 +9,10 @@
 import Foundation
 
 
-class TCPServerManager {
+class TCPServerManager: ServerDelegateProtocol {
 
     private let eventEmitter: EventEmitterWrapper
-    private var servers: [String: TCPServer] = [:]
+    private var servers: [String: GeneralNetworkServer] = [:]
 
     init(eventEmitter: EventEmitterWrapper) {
         self.eventEmitter = eventEmitter;
@@ -20,26 +20,23 @@ class TCPServerManager {
 
     func createServer(id: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("TCPServerModule - createServer - started")
-        if let _: TCPServer = servers[id] {
+        if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
-        let server: TCPServer = try TCPServer(id: id, port: port, eventEmitter: eventEmitter)
-        server.onStartSucceeded = {
+        let server: GeneralNetworkServer = try GeneralNetworkServer(id: id, port: port, params: .tcp, delegate: self)
+        let onStartSucceeded = {
             self.servers[id] = server
             onSuccess()
         }
-        server.onStartFailed = { (_ reason: String) in
+        let onStartFailed = { (_ reason: String) in
             onFailure(reason)
         }
-        server.onStopped = { (_ serverId: String) in
-            self.servers.removeValue(forKey: serverId)
-        }
-        try server.start()
+        try server.start(onSuccess: onStartSucceeded, onFailure: onStartFailed)
     }
 
     func stopServer(id: String, reason: String) throws {
         print("TCPServerModule - stopServer - started")
-        guard let server: TCPServer = servers[id] else {
+        guard let server: GeneralNetworkServer = servers[id] else {
             throw LocalServerError.ServerDoesNotExist
         }
         try server.stop(reason: reason)
@@ -47,7 +44,7 @@ class TCPServerManager {
 
     func send(serverId: String, connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("TCPServerModule - send - started")
-        guard let server: TCPServer = servers[serverId] else {
+        guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         try server.send(connectionId: connectionId, message: message, onSuccess: onSuccess, onFailure: onFailure)
@@ -56,7 +53,7 @@ class TCPServerManager {
 
     func closeConnection(serverId: String, connectionId: String, reason: String) throws {
         print("TCPServerModule - closeConnection - started")
-        guard let server: TCPServer = servers[serverId] else {
+        guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         try server.closeConnection(connectionId: connectionId, reason: reason)
@@ -64,7 +61,7 @@ class TCPServerManager {
     }
     
     func getConnectionIds(serverId: String) throws -> [String] {
-        guard let server: TCPServer = servers[serverId] else {
+        guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         return server.getConnectionIds()
@@ -79,7 +76,7 @@ class TCPServerManager {
     }
     
     func getConnectionsFromServer(serverId: String) throws -> [String] {
-        guard let server: TCPServer = servers[serverId] else {
+        guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         return server.getConnectionIds()
@@ -95,5 +92,54 @@ class TCPServerManager {
             }
         }
         servers.removeAll()
+    }
+    
+    private func handleLifecycleEvent(serverId: String, eventName: String, reason: String? = nil) {
+        let event: JSEvent = JSEvent(name: eventName)
+        event.putString(key: "serverId", value: serverId)
+        if (reason != nil) {
+            event.putString(key: "reason", value: reason!)
+        }
+        eventEmitter.emitEvent(event: event)
+    }
+
+    private func handleConnectionLifecycleEvent(serverId: String, connectionId: String, eventName: String, reason: String? = nil) {
+        let event: JSEvent = JSEvent(name: eventName)
+        event.putString(key: "serverId", value: serverId)
+        event.putString(key: "connectionId", value: connectionId)
+        if (reason != nil) {
+            event.putString(key: "reason", value: reason!)
+        }
+        eventEmitter.emitEvent(event: event)
+    }
+    
+    //MARK: - ServerDelegateProtocol
+    func handleServerReady(serverId: String) {
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Ready)
+    }
+    
+    func handleServerStopped(serverId: String, reason: String?) {
+        servers.removeValue(forKey: serverId)
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Stopped, reason: reason)
+    }
+    
+    func handleConnectionAccepted(serverId: String, connectionId: String) {
+        handleConnectionLifecycleEvent(serverId: serverId, connectionId: connectionId, eventName: TCPServerEventName.ConnectionAccepted)
+    }
+    
+    func handleConnectionReady(serverId: String, connectionId: String) {
+        handleConnectionLifecycleEvent(serverId: serverId, connectionId: connectionId, eventName: TCPServerEventName.ConnectionReady)
+    }
+    
+    func handleConnectionStopped(serverId: String, connectionId: String, reason: String?) {
+        handleConnectionLifecycleEvent(serverId: serverId, connectionId: connectionId, eventName: TCPServerEventName.ConnectionClosed, reason: reason)
+    }
+    
+    func handleDataReceived(serverId: String, connectionId: String, data: String) {
+        let event: JSEvent = JSEvent(name: TCPServerEventName.DataReceived)
+        event.putString(key: "serverId", value: serverId)
+        event.putString(key: "connectionId", value: connectionId)
+        event.putString(key: "data", value: data)
+        eventEmitter.emitEvent(event: event)
     }
 }

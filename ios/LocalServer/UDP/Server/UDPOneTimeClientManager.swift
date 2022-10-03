@@ -67,6 +67,13 @@ class UDPOneTimeClientManager: ClientDelegateProtocol {
         client.send(data: message, onSuccess: onSuccess, onFailure: onFailure)
     }
     
+    func handleConnectionCompleted(clientId: String) {
+        guard let client = clients[clientId] else {
+            return;
+        }
+        client.stop(reason: StopReasonEnum.ClosedByPeer)
+    }
+    
     func handleClientStopped(clientId: String, reason: String?) {
         print("UDPOneTimeClientManager - client stopped \(clientId)")
         if let callback = callbacks[clientId] {

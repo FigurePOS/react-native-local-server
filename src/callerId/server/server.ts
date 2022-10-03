@@ -104,8 +104,8 @@ export class CallerIdServer {
      * @param logger - logger object to be used when logging
      * @param verbosity - verbosity of the logger
      */
-    setLogger = (logger: Logger | null, verbosity?: LoggerVerbosity) => {
-        this.logger.setLogger(logger, verbosity ?? LoggerVerbosity.Medium)
-        this.udpServer.setLogger(logger, verbosity)
+    setLogger = (logger: Logger | null, verbosity: LoggerVerbosity = LoggerVerbosity.Medium) => {
+        this.logger.setLogger(logger, verbosity)
+        this.udpServer.setLogger(logger, verbosity - 1)
     }
 }

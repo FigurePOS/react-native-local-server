@@ -9,10 +9,10 @@
 import Foundation
 
 
-class TCPClientManager {
-
+class TCPClientManager: ClientDelegateProtocol {
+    
     private let eventEmitter: EventEmitterWrapper
-    private var clients: [String: TCPClient] = [:]
+    private var clients: [String: GeneralNetworkClient] = [:]
     
     init(eventEmitter: EventEmitterWrapper) {
         self.eventEmitter = eventEmitter;
@@ -23,19 +23,20 @@ class TCPClientManager {
         if (clients[id] != nil) {
             throw LocalServerError.ClientDoesAlreadyExist
         }
-        let client: TCPClient = TCPClient(id: id, host: host, port: port, eventEmitter: eventEmitter)
-        client.onFinished = onConnectionClosed(clientId:)
-        client.onStartSucceeded = {
+        let client: GeneralNetworkClient = GeneralNetworkClient(id: id, host: host, port: port, params: .tcp, delegate: self)
+        let onStartSucceeded = {
             self.clients[id] = client
             onSuccess()
         }
-        client.onStartFailed = onFailure
-        client.start()
+        let onStartFailed = { (_ reason: String) in
+            onFailure(reason)
+        }
+        client.start(onSuccess: onStartSucceeded, onFailure: onStartFailed)
     }
 
     func stopClient(id: String, reason: String) throws {
         print("TCPClientModule - stopClient - started")
-        guard let client: TCPClient = clients[id] else  {
+        guard let client: GeneralNetworkClient = clients[id] else  {
             throw LocalServerError.ClientDoesNotExist
         }
         client.stop(reason: reason)
@@ -44,10 +45,10 @@ class TCPClientManager {
 
     func send(clientId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("TCPClientModule - send - started")
-        guard let client: TCPClient = clients[clientId] else  {
+        guard let client: GeneralNetworkClient = clients[clientId] else  {
             throw LocalServerError.ClientDoesNotExist
         }
-        client.send(message: message, onSuccess: onSuccess, onFailure: onFailure)
+        client.send(data: message, onSuccess: onSuccess, onFailure: onFailure)
     }
     
     func getClientIds() -> [String] {
@@ -68,5 +69,39 @@ class TCPClientManager {
             client.stop(reason: StopReasonEnum.Invalidation)
         }
         clients.removeAll()
+    }
+    
+    private func handleLifecycleEvent(clientId: String, eventName: String, reason: String? = nil) {
+        let event: JSEvent = JSEvent(name: eventName)
+        event.putString(key: "clientId", value: clientId)
+        if (reason != nil) {
+            event.putString(key: "reason", value: reason!)
+        }
+        eventEmitter.emitEvent(event: event)
+    }
+    
+    //MARK: - ClientDelegateProtocol
+    func handleClientReady(clientId: String) {
+        handleLifecycleEvent(clientId: clientId, eventName: TCPClientEventName.Ready)
+    }
+    
+    func handleClientStopped(clientId: String, reason: String?) {
+        clients.removeValue(forKey: clientId)
+        handleLifecycleEvent(clientId: clientId, eventName: TCPClientEventName.Stopped, reason: reason)
+    }
+    
+    func handleConnectionCompleted(clientId: String) {
+        guard let client: GeneralNetworkClient = self.clients[clientId] else {
+            return
+        }
+        client.stop(reason: StopReasonEnum.ClosedByPeer)
+    }
+
+    func handleDataReceived(clientId: String, data: String) {
+        print("TCPClientModule - data received: \(data)")
+        let event: JSEvent = JSEvent(name: TCPClientEventName.DataReceived)
+        event.putString(key: "clientId", value: clientId)
+        event.putString(key: "data", value: data)
+        eventEmitter.emitEvent(event: event)
     }
 }
