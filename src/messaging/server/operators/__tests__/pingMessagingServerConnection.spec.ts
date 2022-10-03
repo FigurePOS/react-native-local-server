@@ -2,7 +2,7 @@ import { marbles } from "rxjs-marbles"
 import * as uuid from "uuid"
 import { Observable, Subject } from "rxjs"
 import { MessagingServerStatusEvent } from "../../types"
-import { pingServerConnection } from "../pingServerConnection"
+import { pingMessagingServerConnection } from "../pingMessagingServerConnection"
 import { composeDataObjectPing, DataObject } from "../../../types"
 import {
     MessagingServerStatusEventConnectionClosed,
@@ -46,7 +46,7 @@ describe("pingServerConnection", () => {
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingServerConnection(
+            const result = pingMessagingServerConnection(
                 connectionId,
                 status$,
                 dataIn$,
@@ -95,7 +95,7 @@ describe("pingServerConnection", () => {
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingServerConnection(
+            const result = pingMessagingServerConnection(
                 connectionId,
                 status$,
                 dataIn$,
@@ -145,7 +145,7 @@ describe("pingServerConnection", () => {
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingServerConnection(
+            const result = pingMessagingServerConnection(
                 connectionId,
                 status$,
                 dataIn$,
@@ -188,7 +188,7 @@ describe("pingServerConnection", () => {
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingServerConnection(
+            const result = pingMessagingServerConnection(
                 connectionId,
                 status$,
                 dataIn$,
@@ -236,7 +236,7 @@ describe("pingServerConnection", () => {
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
-            const result = pingServerConnection(
+            const result = pingMessagingServerConnection(
                 connectionId,
                 status$,
                 dataIn$,

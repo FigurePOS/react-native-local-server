@@ -5,5 +5,5 @@ import { map } from "rxjs/operators"
 import { parseDataObject } from "../../functions/parseDataObject"
 import { fromTCPServerEvent } from "../../../tcp/server/operators/"
 
-export const fromServerDataReceived = (serverId: string): Observable<DataObject> =>
+export const fromMessagingServerDataReceived = (serverId: string): Observable<DataObject> =>
     fromTCPServerEvent(serverId, TCPServer.EventName.DataReceived).pipe(map(parseDataObject))

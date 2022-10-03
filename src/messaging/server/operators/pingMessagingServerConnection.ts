@@ -1,12 +1,12 @@
-import { defer, interval, merge, Observable, of, SchedulerLike, Subject, throwError } from "rxjs"
 import * as uuid from "uuid"
+import { defer, interval, merge, Observable, of, SchedulerLike, Subject, throwError } from "rxjs"
 import { catchError, filter, mapTo, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
-import { ofServerConnectionClosed, ofServerStatusEvent } from "./ofServerStatusEvent"
+import { ofMessagingServerConnectionClosed, ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
 import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../types"
 import { composeDataObjectPing, DataObject } from "../../types"
 import { ofDataTypePing } from "../../operators/ofDataType"
 
-export const pingServerConnection = (
+export const pingMessagingServerConnection = (
     connectionId: string,
     statusEvent$: Observable<MessagingServerStatusEvent>,
     dataInput$: Observable<DataObject>,
@@ -35,8 +35,8 @@ export const pingServerConnection = (
         }),
         takeUntil(
             merge(
-                statusEvent$.pipe(ofServerConnectionClosed(connectionId)),
-                statusEvent$.pipe(ofServerStatusEvent(MessagingServerStatusEventName.Stopped))
+                statusEvent$.pipe(ofMessagingServerConnectionClosed(connectionId)),
+                statusEvent$.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped))
             )
         ),
         scan(

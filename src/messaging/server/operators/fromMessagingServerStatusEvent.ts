@@ -5,7 +5,7 @@ import { composeMessagingServerStatusEvent } from "../functions"
 import { MessagingServerStatusEvent } from "../types"
 import { fromTCPServerEvent } from "../../../tcp/server/operators"
 
-export const fromServerStatusEvent = (serverId: string): Observable<MessagingServerStatusEvent> =>
+export const fromMessagingServerStatusEvent = (serverId: string): Observable<MessagingServerStatusEvent> =>
     merge(
         fromTCPServerEvent(serverId, TCPServer.EventName.Ready),
         fromTCPServerEvent(serverId, TCPServer.EventName.Stopped),
