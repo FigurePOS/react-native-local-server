@@ -1,9 +1,8 @@
-import { Logger, LoggerVerbosity } from "../types"
 import { tap } from "rxjs/operators"
+import { LoggerVerbosity } from "../logger/types"
+import { LoggerWrapper } from "../logger/loggerWrapper"
 
-export const log = <T = any>(logger: Logger | null, message: string) =>
+export const log = <T = any>(verbosity: LoggerVerbosity, logger: LoggerWrapper, message: string) =>
     tap((value: T) => {
-        if (logger?.verbosity !== LoggerVerbosity.JustError) {
-            logger?.log(message, value)
-        }
+        logger.log(verbosity, message, value)
     })

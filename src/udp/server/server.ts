@@ -1,8 +1,10 @@
 import { NativeEventEmitter } from "react-native"
-import { Logger, StopReason, StopReasonEnum } from "../../utils/types"
+import { StopReason, StopReasonEnum } from "../../utils/types"
 import { UDPServerModule } from "./module"
 import { UDPServerEventName } from "./nativeEvents"
 import { UDPServerConfiguration } from "./types"
+import { Logger, LoggerVerbosity } from "../../utils/logger/types"
+import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
 
 const eventEmitter = new NativeEventEmitter(UDPServerModule)
 
@@ -14,7 +16,7 @@ export class UDPServer {
     static readonly EventName = UDPServerEventName
     static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
-    private logger: Logger | null = null
+    private logger: LoggerWrapper = new LoggerWrapper()
     private config: UDPServerConfiguration | null = null
 
     /**
@@ -33,11 +35,12 @@ export class UDPServer {
     }
 
     /**
-     * This method sets logger.
+     * This method sets logger and its verbosity.
      * @param logger - logger object to be used when logging
+     * @param verbosity - verbosity of the logger
      */
-    setLogger = (logger: Logger | null) => {
-        this.logger = logger
+    setLogger = (logger: Logger | null, verbosity?: LoggerVerbosity) => {
+        this.logger.setLogger(logger, verbosity ?? LoggerVerbosity.Medium)
     }
 
     /**
@@ -53,14 +56,14 @@ export class UDPServer {
      * @param configuration - configuration of the server
      */
     start = async (configuration: UDPServerConfiguration): Promise<void> => {
-        this.logger?.log(`UDPServer [${this.getId()}] - start`, configuration)
+        this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - start`, configuration)
         this.config = configuration
         try {
             await UDPServerModule.createServer(this.getId(), this.config.port)
-            this.logger?.log(`UDPServer [${this.getId()}] - start - success`)
+            this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - start - success`)
             return Promise.resolve()
         } catch (e) {
-            this.logger?.error(`UDPServer [${this.getId()}] - start - error`, e)
+            this.logger.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - start - error`, e)
             return Promise.reject(e)
         }
     }
@@ -72,13 +75,17 @@ export class UDPServer {
      * @param data - data to be sent
      */
     sendData = async (host: string, port: number, data: string): Promise<void> => {
-        this.logger?.log(`UDPServer [${this.getId()}] - sendData`, { host: host, port: port, data: data })
+        this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - sendData`, {
+            host: host,
+            port: port,
+            data: data,
+        })
         try {
             await UDPServerModule.send(host, port, data)
-            this.logger?.log(`UDPServer [${this.getId()}] - sendData - success`)
+            this.logger?.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - sendData - success`)
             return Promise.resolve()
         } catch (e) {
-            this.logger?.error(`UDPServer [${this.getId()}] - sendData - error`, e)
+            this.logger?.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - sendData - error`, e)
             return Promise.reject(e)
         }
     }
@@ -88,13 +95,13 @@ export class UDPServer {
      * @param reason - internal reason for stopping the client (it will be reported in UDPServerStoppedNativeEvent)
      */
     stop = async (reason?: StopReason): Promise<void> => {
-        this.logger?.log(`UDPServer [${this.getId()}] - stop`)
+        this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - stop`)
         try {
             await UDPServerModule.stopServer(this.getId(), reason ?? StopReasonEnum.Manual)
-            this.logger?.log(`UDPServer [${this.getId()}] - stop - success`)
+            this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - stop - success`)
             return Promise.resolve()
         } catch (e) {
-            this.logger?.error(`UDPServer [${this.getId()}] - stop - error`, e)
+            this.logger?.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - stop - error`, e)
             return Promise.reject(e)
         }
     }

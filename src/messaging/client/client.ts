@@ -15,13 +15,13 @@ import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { serializeDataObject } from "../functions/serializeDataObject"
 import { fromClientStatusEvent } from "./operators/fromClientStatusEvent"
 import { composeMessageObject } from "../functions/composeMessageObject"
-import { Logger } from "../../utils/types"
-import { DefaultLogger } from "../../utils/logger"
 import { log } from "../../utils/operators/log"
 import { ofClientStatusEvent } from "./operators/ofClientStatusEvent"
 import { pingClient } from "./operators/pingClient"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
 import { fromClientMessageReceived } from "./operators/fromClientMessageReceived"
+import { Logger } from "../../utils/logger/types"
+import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
 
 export class MessagingClient<In, Out = In, Deps = any> {
     private readonly clientId: string
@@ -32,7 +32,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     private readonly tcpClient: TCPClient
     private readonly statusEvent$: Observable<MessagingClientStatusEvent>
 
-    private logger: Logger | null = DefaultLogger
+    private logger: LoggerWrapper = new LoggerWrapper()
     private configuration: MessagingClientConfiguration | null = null
     private mainSubscription: Subscription | null = null
     private dataSubscription: Subscription | null = null
@@ -49,7 +49,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
         this.statusEvent$ = fromClientStatusEvent(this.clientId).pipe(
-            log(this.logger, `MessagingClient [${this.clientId}] - status event`),
+            log(LoggerVerbosity.Low, this.logger, `MessagingClient [${this.clientId}] - status event`),
             tap((event) => {
                 if (event.type === MessagingClientStatusEventName.Stopped) {
                     this.cleanSubscriptions()
@@ -74,9 +74,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         rootHandler: MessageHandler<In, Deps>,
         dependencies: Deps
     ): Observable<void> {
-        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
-            this.logger?.log(`MessagingClient [${this.clientId}] - start`, configuration)
-        }
+        this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - start`, configuration)
         this.configuration = configuration
         this.cleanSubscriptions()
 
@@ -86,10 +84,14 @@ export class MessagingClient<In, Out = In, Deps = any> {
                 return fromClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
                     catchError((err) => {
-                        this.logger?.error(`MessagingClient [${this.clientId}] fromClientDataReceived - error`, {
-                            error: err,
-                            ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
-                        })
+                        this.logger.error(
+                            LoggerVerbosity.Low,
+                            `MessagingClient [${this.clientId}] fromClientDataReceived - error`,
+                            {
+                                error: err,
+                                ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
+                            }
+                        )
                         return EMPTY
                     })
                 )
@@ -108,11 +110,19 @@ export class MessagingClient<In, Out = In, Deps = any> {
                     this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY
                 ).pipe(
                     catchError((err) => {
-                        this.logger?.error(`MessagingClient [${this.clientId}] - ping timed out`, err)
+                        this.logger.error(
+                            LoggerVerbosity.Low,
+                            `MessagingClient [${this.clientId}] - ping timed out`,
+                            err
+                        )
                         return defer(() => this.tcpClient.stop(MessagingStoppedReason.PingTimedOut)).pipe(
                             mapTo(false),
                             catchError((e) => {
-                                this.logger?.error(`MessagingClient [${this.clientId}] - stop client failed - error`, e)
+                                this.logger.error(
+                                    LoggerVerbosity.Low,
+                                    `MessagingClient [${this.clientId}] - stop client failed - error`,
+                                    e
+                                )
                                 return of(false)
                             })
                         )
@@ -136,11 +146,9 @@ export class MessagingClient<In, Out = In, Deps = any> {
      * @param body - a message body to be sent
      */
     send(body: Out): Observable<any> {
-        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
-            this.logger?.log(`MessagingClient [${this.clientId}] - sending message`, {
-                body: body,
-            })
-        }
+        this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - sending message`, {
+            body: body,
+        })
         return this.sendMessage(body)
     }
 
@@ -149,11 +157,9 @@ export class MessagingClient<In, Out = In, Deps = any> {
      * @param reason - internal reason for closing the connection
      */
     stop(reason?: string): Observable<void> {
-        if (this.logger?.verbosity !== LoggerVerbosity.JustError) {
-            this.logger?.log(`MessagingClient [${this.clientId}] - stop`, {
-                reason: reason,
-            })
-        }
+        this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - stop`, {
+            reason: reason,
+        })
         this.cleanSubscriptions()
         this.configuration = null
         return defer(() => this.tcpClient.stop(reason))
@@ -166,7 +172,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
         return concat(
             defer(() => this.tcpClient.stop(MessagingStoppedReason.Restart)).pipe(
                 catchError((err) => {
-                    this.logger?.error(`MessagingClient [${this.clientId}] - restart - failed to stop`, err)
+                    this.logger.error(
+                        LoggerVerbosity.Low,
+                        `MessagingClient [${this.clientId}] - restart - failed to stop`,
+                        err
+                    )
                     return []
                 })
             ),
@@ -177,7 +187,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
                 return this.tcpClient.start(this.configuration)
             }).pipe(
                 catchError((err) => {
-                    this.logger?.error(`MessagingClient [${this.clientId}] - restart - failed to start`, err)
+                    this.logger.error(
+                        LoggerVerbosity.Low,
+                        `MessagingClient [${this.clientId}] - restart - failed to start`,
+                        err
+                    )
                     return throwError(err)
                 })
             )
@@ -199,16 +213,13 @@ export class MessagingClient<In, Out = In, Deps = any> {
     }
 
     /**
-     * This method sets logger.
+     * This method sets logger and its verbosity.
      * @param logger - logger object to be used when logging
+     * @param verbosity - verbosity of the logger
      */
-    setLogger(logger: Logger | null): void {
-        this.logger = logger
-        if (this.logger?.verbosity === LoggerVerbosity.TCP) {
-            this.tcpClient.setLogger(logger)
-        } else {
-            this.tcpClient.setLogger(null)
-        }
+    setLogger = (logger: Logger | null, verbosity?: LoggerVerbosity) => {
+        this.logger.setLogger(logger, verbosity ?? LoggerVerbosity.Medium)
+        this.tcpClient.setLogger(logger, verbosity)
     }
 
     private cleanSubscriptions() {
@@ -238,8 +249,8 @@ export class MessagingClient<In, Out = In, Deps = any> {
 
     private sendData(data: DataObject, t: number = 500): Observable<boolean> {
         return defer(() => {
-            if (this.logger?.verbosity !== LoggerVerbosity.JustError && data.type !== DataObjectType.Ping) {
-                this.logger?.log(`MessagingClient [${this.clientId}] - sending data`, {
+            if (data.type !== DataObjectType.Ping) {
+                this.logger.log(LoggerVerbosity.High, `MessagingClient [${this.clientId}] - sending data`, {
                     data: data,
                 })
             }
