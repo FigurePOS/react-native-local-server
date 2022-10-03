@@ -2,7 +2,9 @@ import type { TCPClientConfiguration } from "./types"
 import { TCPClientModule } from "./module"
 import { NativeEventEmitter } from "react-native"
 import { TCPClientEventName } from "./nativeEvents"
-import { Logger, StopReason, StopReasonEnum } from "../../utils/types"
+import { StopReason, StopReasonEnum } from "../../utils/types"
+import { Logger, LoggerVerbosity } from "../../utils/logger/types"
+import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
 
 const eventEmitter = new NativeEventEmitter(TCPClientModule)
 
@@ -14,7 +16,7 @@ export class TCPClient {
     static readonly EventName = TCPClientEventName
     static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
-    private logger: Logger | null = null
+    private logger: LoggerWrapper = new LoggerWrapper()
     private configuration: TCPClientConfiguration | null = null
 
     /**
@@ -33,11 +35,12 @@ export class TCPClient {
     }
 
     /**
-     * This method sets logger.
+     * This method sets logger and its verbosity.
      * @param logger - logger object to be used when logging
+     * @param verbosity - verbosity of the logger
      */
-    setLogger = (logger: Logger | null) => {
-        this.logger = logger
+    setLogger = (logger: Logger | null, verbosity?: LoggerVerbosity) => {
+        this.logger.setLogger(logger, verbosity ?? LoggerVerbosity.Medium)
     }
 
     /**
@@ -53,14 +56,14 @@ export class TCPClient {
      * @param configuration - configuration of the client
      */
     start = async (configuration: TCPClientConfiguration): Promise<void> => {
-        this.logger?.log(`TCPClient [${this.getId()}] - start`, configuration)
+        this.logger.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - start`, configuration)
         try {
             this.configuration = configuration
             await TCPClientModule.createClient(this.getId(), this.configuration.host, this.configuration.port)
-            this.logger?.log(`TCPClient [${this.getId()}] - start - success`)
+            this.logger.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - start - success`)
             return Promise.resolve()
         } catch (e) {
-            this.logger?.error(`TCPClient [${this.getId()}] - start - error`, e)
+            this.logger.error(LoggerVerbosity.Low, `TCPClient [${this.getId()}] - start - error`, e)
             return Promise.reject(e)
         }
     }
@@ -70,13 +73,13 @@ export class TCPClient {
      * @param data - data to be sent
      */
     sendData = async (data: string): Promise<void> => {
-        this.logger?.log(`TCPClient [${this.getId()}] - sendData`, { data: data })
+        this.logger?.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - sendData`, { data: data })
         try {
             await TCPClientModule.send(this.getId(), data)
-            this.logger?.log(`TCPClient [${this.getId()}] - sendData - success`)
+            this.logger?.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - sendData - success`)
             return Promise.resolve()
         } catch (e) {
-            this.logger?.error(`TCPClient [${this.getId()}] - sendData - error`, e)
+            this.logger?.error(LoggerVerbosity.Low, `TCPClient [${this.getId()}] - sendData - error`, e)
             return Promise.reject(e)
         }
     }
@@ -85,13 +88,13 @@ export class TCPClient {
      * This method stops the client.
      * @param reason - internal reason for stopping the client (it will be reported in TCPClientStoppedNativeEvent)     */
     stop = async (reason?: StopReason): Promise<void> => {
-        this.logger?.log(`TCPClient [${this.getId()}] - stop`)
+        this.logger?.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - stop`)
         try {
             await TCPClientModule.stopClient(this.getId(), reason ?? StopReasonEnum.Manual)
-            this.logger?.log(`TCPClient [${this.getId()}] - stop - success`)
+            this.logger?.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - stop - success`)
             return Promise.resolve()
         } catch (e) {
-            this.logger?.error(`TCPClient [${this.getId()}] - stop - error`, e)
+            this.logger?.error(LoggerVerbosity.Low, `TCPClient [${this.getId()}] - stop - error`, e)
             return Promise.reject(e)
         }
     }

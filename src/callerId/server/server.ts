@@ -1,6 +1,4 @@
 import { defer, from, Observable } from "rxjs"
-import { Logger, LoggerVerbosity } from "../../utils/types"
-import { DefaultLogger } from "../../utils/logger"
 import {
     fromUDPServerEvent,
     UDPServer,
@@ -15,6 +13,8 @@ import { composePacketDataFromPhoneCall, parsePhoneCallFromPacketData } from "..
 import { log } from "../../utils/operators/log"
 import { hasPhoneCallGoodChecksum, isPhoneCallInbound } from "../functions"
 import { fromCallerIdServerStatusEvent } from "./operators/fromCallerIdServerStatusEvent"
+import { Logger, LoggerVerbosity } from "../../utils/logger/types"
+import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
 
 export const CALLER_ID_PORT = 3520
 
@@ -28,7 +28,7 @@ export class CallerIdServer {
     private readonly incomingCall$: Observable<PhoneCall>
     private readonly statusEvent$: Observable<CallerIdServerStatusEvent>
 
-    private logger: Logger | null = DefaultLogger
+    private logger: LoggerWrapper = new LoggerWrapper()
 
     /**
      * Constructor for the class
@@ -40,22 +40,21 @@ export class CallerIdServer {
             port: CALLER_ID_PORT,
         }
         this.incomingCall$ = fromUDPServerEvent(this.serverId, UDPServerEventName.DataReceived).pipe(
-            log(this.logger, `CallerIdServer [${this.serverId}] - data received`),
+            log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data received`),
             map((event: UDPServerDataReceivedNativeEvent): string => event.data),
             map(parsePhoneCallFromPacketData),
             filter((data: PhoneCall | null) => data != null) as () => Observable<PhoneCall>,
-            log(this.logger, `CallerIdServer [${this.serverId}] - call parsed`),
+            log(LoggerVerbosity.Medium, this.logger, `CallerIdServer [${this.serverId}] - call parsed`),
             filter(hasPhoneCallGoodChecksum),
             filter(isPhoneCallInbound),
-            log(this.logger, `CallerIdServer [${this.serverId}] - call detected`),
+            log(LoggerVerbosity.Low, this.logger, `CallerIdServer [${this.serverId}] - call detected`),
             share()
         )
         this.statusEvent$ = fromCallerIdServerStatusEvent(this.serverId).pipe(
-            log(this.logger, `CallerIdServer [${this.serverId}] - status event`),
+            log(LoggerVerbosity.Low, this.logger, `CallerIdServer [${this.serverId}] - status event`),
             share()
         )
         this.udpServer = new UDPServer(id)
-        this.udpServer.setLogger(null)
     }
 
     /**
@@ -63,7 +62,7 @@ export class CallerIdServer {
      * After starting the server there should be a CallerIdServerStatusEventName.Ready event.
      */
     start(): Observable<boolean> {
-        this.logger?.log(`CallerIdServer [${this.serverId}] - start`)
+        this.logger.log(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - start`)
         return defer(() => from(this.udpServer.start(this.config))).pipe(mapTo(true))
     }
 
@@ -72,7 +71,7 @@ export class CallerIdServer {
      * After stopping the server there should be a CallerIdServerStatusEventName.Stopped event.
      */
     stop(): Observable<boolean> {
-        this.logger?.log(`CallerIdServer [${this.serverId}] - stop`)
+        this.logger.log(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - stop`)
         return defer(() => from(this.udpServer.stop())).pipe(mapTo(true))
     }
 
@@ -81,7 +80,7 @@ export class CallerIdServer {
      * @param call - information about the call you want to simulate
      */
     simulateCall(call: PhoneCall): Observable<boolean> {
-        this.logger?.log(`CallerIdServer [${this.serverId}] - simulate call`, call)
+        this.logger?.log(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - simulate call`, call)
         return defer(() =>
             from(this.udpServer.sendData("255.255.255.255", CALLER_ID_PORT, composePacketDataFromPhoneCall(call)))
         ).pipe(mapTo(true))
@@ -102,15 +101,12 @@ export class CallerIdServer {
     }
 
     /**
-     * This method sets logger.
+     * This method sets logger and its verbosity.
      * @param logger - logger object to be used when logging
+     * @param verbosity - verbosity of the logger
      */
-    setLogger(logger: Logger | null): void {
-        this.logger = logger
-        if (this.logger?.verbosity === LoggerVerbosity.TCP) {
-            this.udpServer.setLogger(logger)
-        } else {
-            this.udpServer.setLogger(null)
-        }
+    setLogger = (logger: Logger | null, verbosity?: LoggerVerbosity) => {
+        this.logger.setLogger(logger, verbosity ?? LoggerVerbosity.Medium)
+        this.udpServer.setLogger(logger, verbosity)
     }
 }
