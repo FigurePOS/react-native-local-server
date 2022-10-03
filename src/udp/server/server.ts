@@ -38,8 +38,8 @@ export class UDPServer {
      * @param logger - logger object to be used when logging
      * @param verbosity - verbosity of the logger
      */
-    setLogger = (logger: Logger | null, verbosity?: LoggerVerbosity) => {
-        this.logger.setLogger(logger, verbosity ?? LoggerVerbosity.Medium)
+    setLogger = (logger: Logger | null, verbosity: LoggerVerbosity = LoggerVerbosity.Medium) => {
+        this.logger.setLogger(logger, verbosity)
     }
 
     /**

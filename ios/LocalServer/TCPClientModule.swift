@@ -13,9 +13,7 @@ class TCPClientModule: RCTEventEmitter {
     private let eventNames: [String]! = TCPClientEventName.allValues
     private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
     private var manager: TCPClientManager
-    
-    private var clients: [String: TCPClient] = [:]
-    
+        
     override init() {
         manager = TCPClientManager(eventEmitter: eventEmitter)
         super.init()
@@ -70,10 +68,6 @@ class TCPClientModule: RCTEventEmitter {
         } catch {
             reject("tcp.client.error", "Failed to send data to client", error)
         }
-    }
-    
-    func onConnectionClosed(clientId: String) -> Void {
-        clients.removeValue(forKey: clientId)
     }
 
     override func supportedEvents() -> [String]! {

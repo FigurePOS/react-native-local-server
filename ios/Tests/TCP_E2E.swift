@@ -145,7 +145,7 @@ class TCP_E2E: XCTestCase {
             })
             let events = serverEventEmitter?.getEvents()
             if (events?.count != 5) {
-                XCTFail("Server should receive exaclty 5 events.")
+                XCTFail("Server should receive exaclty 5 events. But was: \(events?.count)")
                 return
             }
             XCTAssertEqual(events?[0].getName(), TCPServerEventName.Ready)
@@ -187,7 +187,7 @@ class TCP_E2E: XCTestCase {
         stopServer(id: serverId)
     }
 
-    func testClientShouldRecieveDataTwiceInShortPeriod() throws {
+    func testClientShouldReceiveDataTwiceInShortPeriod() throws {
         prepareServer(id: serverId)
         do {
             try waitForServerEvent(eventName: TCPServerEventName.ConnectionReady, serverId: serverId, {

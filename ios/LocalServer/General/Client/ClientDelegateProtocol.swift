@@ -11,5 +11,6 @@ import Foundation
 protocol ClientDelegateProtocol {
     func handleClientReady(clientId: String)
     func handleClientStopped(clientId: String, reason: String?)
+    func handleConnectionCompleted(clientId: String)
     func handleDataReceived(clientId: String, data: String)
 }

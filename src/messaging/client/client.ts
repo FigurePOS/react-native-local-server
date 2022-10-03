@@ -218,9 +218,9 @@ export class MessagingClient<In, Out = In, Deps = any> {
      * @param logger - logger object to be used when logging
      * @param verbosity - verbosity of the logger
      */
-    setLogger = (logger: Logger | null, verbosity?: LoggerVerbosity) => {
-        this.logger.setLogger(logger, verbosity ?? LoggerVerbosity.Medium)
-        this.tcpClient.setLogger(logger, verbosity)
+    setLogger = (logger: Logger | null, verbosity: LoggerVerbosity = LoggerVerbosity.Medium) => {
+        this.logger.setLogger(logger, verbosity)
+        this.tcpClient.setLogger(logger, verbosity - 1)
     }
 
     private cleanSubscriptions() {

@@ -47,7 +47,7 @@ class GeneralNetworkServerConnection {
     }
 
     func stop(reason: String) {
-        print("GeneralNetworkServerConnection \(id) will stop")
+        print("GeneralNetworkServerConnection \(id) will stop: \(reason)")
         lastReasonToStop = reason
         closeConnection()
     }
@@ -112,10 +112,11 @@ class GeneralNetworkServerConnection {
     }
     
     private func handleConnectionFailed(error: NWError) {
-        self.delegate.handleConnectionStopped(connectionId: id, reason: error.debugDescription)
+        self.delegate.handleConnectionStopped(connectionId: id, reason: lastReasonToStop ?? error.debugDescription)
     }
     
     private func handleConnectionCancelled() {
+        print("GeneralNetworkServerConnection - cancelled: \(lastReasonToStop ?? "cancelled")")
         self.delegate.handleConnectionStopped(connectionId: id, reason: lastReasonToStop ?? "cancelled")
     }
 }

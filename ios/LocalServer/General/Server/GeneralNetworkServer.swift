@@ -128,7 +128,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
             self.onStartFailed?(lastReasonToStop ?? "cancelled")
             return
         }
-        let reason = error == nil ? "unknown" : error?.debugDescription
+        let reason = error == nil ? lastReasonToStop : error?.debugDescription
         delegate.handleServerStopped(serverId: id, reason: reason)
     }
     
