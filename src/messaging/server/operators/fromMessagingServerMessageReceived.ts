@@ -7,7 +7,7 @@ import { parseServerMessage } from "../../functions/parseMessage"
 import { deduplicateBy } from "../../operators/deduplicateBy"
 import { getMessageId } from "../../functions/getMessageId"
 import { log } from "../../../utils/operators/log"
-import { LoggerVerbosity, LoggerWrapper } from "../../../utils/logger/"
+import { LoggerVerbosity, LoggerWrapper } from "../../../utils/logger"
 
 export const fromMessagingServerMessageReceived = <Body>(
     serverId: string,

@@ -13,8 +13,7 @@ import { composePacketDataFromPhoneCall, parsePhoneCallFromPacketData } from "..
 import { log } from "../../utils/operators/log"
 import { hasPhoneCallGoodChecksum, isPhoneCallInbound } from "../functions"
 import { fromCallerIdServerStatusEvent } from "./operators/fromCallerIdServerStatusEvent"
-import { Logger, LoggerVerbosity } from "../../utils/logger/types"
-import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
+import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 
 export const CALLER_ID_PORT = 3520
 

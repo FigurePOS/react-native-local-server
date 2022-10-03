@@ -9,19 +9,20 @@ import {
 import { catchError, concatMap, mapTo, mergeMap, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
-import { fromClientDataReceived } from "./operators/fromClientDataReceived"
+import {
+    fromMessagingClientDataReceived,
+    fromMessagingClientMessageReceived,
+    fromMessagingClientStatusEvent,
+    ofMessagingClientStatusEvent,
+    pingMessagingClient,
+} from "./operators"
 import { MessagingClientConfiguration } from "./types"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { serializeDataObject } from "../functions/serializeDataObject"
-import { fromClientStatusEvent } from "./operators/fromClientStatusEvent"
 import { composeMessageObject } from "../functions/composeMessageObject"
 import { log } from "../../utils/operators/log"
-import { ofClientStatusEvent } from "./operators/ofClientStatusEvent"
-import { pingClient } from "./operators/pingClient"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
-import { fromClientMessageReceived } from "./operators/fromClientMessageReceived"
-import { Logger } from "../../utils/logger/types"
-import { LoggerWrapper } from "../../utils/logger/loggerWrapper"
+import { Logger, LoggerWrapper } from "../../utils/logger"
 
 export class MessagingClient<In, Out = In, Deps = any> {
     private readonly clientId: string
@@ -48,7 +49,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
-        this.statusEvent$ = fromClientStatusEvent(this.clientId).pipe(
+        this.statusEvent$ = fromMessagingClientStatusEvent(this.clientId).pipe(
             log(LoggerVerbosity.Low, this.logger, `MessagingClient [${this.clientId}] - status event`),
             tap((event) => {
                 if (event.type === MessagingClientStatusEventName.Stopped) {
@@ -81,7 +82,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
             mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
-                return fromClientMessageReceived<In>(this.clientId, this.logger).pipe(
+                return fromMessagingClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
                     catchError((err) => {
                         this.logger.error(
@@ -101,11 +102,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
         const data$: Observable<boolean> = this.dataOutput$.pipe(concatMap((data: DataObject) => this.sendData(data)))
 
         const ping$: Observable<boolean> = this.statusEvent$.pipe(
-            ofClientStatusEvent(MessagingClientStatusEventName.Ready),
+            ofMessagingClientStatusEvent(MessagingClientStatusEventName.Ready),
             switchMap(() => {
-                return pingClient(
+                return pingMessagingClient(
                     this.statusEvent$,
-                    fromClientDataReceived(this.clientId),
+                    fromMessagingClientDataReceived(this.clientId),
                     this.dataOutput$,
                     this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY
                 ).pipe(

@@ -1,9 +1,9 @@
-import { TCPClient, TCPClientEventName, TCPClientNativeEvent } from "../../../"
 import { Observable } from "rxjs"
 import { filter } from "rxjs/operators"
+import { TCPClient, TCPClientEventName, TCPClientNativeEvent } from "../"
 import { fromEventFixed } from "../../../utils/operators/fromEventFixed"
 
-export const fromClientEvent = <T extends TCPClientEventName>(
+export const fromTCPClientEvent = <T extends TCPClientEventName>(
     clientId: string,
     eventName: T
 ): Observable<Extract<TCPClientNativeEvent, { type: T }>> =>
