@@ -7,8 +7,7 @@ import { parseServerMessage } from "../../functions/parseMessage"
 import { deduplicateBy } from "../../operators/deduplicateBy"
 import { getMessageId } from "../../functions/getMessageId"
 import { log } from "../../../utils/operators/log"
-import { LoggerWrapper } from "../../../utils/logger/loggerWrapper"
-import { LoggerVerbosity } from "../../../utils/logger/types"
+import { LoggerVerbosity, LoggerWrapper } from "../../../utils/logger/"
 
 export const fromServerMessageReceived = <Body>(serverId: string, logger: LoggerWrapper): Observable<Message<Body>> =>
     fromServerDataReceived(serverId).pipe(
