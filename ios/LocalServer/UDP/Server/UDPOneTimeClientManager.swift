@@ -9,6 +9,7 @@
 import Foundation
 import Network
 
+@available(iOS 12.0, *)
 class UDPOneTimeClientManager: ClientDelegateProtocol {
     
     private var clients: [String: GeneralNetworkClient] = [:]

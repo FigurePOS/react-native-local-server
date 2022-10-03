@@ -8,7 +8,7 @@
 
 import Foundation
 
-
+@available(iOS 12.0, *)
 class TCPServerManager: ServerDelegateProtocol {
 
     private let eventEmitter: EventEmitterWrapper

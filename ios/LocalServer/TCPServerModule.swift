@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 12.0, *)
 @objc(TCPServerModule)
 class TCPServerModule: RCTEventEmitter {
 
