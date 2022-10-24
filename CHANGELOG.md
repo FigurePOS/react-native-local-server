@@ -1,3 +1,10 @@
+### [0.10.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.0...v0.10.1) (2022-10-24)
+
+
+### Refactoring
+
+* export composeMessageObject for testing purposes ([55dccb7](https://github.com/FigurePOS/react-native-local-server/commit/55dccb7cd922dec00767322414254ef38dc2e09f))
+
 ## [0.10.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.9.0...v0.10.0) (2022-10-03)
 
 
