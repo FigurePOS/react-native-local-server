@@ -1,3 +1,10 @@
+### [0.10.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.2...v0.10.3) (2022-11-18)
+
+
+### Features
+
+* send MessagingServiceInformation from server on new connection ([dbac116](https://github.com/FigurePOS/react-native-local-server/commit/dbac116b7544c91f70d2c7ddcea662d53ccd3140))
+
 ### [0.10.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.1...v0.10.2) (2022-11-18)
 
 
