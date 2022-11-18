@@ -31,6 +31,9 @@ const counterClientStartRequested: Epic = (action$: ActionsObservable<StateActio
                 name: "Counter Client",
                 port: port,
                 host: action.payload.host,
+                ping: {
+                    timeout: 10 * 1000,
+                },
             }
             return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
                 mergeMapTo([]),

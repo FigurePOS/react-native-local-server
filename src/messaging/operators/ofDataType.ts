@@ -1,5 +1,12 @@
 import { Observable } from "rxjs"
-import { DataObject, DataObjectMessage, DataObjectMessageAck, DataObjectPing, DataObjectType } from "../types"
+import {
+    DataObject,
+    DataObjectMessage,
+    DataObjectMessageAck,
+    DataObjectPing,
+    DataObjectServiceInfo,
+    DataObjectType,
+} from "../types"
 import { filter } from "rxjs/operators"
 
 export const ofDataType =
@@ -17,3 +24,6 @@ export const ofDataTypeMessageAck: <M>(source$: Observable<DataObject<M>>) => Ob
 export const ofDataTypePing: <M>(source$: Observable<DataObject<M>>) => Observable<DataObjectPing> = ofDataType(
     DataObjectType.Ping
 )
+
+export const ofDataTypeServiceInfo: <M>(source$: Observable<DataObject<M>>) => Observable<DataObjectServiceInfo> =
+    ofDataType(DataObjectType.ServiceInfo)

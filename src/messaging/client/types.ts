@@ -1,4 +1,4 @@
-import { MessagingStoppedReason } from "../types"
+import { MessagingServiceInformation, MessagingStoppedReason } from "../types"
 
 /**
  * Object containing configuration of messaging client
@@ -27,6 +27,7 @@ export type MessagingClientPingConfiguration = {
 export enum MessagingClientStatusEventName {
     Ready = "Ready",
     Stopped = "Stopped",
+    ServiceInformationChanged = "ServiceInformationChanged",
 
     Unknown = "Unknown",
 }
@@ -39,4 +40,11 @@ export type MessagingClientLifecycleStatusEvent = {
     reason?: MessagingStoppedReason | string
 }
 
-export type MessagingClientStatusEvent = MessagingClientLifecycleStatusEvent
+export type MessagingClientServiceInformationStatusEvent = {
+    type: MessagingClientStatusEventName.ServiceInformationChanged
+    info: MessagingServiceInformation
+}
+
+export type MessagingClientStatusEvent =
+    | MessagingClientLifecycleStatusEvent
+    | MessagingClientServiceInformationStatusEvent

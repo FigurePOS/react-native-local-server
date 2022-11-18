@@ -1,4 +1,5 @@
 import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observable"
+import * as uuid from "uuid"
 import { Maybe, StateAction } from "../../../types"
 import { catchError, concatMap, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
 import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
@@ -32,7 +33,12 @@ const counterServerStartRequested: Epic = (action$: ActionsObservable<StateActio
             }
             const config: MessagingServerConfiguration = {
                 name: "Counter Server",
+                serviceId: uuid.v4(),
                 port: port,
+                ping: {
+                    interval: 1000,
+                    retryCount: 10,
+                },
             }
             return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
                 mergeMapTo([]),

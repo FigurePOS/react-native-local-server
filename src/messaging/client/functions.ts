@@ -6,6 +6,7 @@ import {
     TCPClientEventName,
     TCPClientNativeEvent,
 } from "../../"
+import { DataObjectServiceInfo } from "../types"
 
 export const composeMessagingClientLifecycleStatusEvent = (
     type: MessagingClientLifecycleStatusEvent["type"],
@@ -13,6 +14,13 @@ export const composeMessagingClientLifecycleStatusEvent = (
 ): MessagingClientLifecycleStatusEvent => ({
     type: type,
     ...(reason ? { reason: reason } : null),
+})
+
+export const composeMessagingClientServiceInformationStatusEvent = (
+    data: DataObjectServiceInfo
+): MessagingClientStatusEvent => ({
+    type: MessagingClientStatusEventName.ServiceInformationChanged,
+    info: data.info,
 })
 
 export const composeMessagingClientStatusEvent = (nativeEvent: TCPClientNativeEvent): MessagingClientStatusEvent => {

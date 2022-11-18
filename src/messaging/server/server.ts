@@ -1,6 +1,4 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError } from "rxjs"
-import { LoggerVerbosity, MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
-import { composeMessageObject } from "../functions/composeMessageObject"
 import {
     catchError,
     concatMap,
@@ -21,6 +19,9 @@ import {
     ofMessagingServerStatusEvent,
     pingMessagingServerConnection,
 } from "./operators"
+import { LoggerVerbosity, MessagingServerConnectionStatusEvent, MessagingStoppedReason, TCPServer } from "../../"
+import { composeMessageObject } from "../functions"
+import { composeDataServiceInfoObject } from "../functions/composeDataServiceInfoObject"
 import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
 import { serializeDataObject } from "../functions/serializeDataObject"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
@@ -43,6 +44,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
     private mainSubscription: Subscription | null = null
     private dataSubscription: Subscription | null = null
     private pingSubscription: Subscription | null = null
+    private infoSubscription: Subscription | null = null
 
     /**
      * Constructor for the class
@@ -144,9 +146,31 @@ export class MessagingServer<In, Out = In, Deps = any> {
             })
         )
 
+        const info$: Observable<boolean> = this.statusEvent$.pipe(
+            ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionReady),
+            map((e: MessagingServerConnectionStatusEvent) => e.connectionId),
+            mergeMap((connectionId: string) => {
+                if (!this.configuration) {
+                    this.logger.error(
+                        LoggerVerbosity.Low,
+                        `MessagingServer [${this.serverId}] - service info - missing configuration`
+                    )
+                    return of(false)
+                }
+                return this.sendData(
+                    composeDataServiceInfoObject(
+                        this.configuration.name ?? "UNKNOWN",
+                        this.configuration.serviceId ?? ""
+                    ),
+                    connectionId
+                )
+            })
+        )
+
         this.mainSubscription = output$.subscribe()
         this.dataSubscription = data$.subscribe()
         this.pingSubscription = ping$.subscribe()
+        this.infoSubscription = info$.subscribe()
 
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
@@ -271,6 +295,8 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.dataSubscription = null
         this.pingSubscription?.unsubscribe()
         this.pingSubscription = null
+        this.infoSubscription?.unsubscribe()
+        this.infoSubscription = null
     }
 
     private getSourceData(connectionId: string): MessageSource {

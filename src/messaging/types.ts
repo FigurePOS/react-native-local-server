@@ -22,6 +22,18 @@ export enum MessagingStoppedReason {
 }
 
 /**
+ * Object containing public information about messaging service
+ * @property name - name of the server
+ * @property serviceId - id of the service
+ * @property shortServiceId - short version of serviceId
+ */
+export type MessagingServiceInformation = {
+    name: string
+    serviceId: string
+    shortServiceId: string
+}
+
+/**
  * PRIVATE types
  */
 export type MessageSource = {
@@ -34,6 +46,7 @@ export enum DataObjectType {
     Message = "message",
     MessageAck = "message-ack",
     Ping = "ping",
+    ServiceInfo = "service-info",
 }
 
 export type DataObjectMessage<M = any> = {
@@ -54,10 +67,16 @@ export type DataObjectPing = {
     connectionId?: string
 }
 
+export type DataObjectServiceInfo = {
+    type: DataObjectType.ServiceInfo
+    info: MessagingServiceInformation
+    connectionId?: string
+}
+
 export const composeDataObjectPing = (pingId: string, connectionId?: string): DataObjectPing => ({
     type: DataObjectType.Ping,
     pingId: pingId,
     ...(connectionId ? { connectionId: connectionId } : null),
 })
 
-export type DataObject<M = any> = DataObjectMessage<M> | DataObjectMessageAck | DataObjectPing
+export type DataObject<M = any> = DataObjectMessage<M> | DataObjectMessageAck | DataObjectPing | DataObjectServiceInfo
