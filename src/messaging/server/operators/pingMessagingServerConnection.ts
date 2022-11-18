@@ -1,10 +1,9 @@
 import * as uuid from "uuid"
 import { defer, interval, merge, Observable, of, SchedulerLike, Subject, throwError } from "rxjs"
-import { catchError, filter, mapTo, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
+import { catchError, mapTo, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
 import { ofMessagingServerConnectionClosed, ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
 import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../types"
 import { composeDataObjectPing, DataObject } from "../../types"
-import { ofDataTypePing } from "../../operators/ofDataType"
 
 export const pingMessagingServerConnection = (
     connectionId: string,
@@ -22,8 +21,6 @@ export const pingMessagingServerConnection = (
                 const pingId = uuid.v4()
                 dataOutput$.next(composeDataObjectPing(pingId, connectionId))
                 return dataInput$.pipe(
-                    ofDataTypePing,
-                    filter((ping) => ping.pingId === pingId),
                     take(1),
                     timeout(pingTimeout, scheduler),
                     mapTo(true),

@@ -5,6 +5,7 @@ import { MessagingClientStatusEvent } from "../../types"
 import { composeDataObjectPing, DataObject } from "../../../types"
 import { pingMessagingClient } from "../"
 import { MessagingClientStatusEventStopped } from "../../../__fixtures__/clientStatusEvent"
+import { DataObjectMessageFixture1 } from "../../../__fixtures__/dataObject"
 
 jest.mock("uuid", () => ({
     v4: jest.fn(),
@@ -93,6 +94,43 @@ describe("pingClient", () => {
                 {
                     a: true,
                     b: true,
+                },
+                "Server ping timed out"
+            )
+            const pingTimeout = m.time("----|")
+            const dataOut$: Subject<DataObject> = new Subject<DataObject>()
+            const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
+            // @ts-ignore
+            m.expect(result).toBeObservable(_out)
+            // @ts-ignore
+            m.expect(dataOut$).toBeObservable(expectedDataOut$)
+        })
+    )
+    it(
+        "should not timeout when receiving data instead of ping",
+        marbles((m) => {
+            const ids = ["ping-1", "ping-2"]
+            mockIds(ids)
+            const _dataIn = "--a--b--c----"
+            const dataOut = "--a-----b----"
+            const _status = "-------------"
+            const ____out = "--a--b--c---#"
+            const status$: Observable<MessagingClientStatusEvent> = m.hot(_status, {})
+            const dataIn$: Observable<DataObject> = m.hot(_dataIn, {
+                a: composeDataObjectPing(ids[0]),
+                b: DataObjectMessageFixture1,
+                c: composeDataObjectPing(ids[1]),
+            })
+            const expectedDataOut$: Observable<DataObject> = m.hot(dataOut, {
+                a: composeDataObjectPing(ids[0]),
+                b: composeDataObjectPing(ids[1]),
+            })
+            const _out: Observable<boolean> = m.hot(
+                ____out,
+                {
+                    a: true,
+                    b: true,
+                    c: true,
                 },
                 "Server ping timed out"
             )
