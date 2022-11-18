@@ -150,20 +150,15 @@ export class MessagingServer<In, Out = In, Deps = any> {
             ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionReady),
             map((e: MessagingServerConnectionStatusEvent) => e.connectionId),
             mergeMap((connectionId: string) => {
-                if (!this.configuration) {
-                    this.logger.error(
+                if (!this.configuration?.service) {
+                    this.logger.warn(
                         LoggerVerbosity.Low,
-                        `MessagingServer [${this.serverId}] - service info - missing configuration`
+                        `MessagingServer [${this.serverId}] - service info - missing service configuration`,
+                        this.configuration
                     )
                     return of(false)
                 }
-                return this.sendData(
-                    composeDataServiceInfoObject(
-                        this.configuration.name ?? "UNKNOWN",
-                        this.configuration.serviceId ?? ""
-                    ),
-                    connectionId
-                )
+                return this.sendData(composeDataServiceInfoObject(this.configuration.service), connectionId)
             })
         )
 
@@ -303,7 +298,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         const config = this.getConfiguration()
         return {
             ...(config ? { name: config.name } : null),
-            ...(config ? { serviceId: config.serviceId } : null),
+            ...(config && config.service ? { serviceId: config.service.id } : null),
             connectionId: connectionId,
         }
     }

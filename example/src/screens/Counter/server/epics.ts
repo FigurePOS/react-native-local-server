@@ -33,7 +33,10 @@ const counterServerStartRequested: Epic = (action$: ActionsObservable<StateActio
             }
             const config: MessagingServerConfiguration = {
                 name: "Counter Server",
-                serviceId: uuid.v4(),
+                service: {
+                    id: uuid.v4(),
+                    name: "My Counter Server",
+                },
                 port: port,
                 ping: {
                     interval: 1000,

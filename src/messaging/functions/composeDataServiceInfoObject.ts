@@ -1,11 +1,13 @@
-import { DataObjectServiceInfo, DataObjectType } from "../types"
+import { DataObjectServiceInfo, DataObjectType, MessagingServiceInformation } from "../types"
 
-export const composeDataServiceInfoObject = (name: string, serviceId: string): DataObjectServiceInfo => ({
+export const composeDataServiceInfoObject = (
+    info: Omit<MessagingServiceInformation, "shortId">
+): DataObjectServiceInfo => ({
     type: DataObjectType.ServiceInfo,
     info: {
-        name: name,
-        serviceId: serviceId,
-        shortServiceId: getShortServiceId(serviceId),
+        name: info.name,
+        id: info.id,
+        shortId: getShortServiceId(info.id),
     },
 })
 

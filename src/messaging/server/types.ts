@@ -1,4 +1,4 @@
-import { MessagingStoppedReason } from "../types"
+import { MessagingServiceInformation, MessagingStoppedReason } from "../types"
 
 /**
  * PUBLIC types
@@ -8,13 +8,13 @@ import { MessagingStoppedReason } from "../types"
  * Object containing configuration of messaging server
  * @property port - port to listen on
  * @property name - name of the server
- * @property serviceId - public id of the server
+ * @property service - service information about the server
  * @property ping - ping configuration of the server
  */
 export type MessagingServerConfiguration = {
     port: number
     name?: string
-    serviceId?: string
+    service?: Omit<MessagingServiceInformation, "shortId">
 
     ping?: MessagingServerPingConfiguration
 }

@@ -24,13 +24,13 @@ export enum MessagingStoppedReason {
 /**
  * Object containing public information about messaging service
  * @property name - name of the server
- * @property serviceId - id of the service
- * @property shortServiceId - short version of serviceId
+ * @property id - id of the service
+ * @property shortId - short version of serviceId
  */
 export type MessagingServiceInformation = {
     name: string
-    serviceId: string
-    shortServiceId: string
+    id: string
+    shortId: string
 }
 
 /**
