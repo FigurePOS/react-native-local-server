@@ -1,3 +1,10 @@
+### [0.10.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.1...v0.10.2) (2022-11-18)
+
+
+### Features
+
+* make messaging ping functionality less strict ([9fef901](https://github.com/FigurePOS/react-native-local-server/commit/9fef90125f43d981985b4d23d12729fb30002ded))
+
 ### [0.10.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.0...v0.10.1) (2022-10-24)
 
 
