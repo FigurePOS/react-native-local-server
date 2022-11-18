@@ -1,3 +1,10 @@
+### [0.10.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.3...v0.10.4) (2022-11-18)
+
+
+### Refactoring
+
+* update MessagingServiceInformation type ([e67c7cc](https://github.com/FigurePOS/react-native-local-server/commit/e67c7cc502a692352294eab8d03ca9264f69dd3e))
+
 ### [0.10.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.2...v0.10.3) (2022-11-18)
 
 
