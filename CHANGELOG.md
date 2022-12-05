@@ -1,3 +1,11 @@
+### [0.10.5](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.4...v0.10.5) (2022-12-05)
+
+
+### Bug Fixes
+
+* messaging client loosing subscriptions after restarting ([220552c](https://github.com/FigurePOS/react-native-local-server/commit/220552c87e83d949084836b80f8ede58c5714cf4))
+* messaging server loosing subscriptions after restarting ([b7d10d3](https://github.com/FigurePOS/react-native-local-server/commit/b7d10d3d1310005b46a4c5a14a852108e3c94dd6))
+
 ### [0.10.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.3...v0.10.4) (2022-11-18)
 
 
