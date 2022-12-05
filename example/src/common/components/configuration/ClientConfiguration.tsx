@@ -13,6 +13,7 @@ type Props = {
 
     onStarted: (host: string, port: string) => void
     onStopped: () => void
+    onRestart?: () => void
 }
 
 export const ClientConfiguration = (props: Props) => {
@@ -36,6 +37,7 @@ export const ClientConfiguration = (props: Props) => {
                 containerStyle={styles.inputPort}
             />
             <Text style={styles.state}>{`State: ${props.stateLabel}`}</Text>
+            {props.onRestart ? <Button label={"Restart"} onPress={props.onRestart} /> : null}
             <Button label={"Start"} onPress={() => props.onStarted(host, port)} />
             <Button label={"Stop"} onPress={props.onStopped} />
         </View>

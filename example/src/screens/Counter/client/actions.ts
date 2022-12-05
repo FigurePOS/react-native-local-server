@@ -14,6 +14,11 @@ export const createActionCounterClientStopRequested = () => ({
     type: COUNTER_CLIENT_STOP_REQUESTED,
 })
 
+export const COUNTER_CLIENT_RESTART_REQUESTED = "COUNTER_CLIENT_RESTART_REQUESTED"
+export const createActionCounterClientRestartRequested = () => ({
+    type: COUNTER_CLIENT_RESTART_REQUESTED,
+})
+
 export const COUNTER_CLIENT_ERRORED = "COUNTER_CLIENT_ERRORED"
 export const createActionCounterClientErrored = (error: string) => ({
     type: COUNTER_CLIENT_ERRORED,

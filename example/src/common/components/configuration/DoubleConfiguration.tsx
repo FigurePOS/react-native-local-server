@@ -19,6 +19,7 @@ type Props = {
 
     onClientStarted: (host: string, port: string) => void
     onClientStopped: () => void
+    onClientRestarted?: () => void
     onServerStarted: (port: string) => void
     onServerStopped: () => void
     onServerRestarted?: () => void
@@ -51,6 +52,7 @@ export const DoubleConfiguration = (props: Props) => {
                     initialHost={props.initialHostClient}
                     onStarted={props.onClientStarted}
                     onStopped={props.onClientStopped}
+                    onRestart={props.onClientRestarted}
                 />
             </View>
         </View>

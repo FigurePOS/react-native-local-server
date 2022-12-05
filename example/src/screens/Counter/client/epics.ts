@@ -2,6 +2,7 @@ import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observab
 import { StateAction } from "../../../types"
 import { catchError, filter, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
 import {
+    COUNTER_CLIENT_RESTART_REQUESTED,
     COUNTER_CLIENT_START_REQUESTED,
     COUNTER_CLIENT_STATE_CHANGED,
     COUNTER_CLIENT_STOP_REQUESTED,
@@ -67,6 +68,17 @@ const counterClientStopRequested: Epic = (action$: ActionsObservable<StateAction
         })
     )
 
+const counterClientRestartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+    action$.pipe(
+        ofType(COUNTER_CLIENT_RESTART_REQUESTED),
+        switchMap(() => {
+            return CounterClient.restart().pipe(
+                mergeMapTo([]),
+                catchError((err) => [createActionCounterClientErrored(err)])
+            )
+        })
+    )
+
 const counterClientCountResetRequested: Epic = (
     action$: ActionsObservable<StateAction>,
     state$: StateObservable<StateObject>
@@ -106,4 +118,5 @@ export default [
     counterClientStopRequested,
     counterClientCountResetRequested,
     counterClientCountRequested,
+    counterClientRestartRequested,
 ]

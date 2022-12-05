@@ -15,6 +15,7 @@ import {
     fromMessagingClientStatusEvent,
     ofMessagingClientStatusEvent,
     pingMessagingClient,
+    waitForMessagingClientStopped,
 } from "./operators"
 import { MessagingClientConfiguration } from "./types"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
@@ -35,6 +36,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
 
     private logger: LoggerWrapper = new LoggerWrapper()
     private configuration: MessagingClientConfiguration | null = null
+    private startData: [MessageHandler<In, Deps>, Deps] | null = null
     private mainSubscription: Subscription | null = null
     private dataSubscription: Subscription | null = null
     private pingSubscription: Subscription | null = null
@@ -77,6 +79,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     ): Observable<void> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - start`, configuration)
         this.configuration = configuration
+        this.startData = [rootHandler, dependencies]
         this.cleanSubscriptions()
 
         const output$: Observable<boolean> = this.handler$.pipe(
@@ -163,6 +166,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         })
         this.cleanSubscriptions()
         this.configuration = null
+        this.startData = null
         return defer(() => this.tcpClient.stop(reason))
     }
 
@@ -170,8 +174,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
      * This method restarts the connection to the server.
      */
     restart(): Observable<void> {
+        this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - restart`)
         return concat(
             defer(() => this.tcpClient.stop(MessagingStoppedReason.Restart)).pipe(
+                waitForMessagingClientStopped(this.clientId),
                 catchError((err) => {
                     this.logger.error(
                         LoggerVerbosity.Low,
@@ -185,7 +191,10 @@ export class MessagingClient<In, Out = In, Deps = any> {
                 if (this.configuration == null) {
                     return throwError(`MessagingClient [${this.clientId}] - restart - no config`)
                 }
-                return this.tcpClient.start(this.configuration)
+                if (this.startData == null) {
+                    return throwError(`MessagingClient [${this.clientId}] - restart - no start data`)
+                }
+                return this.start(this.configuration, ...this.startData)
             }).pipe(
                 catchError((err) => {
                     this.logger.error(

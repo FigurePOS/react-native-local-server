@@ -218,6 +218,7 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingServer [${this.serverId}] - stop`)
         this.cleanSubscriptions()
         this.configuration = null
+        this.startData = null
         return defer(() => from(this.tcpServer.stop(reason)))
     }
 

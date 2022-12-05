@@ -18,7 +18,11 @@ import {
     getCounterClientStateLabel,
     isCounterClientRunning,
 } from "../../client/selectors"
-import { createActionCounterClientStartRequested, createActionCounterClientStopRequested } from "../../client/actions"
+import {
+    createActionCounterClientRestartRequested,
+    createActionCounterClientStartRequested,
+    createActionCounterClientStopRequested,
+} from "../../client/actions"
 
 export const CounterConfiguration = () => {
     const dispatch = useDispatch()
@@ -42,6 +46,7 @@ export const CounterConfiguration = () => {
             isRunning={isServerRunning || isClientRunning}
             onClientStarted={(host, port) => dispatch(createActionCounterClientStartRequested(host, port))}
             onClientStopped={() => dispatch(createActionCounterClientStopRequested())}
+            onClientRestarted={() => dispatch(createActionCounterClientRestartRequested())}
             onServerStarted={(port) => dispatch(createActionCounterServerStartRequested(port))}
             onServerStopped={() => dispatch(createActionCounterServerStopRequested())}
             onServerRestarted={() => dispatch(createActionCounterServerRestartRequested())}
