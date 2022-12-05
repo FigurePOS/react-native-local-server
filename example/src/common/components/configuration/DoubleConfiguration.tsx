@@ -1,9 +1,8 @@
 import React from "react"
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import { ServerConfiguration } from "./ServerConfiguration"
 import { ClientConfiguration } from "./ClientConfiguration"
 import { HorizontalLine } from "../horizontalLine"
-import { Text } from "react-native"
 import { Colors, FontSize } from "../../constants"
 import { Maybe } from "../../../types"
 
@@ -22,6 +21,7 @@ type Props = {
     onClientStopped: () => void
     onServerStarted: (port: string) => void
     onServerStopped: () => void
+    onServerRestarted?: () => void
 }
 
 export const DoubleConfiguration = (props: Props) => {
@@ -37,6 +37,7 @@ export const DoubleConfiguration = (props: Props) => {
                     ipAddress={props.ipAddressServer}
                     onStarted={props.onServerStarted}
                     onStopped={props.onServerStopped}
+                    onRestart={props.onServerRestarted}
                 />
             </View>
             <HorizontalLine opacity={0.5} />

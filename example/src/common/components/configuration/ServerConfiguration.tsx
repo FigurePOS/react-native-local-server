@@ -14,6 +14,7 @@ type Props = {
 
     onStarted: (port: string) => void
     onStopped: () => void
+    onRestart?: () => void
 }
 
 export const ServerConfiguration = (props: Props) => {
@@ -33,6 +34,7 @@ export const ServerConfiguration = (props: Props) => {
             <Text style={styles.info}>{`IP: ${props.ipAddress ?? "UNKNOWN"}`}</Text>
             <Text style={styles.info}>{`State: ${props.stateLabel}`}</Text>
             <View style={styles.space} />
+            {props.onRestart ? <Button label={"Restart"} onPress={props.onRestart} /> : null}
             <Button label={"Start"} onPress={() => props.onStarted(port ?? "")} />
             <Button label={"Stop"} onPress={props.onStopped} />
         </View>

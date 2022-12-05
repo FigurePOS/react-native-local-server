@@ -14,6 +14,11 @@ export const createActionCounterServerStopRequested = () => ({
     type: COUNTER_SERVER_STOP_REQUESTED,
 })
 
+export const COUNTER_SERVER_RESTART_REQUESTED = "COUNTER_SERVER_RESTART_REQUESTED"
+export const createActionCounterServerRestartRequested = () => ({
+    type: COUNTER_SERVER_RESTART_REQUESTED,
+})
+
 export const COUNTER_SERVER_STATE_CHANGED = "COUNTER_SERVER_STATE_CHANGED"
 export const createActionCounterServerStateChanged = (state: ServerState) => ({
     type: COUNTER_SERVER_STATE_CHANGED,

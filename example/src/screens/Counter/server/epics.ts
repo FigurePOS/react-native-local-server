@@ -5,6 +5,7 @@ import { catchError, concatMap, mergeMap, mergeMapTo, switchMap } from "rxjs/ope
 import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
 import { ServerConnectionState, ServerState } from "../../../common/types"
 import {
+    COUNTER_SERVER_RESTART_REQUESTED,
     COUNTER_SERVER_START_REQUESTED,
     COUNTER_SERVER_STATE_CHANGED,
     COUNTER_SERVER_STOP_REQUESTED,
@@ -87,6 +88,17 @@ const counterServerStopRequested: Epic = (action$: ActionsObservable<StateAction
         })
     )
 
+const counterServerRestartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+    action$.pipe(
+        ofType(COUNTER_SERVER_RESTART_REQUESTED),
+        switchMap(() => {
+            return CounterServer.restart().pipe(
+                mergeMapTo([]),
+                catchError((err) => [createActionCounterServerErrored(err)])
+            )
+        })
+    )
+
 const counterServerCountChanged: Epic = (
     action$: ActionsObservable<StateAction>,
     state$: StateObservable<StateObject>
@@ -127,4 +139,5 @@ export default [
     counterServerStopRequested,
     counterServerCountChanged,
     counterServerIpAddressEpic,
+    counterServerRestartRequested,
 ]
