@@ -1,3 +1,10 @@
+### [0.10.6](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.5...v0.10.6) (2022-12-06)
+
+
+### Features
+
+* change the logger verbosity for received message ([35f2454](https://github.com/FigurePOS/react-native-local-server/commit/35f24548da6c4e046ffa6ca282ea82966c952ef3))
+
 ### [0.10.5](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.4...v0.10.5) (2022-12-05)
 
 
