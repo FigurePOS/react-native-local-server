@@ -17,6 +17,6 @@ export const fromMessagingServerMessageReceived = <Body>(
         ofDataTypeMessage,
         map(parseServerMessage),
         deduplicateBy(getMessageId),
-        log(LoggerVerbosity.Medium, logger, `MessagingServer [${serverId}] - received message`),
+        log(LoggerVerbosity.High, logger, `MessagingServer [${serverId}] - received message`),
         share()
     )
