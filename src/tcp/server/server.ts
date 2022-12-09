@@ -90,30 +90,6 @@ export class TCPServer {
         }
     }
 
-    registerBonjourService = async (name: string, type: string): Promise<void> => {
-        this.logger?.log(`TCPServer [${this.getId()}] - registerBonjourService`)
-        try {
-            await TCPServerModule.registerBonjourService(this.getId(), name, type)
-            this.logger?.log(`TCPServer [${this.getId()}] - registerBonjourService - success`)
-            return Promise.resolve()
-        } catch (e) {
-            this.logger?.error(`TCPServer [${this.getId()}] - registerBonjourService - error`, e)
-            return Promise.reject(e)
-        }
-    }
-
-    unregisterBonjourService = async (): Promise<void> => {
-        this.logger?.log(`TCPServer [${this.getId()}] - unregisterBonjourService`)
-        try {
-            await TCPServerModule.unregisterBonjourService(this.getId())
-            this.logger?.log(`TCPServer [${this.getId()}] - unregisterBonjourService - success`)
-            return Promise.resolve()
-        } catch (e) {
-            this.logger?.error(`TCPServer [${this.getId()}] - unregisterBonjourService - error`, e)
-            return Promise.reject(e)
-        }
-    }
-
     /**
      * This method sends data to active connection.
      * @param connectionId - target connection id

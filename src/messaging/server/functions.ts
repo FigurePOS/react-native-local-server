@@ -1,11 +1,13 @@
 import {
+    MessagingServerConfiguration,
     MessagingServerConnectionStatusEvent,
     MessagingServerLifecycleStatusEvent,
     MessagingServerStatusEvent,
     MessagingServerStatusEventName,
 } from "./types"
-import { TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
+import { TCPServerConfiguration, TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
 import { StopReason } from "../../utils/types"
+import { getShortServiceId } from "../functions/composeDataServiceInfoObject"
 
 export const composeMessagingServerLifecycleStatusEvent = (
     type: MessagingServerLifecycleStatusEvent["type"],
@@ -53,4 +55,26 @@ export const composeMessagingServerStatusEvent = (nativeEvent: TCPServerNativeEv
         default:
             return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Unknown)
     }
+}
+
+export const composeTCPServerConfiguration = (config: MessagingServerConfiguration): TCPServerConfiguration => ({
+    port: config.port,
+    ...(config.discovery
+        ? {
+              discovery: {
+                  group: config.discovery.group,
+                  name: getDiscoveryNameFromConfiguration(config),
+              },
+          }
+        : null),
+})
+
+export const getDiscoveryNameFromConfiguration = (config: MessagingServerConfiguration): string => {
+    if (config.discovery?.name) {
+        return config.discovery.name
+    }
+    if (config.service?.name && config.service?.id) {
+        return `${config.service.name} (${getShortServiceId(config.service.id)})`
+    }
+    return "UNKNOWN"
 }

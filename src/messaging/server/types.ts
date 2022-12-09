@@ -31,8 +31,12 @@ export type MessagingServerPingConfiguration = {
     retryCount?: number
 }
 
+/**
+ * @property name - name of the server (if not provided, combination of name and id from service is used)
+ * @property group - group of the server
+ */
 export type MessagingServerDiscoveryConfiguration = {
-    name: string
+    name?: string
     group: string
 }
 
