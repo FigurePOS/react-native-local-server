@@ -17,6 +17,7 @@ export type MessagingServerConfiguration = {
     service?: Omit<MessagingServiceInformation, "shortId">
 
     ping?: MessagingServerPingConfiguration
+    discovery?: MessagingServerDiscoveryConfiguration
 }
 
 /**
@@ -28,6 +29,15 @@ export type MessagingServerPingConfiguration = {
     interval?: number
     timeout?: number
     retryCount?: number
+}
+
+/**
+ * @property name - name of the server (if not provided, combination of name and id from service is used)
+ * @property group - group of the server
+ */
+export type MessagingServerDiscoveryConfiguration = {
+    name?: string
+    group: string
 }
 
 export enum MessagingServerStatusEventName {

@@ -30,6 +30,7 @@ import { log } from "../../utils/operators/log"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
 import { Logger, LoggerWrapper } from "../../utils/logger"
 import { waitForMessagingServerStopped } from "./operators/waitForMessagingServerEvent"
+import { composeTCPServerConfiguration } from "./functions"
 
 export class MessagingServer<In, Out = In, Deps = any> {
     private readonly serverId: string
@@ -173,7 +174,8 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpServer.start(configuration))
+        const tcpConfig = composeTCPServerConfiguration(configuration)
+        return defer(() => this.tcpServer.start(tcpConfig))
     }
 
     /**

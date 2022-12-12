@@ -13,6 +13,7 @@ import com.reactnativelocalserver.tcp.factory.TCPClientFactory;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
+import com.reactnativelocalserver.utils.NsdManagerFactory;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 import com.reactnativelocalserver.utils.TCPClientEventName;
 import com.reactnativelocalserver.utils.TCPServerEventName;
@@ -40,6 +41,8 @@ public class E2E {
     @Mock
     ReactApplicationContext context;
     @Mock
+    NsdManagerFactory nsdManagerFactory;
+    @Mock
     EventEmitter serverEventEmitter;
     @Captor
     ArgumentCaptor<JSEvent> serverEventCaptor;
@@ -52,7 +55,7 @@ public class E2E {
 
     @Before
     public void setup() {
-        serverModule = new TCPServerModule(context, serverEventEmitter, new TCPServerFactory());
+        serverModule = new TCPServerModule(context, serverEventEmitter, new TCPServerFactory(), nsdManagerFactory);
         clientModule = new TCPClientModule(context, clientEventEmitter, new TCPClientFactory());
     }
 
@@ -377,8 +380,12 @@ public class E2E {
     }
 
     private void prepareServer(String id) throws Exception {
+        prepareServer(id, null, null);
+    }
+
+    private void prepareServer(String id, String discoveryGroup, String discoveryName) throws Exception {
         Promise promise = mockPromise();
-        serverModule.createServer(id, port, promise);
+        serverModule.createServer(id, port, discoveryGroup, discoveryName, promise);
         verify(promise).resolve(true);
         TimeUnit.MILLISECONDS.sleep(100);
     }

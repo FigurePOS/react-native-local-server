@@ -38,6 +38,9 @@ const counterServerStartRequested: Epic = (action$: ActionsObservable<StateActio
                     id: uuid.v4(),
                     name: "My Counter Server",
                 },
+                discovery: {
+                    group: "fgr-counter",
+                },
                 port: port,
                 ping: {
                     interval: 1000,

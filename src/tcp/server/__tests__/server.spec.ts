@@ -33,7 +33,22 @@ describe("TCPServer", () => {
             port: 12000,
         }
         await server.start(config)
-        expect(spy).toBeCalledWith(serverId, config.port)
+        expect(spy).toBeCalledWith(serverId, config.port, null, null)
+        expect(server.getConfiguration()).toEqual(config)
+        done()
+    })
+
+    it("should start server - discovery", async (done) => {
+        const spy = jest.spyOn(TCPServerModule, "createServer")
+        const config: TCPServerConfiguration = {
+            port: 12000,
+            discovery: {
+                group: "test-group",
+                name: "test-name",
+            },
+        }
+        await server.start(config)
+        expect(spy).toBeCalledWith(serverId, config.port, "test-group", "test-name")
         expect(server.getConfiguration()).toEqual(config)
         done()
     })
@@ -46,7 +61,7 @@ describe("TCPServer", () => {
             port: 12000,
         }
         await expect(server.start(config)).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(serverId, config.port)
+        expect(spy).toBeCalledWith(serverId, config.port, null, null)
         done()
     })
 
