@@ -1,7 +1,5 @@
 package com.reactnativelocalserver;
 
-import android.content.Context;
-import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -15,6 +13,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.service.browser.ServiceBrowser;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.NsdManagerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +23,16 @@ import java.util.Map;
 public class ServiceBrowserModule extends ReactContextBaseJavaModule {
     public static final String NAME = "ServiceBrowserModule";
 
+    private final NsdManagerFactory nsdManagerFactory;
     private final EventEmitter eventEmitter;
     private final Map<String, ServiceBrowser> browsers;
     private final ReactApplicationContext reactApplicationContext;
 
-    public ServiceBrowserModule(ReactApplicationContext reactContext, EventEmitter eventEmitter) {
+    public ServiceBrowserModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, NsdManagerFactory nsdManagerFactory) {
         super(reactContext);
         this.reactApplicationContext = reactContext;
         this.eventEmitter = eventEmitter;
+        this.nsdManagerFactory = nsdManagerFactory;
         this.browsers = new HashMap<>();
     }
 
@@ -49,8 +50,7 @@ public class ServiceBrowserModule extends ReactContextBaseJavaModule {
             return;
         }
         try {
-            NsdManager manager = (NsdManager) reactApplicationContext.getApplicationContext().getSystemService(Context.NSD_SERVICE);
-            ServiceBrowser browser = new ServiceBrowser(id, manager, eventEmitter, discoveryGroup);
+            ServiceBrowser browser = new ServiceBrowser(id, nsdManagerFactory, eventEmitter, discoveryGroup);
             browsers.put(id, browser);
             browser.start(promise::resolve);
         } catch (Exception e) {

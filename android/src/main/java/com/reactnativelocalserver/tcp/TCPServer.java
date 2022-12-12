@@ -73,7 +73,7 @@ public class TCPServer implements EventHandler {
     }
 
     public void start(Integer maxConnections) throws Exception {
-        this.start(maxConnections);
+        this.start(maxConnections, null);
     }
 
     public void start(NsdManager manager) throws Exception {

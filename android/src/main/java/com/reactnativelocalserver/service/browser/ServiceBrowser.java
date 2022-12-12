@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi;
 
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.JSEvent;
+import com.reactnativelocalserver.utils.NsdManagerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
 public class ServiceBrowser {
 
     private final String id;
-    private final NsdManager nsdManager;
+    private final NsdManagerFactory nsdManagerFactory;
     private final String group;
     private final EventEmitter eventEmitter;
     private final Map<String, NsdServiceInfo> services = new HashMap<>();
@@ -26,9 +27,9 @@ public class ServiceBrowser {
     private Consumer<Boolean> onStarted;
     private Consumer<Boolean> onStopped;
 
-    public ServiceBrowser(String id, NsdManager nsdManager, EventEmitter eventEmitter, String group) {
+    public ServiceBrowser(String id, NsdManagerFactory nsdManagerFactory, EventEmitter eventEmitter, String group) {
         this.id = id;
-        this.nsdManager = nsdManager;
+        this.nsdManagerFactory = nsdManagerFactory;
         this.eventEmitter = eventEmitter;
         this.group = group;
     }
@@ -41,7 +42,7 @@ public class ServiceBrowser {
         Log.d(getName(), "start");
         listener = new Listener();
         this.onStarted = onStarted;
-        nsdManager.discoverServices(group, NsdManager.PROTOCOL_DNS_SD, listener);
+        nsdManagerFactory.of().discoverServices(group, NsdManager.PROTOCOL_DNS_SD, listener);
     }
 
     public void stop(Consumer<Boolean> onStopped) {
@@ -51,7 +52,7 @@ public class ServiceBrowser {
             onStopped.accept(false);
             return;
         }
-        nsdManager.stopServiceDiscovery(listener);
+        nsdManagerFactory.of().stopServiceDiscovery(listener);
     }
 
     protected void handleLifecycleEvent(String eventName) {

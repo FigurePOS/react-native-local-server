@@ -1,7 +1,6 @@
 package com.reactnativelocalserver;
 
 import android.content.Context;
-import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -17,6 +16,7 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.TCPServer;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
+import com.reactnativelocalserver.utils.NsdManagerFactory;
 import com.reactnativelocalserver.utils.NsdServiceInfoFactory;
 import com.reactnativelocalserver.utils.StopReasonEnum;
 
@@ -33,14 +33,16 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
 
     private final EventEmitter eventEmitter;
     private final TCPServerFactory serverFactory;
+    private final NsdManagerFactory nsdManagerFactory;
     private final Map<String, TCPServer> servers = new HashMap();
     private final ReactApplicationContext reactApplicationContext;
 
-    public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPServerFactory serverFactory) {
+    public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPServerFactory serverFactory, NsdManagerFactory nsdManagerFactory) {
         super(reactContext);
         this.reactApplicationContext = reactContext;
         this.eventEmitter = eventEmitter;
         this.serverFactory = serverFactory;
+        this.nsdManagerFactory = nsdManagerFactory;
     }
 
     public Map<String, TCPServer> getServers() {
@@ -67,8 +69,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         NsdServiceInfo discoveryConfig = NsdServiceInfoFactory.of(discoveryName, discoveryGroup, port);
         try {
             TCPServer server = serverFactory.of(id, port, discoveryConfig, eventEmitter);
-            NsdManager manager = (NsdManager) reactApplicationContext.getApplicationContext().getSystemService(Context.NSD_SERVICE);
-            server.start(manager);
+            server.start(nsdManagerFactory.of());
             servers.put(id, server);
             promise.resolve(true);
         } catch (Exception e) {
