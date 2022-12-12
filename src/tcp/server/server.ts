@@ -79,8 +79,8 @@ export class TCPServer {
             await TCPServerModule.createServer(
                 this.getId(),
                 this.config.port,
-                this.config.discovery?.group,
-                this.config.discovery?.name
+                this.config.discovery?.group ?? null,
+                this.config.discovery?.name ?? null
             )
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - start - success`)
             return Promise.resolve()
