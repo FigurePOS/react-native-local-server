@@ -377,8 +377,12 @@ public class E2E {
     }
 
     private void prepareServer(String id) throws Exception {
+        prepareServer(id, null, null);
+    }
+
+    private void prepareServer(String id, String discoveryGroup, String discoveryName) throws Exception {
         Promise promise = mockPromise();
-        serverModule.createServer(id, port, promise);
+        serverModule.createServer(id, port, discoveryGroup, discoveryName, promise);
         verify(promise).resolve(true);
         TimeUnit.MILLISECONDS.sleep(100);
     }

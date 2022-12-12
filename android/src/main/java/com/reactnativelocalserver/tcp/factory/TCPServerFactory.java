@@ -9,4 +9,8 @@ public class TCPServerFactory {
     public TCPServer of(String id, Integer port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter) {
         return new TCPServer(id, port, discoveryConfig, eventEmitter);
     }
+
+    public TCPServer of(String id, Integer port, EventEmitter eventEmitter) {
+        return new TCPServer(id, port, null, eventEmitter);
+    }
 }

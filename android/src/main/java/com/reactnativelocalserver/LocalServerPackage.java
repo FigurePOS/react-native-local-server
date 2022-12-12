@@ -30,6 +30,7 @@ public class LocalServerPackage implements ReactPackage {
         modules.add(new TCPClientModule(reactContext, eventEmitter, tcpClientFactory));
         modules.add(new TCPServerModule(reactContext, eventEmitter, tcpServerFactory));
         modules.add(new UDPServerModule(reactContext, eventEmitter, udpServerFactory));
+        modules.add(new ServiceBrowserModule(reactContext, eventEmitter));
         return modules;
     }
 
