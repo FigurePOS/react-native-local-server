@@ -14,6 +14,7 @@ import Network
 class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     
     private let delegate: ServerDelegateProtocol
+    private var serviceDelegate: ServiceDelegateProtocol? = nil
     private var connectionsByID: [String: GeneralNetworkServerConnection] = [:]
 
     private var wasReady: Bool = false
@@ -32,6 +33,12 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         self.id = id
         self.port = NWEndpoint.Port(rawValue: port)!
         self.listener = try NWListener(using: params, on: self.port)
+    }
+    
+    func prepareBonjourService(type: String, name: String, delegate: ServiceDelegateProtocol) {
+        self.listener.service = NWListener.Service.init(name: name, type: type)
+        self.serviceDelegate = delegate
+        self.listener.serviceRegistrationUpdateHandler = serviceRegistrationHandler(update:)
     }
     
     func start(onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
@@ -130,6 +137,26 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         }
         let reason = error == nil ? lastReasonToStop : error?.debugDescription
         delegate.handleServerStopped(serverId: id, reason: reason)
+    }
+    
+    private func serviceRegistrationHandler(update: NWListener.ServiceRegistrationChange) {
+        print("GeneralNetworkServer - service registration changed")
+        guard let serviceDelegate = serviceDelegate else {
+            print("\terror: NO DELEGATE")
+            return
+        }
+        switch (update) {
+        case .add(let data):
+            print("\tevent: added")
+            serviceDelegate.serviceAdded(serverId: id, endpoint: data)
+            return
+        case .remove(let data):
+            print("\tevent: removed")
+            serviceDelegate.serviceRemoved(serverId: id, endpoint: data)
+            return
+        default:
+            return
+        }
     }
     
     //MARK: - ServerConnectionDelegateProtocol

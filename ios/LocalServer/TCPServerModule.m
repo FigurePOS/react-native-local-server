@@ -13,6 +13,8 @@
 
 RCT_EXTERN_METHOD(createServer:(NSString *)id
                   withPort:(int)port
+                  withDiscoveryGroup:(NSString *)discoveryGroup
+                  withDiscoveryName:(NSString *)discoveryName
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 

@@ -33,6 +33,11 @@
 		1B17BB0528E5B2B1002A243E /* LocalServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAD028E58C3E002A243E /* LocalServerError.swift */; };
 		1B17BB0628E5B2B1002A243E /* JSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAD128E58C3E002A243E /* JSEvent.swift */; };
 		1B17BB0728E5B2B1002A243E /* NewLineBufferedReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAD328E58C3E002A243E /* NewLineBufferedReader.swift */; };
+		1B4D6D65294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */; };
+		1B4D6D66294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */; };
+		1B4D6D67294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */; };
+		1B4D6D77294763F400FB1B88 /* ServiceBrowserModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D75294763F400FB1B88 /* ServiceBrowserModule.m */; };
+		1B4D6D79294763F400FB1B88 /* ServiceBrowserModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D76294763F400FB1B88 /* ServiceBrowserModule.swift */; };
 		1B5FF7CE28E5B52A002657D9 /* UDPServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAC628E58C3E002A243E /* UDPServerManager.swift */; };
 		1B5FF7CF28E5B52A002657D9 /* UDPServerEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAC728E58C3E002A243E /* UDPServerEventName.swift */; };
 		1B5FF7D028E5B52B002657D9 /* UDPServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAC628E58C3E002A243E /* UDPServerManager.swift */; };
@@ -129,6 +134,9 @@
 		1B17BAE928E5924D002A243E /* UDPOneTimeClientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPOneTimeClientManager.swift; sourceTree = "<group>"; };
 		1B17BAF128E599B4002A243E /* CallbackHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallbackHolder.swift; sourceTree = "<group>"; };
 		1B17BAF728E5B230002A243E /* UDP_E2E.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDP_E2E.swift; sourceTree = "<group>"; };
+		1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceDelegateProtocol.swift; sourceTree = "<group>"; };
+		1B4D6D75294763F400FB1B88 /* ServiceBrowserModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServiceBrowserModule.m; path = LocalServer/ServiceBrowserModule.m; sourceTree = "<group>"; };
+		1B4D6D76294763F400FB1B88 /* ServiceBrowserModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServiceBrowserModule.swift; path = LocalServer/ServiceBrowserModule.swift; sourceTree = "<group>"; };
 		1B6CD39F28ABEE7100812D3E /* NewLineBufferedReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLineBufferedReaderTests.swift; sourceTree = "<group>"; };
 		1BE5C5A02893D190009D6F03 /* TCPClientEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClientEventName.swift; sourceTree = "<group>"; };
 		1BE5C5A12893D190009D6F03 /* TCPServerModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCPServerModule.m; path = LocalServer/TCPServerModule.m; sourceTree = "<group>"; };
@@ -216,6 +224,7 @@
 				1B17BACB28E58C3E002A243E /* GeneralNetworkServer.swift */,
 				1B17BACC28E58C3E002A243E /* ServerConnectionDelegateProtocol.swift */,
 				1B17BACD28E58C3E002A243E /* ServerDelegateProtocol.swift */,
+				1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */,
 			);
 			path = Server;
 			sourceTree = "<group>";
@@ -301,6 +310,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				1B4D6D75294763F400FB1B88 /* ServiceBrowserModule.m */,
+				1B4D6D76294763F400FB1B88 /* ServiceBrowserModule.swift */,
 				1BE5C59A2893D190009D6F03 /* TCP */,
 				1B17BAC828E58C3E002A243E /* General */,
 				1B17BAC428E58C3E002A243E /* UDP */,
@@ -459,6 +470,7 @@
 				1B17BAF328E599B4002A243E /* CallbackHolder.swift in Sources */,
 				1B5FF7DA28E5B55B002657D9 /* GeneralNetworkServerConnection.swift in Sources */,
 				1B17BB0028E5B2B1002A243E /* LocalServerError.swift in Sources */,
+				1B4D6D66294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */,
 				1B5FF7D028E5B52B002657D9 /* UDPServerManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -469,6 +481,7 @@
 			files = (
 				1B5FF7DC28E5B55B002657D9 /* ServerDelegateProtocol.swift in Sources */,
 				1B5FF7DF28E5B55B002657D9 /* ServerConnectionDelegateProtocol.swift in Sources */,
+				1B4D6D67294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */,
 				1B17BAF828E5B230002A243E /* UDP_E2E.swift in Sources */,
 				1BE5C62C289404A1009D6F03 /* TCPClientEventName.swift in Sources */,
 				1B5FF7D328E5B52B002657D9 /* UDPServerEventName.swift in Sources */,
@@ -513,11 +526,14 @@
 				1BE5C5AD2893D191009D6F03 /* TCPClientEventName.swift in Sources */,
 				1B17BAF928E5B2B0002A243E /* EventEmitterWrapper.swift in Sources */,
 				1BE5C6212893FFDC009D6F03 /* TCPClientManager.swift in Sources */,
+				1B4D6D77294763F400FB1B88 /* ServiceBrowserModule.m in Sources */,
 				1B17BAF228E599B4002A243E /* CallbackHolder.swift in Sources */,
 				1B5FF7D728E5B55A002657D9 /* ServerConnectionDelegateProtocol.swift in Sources */,
 				1B5FF7D628E5B55A002657D9 /* GeneralNetworkServerConnection.swift in Sources */,
 				1B17BAFA28E5B2B0002A243E /* StopReasonEnum.swift in Sources */,
+				1B4D6D79294763F400FB1B88 /* ServiceBrowserModule.swift in Sources */,
 				1B5FF7CE28E5B52A002657D9 /* UDPServerManager.swift in Sources */,
+				1B4D6D65294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */,
 				1B17BAFC28E5B2B0002A243E /* JSEvent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
