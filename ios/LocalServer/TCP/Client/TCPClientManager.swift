@@ -8,7 +8,7 @@
 
 import Foundation
 
-@available(iOS 12.0, *)
+@available(iOS 13.0, *)
 class TCPClientManager: ClientDelegateProtocol {
     
     private let eventEmitter: EventEmitterWrapper

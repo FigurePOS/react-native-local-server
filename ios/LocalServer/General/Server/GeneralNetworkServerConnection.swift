@@ -9,7 +9,7 @@
 import Foundation
 import Network
 
-@available(iOS 12.0, *)
+@available(iOS 13.0, *)
 class GeneralNetworkServerConnection {
     private let reader: NewLineBufferedReader = NewLineBufferedReader()
     private let delegate: ServerConnectionDelegateProtocol

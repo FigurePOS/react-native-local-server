@@ -9,14 +9,16 @@
 import Foundation
 
 
-@available(iOS 12.0, *)
+@available(iOS 13.0, *)
 @objc(ServiceBrowserModule)
 class ServiceBrowserModule: RCTEventEmitter {
 
     private var eventNames: [String]! = TCPServerEventName.allValues
     private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
-    
+    private var manager: ServiceBrowserManager
+
     override init() {
+        self.manager = ServiceBrowserManager.init(eventEmitter: eventEmitter)
         super.init()
         eventEmitter.setEventEmitter(eventEmitter: self)
     }
@@ -28,19 +30,19 @@ class ServiceBrowserModule: RCTEventEmitter {
     @objc(createBrowser:withDiscoveryGroup:withResolver:withRejecter:)
     func createBrowser(id: String, discoveryGroup: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         resolve(true)
-//        do {
-//            let onSuccess = {
+        do {
+            let onSuccess = {
 //                resolve(true)
-//            }
-//            let onFailure = { (reason: String) in
+            }
+            let onFailure = { (reason: String) in
 //                reject("tcp.server.error", reason, nil)
-//            }
-//            try manager.createServer(id: id, port: port, discoveryGroup: discoveryGroup, discoveryName: discoveryName, onSuccess: onSuccess, onFailure: onFailure)
-//        } catch LocalServerError.ServerDoesAlreadyExist {
-//            reject("tcp.server.already-exists", "Server with this id already exists", nil)
-//        } catch {
-//            reject("tcp.server.error", "Failed to create server", error)
-//        }
+            }
+            try manager.createBrowser(id: id, discoveryGroup: discoveryGroup, onSuccess: onSuccess, onFailure: onFailure)
+        } catch LocalServerError.ServerDoesAlreadyExist {
+            reject("tcp.server.already-exists", "Server with this id already exists", nil)
+        } catch {
+            reject("tcp.server.error", "Failed to create server", error)
+        }
     }
 
     @objc(stopBrowser:withResolver:withRejecter:)

@@ -8,7 +8,7 @@
 
 import Foundation
 
-@available(iOS 12.0, *)
+@available(iOS 13.0, *)
 @objc(UDPServerModule)
 class UDPServerModule: RCTEventEmitter {
 

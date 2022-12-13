@@ -10,7 +10,7 @@ import Foundation
 import Network
 
 
-@available(iOS 12.0, *)
+@available(iOS 13.0, *)
 class UDPServerManager: ServerDelegateProtocol {
     private let clientManager: UDPOneTimeClientManager
     private let eventEmitter: EventEmitterWrapper

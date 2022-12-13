@@ -7,7 +7,7 @@
 //
 import Foundation
 
-@available(iOS 12.0, *)
+@available(iOS 13.0, *)
 @objc(TCPClientModule)
 class TCPClientModule: RCTEventEmitter {
 
