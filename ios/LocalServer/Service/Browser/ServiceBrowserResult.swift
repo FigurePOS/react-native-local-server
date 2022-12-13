@@ -10,10 +10,10 @@ import Foundation
 
 class ServiceBrowserResult {
     
-    private let name: String
-    private let group: String
-    private let host: String?
-    private let port: String?
+    let name: String
+    let group: String
+    let host: String?
+    let port: String?
     
     init(name: String, group: String) {
         self.name = name
@@ -28,5 +28,7 @@ class ServiceBrowserResult {
         self.host = host
         self.port = port
     }
+    
+    
     
 }

@@ -28,55 +28,57 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
         
         let browser: ServiceBrowser = ServiceBrowser.init(id: id, discoveryGroup: discoveryGroup)
         browsers[id] = browser
-//        let onStartSucceeded = {
-//            onSuccess()
-//        }
-//        let onStartFailed = { (_ reason: String) in
-//            onFailure(reason)
-//        }
-        try browser.start(delegate: self)
+        let onStartFailed = { (_ reason: String) in
+            self.browsers.removeValue(forKey: id)
+            onFailure(reason)
+        }
+        browser.start(delegate: self, onSuccess: onSuccess, onFailure: onStartFailed)
     }
 
     func stopBrowser(id: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("ServiceBrowserManager - stopBrowser - started")
+        guard let browser = browsers[id] else {
+            throw LocalServerError.ServerDoesAlreadyExist
+        }
+        browser.stop(onSuccess: onSuccess, onFailure: onFailure)
     }
     
     func invalidate() {
         print("ServiceBrowserManager - invalidate - \(browsers.count) browsers")
     }
     
-    private func handleLifecycleEvent(serverId: String, eventName: String, reason: String? = nil) {
+    private func handleLifecycleEvent(browserId: String, eventName: String, reason: String? = nil) {
         let event: JSEvent = JSEvent(name: eventName)
-        event.putString(key: "browserId", value: serverId)
+        event.putString(key: "browserId", value: browserId)
         if (reason != nil) {
             event.putString(key: "reason", value: reason!)
         }
         eventEmitter.emitEvent(event: event)
     }
 
-    private func handleConnectionLifecycleEvent(serverId: String, connectionId: String, eventName: String, reason: String? = nil) {
+    private func handleServiceLifecycleEvent(browserId: String, eventName: String, service: ServiceBrowserResult) {
         let event: JSEvent = JSEvent(name: eventName)
-        event.putString(key: "browserId", value: serverId)
-        event.putString(key: "connectionId", value: connectionId)
-        if (reason != nil) {
-            event.putString(key: "reason", value: reason!)
-        }
+        event.putString(key: "browserId", value: browserId)
+        event.putString(key: "name", value: service.name)
+        event.putString(key: "type", value: service.group)
         eventEmitter.emitEvent(event: event)
     }
     
     // MARK: - ServiceBrowserDelegateProtocol
     func handleBrowserReady(browserId: String) {
+        handleLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.Started)
     }
     
     func handleBrowserStopped(browserId: String) {
-    
+        self.browsers.removeValue(forKey: browserId)
+        handleLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.Stopped)
     }
     
     func handleServiceFound(browserId: String, service: ServiceBrowserResult) {
-    
+        handleServiceLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.ServiceFound, service: service)
     }
     
     func handleServiceLost(browserId: String, service: ServiceBrowserResult) {
-    
+        handleServiceLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.ServiceLost, service: service)
     }
 }

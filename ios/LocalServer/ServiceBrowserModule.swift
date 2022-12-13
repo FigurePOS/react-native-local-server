@@ -29,33 +29,36 @@ class ServiceBrowserModule: RCTEventEmitter {
     
     @objc(createBrowser:withDiscoveryGroup:withResolver:withRejecter:)
     func createBrowser(id: String, discoveryGroup: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
-        resolve(true)
         do {
             let onSuccess = {
-//                resolve(true)
+                resolve(true)
             }
             let onFailure = { (reason: String) in
-//                reject("tcp.server.error", reason, nil)
+                reject("service.browser.error", reason, nil)
             }
             try manager.createBrowser(id: id, discoveryGroup: discoveryGroup, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesAlreadyExist {
-            reject("tcp.server.already-exists", "Server with this id already exists", nil)
+            reject("service.browser.already-exists", "Browser with this id already exists", nil)
         } catch {
-            reject("tcp.server.error", "Failed to create server", error)
+            reject("service.browser.error", "Failed to create browser", error)
         }
     }
 
     @objc(stopBrowser:withResolver:withRejecter:)
-    func stopBrowser(id: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        resolve(true)
-//        do {
-//            try manager.stopServer(id: id, reason: reason)
-//            resolve(true)
-//        } catch LocalServerError.ServerDoesNotExist {
-//            reject("tcp.server.not-exists", "Server with this id does not exist", nil)
-//        } catch {
-//            reject("tcp.server.error", "Failed to stop server", error)
-//        }
+    func stopBrowser(id: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            let onSuccess = {
+                resolve(true)
+            }
+            let onFailure = { (reason: String) in
+                reject("service.browser.error", reason, nil)
+            }
+            try manager.stopBrowser(id: id, onSuccess: onSuccess, onFailure: onFailure)
+        } catch LocalServerError.ServerDoesNotExist {
+            reject("service.browser.not-exists", "Browser with this id does not exist", nil)
+        } catch {
+            reject("service.browser.error", "Failed to stop browser", error)
+        }
     }
 
     
