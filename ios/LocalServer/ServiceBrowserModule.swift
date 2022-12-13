@@ -13,7 +13,7 @@ import Foundation
 @objc(ServiceBrowserModule)
 class ServiceBrowserModule: RCTEventEmitter {
 
-    private var eventNames: [String]! = TCPServerEventName.allValues
+    private var eventNames: [String]! = ServiceBrowserEventName.allValues
     private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
     private var manager: ServiceBrowserManager
 
@@ -60,8 +60,7 @@ class ServiceBrowserModule: RCTEventEmitter {
 
     
     override func supportedEvents() -> [String]! {
-        return []
-//        return self.eventNames
+        return self.eventNames
     }
     
     override func invalidate() {
