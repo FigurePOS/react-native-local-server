@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import Network
 
-@available(iOS 12.0, *)
-class TCPServerManager: ServerDelegateProtocol {
+@available(iOS 13.0, *)
+class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
 
     private let eventEmitter: EventEmitterWrapper
     private var servers: [String: GeneralNetworkServer] = [:]
@@ -19,11 +20,18 @@ class TCPServerManager: ServerDelegateProtocol {
     }
 
     func createServer(id: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
+        try self.createServer(id: id, port: port, discoveryGroup: nil, discoveryName: nil, onSuccess: onSuccess, onFailure: onFailure)
+    }
+    
+    func createServer(id: String, port: UInt16, discoveryGroup: String?, discoveryName: String?, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         print("TCPServerModule - createServer - started")
         if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
         let server: GeneralNetworkServer = try GeneralNetworkServer(id: id, port: port, params: .tcp, delegate: self)
+        if (discoveryName != nil && discoveryGroup != nil) {
+            server.prepareBonjourService(type: String(format: "_%@._tcp", discoveryGroup!), name: discoveryName!, delegate: self)
+        }
         let onStartSucceeded = {
             self.servers[id] = server
             onSuccess()
@@ -141,5 +149,14 @@ class TCPServerManager: ServerDelegateProtocol {
         event.putString(key: "connectionId", value: connectionId)
         event.putString(key: "data", value: data)
         eventEmitter.emitEvent(event: event)
+    }
+    
+    //MARK: - ServiceDelegateProtocol
+    func serviceAdded(serverId: String, endpoint: NWEndpoint) {
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryRegistered)
+    }
+    
+    func serviceRemoved(serverId: String, endpoint: NWEndpoint) {
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryUnregistered)
     }
 }

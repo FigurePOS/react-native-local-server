@@ -8,7 +8,7 @@
 
 import Foundation
 
-@available(iOS 12.0, *)
+@available(iOS 13.0, *)
 @objc(TCPServerModule)
 class TCPServerModule: RCTEventEmitter {
 
@@ -26,8 +26,8 @@ class TCPServerModule: RCTEventEmitter {
         return false
     }
     
-    @objc(createServer:withPort:withResolver:withRejecter:)
-    func createServer(id: String, port: UInt16, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc(createServer:withPort:withDiscoveryGroup:withDiscoveryName:withResolver:withRejecter:)
+    func createServer(id: String, port: UInt16, discoveryGroup: String?, discoveryName: String?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
             let onSuccess = {
                 resolve(true)
@@ -35,7 +35,7 @@ class TCPServerModule: RCTEventEmitter {
             let onFailure = { (reason: String) in
                 reject("tcp.server.error", reason, nil)
             }
-            try manager.createServer(id: id, port: port, onSuccess: onSuccess, onFailure: onFailure)
+            try manager.createServer(id: id, port: port, discoveryGroup: discoveryGroup, discoveryName: discoveryName, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesAlreadyExist {
             reject("tcp.server.already-exists", "Server with this id already exists", nil)
         } catch {

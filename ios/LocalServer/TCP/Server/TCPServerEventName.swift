@@ -12,6 +12,9 @@ class TCPServerEventName {
     static let Ready = "RN_Local_Communication__TCP_Server_Ready"
     static let Stopped = "RN_Local_Communication__TCP_Server_Stopped"
     
+    static let DiscoveryRegistered = "RN_Local_Communication__TCP_Server_DiscoveryRegistered"
+    static let DiscoveryUnregistered = "RN_Local_Communication__TCP_Server_DiscoveryUnregistered"
+    
     static let ConnectionAccepted = "RN_Local_Communication__TCP_Server_ConnectionAccepted"
     static let ConnectionReady = "RN_Local_Communication__TCP_Server_ConnectionReady"
     static let ConnectionClosed = "RN_Local_Communication__TCP_Server_ConnectionClosed"
@@ -20,6 +23,8 @@ class TCPServerEventName {
     static let allValues: [String] = [
         Ready,
         Stopped,
+        DiscoveryRegistered,
+        DiscoveryUnregistered,
         ConnectionAccepted,
         ConnectionReady,
         ConnectionClosed,
