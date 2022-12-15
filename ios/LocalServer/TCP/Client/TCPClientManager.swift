@@ -19,7 +19,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
     
     func createClient(id: String, host: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("TCPClientModule - createClient - started")
+        RNLSLog("TCPClientModule - createClient - started")
         if (clients[id] != nil) {
             throw LocalServerError.ClientDoesAlreadyExist
         }
@@ -35,7 +35,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
 
     func stopClient(id: String, reason: String) throws {
-        print("TCPClientModule - stopClient - started")
+        RNLSLog("TCPClientModule - stopClient - started")
         guard let client: GeneralNetworkClient = clients[id] else  {
             throw LocalServerError.ClientDoesNotExist
         }
@@ -44,7 +44,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
 
     func send(clientId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("TCPClientModule - send - started")
+        RNLSLog("TCPClientModule - send - started")
         guard let client: GeneralNetworkClient = clients[clientId] else  {
             throw LocalServerError.ClientDoesNotExist
         }
@@ -64,7 +64,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
     
     func invalidate() {
-        print("TCPClientModule - invalidate - \(clients.count) clients")
+        RNLSLog("TCPClientModule - invalidate - \(clients.count) clients")
         for (_, client) in clients {
             client.stop(reason: StopReasonEnum.Invalidation)
         }
@@ -98,7 +98,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
 
     func handleDataReceived(clientId: String, data: String) {
-        print("TCPClientModule - data received: \(data)")
+        RNLSLog("TCPClientModule - data received: \(data)")
         let event: JSEvent = JSEvent(name: TCPClientEventName.DataReceived)
         event.putString(key: "clientId", value: clientId)
         event.putString(key: "data", value: data)

@@ -24,7 +24,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
     
     func createServer(id: String, port: UInt16, discoveryGroup: String?, discoveryName: String?, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("TCPServerModule - createServer - started")
+        RNLSLog("TCPServerModule - createServer - started")
         if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -43,7 +43,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
 
     func stopServer(id: String, reason: String) throws {
-        print("TCPServerModule - stopServer - started")
+        RNLSLog("TCPServerModule - stopServer - started")
         guard let server: GeneralNetworkServer = servers[id] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -51,7 +51,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
 
     func send(serverId: String, connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("TCPServerModule - send - started")
+        RNLSLog("TCPServerModule - send - started")
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -60,7 +60,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
 
 
     func closeConnection(serverId: String, connectionId: String, reason: String) throws {
-        print("TCPServerModule - closeConnection - started")
+        RNLSLog("TCPServerModule - closeConnection - started")
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -91,12 +91,12 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
     
     func invalidate() {
-        print("TCPServerModule - invalidate - \(servers.count) servers")
+        RNLSLog("TCPServerModule - invalidate - \(servers.count) servers")
         for (key, server) in servers {
             do {
                 try server.stop(reason: StopReasonEnum.Invalidation)
             } catch {
-                print("TCPServerModule - invalidate - \(key) error: \(error)")
+                RNLSLog("TCPServerModule - invalidate - \(key) error: \(error)")
             }
         }
         servers.removeAll()
