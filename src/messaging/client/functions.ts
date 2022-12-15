@@ -54,7 +54,6 @@ export const getBrowserIdFromMessagingClientId = (clientId: string): string => `
 export const mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate = (
     event: ServiceBrowserNativeEvent
 ): MessagingClientServiceSearchEventUpdate => {
-    console.log("mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate", event)
     const service = mapServiceBrowserEventToMessagingService(event)
     switch (event.type) {
         case ServiceBrowserEventName.ServiceFound:
