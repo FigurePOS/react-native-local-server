@@ -42,7 +42,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     }
     
     func start(onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("GeneralNetworkServer - start \(id)")
+        RNLSLog("GeneralNetworkServer - start \(id)")
         onStartSucceeded = onSuccess
         onStartFailed = onFailure
         listener.stateUpdateHandler = stateDidChange(to:)
@@ -51,17 +51,17 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     }
     
     func stop(reason: String) throws {
-        print("GeneralNetworkServer - stop \(id)")
+        RNLSLog("GeneralNetworkServer - stop \(id)")
         self.lastReasonToStop = reason
         self.stopServer()
     }
     
     func send(connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("GeneralNetworkServer - send \(id)")
-        print("\tconnection: \(connectionId)")
-        print("\tmessage: \(message)")
+        RNLSLog("GeneralNetworkServer - send \(id)")
+        RNLSLog("\tconnection: \(connectionId)")
+        RNLSLog("\tmessage: \(message)")
         guard let connection = connectionsByID[connectionId] else {
-            print("GeneralNetworkServer - send - no connection")
+            RNLSLog("GeneralNetworkServer - send - no connection")
             throw LocalServerError.UnknownConnectionId
         }
         let preparedMessage = message + "\r\n"
@@ -69,9 +69,9 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     }
     
     func closeConnection(connectionId: String, reason: String) throws {
-        print("GeneralNetworkServer - close connection: \(connectionId)")
+        RNLSLog("GeneralNetworkServer - close connection: \(connectionId)")
         guard let connection = connectionsByID[connectionId] else {
-            print("GeneralNetworkServer - closeConnection - no connection")
+            RNLSLog("GeneralNetworkServer - closeConnection - no connection")
             throw LocalServerError.UnknownConnectionId
         }
         connection.stop(reason: reason)
@@ -94,37 +94,37 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     }
     
     private func stateDidChange(to newState: NWListener.State) {
-        print("GeneralNetworkServer - stateDidChange \(id)")
+        RNLSLog("GeneralNetworkServer - stateDidChange \(id)")
         switch newState {
             case .setup:
-                print("\tstate: setup")
+                RNLSLog("\tstate: setup")
                 break
             case .waiting(let error):
-                print("\tstate: waiting \(error)")
+                RNLSLog("\tstate: waiting \(error)")
                 break
             case .ready:
-                print("\tstate: ready")
+                RNLSLog("\tstate: ready")
                 wasReady = true
                 self.onStartSucceeded?()
                 delegate.handleServerReady(serverId: id)
                 break
             case .failed(let error):
-                print("\tstate: failure, error: \(error.debugDescription)")
+                RNLSLog("\tstate: failure, error: \(error.debugDescription)")
                 handleServerFailed(error: error)
                 break
             case .cancelled:
-                print("\tstate: cancelled")
+                RNLSLog("\tstate: cancelled")
                 self.handleServerFailed()
                 break
             default:
-                print("\tstate: unknown state")
+                RNLSLog("\tstate: unknown state")
                 break
         }
     }
     
     private func handleConnectionAccepted(nwConnection: NWConnection) {
         let connection = GeneralNetworkServerConnection(nwConnection: nwConnection, delegate: self)
-        print("GeneralNetworkServer - connection accepted - \(connection.id)")
+        RNLSLog("GeneralNetworkServer - connection accepted - \(connection.id)")
         delegate.handleConnectionAccepted(serverId: id, connectionId: connection.id)
         self.connectionsByID[connection.id] = connection
         connection.start()
@@ -140,18 +140,18 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     }
     
     private func serviceRegistrationHandler(update: NWListener.ServiceRegistrationChange) {
-        print("GeneralNetworkServer - service registration changed")
+        RNLSLog("GeneralNetworkServer - service registration changed")
         guard let serviceDelegate = serviceDelegate else {
-            print("\terror: NO DELEGATE")
+            RNLSLog("\terror: NO DELEGATE")
             return
         }
         switch (update) {
         case .add(let data):
-            print("\tevent: added")
+            RNLSLog("\tevent: added")
             serviceDelegate.serviceAdded(serverId: id, endpoint: data)
             return
         case .remove(let data):
-            print("\tevent: removed")
+            RNLSLog("\tevent: removed")
             serviceDelegate.serviceRemoved(serverId: id, endpoint: data)
             return
         default:

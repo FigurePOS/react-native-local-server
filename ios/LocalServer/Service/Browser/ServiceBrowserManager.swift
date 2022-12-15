@@ -23,7 +23,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
 
     
     func createBrowser(id: String, discoveryGroup: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("ServiceBrowserManager - createBrowser - started")
+        RNLSLog("ServiceBrowserManager - createBrowser - started")
         if let _: ServiceBrowser = browsers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -38,7 +38,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
 
     func stopBrowser(id: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("ServiceBrowserManager - stopBrowser - started")
+        RNLSLog("ServiceBrowserManager - stopBrowser - started")
         guard let browser = browsers[id] else {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -46,7 +46,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
     
     func invalidate() {
-        print("ServiceBrowserManager - invalidate - \(browsers.count) browsers")
+        RNLSLog("ServiceBrowserManager - invalidate - \(browsers.count) browsers")
         self.shouldEmitEvents = false
         for browser in self.browsers.values {
             let onSuccess = {}
@@ -57,9 +57,9 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
     
     private func handleLifecycleEvent(browserId: String, eventName: String, reason: String? = nil) {
-        print("ServiceBrowserManager - event: \(eventName)")
+        RNLSLog("ServiceBrowserManager - event: \(eventName)")
         if (!shouldEmitEvents) {
-            print("\tNOT EMITTING")
+            RNLSLog("\tNOT EMITTING")
             return
         }
         let event: JSEvent = JSEvent(name: eventName)
@@ -71,9 +71,9 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
 
     private func handleServiceLifecycleEvent(browserId: String, eventName: String, service: ServiceBrowserResult) {
-        print("ServiceBrowserManager - event: \(eventName) - \(service.name)")
+        RNLSLog("ServiceBrowserManager - event: \(eventName) - \(service.name)")
         if (!shouldEmitEvents) {
-            print("\tNOT EMITTING")
+            RNLSLog("\tNOT EMITTING")
             return
         }
         let event: JSEvent = JSEvent(name: eventName)

@@ -30,7 +30,7 @@ class GeneralNetworkServerConnection {
     }
 
     func start() {
-        print("GeneralNetworkServerConnection - start \(id)")
+        RNLSLog("GeneralNetworkServerConnection - start \(id)")
         connection.stateUpdateHandler = self.stateDidChange(to:)
         connection.start(queue: self.queue)
     }
@@ -42,12 +42,12 @@ class GeneralNetworkServerConnection {
                 return
             }
             onSuccess()
-            print("GeneralNetworkServerConnection \(self.id) did send, data: \(data as NSData)")
+            RNLSLog("GeneralNetworkServerConnection \(self.id) did send, data: \(data as NSData)")
         }))
     }
 
     func stop(reason: String) {
-        print("GeneralNetworkServerConnection \(id) will stop: \(reason)")
+        RNLSLog("GeneralNetworkServerConnection \(id) will stop: \(reason)")
         lastReasonToStop = reason
         closeConnection()
     }
@@ -60,30 +60,30 @@ class GeneralNetworkServerConnection {
         let prefix = "GeneralNetworkServerConnection - stateDidChange \(id)\n"
         switch state {
             case .setup:
-                print("\(prefix)\tstate: setup")
+                RNLSLog("\(prefix)\tstate: setup")
                 break
             case .waiting(let error):
-                print("\(prefix)\tstate: waiting \(error.debugDescription)")
+                RNLSLog("\(prefix)\tstate: waiting \(error.debugDescription)")
                 closeConnection()
                 break
             case .preparing:
-                print("\(prefix)\tstate: preparing")
+                RNLSLog("\(prefix)\tstate: preparing")
                 break
             case .ready:
-                print("\(prefix)\tstate: ready")
+                RNLSLog("\(prefix)\tstate: ready")
                 setupReceive()
                 delegate.handleConnectionReady(connectionId: id)
                 break
             case .failed(let error):
-                print("\(prefix)\tstate: failure, error: \(error.debugDescription)")
+                RNLSLog("\(prefix)\tstate: failure, error: \(error.debugDescription)")
                 self.handleConnectionFailed(error: error)
                 break
             case .cancelled:
-                print("\(prefix)\tstate: cancelled")
+                RNLSLog("\(prefix)\tstate: cancelled")
                 self.handleConnectionCancelled()
                 break
             default:
-                print("\(prefix)\tstate: unknown state - \(state)")
+                RNLSLog("\(prefix)\tstate: unknown state - \(state)")
                 break
         }
     }
@@ -91,20 +91,20 @@ class GeneralNetworkServerConnection {
     private func setupReceive() {
         connection.receive(minimumIncompleteLength: 1, maximumLength: MTU) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
-                print("GeneralNetworkServerConnection - received data")
+                RNLSLog("GeneralNetworkServerConnection - received data")
                 self.reader.appendData(data: data)
                 while let readData: String = self.reader.readData() {
                     self.delegate.handleDataReceived(connectionId: self.id, data: readData)
                 }
             }
             if isComplete {
-                print("GeneralNetworkServerConnection - is complete")
+                RNLSLog("GeneralNetworkServerConnection - is complete")
                 if let lastData = self.reader.readLastData() {
                     self.delegate.handleDataReceived(connectionId: self.id, data: lastData)
                 }
                 self.delegate.handleConnectionCompleted(connectionId: self.id)
             } else if let error = error {
-                print("GeneralNetworkServerConnection - error when receiving data \n\treason: \(error)")
+                RNLSLog("GeneralNetworkServerConnection - error when receiving data \n\treason: \(error)")
             } else {
                 self.setupReceive()
             }
@@ -116,7 +116,7 @@ class GeneralNetworkServerConnection {
     }
     
     private func handleConnectionCancelled() {
-        print("GeneralNetworkServerConnection - cancelled: \(lastReasonToStop ?? "cancelled")")
+        RNLSLog("GeneralNetworkServerConnection - cancelled: \(lastReasonToStop ?? "cancelled")")
         self.delegate.handleConnectionStopped(connectionId: id, reason: lastReasonToStop ?? "cancelled")
     }
 }

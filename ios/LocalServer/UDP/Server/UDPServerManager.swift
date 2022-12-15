@@ -22,7 +22,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
 
     func createServer(id: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        print("UDPServerManager - createServer - started")
+        RNLSLog("UDPServerManager - createServer - started")
         if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -40,7 +40,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
 
     func stopServer(id: String, reason: String) throws {
-        print("UDPServerManager - stopServer - started")
+        RNLSLog("UDPServerManager - stopServer - started")
         guard let server: GeneralNetworkServer = servers[id] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -48,12 +48,12 @@ class UDPServerManager: ServerDelegateProtocol {
     }
 
     func send(host: String, port: UInt16, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String?) -> ()) throws {
-        print("UDPServerManager - send - started")
+        RNLSLog("UDPServerManager - send - started")
         try clientManager.send(host: host, port: port, message: message, onSuccess: onSuccess, onFailure: onFailure)
     }
 
     func closeConnection(serverId: String, connectionId: String, reason: String) throws {
-        print("UDPServerManager - closeConnection - started")
+        RNLSLog("UDPServerManager - closeConnection - started")
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -84,12 +84,12 @@ class UDPServerManager: ServerDelegateProtocol {
     }
     
     func invalidate() {
-        print("UDPServerManager - invalidate - \(servers.count) servers")
+        RNLSLog("UDPServerManager - invalidate - \(servers.count) servers")
         for (key, server) in servers {
             do {
                 try server.stop(reason: StopReasonEnum.Invalidation)
             } catch {
-                print("UDPServerManager - invalidate - \(key) error: \(error)")
+                RNLSLog("UDPServerManager - invalidate - \(key) error: \(error)")
             }
         }
         servers.removeAll()
@@ -137,7 +137,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
     
     func handleDataReceived(serverId: String, connectionId: String, data: String) {
-        print("UDPServerManager - did receive data")
+        RNLSLog("UDPServerManager - did receive data")
         let event: JSEvent = JSEvent(name: UDPServerEventName.DataReceived)
         event.putString(key: "serverId", value: serverId)
         event.putString(key: "connectionId", value: connectionId)

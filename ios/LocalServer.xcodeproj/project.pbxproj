@@ -33,6 +33,9 @@
 		1B17BB0528E5B2B1002A243E /* LocalServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAD028E58C3E002A243E /* LocalServerError.swift */; };
 		1B17BB0628E5B2B1002A243E /* JSEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAD128E58C3E002A243E /* JSEvent.swift */; };
 		1B17BB0728E5B2B1002A243E /* NewLineBufferedReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B17BAD328E58C3E002A243E /* NewLineBufferedReader.swift */; };
+		1B20FBB0294B612F0079C24E /* RNLSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B20FBAF294B612F0079C24E /* RNLSLog.swift */; };
+		1B20FBB1294B612F0079C24E /* RNLSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B20FBAF294B612F0079C24E /* RNLSLog.swift */; };
+		1B20FBB2294B612F0079C24E /* RNLSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B20FBAF294B612F0079C24E /* RNLSLog.swift */; };
 		1B4D6D65294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */; };
 		1B4D6D66294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */; };
 		1B4D6D67294757AB00FB1B88 /* ServiceDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */; };
@@ -149,6 +152,7 @@
 		1B17BAE928E5924D002A243E /* UDPOneTimeClientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDPOneTimeClientManager.swift; sourceTree = "<group>"; };
 		1B17BAF128E599B4002A243E /* CallbackHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallbackHolder.swift; sourceTree = "<group>"; };
 		1B17BAF728E5B230002A243E /* UDP_E2E.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDP_E2E.swift; sourceTree = "<group>"; };
+		1B20FBAF294B612F0079C24E /* RNLSLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNLSLog.swift; sourceTree = "<group>"; };
 		1B4D6D64294757AB00FB1B88 /* ServiceDelegateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceDelegateProtocol.swift; sourceTree = "<group>"; };
 		1B4D6D75294763F400FB1B88 /* ServiceBrowserModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServiceBrowserModule.m; path = LocalServer/ServiceBrowserModule.m; sourceTree = "<group>"; };
 		1B4D6D76294763F400FB1B88 /* ServiceBrowserModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServiceBrowserModule.swift; path = LocalServer/ServiceBrowserModule.swift; sourceTree = "<group>"; };
@@ -258,6 +262,7 @@
 				1B17BAD328E58C3E002A243E /* NewLineBufferedReader.swift */,
 				1B17BAD428E58C3E002A243E /* StopReasonEnum.swift */,
 				1B17BAF128E599B4002A243E /* CallbackHolder.swift */,
+				1B20FBAF294B612F0079C24E /* RNLSLog.swift */,
 			);
 			name = Utils;
 			path = LocalServer/Utils;
@@ -491,6 +496,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B5FF7D928E5B55B002657D9 /* GeneralNetworkServer.swift in Sources */,
+				1B20FBB1294B612F0079C24E /* RNLSLog.swift in Sources */,
 				1B17BAEB28E5924D002A243E /* UDPOneTimeClientManager.swift in Sources */,
 				1BE5C60E2893DF39009D6F03 /* EventEmitterWrapper.swift in Sources */,
 				1BE5C5EC2893DE57009D6F03 /* TCPClientModule.m in Sources */,
@@ -551,6 +557,7 @@
 				1BE5C63328940500009D6F03 /* EventEmitterWrapper.swift in Sources */,
 				1B17BB0428E5B2B1002A243E /* StopReasonEnum.swift in Sources */,
 				1B17BB0628E5B2B1002A243E /* JSEvent.swift in Sources */,
+				1B20FBB2294B612F0079C24E /* RNLSLog.swift in Sources */,
 				1B4D6D8C29478F8500FB1B88 /* ServiceBrowserDelegateProtocol.swift in Sources */,
 				1B5FF7DD28E5B55B002657D9 /* GeneralNetworkServer.swift in Sources */,
 				1B5FF7D228E5B52B002657D9 /* UDPServerManager.swift in Sources */,
@@ -570,6 +577,7 @@
 				1BE5C5AF2893D191009D6F03 /* TCPClientModule.m in Sources */,
 				1BE5C6172893FAAD009D6F03 /* TCPServerManager.swift in Sources */,
 				1B17BAE628E58E21002A243E /* ClientDelegateProtocol.swift in Sources */,
+				1B20FBB0294B612F0079C24E /* RNLSLog.swift in Sources */,
 				1BE5C5B12893D191009D6F03 /* TCPServerModule.swift in Sources */,
 				1BDF8C892948C09100318A44 /* ServiceBrowserEventName.swift in Sources */,
 				1B17BAE228E58E08002A243E /* GeneralNetworkClient.swift in Sources */,

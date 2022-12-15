@@ -31,7 +31,7 @@ class UDPOneTimeClientManager: ClientDelegateProtocol {
     }
     
     func handleFailure(clientId: String, reason: String?) {
-        print("UDPOneTimeClientManager - failure handler \(clientId)")
+        RNLSLog("UDPOneTimeClientManager - failure handler \(clientId)")
         if let callback = self.callbacks[clientId] {
             callback.onFailure(reason)
         }
@@ -39,7 +39,7 @@ class UDPOneTimeClientManager: ClientDelegateProtocol {
     }
     
     func cleanUpClientData(clientId: String) {
-        print("UDPOneTimeClientManager - client clean up \(clientId)")
+        RNLSLog("UDPOneTimeClientManager - client clean up \(clientId)")
         clients.removeValue(forKey: clientId)
         scheduledMessages.removeValue(forKey: clientId)
         callbacks.removeValue(forKey: clientId)
@@ -47,7 +47,7 @@ class UDPOneTimeClientManager: ClientDelegateProtocol {
     
     //MARK: - ClientDelegateProtocol
     func handleClientReady(clientId: String) {
-        print("UDPOneTimeClientManager - client ready \(clientId)")
+        RNLSLog("UDPOneTimeClientManager - client ready \(clientId)")
         guard let client = clients[clientId] else {
             return;
         }
@@ -76,7 +76,7 @@ class UDPOneTimeClientManager: ClientDelegateProtocol {
     }
     
     func handleClientStopped(clientId: String, reason: String?) {
-        print("UDPOneTimeClientManager - client stopped \(clientId)")
+        RNLSLog("UDPOneTimeClientManager - client stopped \(clientId)")
         if let callback = callbacks[clientId] {
             callback.onFailure(reason);
         }
@@ -84,7 +84,7 @@ class UDPOneTimeClientManager: ClientDelegateProtocol {
     }
     
     func handleDataReceived(clientId: String, data: String) {
-        print("UDPOneTimeClientManager - data recieved \(clientId)")
+        RNLSLog("UDPOneTimeClientManager - data recieved \(clientId)")
         // this should never happen because UDP is not bidirectional
     }
 }
