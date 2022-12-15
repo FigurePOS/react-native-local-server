@@ -5,6 +5,8 @@ import { ClientConfiguration } from "./ClientConfiguration"
 import { HorizontalLine } from "../horizontalLine"
 import { Colors, FontSize } from "../../constants"
 import { Maybe } from "../../../types"
+import { SearchConfiguration } from "./SearchConfiguration"
+import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
 
 type Props = {
     stateLabelServer: string
@@ -15,6 +17,9 @@ type Props = {
     initialPortClient: string
     initialHostClient: string
 
+    stateLabelSearch?: string
+    searchServices?: MessagingClientServiceSearchResult[]
+
     isRunning: boolean
 
     onClientStarted: (host: string, port: string) => void
@@ -23,6 +28,9 @@ type Props = {
     onServerStarted: (port: string) => void
     onServerStopped: () => void
     onServerRestarted?: () => void
+    onSearchStarted?: () => void
+    onSearchStopped?: () => void
+    onSearchRestarted?: () => void
 }
 
 export const DoubleConfiguration = (props: Props) => {
@@ -55,6 +63,21 @@ export const DoubleConfiguration = (props: Props) => {
                     onRestart={props.onClientRestarted}
                 />
             </View>
+            {props.stateLabelSearch && props.onSearchStarted && props.onSearchStopped ? (
+                <>
+                    <HorizontalLine opacity={0.5} />
+                    <View style={styles.row}>
+                        <Text style={styles.label}>Search: </Text>
+                        <SearchConfiguration
+                            stateLabel={props.stateLabelSearch}
+                            services={props.searchServices ?? []}
+                            onStarted={props.onSearchStarted}
+                            onStopped={props.onSearchStopped}
+                            onRestart={props.onSearchRestarted}
+                        />
+                    </View>
+                </>
+            ) : null}
         </View>
     )
 }
@@ -69,6 +92,7 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
         alignItems: "center",
+        flex: 0,
     },
     label: {
         width: 90,

@@ -2,6 +2,7 @@ import { CounterClientStateObject } from "./reducer"
 import { StateObject } from "../../../rootReducer"
 import { ClientState } from "../../../common/types"
 import { Maybe } from "../../../types"
+import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
 
 export const getCounterClientStateObject = (state: StateObject): CounterClientStateObject => state.Counter.client
 
@@ -24,3 +25,21 @@ export const getCounterClientPort = (state: StateObject): Maybe<string> => getCo
 
 export const isCounterClientRunning = (state: StateObject): boolean =>
     [ClientState.Ready, ClientState.Starting].includes(getCounterClientState(state))
+
+export const getCounterClientSearchState = (state: StateObject): ClientState =>
+    getCounterClientStateObject(state).searchState
+
+export const getCounterClientSearchError = (state: StateObject): Maybe<string> =>
+    getCounterClientStateObject(state).searchError
+
+export const getCounterClientSearchStateLabel = (state: StateObject): string => {
+    const serverState = getCounterClientSearchState(state)
+    if (serverState !== ClientState.Error) {
+        return serverState
+    }
+    const error = getCounterClientSearchError(state) ?? "unknown error"
+    return `${serverState} (${error})`
+}
+
+export const getCounterClientAvailableServices = (state: StateObject): MessagingClientServiceSearchResult[] =>
+    getCounterClientStateObject(state).availableServices

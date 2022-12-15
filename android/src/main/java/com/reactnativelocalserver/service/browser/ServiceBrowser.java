@@ -73,7 +73,7 @@ public class ServiceBrowser {
         event.putString("browserId", id);
         if (nsdServiceInfo != null) {
             event.putString("name", nsdServiceInfo.getServiceName());
-            event.putString("type", nsdServiceInfo.getServiceType());
+            event.putString("group", nsdServiceInfo.getServiceType());
         }
         this.eventEmitter.emitEvent(event);
     }

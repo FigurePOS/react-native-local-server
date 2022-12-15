@@ -130,10 +130,7 @@ class ServiceBrowser {
             print("\terror: NO DELEGATE")
             return
         }
-        for result in results {
-            self.lastResult = results
-            print(result.endpoint.debugDescription)
-        }
+        self.lastResult = results
         for change in changes {
             switch change {
             case .added(let data):
@@ -143,7 +140,7 @@ class ServiceBrowser {
                 else {
                     print("\terror: UNKNOWN DATA")
                 }
-                return
+                break
             case .removed(let data):
                 if let service = mapResult(result: data) {
                     delegate.handleServiceLost(browserId: id, service: service)
@@ -151,9 +148,9 @@ class ServiceBrowser {
                 else {
                     print("\terror: UNKNOWN DATA")
                 }
-                return
+                break
             default:
-                return
+                break
             }
         }
     }

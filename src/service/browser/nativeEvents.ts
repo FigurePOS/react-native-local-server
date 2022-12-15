@@ -1,8 +1,8 @@
 export type ServiceBrowserInfo = {
     name: string
-    host: string
-    port: number
-    type: string
+    group: string
+    host?: string
+    port?: number
 }
 
 export enum ServiceBrowserEventName {
