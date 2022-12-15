@@ -13,13 +13,18 @@ import {
     isCounterServerRunning,
 } from "../../server/selectors"
 import {
+    getCounterClientAvailableServices,
     getCounterClientHost,
     getCounterClientPort,
+    getCounterClientSearchStateLabel,
     getCounterClientStateLabel,
     isCounterClientRunning,
 } from "../../client/selectors"
 import {
     createActionCounterClientRestartRequested,
+    createActionCounterClientSearchRestartRequested,
+    createActionCounterClientSearchStartRequested,
+    createActionCounterClientSearchStopRequested,
     createActionCounterClientStartRequested,
     createActionCounterClientStopRequested,
 } from "../../client/actions"
@@ -35,6 +40,9 @@ export const CounterConfiguration = () => {
     const clientPort = useSelector(getCounterClientPort)
     const clientHost = useSelector(getCounterClientHost)
     const isClientRunning = useSelector(isCounterClientRunning)
+
+    const searchLabel = useSelector(getCounterClientSearchStateLabel)
+    const services = useSelector(getCounterClientAvailableServices)
     return (
         <DoubleConfiguration
             stateLabelServer={serverLabel}
@@ -43,6 +51,8 @@ export const CounterConfiguration = () => {
             stateLabelClient={clientLabel}
             initialPortClient={clientPort ?? ""}
             initialHostClient={clientHost ?? ""}
+            stateLabelSearch={searchLabel}
+            searchServices={services}
             isRunning={isServerRunning || isClientRunning}
             onClientStarted={(host, port) => dispatch(createActionCounterClientStartRequested(host, port))}
             onClientStopped={() => dispatch(createActionCounterClientStopRequested())}
@@ -50,6 +60,9 @@ export const CounterConfiguration = () => {
             onServerStarted={(port) => dispatch(createActionCounterServerStartRequested(port))}
             onServerStopped={() => dispatch(createActionCounterServerStopRequested())}
             onServerRestarted={() => dispatch(createActionCounterServerRestartRequested())}
+            onSearchStarted={() => dispatch(createActionCounterClientSearchStartRequested())}
+            onSearchStopped={() => dispatch(createActionCounterClientSearchStopRequested())}
+            onSearchRestarted={() => dispatch(createActionCounterClientSearchRestartRequested())}
         />
     )
 }

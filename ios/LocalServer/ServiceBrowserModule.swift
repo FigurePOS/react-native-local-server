@@ -67,7 +67,7 @@ class ServiceBrowserModule: RCTEventEmitter {
     }
     
     override func invalidate() {
-        // TODO
+        manager.invalidate()
         super.invalidate()
     }
 }

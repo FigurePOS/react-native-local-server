@@ -24,10 +24,45 @@ export type MessagingClientPingConfiguration = {
     timeout?: number
 }
 
+export enum MessagingClientServiceSearchUpdate {
+    ServiceFound = "ServiceFound",
+    ServiceLost = "ServiceLost",
+    Reset = "Reset",
+    Unknown = "Unknown",
+}
+
+export type MessagingClientServiceSearchResult = Omit<MessagingServiceInformation, "id">
+
+/**
+ * Object containing information about service search update
+ * @property services - list of all available services
+ * @property update - type of the update
+ */
+export type MessagingClientServiceSearchEvent = {
+    services: MessagingClientServiceSearchResult[]
+    update: MessagingClientServiceSearchEventUpdate
+}
+
+/**
+ * Object containing information about service search update
+ * @property type - type of the update
+ * @property service - information about the service (not present for reset update)
+ */
+export type MessagingClientServiceSearchEventUpdate =
+    | {
+          type: MessagingClientServiceSearchUpdate.Reset | MessagingClientServiceSearchUpdate.Unknown
+      }
+    | {
+          type: MessagingClientServiceSearchUpdate.ServiceFound | MessagingClientServiceSearchUpdate.ServiceLost
+          service: MessagingClientServiceSearchResult
+      }
+
 export enum MessagingClientStatusEventName {
     Ready = "Ready",
     Stopped = "Stopped",
     ServiceInformationChanged = "ServiceInformationChanged",
+    ServiceSearchStarted = "ServiceSearchStarted",
+    ServiceSearchStopped = "ServiceSearchStopped",
 
     Unknown = "Unknown",
 }
@@ -36,6 +71,8 @@ export type MessagingClientLifecycleStatusEvent = {
     type:
         | MessagingClientStatusEventName.Ready
         | MessagingClientStatusEventName.Stopped
+        | MessagingClientStatusEventName.ServiceSearchStarted
+        | MessagingClientStatusEventName.ServiceSearchStopped
         | MessagingClientStatusEventName.Unknown
     reason?: MessagingStoppedReason | string
 }

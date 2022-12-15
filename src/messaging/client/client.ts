@@ -1,9 +1,12 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError } from "rxjs"
 import {
     LoggerVerbosity,
+    MessagingClientServiceSearchEvent,
     MessagingClientStatusEvent,
     MessagingClientStatusEventName,
     MessagingStoppedReason,
+    ServiceBrowser,
+    ServiceBrowserConfiguration,
     TCPClient,
 } from "../../"
 import { catchError, concatMap, mapTo, mergeMap, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
@@ -20,19 +23,25 @@ import {
 import { MessagingClientConfiguration } from "./types"
 import { composeDataMessageObject } from "../functions/composeDataMessageObject"
 import { serializeDataObject } from "../functions/serializeDataObject"
-import { composeMessageObject } from "../functions/composeMessageObject"
+import { composeMessageObject } from "../functions"
 import { log } from "../../utils/operators/log"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
 import { Logger, LoggerWrapper } from "../../utils/logger"
+import { getBrowserIdFromMessagingClientId } from "./functions"
+import { fromMessagingClientServiceSearchEvent } from "./operators/fromMessagingClientServiceSearchEvent"
 
 export class MessagingClient<In, Out = In, Deps = any> {
     private readonly clientId: string
+    private readonly browserId: string
+    private readonly discoveryGroup: string | null = null
     private readonly handler$: Subject<MessageHandler<In, Deps>>
     private readonly dep$: Subject<Deps>
     private readonly error$: Subject<any>
     private readonly dataOutput$: Subject<DataObject>
     private readonly tcpClient: TCPClient
+    private readonly serviceBrowser: ServiceBrowser
     private readonly statusEvent$: Observable<MessagingClientStatusEvent>
+    private readonly searchEvent$: Observable<MessagingClientServiceSearchEvent>
 
     private logger: LoggerWrapper = new LoggerWrapper()
     private configuration: MessagingClientConfiguration | null = null
@@ -44,9 +53,12 @@ export class MessagingClient<In, Out = In, Deps = any> {
     /**
      * Constructor for the class
      * @param id - unique id, it's not possible to run two servers with the same id at the same time
+     * @param discoveryGroup - zero config discovery group (for _fgr-counter._tcp put only fgr-counter)
      */
-    constructor(id: string) {
+    constructor(id: string, discoveryGroup?: string) {
         this.clientId = id
+        this.browserId = getBrowserIdFromMessagingClientId(id)
+        this.discoveryGroup = discoveryGroup ? `_${discoveryGroup}._tcp` : null
         this.handler$ = new Subject<MessageHandler<In, Deps>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
@@ -60,9 +72,65 @@ export class MessagingClient<In, Out = In, Deps = any> {
             }),
             share()
         )
+        this.searchEvent$ = fromMessagingClientServiceSearchEvent(this.clientId).pipe(
+            log(LoggerVerbosity.Low, this.logger, `MessagingClient [${this.clientId}] - search update`),
+            share()
+        )
 
         this.tcpClient = new TCPClient(id)
         this.tcpClient.setLogger(null)
+        this.serviceBrowser = new ServiceBrowser(this.browserId)
+        this.serviceBrowser.setLogger(null)
+    }
+
+    /**
+     * This method starts service search.
+     * After this method is called, event {@link MessagingClientStatusEventName.ServiceSearchStarted} should appear in {@link getStatusEvent$()}.
+     * Search updates are available in {@link getSearchUpdate$()}.
+     */
+    startServiceSearch(): Observable<void> {
+        this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - startServiceSearch`)
+        if (!this.discoveryGroup) {
+            this.logger.error(LoggerVerbosity.Low, `MessagingClient [${this.clientId}] - missing discovery group`)
+            return throwError("No discovery group provided")
+        }
+        const config: ServiceBrowserConfiguration = {
+            type: this.discoveryGroup,
+        }
+        return defer(() => this.serviceBrowser.start(config))
+    }
+
+    /**
+     * This method stops service search.
+     * After this method is called, event {@link MessagingClientStatusEventName.ServiceSearchStopped} should appear in {@link getStatusEvent$()}.
+     * Search updates in {@link getSearchUpdate$()} are reset.
+     */
+    stopServiceSearch(): Observable<void> {
+        this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - stopServiceSearch`)
+        return defer(() => this.serviceBrowser.stop())
+    }
+
+    /**
+     * This method restarts the service search.
+     * It's just a shortcut for {@link stopServiceSearch()} and {@link startServiceSearch()}.
+     */
+    restartServiceSearch(): Observable<void> {
+        this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - restartServiceSearch`)
+        return concat(
+            defer(() => this.stopServiceSearch()).pipe(
+                catchError((err) => {
+                    this.logger.error(
+                        LoggerVerbosity.Medium,
+                        `MessagingClient [${this.clientId}] - restartServiceSearch error when stopping service search`,
+                        {
+                            error: err,
+                        }
+                    )
+                    return []
+                })
+            ),
+            defer(() => this.startServiceSearch())
+        )
     }
 
     /**
@@ -216,6 +284,14 @@ export class MessagingClient<In, Out = In, Deps = any> {
     }
 
     /**
+     * This method returns stream of search updates.
+     * For more information see {@link MessagingClientServiceSearchEvent}
+     */
+    getSearchUpdate$(): Observable<MessagingClientServiceSearchEvent> {
+        return this.searchEvent$
+    }
+
+    /**
      * This method returns last configuration of the client.
      */
     getConfiguration(): MessagingClientConfiguration | null {
@@ -230,6 +306,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     setLogger = (logger: Logger | null, verbosity: LoggerVerbosity = LoggerVerbosity.Medium) => {
         this.logger.setLogger(logger, verbosity)
         this.tcpClient.setLogger(logger, verbosity - 1)
+        this.serviceBrowser.setLogger(logger, verbosity - 1)
     }
 
     private cleanSubscriptions() {

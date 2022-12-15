@@ -14,8 +14,10 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
 
     private let eventEmitter: EventEmitterWrapper
     private var browsers: [String: ServiceBrowser] = [:]
+    private var shouldEmitEvents: Bool = true
 
     init(eventEmitter: EventEmitterWrapper) {
+        self.shouldEmitEvents = true
         self.eventEmitter = eventEmitter;
     }
 
@@ -45,9 +47,21 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     
     func invalidate() {
         print("ServiceBrowserManager - invalidate - \(browsers.count) browsers")
+        self.shouldEmitEvents = false
+        for browser in self.browsers.values {
+            let onSuccess = {}
+            let onFailure = { (_: String) in }
+            browser.stop(onSuccess: onSuccess, onFailure: onFailure)
+        }
+        
     }
     
     private func handleLifecycleEvent(browserId: String, eventName: String, reason: String? = nil) {
+        print("ServiceBrowserManager - event: \(eventName)")
+        if (!shouldEmitEvents) {
+            print("\tNOT EMITTING")
+            return
+        }
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "browserId", value: browserId)
         if (reason != nil) {
@@ -57,10 +71,15 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
 
     private func handleServiceLifecycleEvent(browserId: String, eventName: String, service: ServiceBrowserResult) {
+        print("ServiceBrowserManager - event: \(eventName) - \(service.name)")
+        if (!shouldEmitEvents) {
+            print("\tNOT EMITTING")
+            return
+        }
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "browserId", value: browserId)
         event.putString(key: "name", value: service.name)
-        event.putString(key: "type", value: service.group)
+        event.putString(key: "group", value: service.group)
         eventEmitter.emitEvent(event: event)
     }
     
