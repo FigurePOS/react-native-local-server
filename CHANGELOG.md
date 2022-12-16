@@ -1,3 +1,17 @@
+## [0.11.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.6...v0.11.0) (2022-12-16)
+
+
+### Features
+
+* add service browsing to MessagingClient ([#28](https://github.com/FigurePOS/react-native-local-server/issues/28)) ([20f9c41](https://github.com/FigurePOS/react-native-local-server/commit/20f9c41a643f981d4a0bfe1d1fb1ff86c5e4c41f))
+* add zero-config prototype (Android) ([#26](https://github.com/FigurePOS/react-native-local-server/issues/26)) ([c435a64](https://github.com/FigurePOS/react-native-local-server/commit/c435a64d52801ec5799e33120674241c975c3a8e))
+* add zero-config prototype (iOS) ([#27](https://github.com/FigurePOS/react-native-local-server/issues/27)) ([f82e89f](https://github.com/FigurePOS/react-native-local-server/commit/f82e89fb767b586424c6b01a8cb09abe3d6d1920))
+
+
+### Refactoring
+
+* use NSLog instead of print for debugging ([#29](https://github.com/FigurePOS/react-native-local-server/issues/29)) ([90be4ed](https://github.com/FigurePOS/react-native-local-server/commit/90be4edbe089454f7fec4aeb0c169e315c3fb967))
+
 ### [0.10.6](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.5...v0.10.6) (2022-12-06)
 
 
