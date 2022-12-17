@@ -21,13 +21,13 @@ class UDPServerManager: ServerDelegateProtocol {
         self.clientManager = UDPOneTimeClientManager();
     }
 
-    func createServer(id: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
+    func createServer(id: String, port: UInt16, numberOfDroppedBytesFromMsgStart: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         RNLSLog("UDPServerManager - createServer - started")
         if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
         let params: NWParameters = .udp
-        let server: GeneralNetworkServer = try GeneralNetworkServer(id: id, port: port, params: params, delegate: self)
+        let server: GeneralNetworkServer = try GeneralNetworkServer(id: id, port: port, numberOfDroppedBytesFromMsgStart: numberOfDroppedBytesFromMsgStart, params: params, delegate: self)
         let onStartSucceeded = {
             self.servers[id] = server
             onSuccess()

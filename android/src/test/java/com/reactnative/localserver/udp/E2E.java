@@ -85,7 +85,7 @@ public class E2E {
     public void serverShouldNotStartPortAlreadyInUse() throws Exception {
         prepareServer("server-1", 12000);
         Promise promise = mockPromise();
-        serverModule.createServer("server-2", 12000, promise);
+        serverModule.createServer("server-2", 12000, 0, promise);
         verify(promise).reject("udp.server.error", "Port 12000 already in use.");
     }
 
@@ -93,7 +93,7 @@ public class E2E {
     public void serverShouldNotStartIdAlreadyInUse() throws Exception {
         prepareServer("server-1", 12000);
         Promise promise = mockPromise();
-        serverModule.createServer("server-1", 12001, promise);
+        serverModule.createServer("server-1", 12001, 0, promise);
         verify(promise).reject("udp.server.already-exists", "Server with this id already exists");
     }
 
@@ -115,7 +115,7 @@ public class E2E {
 
     private void prepareServer(String id, int port) throws Exception {
         Promise promise = mockPromise();
-        serverModule.createServer(id, port, promise);
+        serverModule.createServer(id, port, 0, promise);
         verify(promise).resolve(true);
         TimeUnit.MILLISECONDS.sleep(100);
     }

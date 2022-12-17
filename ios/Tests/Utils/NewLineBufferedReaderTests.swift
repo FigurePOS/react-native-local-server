@@ -52,4 +52,12 @@ class NewLineBufferedReaderTests: XCTestCase {
         XCTAssertNil(reader.readData())
     }
     
+    func testReaderShouldReturnMessageWithCorrectNumberOfDroppedBytesFromStart() {
+        let reader: NewLineBufferedReader = NewLineBufferedReader()
+        reader.appendData(data: "Hello World! ".data(using: .utf8)!, numberOfDroppedBytesFromMsgStart: 6)
+        reader.appendData(data: "From the other side.\n".data(using: .utf8)!, numberOfDroppedBytesFromMsgStart: 5)
+        XCTAssertEqual(reader.readData(), "World! the other side.")
+        XCTAssertNil(reader.readData())
+    }
+    
 }

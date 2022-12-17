@@ -22,6 +22,12 @@ public class UDPServer {
 
     private final String id;
     private final int port;
+    /**
+     * In iOS there seems to be an issue with CallerId (or perhaps UDP in general) in release configuration
+     *  that requires us to drop some bytes from the beginning of the message. This is here to keep consistent API.
+     *  + it might be useful for android as well.
+     */
+    private final int numberOfDroppedBytesFromMsgStart;
     private final int bufferSize = 64 * 1024;
     private final byte[] dataBuffer = new byte[bufferSize];
 
@@ -31,12 +37,17 @@ public class UDPServer {
     private String lastStopReason = null;
 
     public UDPServer(String id, int port, EventEmitter eventEmitter) {
-        this(id, port, eventEmitter, new DatagramSocketFactory());
+        this(id, port, 0, eventEmitter, new DatagramSocketFactory());
     }
 
-    public UDPServer(String id, int port, EventEmitter eventEmitter, DatagramSocketFactory socketFactory) {
+    public UDPServer(String id, int port, int numberOfDroppedBytesFromMsgStart, EventEmitter eventEmitter) {
+        this(id, port, numberOfDroppedBytesFromMsgStart, eventEmitter, new DatagramSocketFactory());
+    }
+
+    public UDPServer(String id, int port, int numberOfDroppedBytesFromMsgStart, EventEmitter eventEmitter, DatagramSocketFactory socketFactory) {
         this.id = id;
         this.port = port;
+        this.numberOfDroppedBytesFromMsgStart = numberOfDroppedBytesFromMsgStart;
         this.eventEmitter = eventEmitter;
         this.socketFactory = socketFactory;
     }

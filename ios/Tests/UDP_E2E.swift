@@ -39,7 +39,7 @@ class UDP_E2E: XCTestCase {
     func testServerShouldNotStartWithSameId() {
         do {
             prepareServer(id: "server-1")
-            try serverManager?.createServer(id: "server-1", port: 12001, onSuccess: {}, onFailure: {_ in})
+            try serverManager?.createServer(id: "server-1", port: 12001, numberOfDroppedBytesFromMsgStart: 0, onSuccess: {}, onFailure: {_ in})
             XCTFail("Create server did not throw")
         } catch {
             XCTAssertTrue(true)
@@ -157,7 +157,7 @@ class UDP_E2E: XCTestCase {
                 let onFailure = { (_ reason: String) in
                     XCTFail("Server not started: \(reason)")
                 }
-                try serverManager?.createServer(id: id, port: 12000, onSuccess: {}, onFailure: onFailure)
+                try serverManager?.createServer(id: id, port: 12000, numberOfDroppedBytesFromMsgStart: 0, onSuccess: {}, onFailure: onFailure)
             })
         } catch {
             XCTFail("Failed to prepare server \(id): \(error)")

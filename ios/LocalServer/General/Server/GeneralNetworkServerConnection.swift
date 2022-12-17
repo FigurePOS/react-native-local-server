@@ -18,17 +18,19 @@ class GeneralNetworkServerConnection {
     //The maximum package size is 64K 65536
     private let MTU = 65536
     private let connection: NWConnection
+    private let numberOfDroppedBytesFromMsgStart: UInt16
     let id: String
     
     private var lastReasonToStop: String? = nil
 
-    init(nwConnection: NWConnection, delegate: ServerConnectionDelegateProtocol) {
+    init(nwConnection: NWConnection, numberOfDroppedBytesFromMsgStart: UInt16, delegate: ServerConnectionDelegateProtocol) {
         self.delegate = delegate
         connection = nwConnection
         id = UUID().uuidString.lowercased()
+        self.numberOfDroppedBytesFromMsgStart = numberOfDroppedBytesFromMsgStart
         self.queue = DispatchQueue(label: "com.react-native-messaging.server.connection" + id)
     }
-
+    
     func start() {
         RNLSLog("GeneralNetworkServerConnection - start \(id)")
         connection.stateUpdateHandler = self.stateDidChange(to:)

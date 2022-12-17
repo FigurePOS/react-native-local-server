@@ -26,8 +26,8 @@ class UDPServerModule: RCTEventEmitter {
         return false
     }
     
-    @objc(createServer:withPort:withResolver:withRejecter:)
-    func createServer(id: String, port: UInt16, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc(createServer:withPort:withNumberOfDroppedBytesFromMsgStart:withResolver:withRejecter:)
+    func createServer(id: String, port: UInt16, numberOfDroppedBytesFromMsgStart: UInt16, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
             let onSuccess = {
                 resolve(true)
@@ -35,7 +35,7 @@ class UDPServerModule: RCTEventEmitter {
             let onFailure = { (reason: String) in
                 reject("udp.server.error", reason, nil)
             }
-            try manager.createServer(id: id, port: port, onSuccess: onSuccess, onFailure: onFailure)
+            try manager.createServer(id: id, port: port, numberOfDroppedBytesFromMsgStart: numberOfDroppedBytesFromMsgStart, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesAlreadyExist {
             reject("udp.server.already-exists", "Server with this id already exists", nil)
         } catch {

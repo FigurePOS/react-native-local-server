@@ -13,6 +13,7 @@
 
 RCT_EXTERN_METHOD(createServer:(NSString *)id
                   withPort:(int)port
+                  withNumberOfDroppedBytesFromMsgStart:(int)numberOfDroppedBytesFromMsgStart
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
