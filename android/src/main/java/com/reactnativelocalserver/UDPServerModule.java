@@ -47,13 +47,14 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void createServer(String id, int port, Promise promise) {
+    public void createServer(String id, int port, int numberOfDroppedBytesFromMsgStart, Promise promise) {
         Log.d(NAME, "createServer started for id: " + id);
         if (servers.get(id) != null) {
             promise.reject("udp.server.already-exists", "Server with this id already exists");
             return;
         }
         try {
+            // numberOfDroppedBytesFromMsgStart ignored for now
             UDPServer server = serverFactory.of(id, port, eventEmitter);
             server.start();
             servers.put(id, server);

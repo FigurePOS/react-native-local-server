@@ -12,8 +12,8 @@ class NewLineBufferedReader {
     
     private var buffer: String = ""
     
-    func appendData(data: Data) -> Void {
-        let parsedData: String = String(decoding: data, as: UTF8.self)
+    func appendData(data: Data, numberOfDroppedBytesFromMsgStart: UInt16 = 0) -> Void {
+        let parsedData: String = String(decoding: data.suffix(from: Data.Index(numberOfDroppedBytesFromMsgStart)), as: UTF8.self)
         buffer.append(parsedData)
     }
     

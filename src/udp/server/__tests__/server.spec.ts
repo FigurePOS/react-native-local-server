@@ -32,7 +32,19 @@ describe("UDPServer", () => {
             port: 12000,
         }
         await server.start(config)
-        expect(spy).toBeCalledWith(serverId, config.port)
+        expect(spy).toBeCalledWith(serverId, config.port, 0)
+        expect(server.getConfiguration()).toEqual(config)
+        done()
+    })
+
+    it("should start server with set number of bytes to drop", async (done) => {
+        const spy = jest.spyOn(UDPServerModule, "createServer")
+        const config: UDPServerConfiguration = {
+            port: 12000,
+            numberOfDroppedBytesFromMsgStart: 20,
+        }
+        await server.start(config)
+        expect(spy).toBeCalledWith(serverId, config.port, config.numberOfDroppedBytesFromMsgStart)
         expect(server.getConfiguration()).toEqual(config)
         done()
     })
@@ -45,7 +57,7 @@ describe("UDPServer", () => {
             port: 12000,
         }
         await expect(server.start(config)).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(serverId, config.port)
+        expect(spy).toBeCalledWith(serverId, config.port, 0)
         done()
     })
 

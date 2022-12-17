@@ -16,6 +16,7 @@ import { fromCallerIdServerStatusEvent } from "./operators/fromCallerIdServerSta
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 
 export const CALLER_ID_PORT = 3520
+export const CALLER_ID_DROPPED_BYTES = 20
 
 /**
  * Implementation of caller id protocol (Whozz calling?)
@@ -37,6 +38,7 @@ export class CallerIdServer {
         this.serverId = id
         this.config = {
             port: CALLER_ID_PORT,
+            numberOfDroppedBytesFromMsgStart: CALLER_ID_DROPPED_BYTES,
         }
         this.incomingCall$ = fromUDPServerEvent(this.serverId, UDPServerEventName.DataReceived).pipe(
             log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data received`),

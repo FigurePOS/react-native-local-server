@@ -23,6 +23,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     
     let id: String
     let port: NWEndpoint.Port
+    let numberOfDroppedBytesFromMsgStart: UInt16
     let listener: NWListener
     let queue: DispatchQueue
     var lastReasonToStop: String? = nil
@@ -32,6 +33,16 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
         self.id = id
         self.port = NWEndpoint.Port(rawValue: port)!
+        self.numberOfDroppedBytesFromMsgStart = 0
+        self.listener = try NWListener(using: params, on: self.port)
+    }
+    
+    init(id: String, port: UInt16, numberOfDroppedBytesFromMsgStart: UInt16, params: NWParameters, delegate: ServerDelegateProtocol) throws {
+        self.delegate = delegate
+        queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
+        self.id = id
+        self.port = NWEndpoint.Port(rawValue: port)!
+        self.numberOfDroppedBytesFromMsgStart = numberOfDroppedBytesFromMsgStart
         self.listener = try NWListener(using: params, on: self.port)
     }
     
@@ -123,7 +134,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     }
     
     private func handleConnectionAccepted(nwConnection: NWConnection) {
-        let connection = GeneralNetworkServerConnection(nwConnection: nwConnection, delegate: self)
+        let connection = GeneralNetworkServerConnection(nwConnection: nwConnection, numberOfDroppedBytesFromMsgStart: self.numberOfDroppedBytesFromMsgStart, delegate: self)
         RNLSLog("GeneralNetworkServer - connection accepted - \(connection.id)")
         delegate.handleConnectionAccepted(serverId: id, connectionId: connection.id)
         self.connectionsByID[connection.id] = connection
