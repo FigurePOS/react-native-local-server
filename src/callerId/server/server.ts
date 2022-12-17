@@ -33,12 +33,13 @@ export class CallerIdServer {
     /**
      * Constructor for the class
      * @param id - unique id, it's not possible to run two servers with the same id at the same time
+     * @param numberOfDroppedBytesFromMsgStart - number of bytes to drop from the begging of each message, necessary for iOS
      */
-    constructor(id: string) {
+    constructor(id: string, numberOfDroppedBytesFromMsgStart?: number | null | undefined) {
         this.serverId = id
         this.config = {
             port: CALLER_ID_PORT,
-            numberOfDroppedBytesFromMsgStart: CALLER_ID_DROPPED_BYTES,
+            numberOfDroppedBytesFromMsgStart: numberOfDroppedBytesFromMsgStart ?? CALLER_ID_DROPPED_BYTES,
         }
         this.incomingCall$ = fromUDPServerEvent(this.serverId, UDPServerEventName.DataReceived).pipe(
             log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data received`),
