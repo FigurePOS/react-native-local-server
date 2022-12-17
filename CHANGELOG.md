@@ -1,3 +1,11 @@
+## [0.12.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.11.0...v0.12.0) (2022-12-17)
+
+
+### Features
+
+* add number of dropped bytes to caller id constructor ([24b3635](https://github.com/FigurePOS/react-native-local-server/commit/24b36351f58b6787e5390674bb4df78337c35cd9))
+* implement dropping first x bytes of udp messages, required for callerId in ios release config ([1b63d85](https://github.com/FigurePOS/react-native-local-server/commit/1b63d85aa382601a0d1d2070c160f445d4f9b16c))
+
 ## [0.11.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.10.6...v0.11.0) (2022-12-16)
 
 
