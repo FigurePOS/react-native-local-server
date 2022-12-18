@@ -67,7 +67,6 @@ class GeneralNetworkClient {
 
     func stop(reason: String?) {
         RNLSLog("GeneralNetworkClient [\(self.id)] - stop")
-        lastReasonToStop = reason
         closeConnection(reason: reason)
     }
     
@@ -92,6 +91,7 @@ class GeneralNetworkClient {
     
     private func closeConnection(reason: String?) {
         RNLSLog("GeneralNetworkClient [\(self.id)] - close connection")
+        lastReasonToStop = reason
         if (nwConnection.state == NWConnection.State.cancelled) {
             RNLSLog("GeneralNetworkClient [\(self.id)] - close connection - already cancelled")
             return
@@ -101,32 +101,45 @@ class GeneralNetworkClient {
 
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
-            case .setup:
-                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - setup")
-                break
-            case .preparing:
-                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - preparing")
-                break
-            case .waiting(let error):
-                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - waiting - \(error)")
-                break
-            case .ready:
-                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - ready")
-                wasReady = true
-                setupReceive()
-                self.onStartSucceeded?()
-                self.delegate.handleClientReady(clientId: self.id)
-                break
-            case .failed(let error):
-                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - failed - \(error)")
-                handleConnectionFailed(error: error)
-                break
-            case .cancelled:
-                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - cancelled")
-                handleConnectionCancelled()
-                break
-            default:
-                break
+        case .setup:
+            RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - setup")
+            break
+        case .preparing:
+            RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - preparing")
+            break
+        case .waiting(let error):
+            RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - waiting - \(error)")
+            if case .posix(let code) = error {
+                if (code == POSIXErrorCode(rawValue: 61)) {
+                    closeConnection(reason: "POSIX: Connection refused")
+                }
+                if (code == POSIXErrorCode(rawValue: 60)) {
+                    closeConnection(reason: "POSIX: Operation timed out")
+                }
+            }
+            if case .dns(let code) = error {
+                if (code == kDNSServiceErr_NoSuchRecord) {
+                    closeConnection(reason: "DNS: No such record")
+                }
+            }
+            break
+        case .ready:
+            RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - ready")
+            wasReady = true
+            setupReceive()
+            self.onStartSucceeded?()
+            self.delegate.handleClientReady(clientId: self.id)
+            break
+        case .failed(let error):
+            RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - failed - \(error)")
+            handleConnectionFailed(error: error)
+            break
+        case .cancelled:
+            RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - cancelled")
+            handleConnectionCancelled()
+            break
+        default:
+            break
         }
     }
     
