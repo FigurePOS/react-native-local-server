@@ -23,19 +23,25 @@ class GeneralNetworkClient {
     let nwConnection: NWConnection
     let queue: DispatchQueue
     
-    let host: NWEndpoint.Host
-    let port: NWEndpoint.Port
+    convenience init(id: String, host: String, port: UInt16, params: NWParameters, delegate: ClientDelegateProtocol) {
+        let host = NWEndpoint.Host(host)
+        let port = NWEndpoint.Port(rawValue: port)!
+        let endpoint = NWEndpoint.hostPort(host: host, port: port)
+        self.init(id: id, endpoint: endpoint, params: params, delegate: delegate)
+    }
     
-    init(id: String, host: String, port: UInt16, params: NWParameters, delegate: ClientDelegateProtocol) {
-        self.delegate = delegate
+    convenience init(id: String, discoveryType: String, discoveryName: String, params: NWParameters, delegate: ClientDelegateProtocol) {
+        let endpoint = NWEndpoint.service(name: discoveryName, type: discoveryType, domain: "", interface: nil)
+        self.init(id: id, endpoint: endpoint, params: params, delegate: delegate)
+    }
+    
+    init(id: String, endpoint: NWEndpoint, params: NWParameters, delegate: ClientDelegateProtocol) {
         self.id = id
-        self.host = NWEndpoint.Host(host)
-        self.port = NWEndpoint.Port(rawValue: port)!
-        let nwConnection = NWConnection(host: self.host, port: self.port, using: params)
-        self.nwConnection = nwConnection
+        self.delegate = delegate
+        self.nwConnection = NWConnection(to: endpoint, using: params)
         self.queue = DispatchQueue(label: "com.react-native-local-server.client." + id)
     }
-
+    
     func start(onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) {
         RNLSLog("GeneralNetworkClient - start: \(id)")
         onStartSucceeded = onSuccess

@@ -125,7 +125,7 @@ class ServiceBrowser {
     }
     
     func changeHandler(results: Set<NWBrowser.Result>, changes: Set<NWBrowser.Result.Change>) {
-        RNLSLog("ServiceBrowser \(id) - changeHandler")
+        RNLSLog("ServiceBrowser \(id) - changeHandler2")
         guard let delegate = delegate else {
             RNLSLog("\terror: NO DELEGATE")
             return
@@ -157,7 +157,8 @@ class ServiceBrowser {
     }
     
     internal func mapResult(result: NWBrowser.Result) -> ServiceBrowserResult? {
-        if case .service(let name, let type, _, _) = result.endpoint {
+        if case .service(let name, let type, let domain, _) = result.endpoint {
+            RNLSLog("mapResult \(name), \(type), \(domain)")
             return ServiceBrowserResult.init(name: name, group: type)
         }
         return nil

@@ -30,7 +30,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
         }
         let server: GeneralNetworkServer = try GeneralNetworkServer(id: id, port: port, params: .tcp, delegate: self)
         if (discoveryName != nil && discoveryGroup != nil) {
-            server.prepareBonjourService(type: String(format: "_%@._tcp", discoveryGroup!), name: discoveryName!, delegate: self)
+            server.prepareBonjourService(type: formatTCPDiscoveryType(discoveryGroup!), name: discoveryName!, delegate: self)
         }
         let onStartSucceeded = {
             self.servers[id] = server
