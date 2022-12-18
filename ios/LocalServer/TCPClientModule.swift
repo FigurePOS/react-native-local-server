@@ -41,6 +41,23 @@ class TCPClientModule: RCTEventEmitter {
             reject("tcp.client.error", "Failed to create client", error)
         }
     }
+    
+    @objc(createClientFromDiscovery:withDiscoveryGroup:withDiscoveryName:withResolver:withRejecter:)
+    func createClientFromDiscovery(id: String, discoveryGroup: String, discoveryName: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            let onSuccess = {
+                resolve(true)
+            }
+            let onFailure = { (reason: String) in
+                reject("tcp.client.error", reason, nil)
+            }
+            try manager.createClient(id: id, discoveryGroup: discoveryGroup, discoveryName: discoveryName, onSuccess: onSuccess, onFailure: onFailure)
+        } catch LocalServerError.ClientDoesAlreadyExist {
+            reject("tcp.client.already-exists", "Client with this id already exists", nil)
+        } catch {
+            reject("tcp.client.error", "Failed to create client", error)
+        }
+    }
 
     @objc(stopClient:withReason:withResolver:withRejecter:)
     func stopClient(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {

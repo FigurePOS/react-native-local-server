@@ -65,6 +65,12 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void createClientFromDiscovery(String id, String discoveryGroup, String discoveryName, Promise promise) {
+        Log.d(NAME, "createClientFromDiscovery started for id:" + id);
+        promise.reject("tcp.client.error", "Not Implemented");
+    }
+
+    @ReactMethod
     public void stopClient(String id, String reason, Promise promise) {
         Log.d(NAME, "stopClient started for id:" + id);
         TCPClient client = clients.get(id);

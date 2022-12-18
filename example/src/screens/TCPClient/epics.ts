@@ -6,6 +6,7 @@ import { BareTCPClient } from "./network"
 import {
     TCPClient,
     TCPClientConfiguration,
+    TCPClientConnectionMethod,
     TCPClientDataReceivedNativeEvent,
     TCPClientReadyNativeEvent,
     TCPClientStoppedNativeEvent,
@@ -32,8 +33,11 @@ const bareTCPClientStartRequestedEpic: Epic = (action$: ActionsObservable<StateA
                 return [createActionBareTcpClientErrored("Invalid Port")]
             }
             const serverConfig: TCPClientConfiguration = {
-                port: port,
-                host: host,
+                connection: {
+                    method: TCPClientConnectionMethod.Raw,
+                    port: port,
+                    host: host,
+                },
             }
             return defer(() => BareTCPClient.start(serverConfig)).pipe(
                 switchMap(() => []),

@@ -19,11 +19,20 @@ class TCPClientManager: ClientDelegateProtocol {
     }
     
     func createClient(id: String, host: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
+        let client: GeneralNetworkClient = GeneralNetworkClient(id: id, host: host, port: port, params: .tcp, delegate: self)
+        try self.createClient(id: id, client: client, onSuccess: onSuccess, onFailure: onFailure)
+    }
+    
+    func createClient(id: String, discoveryGroup: String, discoveryName: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
+        let client: GeneralNetworkClient = GeneralNetworkClient(id: id, discoveryType: formatTCPDiscoveryType(discoveryGroup), discoveryName: discoveryName, params: .tcp, delegate: self)
+        try self.createClient(id: id, client: client, onSuccess: onSuccess, onFailure: onFailure)
+    }
+    
+    func createClient(id: String, client: GeneralNetworkClient, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         RNLSLog("TCPClientModule - createClient - started")
         if (clients[id] != nil) {
             throw LocalServerError.ClientDoesAlreadyExist
         }
-        let client: GeneralNetworkClient = GeneralNetworkClient(id: id, host: host, port: port, params: .tcp, delegate: self)
         let onStartSucceeded = {
             self.clients[id] = client
             onSuccess()

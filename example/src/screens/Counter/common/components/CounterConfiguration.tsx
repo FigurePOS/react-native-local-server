@@ -25,6 +25,7 @@ import {
     createActionCounterClientSearchRestartRequested,
     createActionCounterClientSearchStartRequested,
     createActionCounterClientSearchStopRequested,
+    createActionCounterClientStartFromServiceRequested,
     createActionCounterClientStartRequested,
     createActionCounterClientStopRequested,
 } from "../../client/actions"
@@ -63,6 +64,7 @@ export const CounterConfiguration = () => {
             onSearchStarted={() => dispatch(createActionCounterClientSearchStartRequested())}
             onSearchStopped={() => dispatch(createActionCounterClientSearchStopRequested())}
             onSearchRestarted={() => dispatch(createActionCounterClientSearchRestartRequested())}
+            onSearchServiceSelected={(id) => dispatch(createActionCounterClientStartFromServiceRequested(id))}
         />
     )
 }

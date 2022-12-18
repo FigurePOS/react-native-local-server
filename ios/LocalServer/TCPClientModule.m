@@ -17,6 +17,12 @@ RCT_EXTERN_METHOD(createClient:(NSString *)id
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(createClientFromDiscovery:(NSString *)id
+                  withDiscoveryGroup:(NSString *)discoveryGroup
+                  withDiscoveryName:(NSString *)discoveryName
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(stopClient:(NSString *)id
                   withReason:(NSString *)reason
                   withResolver:(RCTPromiseResolveBlock)resolve

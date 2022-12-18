@@ -1,4 +1,4 @@
-import { TCPClient, TCPClientConfiguration } from "../"
+import { TCPClient, TCPClientConfiguration, TCPClientConnectionMethod } from "../"
 import { TCPClientModule } from "../module"
 import { StopReasonEnum } from "../../.."
 
@@ -6,6 +6,7 @@ jest.mock("../module", () => ({
     TCPClientModule: {
         send: jest.fn(),
         createClient: jest.fn(),
+        createClientFromDiscovery: jest.fn(),
         stopClient: jest.fn(),
     },
 }))
@@ -24,14 +25,32 @@ describe("TCPClient", () => {
         return expect(client.getId()).toEqual(clientId)
     })
 
-    it("should start client", async (done) => {
+    it("should start client - raw method", async (done) => {
         const spy = jest.spyOn(TCPClientModule, "createClient")
         const config: TCPClientConfiguration = {
-            host: "localhost",
-            port: 12000,
+            connection: {
+                method: TCPClientConnectionMethod.Raw,
+                host: "localhost",
+                port: 12000,
+            },
         }
         await client.start(config)
-        expect(spy).toBeCalledWith(clientId, config.host, config.port)
+        expect(spy).toBeCalledWith(clientId, "localhost", 12000)
+        expect(client.getConfiguration()).toEqual(config)
+        done()
+    })
+
+    it("should start client - discovery method", async (done) => {
+        const spy = jest.spyOn(TCPClientModule, "createClientFromDiscovery")
+        const config: TCPClientConfiguration = {
+            connection: {
+                method: TCPClientConnectionMethod.Discovery,
+                group: "fgr-counter",
+                name: "My Counter (123456)",
+            },
+        }
+        await client.start(config)
+        expect(spy).toBeCalledWith(clientId, "fgr-counter", "My Counter (123456)")
         expect(client.getConfiguration()).toEqual(config)
         done()
     })
@@ -41,11 +60,14 @@ describe("TCPClient", () => {
         const e = new Error("failed")
         TCPClientModule.createClient.mockRejectedValue(e)
         const config: TCPClientConfiguration = {
-            host: "localhost",
-            port: 12000,
+            connection: {
+                method: TCPClientConnectionMethod.Raw,
+                host: "localhost",
+                port: 12000,
+            },
         }
         await expect(client.start(config)).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(clientId, config.host, config.port)
+        expect(spy).toBeCalledWith(clientId, "localhost", 12000)
         done()
     })
 

@@ -10,6 +10,14 @@ export const createActionCounterClientStartRequested = (host: string, port: stri
     },
 })
 
+export const COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED = "COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED"
+export const createActionCounterClientStartFromServiceRequested = (serviceId: string) => ({
+    type: COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED,
+    payload: {
+        serviceId: serviceId,
+    },
+})
+
 export const COUNTER_CLIENT_STOP_REQUESTED = "COUNTER_CLIENT_STOP_REQUESTED"
 export const createActionCounterClientStopRequested = () => ({
     type: COUNTER_CLIENT_STOP_REQUESTED,

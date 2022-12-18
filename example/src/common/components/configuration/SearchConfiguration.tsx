@@ -12,6 +12,7 @@ type Props = {
     onStarted: () => void
     onStopped: () => void
     onRestart?: () => void
+    onServiceSelected: (serviceId: string) => void
 }
 
 export const SearchConfiguration = (props: Props) => {
@@ -28,7 +29,11 @@ export const SearchConfiguration = (props: Props) => {
             <View style={styles.row}>
                 <Text style={styles.state}>Services:</Text>
                 {props.services.map((service) => (
-                    <Button key={service.shortId} label={`${service.name} (${service.shortId})`} onPress={() => {}} />
+                    <Button
+                        key={service.shortId}
+                        label={`${service.name} (${service.shortId})`}
+                        onPress={() => props.onServiceSelected(service.shortId)}
+                    />
                 ))}
                 {props.services.length === 0 ? <Text style={styles.state}>No services found</Text> : null}
             </View>

@@ -1,4 +1,5 @@
 import type { TCPClientConfiguration } from "./types"
+import { TCPClientConnectionConfiguration, TCPClientConnectionMethod } from "./types"
 import { TCPClientModule } from "./module"
 import { NativeEventEmitter } from "react-native"
 import { TCPClientEventName } from "./nativeEvents"
@@ -58,7 +59,7 @@ export class TCPClient {
         this.logger.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - start`, configuration)
         try {
             this.configuration = configuration
-            await TCPClientModule.createClient(this.getId(), this.configuration.host, this.configuration.port)
+            await this.connect(configuration.connection)
             this.logger.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - start - success`)
             return Promise.resolve()
         } catch (e) {
@@ -95,6 +96,17 @@ export class TCPClient {
         } catch (e) {
             this.logger?.error(LoggerVerbosity.Low, `TCPClient [${this.getId()}] - stop - error`, e)
             return Promise.reject(e)
+        }
+    }
+
+    private connect = (connection: TCPClientConnectionConfiguration): Promise<void> => {
+        switch (connection.method) {
+            case TCPClientConnectionMethod.Raw:
+                return TCPClientModule.createClient(this.getId(), connection.host, connection.port)
+            case TCPClientConnectionMethod.Discovery:
+                return TCPClientModule.createClientFromDiscovery(this.getId(), connection.group, connection.name)
+            default:
+                return Promise.reject(new Error("Unknown connection method"))
         }
     }
 }

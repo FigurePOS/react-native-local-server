@@ -1,4 +1,6 @@
 import {
+    MessagingClientConfiguration,
+    MessagingClientConnectionMethod,
     MessagingClientLifecycleStatusEvent,
     MessagingClientServiceSearchEvent,
     MessagingClientServiceSearchEventUpdate,
@@ -9,6 +11,8 @@ import {
     ServiceBrowserEventName,
     ServiceBrowserNativeEvent,
     StopReason,
+    TCPClientConfiguration,
+    TCPClientConnectionMethod,
     TCPClientEventName,
     TCPClientNativeEvent,
 } from "../../"
@@ -128,5 +132,33 @@ export const reduceMessagingClientServiceSearchEventUpdate = (
                 ...current,
                 update: update,
             }
+    }
+}
+
+export const composeTCPClientConfiguration = (
+    config: MessagingClientConfiguration,
+    discoveryGroup: string | null
+): TCPClientConfiguration | null => {
+    switch (config.connection.method) {
+        case MessagingClientConnectionMethod.Raw:
+            return {
+                connection: {
+                    method: TCPClientConnectionMethod.Raw,
+                    host: config.connection.host,
+                    port: config.connection.port,
+                },
+            }
+        case MessagingClientConnectionMethod.Service:
+            return discoveryGroup
+                ? {
+                      connection: {
+                          method: TCPClientConnectionMethod.Discovery,
+                          group: discoveryGroup,
+                          name: `${config.connection.service.name} (${config.connection.service.shortId})`,
+                      },
+                  }
+                : null
+        default:
+            return null
     }
 }

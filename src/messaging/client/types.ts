@@ -2,20 +2,46 @@ import { MessagingServiceInformation, MessagingStoppedReason } from "../types"
 
 /**
  * Object containing configuration of messaging client
- * @property host - target host address
- * @property port - target port
+ * @property connection - connection configuration
  * @property name - name of the server
  * @property serviceId - public id of the client
  * @property ping - ping configuration of the client
  */
 export type MessagingClientConfiguration = {
-    host: string
-    port: number
-
+    connection: MessagingClientConnectionConfiguration
     name?: string
     serviceId?: string
     ping?: MessagingClientPingConfiguration
 }
+
+export enum MessagingClientConnectionMethod {
+    Raw = "raw",
+    Service = "service",
+}
+
+/**
+ * Object containing connection configuration of messaging client
+ * @property host - target host address
+ * @property port - target port
+ */
+export type MessagingClientConnectionMethodRaw = {
+    method: MessagingClientConnectionMethod.Raw
+    host: string
+    port: number
+}
+
+/**
+ * Object containing connection configuration of messaging client
+ * @property service - target service
+ */
+export type MessagingClientConnectionMethodService = {
+    method: MessagingClientConnectionMethod.Service
+    service: MessagingClientServiceSearchResult
+}
+
+export type MessagingClientConnectionConfiguration =
+    | MessagingClientConnectionMethodRaw
+    | MessagingClientConnectionMethodService
 
 /**
  * @property timeout - defines how long should client wait for the ping (in ms)

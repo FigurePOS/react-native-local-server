@@ -13,7 +13,11 @@ import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingClientDependencies } from "./localCommunication/deps"
 import { SampleMessagingClient } from "./localCommunication/client"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
-import { MessagingClientConfiguration, MessagingClientStatusEventName } from "@figuredev/react-native-local-server"
+import {
+    MessagingClientConfiguration,
+    MessagingClientConnectionMethod,
+    MessagingClientStatusEventName,
+} from "@figuredev/react-native-local-server"
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
 
@@ -27,8 +31,11 @@ const messagingClientStartRequested: Epic = (action$: ActionsObservable<StateAct
             }
             const config: MessagingClientConfiguration = {
                 name: "Sample Messaging Client",
-                port: port,
-                host: action.payload.host,
+                connection: {
+                    method: MessagingClientConnectionMethod.Raw,
+                    port: port,
+                    host: action.payload.host,
+                },
             }
             return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
                 switchMapTo([]),
