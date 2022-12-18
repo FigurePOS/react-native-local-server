@@ -94,7 +94,7 @@ class GeneralNetworkServerConnection {
         connection.receive(minimumIncompleteLength: 1, maximumLength: MTU) { (data, _, isComplete, error) in
             if let data = data, !data.isEmpty {
                 RNLSLog("GeneralNetworkServerConnection - received data")
-                self.reader.appendData(data: data)
+                self.reader.appendData(data: data, numberOfDroppedBytesFromMsgStart: self.numberOfDroppedBytesFromMsgStart)
                 while let readData: String = self.reader.readData() {
                     self.delegate.handleDataReceived(connectionId: self.id, data: readData)
                 }
