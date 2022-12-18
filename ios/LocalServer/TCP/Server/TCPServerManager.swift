@@ -24,7 +24,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
     
     func createServer(id: String, port: UInt16, discoveryGroup: String?, discoveryName: String?, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        RNLSLog("TCPServerModule - createServer - started")
+        RNLSLog("TCPServerManager [\(id)] - createServer - started")
         if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -43,7 +43,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
 
     func stopServer(id: String, reason: String) throws {
-        RNLSLog("TCPServerModule - stopServer - started")
+        RNLSLog("TCPServerManager [\(id)] - stopServer - started")
         guard let server: GeneralNetworkServer = servers[id] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -51,7 +51,6 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
 
     func send(serverId: String, connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        RNLSLog("TCPServerModule - send - started")
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -60,7 +59,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
 
 
     func closeConnection(serverId: String, connectionId: String, reason: String) throws {
-        RNLSLog("TCPServerModule - closeConnection - started")
+        RNLSLog("TCPServerManager [\(serverId)] - closeConnection - started")
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -91,18 +90,19 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
     
     func invalidate() {
-        RNLSLog("TCPServerModule - invalidate - \(servers.count) servers")
+        RNLSLog("TCPServerManager - invalidate - \(servers.count) servers")
         for (key, server) in servers {
             do {
                 try server.stop(reason: StopReasonEnum.Invalidation)
             } catch {
-                RNLSLog("TCPServerModule - invalidate - \(key) error: \(error)")
+                RNLSLog("TCPServerManager - invalidate - \(key) error: \(error)")
             }
         }
         servers.removeAll()
     }
     
     private func handleLifecycleEvent(serverId: String, eventName: String, reason: String? = nil) {
+        RNLSLog("TCPServerManager [\(serverId)] - event \(eventName)")
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "serverId", value: serverId)
         if (reason != nil) {
@@ -112,6 +112,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
 
     private func handleConnectionLifecycleEvent(serverId: String, connectionId: String, eventName: String, reason: String? = nil) {
+        RNLSLog("TCPServerManager [\(serverId)] - event \(eventName)")
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "serverId", value: serverId)
         event.putString(key: "connectionId", value: connectionId)

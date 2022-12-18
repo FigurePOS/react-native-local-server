@@ -43,7 +43,7 @@ class GeneralNetworkClient {
     }
     
     func start(onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) {
-        RNLSLog("GeneralNetworkClient - start: \(id)")
+        RNLSLog("GeneralNetworkClient [\(id)] - start")
         onStartSucceeded = onSuccess
         onStartFailed = onFailure
         nwConnection.stateUpdateHandler = stateDidChange(to:)
@@ -51,22 +51,22 @@ class GeneralNetworkClient {
     }
     
     func send(data: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) {
-        RNLSLog("GeneralNetworkClient - send: \(id)")
+        RNLSLog("GeneralNetworkClient [\(id)] - send")
         let preparedMessage = data + "\r\n"
         let preparedData: Data = preparedMessage.data(using: .utf8)!
         nwConnection.send(content: preparedData, completion: .contentProcessed( { error in
             if let error = error {
-                RNLSLog("GeneralNetworkClient - send - failure")
+                RNLSLog("GeneralNetworkClient [\(self.id)] - send - failure")
                 onFailure(error.debugDescription)
                 return
             }
             onSuccess()
-            RNLSLog("GeneralNetworkClient - send - success")
+            RNLSLog("GeneralNetworkClient [\(self.id)] - send - success")
         }))
     }
 
     func stop(reason: String?) {
-        RNLSLog("GeneralNetworkClient - stop: \(id)")
+        RNLSLog("GeneralNetworkClient [\(self.id)] - stop")
         lastReasonToStop = reason
         closeConnection(reason: reason)
     }
@@ -80,11 +80,10 @@ class GeneralNetworkClient {
                 }
             }
             if isComplete {
-                RNLSLog("GeneralNetworkClient - is complete")
+                RNLSLog("GeneralNetworkClient [\(self.id)] - is complete")
                 self.delegate.handleConnectionCompleted(clientId: self.id)
             } else if let error = error {
-                RNLSLog("GeneralNetworkClient - error when receiving data \n\treason: \(error)")
-                self.handleConnectionFailed(error: error)
+                RNLSLog("GeneralNetworkClient [\(self.id)] - error when receiving data \n\treason: \(error)")
             } else {
                 self.setupReceive()
             }
@@ -92,9 +91,9 @@ class GeneralNetworkClient {
     }
     
     private func closeConnection(reason: String?) {
-        RNLSLog("GeneralNetworkClient - close connection")
+        RNLSLog("GeneralNetworkClient [\(self.id)] - close connection")
         if (nwConnection.state == NWConnection.State.cancelled) {
-            RNLSLog("GeneralNetworkClient - close connection - already cancelled")
+            RNLSLog("GeneralNetworkClient [\(self.id)] - close connection - already cancelled")
             return
         }
         self.nwConnection.cancel()
@@ -103,28 +102,27 @@ class GeneralNetworkClient {
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
             case .setup:
-                RNLSLog("GeneralNetworkClient - stateDidChange - setup")
+                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - setup")
                 break
             case .preparing:
-                RNLSLog("GeneralNetworkClient - stateDidChange - preparing")
+                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - preparing")
                 break
             case .waiting(let error):
-                RNLSLog("GeneralNetworkClient - stateDidChange - waiting - \(error)")
-                closeConnection(reason: error.debugDescription)
+                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - waiting - \(error)")
                 break
             case .ready:
-                RNLSLog("GeneralNetworkClient - stateDidChange - ready")
+                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - ready")
                 wasReady = true
                 setupReceive()
                 self.onStartSucceeded?()
                 self.delegate.handleClientReady(clientId: self.id)
                 break
             case .failed(let error):
-                RNLSLog("GeneralNetworkClient - stateDidChange - failed - \(error)")
+                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - failed - \(error)")
                 handleConnectionFailed(error: error)
                 break
             case .cancelled:
-                RNLSLog("GeneralNetworkClient - stateDidChange - cancelled")
+                RNLSLog("GeneralNetworkClient [\(self.id)] - stateDidChange - cancelled")
                 handleConnectionCancelled()
                 break
             default:

@@ -22,7 +22,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
 
     func createServer(id: String, port: UInt16, numberOfDroppedBytesFromMsgStart: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        RNLSLog("UDPServerManager - createServer - started")
+        RNLSLog("UDPServerManager [\(id)] - createServer - started")
         if let _: GeneralNetworkServer = servers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -40,7 +40,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
 
     func stopServer(id: String, reason: String) throws {
-        RNLSLog("UDPServerManager - stopServer - started")
+        RNLSLog("UDPServerManager [\(id)] - stopServer - started")
         guard let server: GeneralNetworkServer = servers[id] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -48,12 +48,12 @@ class UDPServerManager: ServerDelegateProtocol {
     }
 
     func send(host: String, port: UInt16, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String?) -> ()) throws {
-        RNLSLog("UDPServerManager - send - started")
+        RNLSLog("UDPServerManager [\(host)] - send - started")
         try clientManager.send(host: host, port: port, message: message, onSuccess: onSuccess, onFailure: onFailure)
     }
 
     func closeConnection(serverId: String, connectionId: String, reason: String) throws {
-        RNLSLog("UDPServerManager - closeConnection - started")
+        RNLSLog("UDPServerManager [\(serverId)] - closeConnection - started")
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
@@ -96,6 +96,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
     
     private func handleLifecycleEvent(serverId: String, eventName: String, reason: String? = nil) {
+        RNLSLog("UDPServerManager [\(serverId)] - event \(eventName)")
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "serverId", value: serverId)
         if (reason != nil) {
@@ -137,7 +138,7 @@ class UDPServerManager: ServerDelegateProtocol {
     }
     
     func handleDataReceived(serverId: String, connectionId: String, data: String) {
-        RNLSLog("UDPServerManager - did receive data")
+        RNLSLog("UDPServerManager [\(serverId)] - did receive data")
         let event: JSEvent = JSEvent(name: UDPServerEventName.DataReceived)
         event.putString(key: "serverId", value: serverId)
         event.putString(key: "connectionId", value: connectionId)

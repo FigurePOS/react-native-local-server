@@ -29,22 +29,20 @@ class TCPClientManager: ClientDelegateProtocol {
     }
     
     func createClient(id: String, client: GeneralNetworkClient, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        RNLSLog("TCPClientModule - createClient - started")
+        RNLSLog("TCPClientManager [\(id)] - createClient - started")
         if (clients[id] != nil) {
             throw LocalServerError.ClientDoesAlreadyExist
         }
-        let onStartSucceeded = {
-            self.clients[id] = client
-            onSuccess()
-        }
+        self.clients[id] = client
         let onStartFailed = { (_ reason: String) in
+            self.clients.removeValue(forKey: id)
             onFailure(reason)
         }
-        client.start(onSuccess: onStartSucceeded, onFailure: onStartFailed)
+        client.start(onSuccess: onSuccess, onFailure: onStartFailed)
     }
 
     func stopClient(id: String, reason: String) throws {
-        RNLSLog("TCPClientModule - stopClient - started")
+        RNLSLog("TCPClientManager [\(id)] - stopClient - started")
         guard let client: GeneralNetworkClient = clients[id] else  {
             throw LocalServerError.ClientDoesNotExist
         }
@@ -53,7 +51,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
 
     func send(clientId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        RNLSLog("TCPClientModule - send - started")
+        RNLSLog("TCPClientManager [\(clientId)] - send - started")
         guard let client: GeneralNetworkClient = clients[clientId] else  {
             throw LocalServerError.ClientDoesNotExist
         }
@@ -73,7 +71,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
     
     func invalidate() {
-        RNLSLog("TCPClientModule - invalidate - \(clients.count) clients")
+        RNLSLog("TCPClientManager - invalidate - \(clients.count) clients")
         for (_, client) in clients {
             client.stop(reason: StopReasonEnum.Invalidation)
         }
@@ -81,6 +79,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
     
     private func handleLifecycleEvent(clientId: String, eventName: String, reason: String? = nil) {
+        RNLSLog("TCPClientManager [\(clientId)] - event \(eventName)")
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "clientId", value: clientId)
         if (reason != nil) {
@@ -107,7 +106,7 @@ class TCPClientManager: ClientDelegateProtocol {
     }
 
     func handleDataReceived(clientId: String, data: String) {
-        RNLSLog("TCPClientModule - data received: \(data)")
+        RNLSLog("TCPClientManager [\(clientId)] - data received: \(data)")
         let event: JSEvent = JSEvent(name: TCPClientEventName.DataReceived)
         event.putString(key: "clientId", value: clientId)
         event.putString(key: "data", value: data)

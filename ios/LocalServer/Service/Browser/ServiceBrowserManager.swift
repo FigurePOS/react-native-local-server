@@ -23,7 +23,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
 
     
     func createBrowser(id: String, discoveryGroup: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        RNLSLog("ServiceBrowserManager - createBrowser - started")
+        RNLSLog("ServiceBrowserManager [\(id)] - createBrowser - started")
         if let _: ServiceBrowser = browsers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -38,7 +38,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
 
     func stopBrowser(id: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
-        RNLSLog("ServiceBrowserManager - stopBrowser - started")
+        RNLSLog("ServiceBrowserManager [\(id)] - stopBrowser - started")
         guard let browser = browsers[id] else {
             throw LocalServerError.ServerDoesAlreadyExist
         }
@@ -57,7 +57,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
     
     private func handleLifecycleEvent(browserId: String, eventName: String, reason: String? = nil) {
-        RNLSLog("ServiceBrowserManager - event: \(eventName)")
+        RNLSLog("ServiceBrowserManager [\(browserId)] - event \(eventName)")
         if (!shouldEmitEvents) {
             RNLSLog("\tNOT EMITTING")
             return
@@ -71,7 +71,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
 
     private func handleServiceLifecycleEvent(browserId: String, eventName: String, service: ServiceBrowserResult) {
-        RNLSLog("ServiceBrowserManager - event: \(eventName) - \(service.name)")
+        RNLSLog("ServiceBrowserManager [\(browserId)] - event \(eventName) - \(service.name)")
         if (!shouldEmitEvents) {
             RNLSLog("\tNOT EMITTING")
             return

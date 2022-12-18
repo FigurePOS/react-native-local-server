@@ -50,7 +50,7 @@ class ServiceBrowser {
     }
     
     func handleBrowserStarted() {
-        RNLSLog("ServiceBrowser \(id) - handleBrowserStarted")
+        RNLSLog("ServiceBrowser [\(id)] - handleBrowserStarted")
         if let onStartSuccess = onStartSuccess {
             RNLSLog("ServiceBrowser \(id) - handleBrowserStarted - on success")
             onStartSuccess()
@@ -64,22 +64,22 @@ class ServiceBrowser {
     }
     
     func handleBrowserStopped() {
-        RNLSLog("ServiceBrowser \(id) - handleBrowserStopped")
+        RNLSLog("ServiceBrowser [\(id)] - handleBrowserStopped")
         if let onStopSuccess = onStopSuccess {
-            RNLSLog("ServiceBrowser \(id) - handleBrowserStopped - on success")
+            RNLSLog("ServiceBrowser [\(id)] - handleBrowserStopped - on success")
             onStopSuccess()
             self.onStopSuccess = nil
             self.onStopFailure = nil
         }
         if let delegate = delegate {
-            RNLSLog("ServiceBrowser \(id) - handleBrowserStopped - event")
+            RNLSLog("ServiceBrowser [\(id)] - handleBrowserStopped - event")
             delegate.handleBrowserStopped(browserId: id)
             self.delegate = nil
         }
     }
     
     func handleBrowserFailed(error: String) {
-        RNLSLog("ServiceBrowser \(id) - handleBrowserFailed")
+        RNLSLog("ServiceBrowser [\(id)] - handleBrowserFailed")
         if let onStartFailure = onStartFailure {
             RNLSLog("ServiceBrowser \(id) - start")
             onStartFailure(error)
@@ -87,19 +87,19 @@ class ServiceBrowser {
             self.onStartFailure = nil
         }
         else if let onStopFailure = onStopFailure {
-            RNLSLog("ServiceBrowser \(id) - stop")
+            RNLSLog("ServiceBrowser [\(id)] - stop")
             onStopFailure(error)
             self.onStopSuccess = nil
             self.onStopFailure = nil
         }
         else if let delegate = delegate {
-            RNLSLog("ServiceBrowser \(id) - unknown reason")
+            RNLSLog("ServiceBrowser [\(id)] - unknown reason")
             delegate.handleBrowserStopped(browserId: id)
         }
     }
     
     func stateHandler(state: NWBrowser.State) {
-        RNLSLog("ServiceBrowser \(id) - stateHandler")
+        RNLSLog("ServiceBrowser [\(id)] - stateHandler")
         switch state {
         case .setup:
             RNLSLog("\tstate: setup")
@@ -125,7 +125,7 @@ class ServiceBrowser {
     }
     
     func changeHandler(results: Set<NWBrowser.Result>, changes: Set<NWBrowser.Result.Change>) {
-        RNLSLog("ServiceBrowser \(id) - changeHandler2")
+        RNLSLog("ServiceBrowser [\(id)] - changeHandler")
         guard let delegate = delegate else {
             RNLSLog("\terror: NO DELEGATE")
             return
@@ -158,7 +158,6 @@ class ServiceBrowser {
     
     internal func mapResult(result: NWBrowser.Result) -> ServiceBrowserResult? {
         if case .service(let name, let type, let domain, _) = result.endpoint {
-            RNLSLog("mapResult \(name), \(type), \(domain)")
             return ServiceBrowserResult.init(name: name, group: type)
         }
         return nil
