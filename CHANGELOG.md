@@ -1,3 +1,25 @@
+## [0.13.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.12.0...v0.13.0) (2022-12-18)
+
+
+### Features
+
+* messaging client connect based on service (iOS only) ([#31](https://github.com/FigurePOS/react-native-local-server/issues/31)) ([736509e](https://github.com/FigurePOS/react-native-local-server/commit/736509e824b6f47d939ac1c84ff1fbedd96a70a0))
+
+
+### Bug Fixes
+
+* fix TCPClient getting stuck in waiting state (iOS) ([e4ff8e7](https://github.com/FigurePOS/react-native-local-server/commit/e4ff8e7d5a6e46cd42d68509f2381400d7c817f1))
+
+
+### Chores
+
+* release 0.12.0 [skip ci] ([4b7c462](https://github.com/FigurePOS/react-native-local-server/commit/4b7c462be09b501957bd6e7c01052a002efa484e))
+
+
+### Refactoring
+
+* refactor TCPClient state handling (iOS) ([43902f6](https://github.com/FigurePOS/react-native-local-server/commit/43902f64884e17e13e6927d40fe15120b901b6ae))
+
 ## [0.12.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.11.0...v0.12.0) (2022-12-17)
 
 
