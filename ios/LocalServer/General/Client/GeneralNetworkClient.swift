@@ -31,7 +31,7 @@ class GeneralNetworkClient {
     }
     
     convenience init(id: String, discoveryType: String, discoveryName: String, params: NWParameters, delegate: ClientDelegateProtocol) {
-        let endpoint = NWEndpoint.service(name: discoveryName, type: discoveryType, domain: "", interface: nil)
+        let endpoint = NWEndpoint.service(name: discoveryName, type: discoveryType, domain: "local.", interface: nil)
         self.init(id: id, endpoint: endpoint, params: params, delegate: delegate)
     }
     

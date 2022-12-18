@@ -31,6 +31,7 @@ type Props = {
     onSearchStarted?: () => void
     onSearchStopped?: () => void
     onSearchRestarted?: () => void
+    onSearchServiceSelected?: (id: string) => void
 }
 
 export const DoubleConfiguration = (props: Props) => {
@@ -63,7 +64,10 @@ export const DoubleConfiguration = (props: Props) => {
                     onRestart={props.onClientRestarted}
                 />
             </View>
-            {props.stateLabelSearch && props.onSearchStarted && props.onSearchStopped ? (
+            {props.stateLabelSearch &&
+            props.onSearchStarted &&
+            props.onSearchStopped &&
+            props.onSearchServiceSelected ? (
                 <>
                     <HorizontalLine opacity={0.5} />
                     <View style={styles.row}>
@@ -74,6 +78,7 @@ export const DoubleConfiguration = (props: Props) => {
                             onStarted={props.onSearchStarted}
                             onStopped={props.onSearchStopped}
                             onRestart={props.onSearchRestarted}
+                            onServiceSelected={props.onSearchServiceSelected}
                         />
                     </View>
                 </>

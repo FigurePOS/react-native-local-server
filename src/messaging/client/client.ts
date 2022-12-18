@@ -8,6 +8,7 @@ import {
     ServiceBrowser,
     ServiceBrowserConfiguration,
     TCPClient,
+    TCPClientConfiguration,
 } from "../../"
 import { catchError, concatMap, mapTo, mergeMap, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
@@ -27,7 +28,7 @@ import { composeMessageObject } from "../functions"
 import { log } from "../../utils/operators/log"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
 import { Logger, LoggerWrapper } from "../../utils/logger"
-import { getBrowserIdFromMessagingClientId } from "./functions"
+import { composeTCPClientConfiguration, getBrowserIdFromMessagingClientId } from "./functions"
 import { fromMessagingClientServiceSearchEvent } from "./operators/fromMessagingClientServiceSearchEvent"
 
 export class MessagingClient<In, Out = In, Deps = any> {
@@ -58,7 +59,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     constructor(id: string, discoveryGroup?: string) {
         this.clientId = id
         this.browserId = getBrowserIdFromMessagingClientId(id)
-        this.discoveryGroup = discoveryGroup ? `_${discoveryGroup}._tcp` : null
+        this.discoveryGroup = discoveryGroup ?? null
         this.handler$ = new Subject<MessageHandler<In, Deps>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
@@ -95,7 +96,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
             return throwError("No discovery group provided")
         }
         const config: ServiceBrowserConfiguration = {
-            type: this.discoveryGroup,
+            type: `_${this.discoveryGroup}._tcp`,
         }
         return defer(() => this.serviceBrowser.start(config))
     }
@@ -149,6 +150,14 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.configuration = configuration
         this.startData = [rootHandler, dependencies]
         this.cleanSubscriptions()
+        const tcpConfig: TCPClientConfiguration | null = composeTCPClientConfiguration(
+            configuration,
+            this.discoveryGroup
+        )
+        if (!tcpConfig) {
+            this.logger.error(LoggerVerbosity.Low, `MessagingClient [${this.clientId}] - missing tcp configuration`)
+            return throwError("Failed to prepare tcp configuration")
+        }
 
         const output$: Observable<boolean> = this.handler$.pipe(
             withLatestFrom(this.dep$),
@@ -210,7 +219,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpClient.start(configuration))
+        return defer(() => this.tcpClient.start(tcpConfig))
     }
 
     /**

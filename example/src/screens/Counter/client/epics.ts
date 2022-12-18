@@ -6,6 +6,7 @@ import {
     COUNTER_CLIENT_SEARCH_RESTART_REQUESTED,
     COUNTER_CLIENT_SEARCH_START_REQUESTED,
     COUNTER_CLIENT_SEARCH_STOP_REQUESTED,
+    COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED,
     COUNTER_CLIENT_START_REQUESTED,
     COUNTER_CLIENT_STATE_CHANGED,
     COUNTER_CLIENT_STOP_REQUESTED,
@@ -15,7 +16,11 @@ import {
     createActionCounterClientSearchStateChanged,
     createActionCounterClientStateChanged,
 } from "./actions"
-import { MessagingClientConfiguration, MessagingClientStatusEventName } from "@figuredev/react-native-local-server"
+import {
+    MessagingClientConfiguration,
+    MessagingClientConnectionMethod,
+    MessagingClientStatusEventName,
+} from "@figuredev/react-native-local-server"
 import { ClientState } from "../../../common/types"
 import { CounterDependencies } from "../common/deps"
 import { CounterClient } from "./client"
@@ -23,7 +28,7 @@ import { rootHandler } from "./rootHandler"
 import { createCounterMessageCountRequested, createCounterMessageCountResetRequested } from "../common/messages"
 import { COUNTER_COUNT_RESET_REQUESTED } from "../data/actionts"
 import { filterWithSelector } from "../../../common/operators/filterWithSelector"
-import { isCounterClientRunning } from "./selectors"
+import { getCounterClientAvailableServices, isCounterClientRunning } from "./selectors"
 import { StateObject } from "../../../rootReducer"
 
 const counterClientStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
@@ -36,8 +41,41 @@ const counterClientStartRequested: Epic = (action$: ActionsObservable<StateActio
             }
             const config: MessagingClientConfiguration = {
                 name: "Counter Client",
-                port: port,
-                host: action.payload.host,
+                connection: {
+                    method: MessagingClientConnectionMethod.Raw,
+                    port: port,
+                    host: action.payload.host,
+                },
+                ping: {
+                    timeout: 10 * 1000,
+                },
+            }
+            return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
+                mergeMapTo([]),
+                catchError((err) => [createActionCounterClientErrored(err)])
+            )
+        })
+    )
+
+const counterClientStartFromServiceRequested: Epic = (
+    action$: ActionsObservable<StateAction>,
+    state$: StateObservable<StateObject>
+) =>
+    action$.pipe(
+        ofType(COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED),
+        switchMap((action) => {
+            const { serviceId } = action.payload
+            const availableServices = getCounterClientAvailableServices(state$.value)
+            const service = availableServices.find((s) => s.shortId === serviceId)
+            if (!service) {
+                return []
+            }
+            const config: MessagingClientConfiguration = {
+                name: "Counter Client",
+                connection: {
+                    method: MessagingClientConnectionMethod.Service,
+                    service: service,
+                },
                 ping: {
                     timeout: 10 * 1000,
                 },
@@ -164,6 +202,7 @@ const counterClientSearchUpdate: Epic = () =>
 
 export default [
     counterClientStartRequested,
+    counterClientStartFromServiceRequested,
     counterClientStatus,
     counterClientStopRequested,
     counterClientCountResetRequested,
