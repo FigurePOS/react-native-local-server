@@ -1,3 +1,10 @@
+### [0.13.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.0...v0.13.1) (2022-12-19)
+
+
+### Features
+
+* add timeout to starting MessagingClient ([acb5a0a](https://github.com/FigurePOS/react-native-local-server/commit/acb5a0ac09d7b29714326a3f5ed5ea77ff3c8e78))
+
 ## [0.13.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.12.0...v0.13.0) (2022-12-18)
 
 
