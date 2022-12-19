@@ -1,5 +1,7 @@
 import { MessagingServiceInformation, MessagingStoppedReason } from "../types"
 
+export const MESSAGING_CLIENT_DEFAULT_TIMEOUT = 10 * 1000
+
 /**
  * Object containing configuration of messaging client
  * @property connection - connection configuration
@@ -23,20 +25,24 @@ export enum MessagingClientConnectionMethod {
  * Object containing connection configuration of messaging client
  * @property host - target host address
  * @property port - target port
+ * @property timeout - timeout of the connection (defaults to MESSAGING_CLIENT_DEFAULT_TIMEOUT)
  */
 export type MessagingClientConnectionMethodRaw = {
     method: MessagingClientConnectionMethod.Raw
     host: string
     port: number
+    timeout?: number
 }
 
 /**
  * Object containing connection configuration of messaging client
  * @property service - target service
+ * @property timeout - timeout of the connection (defaults to MESSAGING_CLIENT_DEFAULT_TIMEOUT)
  */
 export type MessagingClientConnectionMethodService = {
     method: MessagingClientConnectionMethod.Service
     service: MessagingClientServiceSearchResult
+    timeout?: number
 }
 
 export type MessagingClientConnectionConfiguration =

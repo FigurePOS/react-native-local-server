@@ -19,6 +19,7 @@ export enum MessagingStoppedReason {
     ClosedByPeer = "closed-by-peer",
     Invalidation = "invalidation",
     PingTimedOut = "ping-timed-out",
+    ConnectionTimedOut = "connection-timed-out",
 }
 
 /**

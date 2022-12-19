@@ -1,6 +1,7 @@
-import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError } from "rxjs"
+import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError, TimeoutError } from "rxjs"
 import {
     LoggerVerbosity,
+    MESSAGING_CLIENT_DEFAULT_TIMEOUT,
     MessagingClientServiceSearchEvent,
     MessagingClientStatusEvent,
     MessagingClientStatusEventName,
@@ -219,7 +220,17 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.dep$.next(dependencies)
         this.handler$.next(rootHandler)
 
-        return defer(() => this.tcpClient.start(tcpConfig))
+        return defer(() => this.tcpClient.start(tcpConfig)).pipe(
+            timeout(this.configuration?.connection.timeout ?? MESSAGING_CLIENT_DEFAULT_TIMEOUT),
+            catchError((err) => {
+                if (!(err instanceof TimeoutError)) {
+                    return throwError(err)
+                }
+                return defer(() => this.tcpClient.stop(MessagingStoppedReason.ConnectionTimedOut)).pipe(
+                    switchMap(() => throwError(err))
+                )
+            })
+        )
     }
 
     /**
