@@ -8,15 +8,17 @@ import {
 } from "../../udp"
 import { concatMap, filter, map, mapTo, share, take } from "rxjs/operators"
 import { PhoneCall } from "../types"
-import { CallerIdServerStatusEvent, CallerIdSimulateCallOptions } from "./types"
+import { CallerIdConfiguration, CallerIdServerStatusEvent, CallerIdSimulateCallOptions } from "./types"
 import { composePacketDataFromPhoneCall, parsePhoneCallFromPacketData } from "../parser"
 import { log } from "../../utils/operators/log"
 import { hasPhoneCallGoodChecksum, isPhoneCallInbound } from "../functions"
 import { fromCallerIdServerStatusEvent } from "./operators/fromCallerIdServerStatusEvent"
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
+import { deduplicateBy } from "../../messaging/operators/deduplicateBy"
 
 export const CALLER_ID_PORT = 3520
 export const CALLER_ID_DROPPED_BYTES = 20
+export const CALLER_ID_DEDUPLICATION_TIME = 30 * 1000
 
 /**
  * Implementation of caller id protocol (Whozz calling?)
@@ -33,16 +35,20 @@ export class CallerIdServer {
     /**
      * Constructor for the class
      * @param id - unique id, it's not possible to run two servers with the same id at the same time
-     * @param numberOfDroppedBytesFromMsgStart - number of bytes to drop from the begging of each message, necessary for iOS
+     * @param configuration - number of bytes to drop from the begging of each message, necessary for iOS
      */
-    constructor(id: string, numberOfDroppedBytesFromMsgStart?: number | null | undefined) {
+    constructor(id: string, configuration?: CallerIdConfiguration) {
         this.serverId = id
         this.config = {
-            port: CALLER_ID_PORT,
-            numberOfDroppedBytesFromMsgStart: numberOfDroppedBytesFromMsgStart ?? CALLER_ID_DROPPED_BYTES,
+            port: configuration?.port ?? CALLER_ID_PORT,
+            numberOfDroppedBytesFromMsgStart:
+                configuration?.numberOfDroppedBytesFromMsgStart ?? CALLER_ID_DROPPED_BYTES,
         }
+        const deduplicationTime = configuration?.deduplicationTime ?? CALLER_ID_DEDUPLICATION_TIME
         this.incomingCall$ = fromUDPServerEvent(this.serverId, UDPServerEventName.DataReceived).pipe(
             log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data received`),
+            deduplicateBy((event: UDPServerDataReceivedNativeEvent) => event.data, deduplicationTime),
+            log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data deduplicated`),
             map((event: UDPServerDataReceivedNativeEvent): string => event.data),
             map(parsePhoneCallFromPacketData),
             filter((data: PhoneCall | null) => data != null) as () => Observable<PhoneCall>,
@@ -85,11 +91,10 @@ export class CallerIdServer {
     simulateCall(call: PhoneCall, options?: CallerIdSimulateCallOptions): Observable<boolean> {
         this.logger?.log(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - simulate call`, call)
         const data = composePacketDataFromPhoneCall(call)
+        const port = this.config.port
         return interval(options?.interval ?? 200).pipe(
             take(options?.numberOfCalls ?? 5),
-            concatMap(() =>
-                defer(() => from(this.udpServer.sendData("255.255.255.255", CALLER_ID_PORT, data))).pipe(mapTo(true))
-            )
+            concatMap(() => defer(() => from(this.udpServer.sendData("255.255.255.255", port, data))).pipe(mapTo(true)))
         )
     }
 
