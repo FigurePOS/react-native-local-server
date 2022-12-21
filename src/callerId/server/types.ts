@@ -13,3 +13,13 @@ export type CallerIdServerStatusEvent = {
         | CallerIdServerStatusEventName.Unknown
     reason?: StopReason
 }
+
+/**
+ * Object containing options for call simulation
+ * @property numberOfCalls - number of calls to simulate (default: 5)
+ * @property interval - interval between calls in milliseconds (default: 200)
+ */
+export type CallerIdSimulateCallOptions = {
+    numberOfCalls?: number
+    interval?: number
+}

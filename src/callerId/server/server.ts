@@ -1,4 +1,4 @@
-import { defer, from, Observable } from "rxjs"
+import { defer, from, interval, Observable } from "rxjs"
 import {
     fromUDPServerEvent,
     UDPServer,
@@ -6,9 +6,9 @@ import {
     UDPServerDataReceivedNativeEvent,
     UDPServerEventName,
 } from "../../udp"
-import { filter, map, mapTo, share } from "rxjs/operators"
+import { concatMap, filter, map, mapTo, share, take } from "rxjs/operators"
 import { PhoneCall } from "../types"
-import { CallerIdServerStatusEvent } from "./types"
+import { CallerIdServerStatusEvent, CallerIdSimulateCallOptions } from "./types"
 import { composePacketDataFromPhoneCall, parsePhoneCallFromPacketData } from "../parser"
 import { log } from "../../utils/operators/log"
 import { hasPhoneCallGoodChecksum, isPhoneCallInbound } from "../functions"
@@ -80,12 +80,17 @@ export class CallerIdServer {
     /**
      * This method allows you to simulate incoming call on the local network.
      * @param call - information about the call you want to simulate
+     * @param options - options for call simulation
      */
-    simulateCall(call: PhoneCall): Observable<boolean> {
+    simulateCall(call: PhoneCall, options?: CallerIdSimulateCallOptions): Observable<boolean> {
         this.logger?.log(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - simulate call`, call)
-        return defer(() =>
-            from(this.udpServer.sendData("255.255.255.255", CALLER_ID_PORT, composePacketDataFromPhoneCall(call)))
-        ).pipe(mapTo(true))
+        const data = composePacketDataFromPhoneCall(call)
+        return interval(options?.interval ?? 200).pipe(
+            take(options?.numberOfCalls ?? 5),
+            concatMap(() =>
+                defer(() => from(this.udpServer.sendData("255.255.255.255", CALLER_ID_PORT, data))).pipe(mapTo(true))
+            )
+        )
     }
 
     /**
