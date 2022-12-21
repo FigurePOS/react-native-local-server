@@ -50,8 +50,15 @@ export class CallerIdServer {
             deduplicateBy((event: UDPServerDataReceivedNativeEvent) => event.data, deduplicationTime),
             log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data deduplicated`),
             map((event: UDPServerDataReceivedNativeEvent): string => event.data),
-            map(parsePhoneCallFromPacketData),
-            filter((data: PhoneCall | null) => data != null) as () => Observable<PhoneCall>,
+            map((data: string) => [parsePhoneCallFromPacketData(data), data]),
+            filter(([call, data]: [PhoneCall | null, string]) => {
+                if (call == null) {
+                    this.logger?.error(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - invalid data`, data)
+                    return false
+                }
+                return true
+            }) as () => Observable<[PhoneCall, string]>,
+            map(([call, _]: [PhoneCall, string]) => call),
             log(LoggerVerbosity.Medium, this.logger, `CallerIdServer [${this.serverId}] - call parsed`),
             filter(hasPhoneCallGoodChecksum),
             filter(isPhoneCallInbound),
