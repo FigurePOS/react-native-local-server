@@ -1,4 +1,4 @@
-import { defer, from, interval, Observable } from "rxjs"
+import { defer, from, identity, interval, Observable } from "rxjs"
 import {
     fromUDPServerEvent,
     UDPServer,
@@ -47,9 +47,9 @@ export class CallerIdServer {
         const deduplicationTime = configuration?.deduplicationTime ?? CALLER_ID_DEDUPLICATION_TIME
         this.incomingCall$ = fromUDPServerEvent(this.serverId, UDPServerEventName.DataReceived).pipe(
             log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data received`),
-            deduplicateBy((event: UDPServerDataReceivedNativeEvent) => event.data, deduplicationTime),
-            log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data deduplicated`),
             map((event: UDPServerDataReceivedNativeEvent): string => event.data),
+            deduplicateBy(identity, deduplicationTime),
+            log(LoggerVerbosity.High, this.logger, `CallerIdServer [${this.serverId}] - data deduplicated`),
             map((data: string) => [parsePhoneCallFromPacketData(data), data]),
             filter(([call, data]: [PhoneCall | null, string]) => {
                 if (call == null) {
