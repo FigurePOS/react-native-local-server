@@ -1,3 +1,10 @@
+### [0.13.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.1...v0.13.2) (2022-12-27)
+
+
+### Features
+
+* **CallerID:** deduplicate multiple packets when receiving a call ([#32](https://github.com/FigurePOS/react-native-local-server/issues/32)) ([7697f36](https://github.com/FigurePOS/react-native-local-server/commit/7697f360a5d9d6787f4c17ba18232c993778b7c9))
+
 ### [0.13.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.0...v0.13.1) (2022-12-19)
 
 
