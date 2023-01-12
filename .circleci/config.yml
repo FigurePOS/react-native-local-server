@@ -175,5 +175,6 @@ workflows:
             branches:
               only: master
       - release:
+          context: react-native
           requires:
             - approve-release
