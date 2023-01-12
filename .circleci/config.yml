@@ -150,18 +150,23 @@ workflows:
       - install-dependencies:
           context: react-native
       - lint:
+          context: react-native
           requires:
             - install-dependencies
       - typescript:
+          context: react-native
           requires:
             - install-dependencies
       - unit-tests-ts:
+          context: react-native
           requires:
             - install-dependencies
       - unit-tests-android:
+          context: react-native
           requires:
             - install-dependencies
       - unit-tests-ios:
+          context: react-native
           requires:
             - install-dependencies
       - approve-release:
