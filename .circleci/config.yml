@@ -147,7 +147,8 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - install-dependencies
+      - install-dependencies:
+          context: react-native
       - lint:
           requires:
             - install-dependencies
