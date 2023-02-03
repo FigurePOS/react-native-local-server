@@ -38,7 +38,7 @@ See documentation of the class for more information.
 
 ### Messaging server and client
 Abstraction above TCP layer using RxJS. There are again two classes: server and client.
-Both server and client require a handler when starting. The handler is a function that takes a stream of incoming messages and defined dependencies. This design was inspired by redux-observable (TODO link) library.
+Both server and client require a handler when starting. The handler is a function that takes a stream of incoming messages and defined dependencies. This design was inspired by [redux-observable](https://redux-observable.js.org/) library.
 Both classes also provides a stream of status events.
 
 See documentation of classes for more information.
