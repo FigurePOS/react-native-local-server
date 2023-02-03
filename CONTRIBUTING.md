@@ -82,11 +82,13 @@ The `package.json` file contains various scripts for common tasks:
 
 - `yarn check:ts`: type-check files with TypeScript.
 - `yarn check:lint`: lint files with ESLint.
-- `yarn test:ts`: run unit tests with Jest.
-- `yarn example install-native`: install all dependencies for the example app.
-- `yarn example bundle`: start the Metro server for the example app.
-- `yarn example android`: run the example app on Android.
-- `yarn example ios`: run the example app on iOS.
+- `yarn test:ts`: runs TypeScript unit tests with Jest.
+- `yarn test:android`: runs Android unit tests.
+- `yarn test:ios`: runs iOS unit tests.
+- `yarn example install-native`: installs all dependencies for the example app.
+- `yarn example bundle`: starts the Metro server for the example app.
+- `yarn example android`: runs the example app on Android.
+- `yarn example ios`: runs the example app on iOS.
 
 ## Code of Conduct
 

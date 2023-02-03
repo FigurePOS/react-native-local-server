@@ -1,4 +1,8 @@
-# react-native-local-server
+# React Native Local Server
+
+[![badge][npm-badge]][npm]
+[![CircleCI][build-badge]][build]
+[![MIT License][license-badge]][license]
 
 Library for creating a local server on the device running React Native.
 
@@ -7,7 +11,7 @@ The library exposes several classes to ease communication over local network.
 * UDP server
 * Messaging server and client
 * Caller ID server (Whozz Calling?)
-* Bonjour discovery service (TODO)
+* Service browser (zero-configuration)
 
 ## Installation
 
@@ -38,7 +42,7 @@ See documentation of the class for more information.
 
 ### Messaging server and client
 Abstraction above TCP layer using RxJS. There are again two classes: server and client.
-Both server and client require a handler when starting. The handler is a function that takes a stream of incoming messages and defined dependencies. This design was inspired by redux-observable (TODO link) library.
+Both server and client require a handler when starting. The handler is a function that takes a stream of incoming messages and defined dependencies. This design was inspired by [redux-observable](https://redux-observable.js.org/) library.
 Both classes also provides a stream of status events.
 
 See documentation of classes for more information.
@@ -49,7 +53,10 @@ The server can also simulate incoming call via method `CallerIdServer.simulateCa
 
 See documentation of the class for more information.
 
-### Bonjour discovery service (TODO)
+### Service browser (zero-configuration)
+Implementation of zero-configuration standard for service discovery. This browser allows you discover all available services in provided group.
+
+On iOS you have to specify service groups in Info.plist, the key is `NSBonjourServices`.
 
 See documentation of classes for more information.
 
@@ -57,6 +64,7 @@ See documentation of classes for more information.
 
 ### UDP server
 * Android: not receiving broadcast messages
+* iOS: not sending broadcast messages
 
 ## Contributing
 
@@ -65,3 +73,12 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
+
+<!-- badges -->
+
+[npm-badge]: https://img.shields.io/npm/v/@figuredev/react-native-local-server.svg
+[npm]: https://www.npmjs.com/package/@figuredev/react-native-local-server
+[build-badge]: https://dl.circleci.com/status-badge/img/gh/FigurePOS/react-native-local-server/tree/master.svg?style=shield
+[build]: https://dl.circleci.com/status-badge/redirect/gh/FigurePOS/react-native-local-server/tree/master
+[license-badge]: https://img.shields.io/npm/l/@figuredev/react-native-local-server.svg
+[license]: https://opensource.org/licenses/MIT
