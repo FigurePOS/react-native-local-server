@@ -1,5 +1,9 @@
 # React Native Local Server
 
+[![badge][npm-badge]][npm]
+[![CircleCI][build-badge]][build]
+[![MIT License][license-badge]][license]
+
 Library for creating a local server on the device running React Native.
 
 The library exposes several classes to ease communication over local network.
@@ -69,3 +73,12 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
+
+<!-- badges -->
+
+[npm-badge]: https://img.shields.io/npm/v/@figuredev/react-native-local-server.svg
+[npm]: https://www.npmjs.com/package/@figuredev/react-native-local-server
+[build-badge]: https://dl.circleci.com/status-badge/img/gh/FigurePOS/react-native-local-server/tree/master.svg?style=shield
+[build]: https://dl.circleci.com/status-badge/redirect/gh/FigurePOS/react-native-local-server/tree/master
+[license-badge]: https://img.shields.io/npm/l/@figuredev/react-native-local-server.svg
+[license]: https://opensource.org/licenses/MIT
