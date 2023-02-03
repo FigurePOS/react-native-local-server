@@ -1,3 +1,10 @@
+### [0.13.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.3...v0.13.4) (2023-02-03)
+
+
+### Docs
+
+* update documentation ([#33](https://github.com/FigurePOS/react-native-local-server/issues/33)) ([76c2e40](https://github.com/FigurePOS/react-native-local-server/commit/76c2e40b64579b4caeb3e210b77c4b6bd2a82e27))
+
 ### [0.13.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.2...v0.13.3) (2023-01-12)
 
 

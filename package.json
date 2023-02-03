@@ -1,6 +1,6 @@
 {
     "name": "@figuredev/react-native-local-server",
-    "version": "0.13.3",
+    "version": "0.13.4",
     "description": "Library for creating a local server on the device running React Native.",
     "main": "lib/commonjs/index",
     "module": "lib/module/index",
