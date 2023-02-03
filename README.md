@@ -1,4 +1,4 @@
-# react-native-local-server
+# React Native Local Server
 
 Library for creating a local server on the device running React Native.
 
@@ -7,7 +7,7 @@ The library exposes several classes to ease communication over local network.
 * UDP server
 * Messaging server and client
 * Caller ID server (Whozz Calling?)
-* Bonjour discovery service (TODO)
+* Service browser (zero-configuration)
 
 ## Installation
 
@@ -49,7 +49,10 @@ The server can also simulate incoming call via method `CallerIdServer.simulateCa
 
 See documentation of the class for more information.
 
-### Bonjour discovery service (TODO)
+### Service browser (zero-configuration)
+Implementation of zero-configuration standard for service discovery. This browser allows you discover all available services in provided group.
+
+On iOS you have to specify service groups in Info.plist, the key is `NSBonjourServices`.
 
 See documentation of classes for more information.
 
@@ -57,6 +60,7 @@ See documentation of classes for more information.
 
 ### UDP server
 * Android: not receiving broadcast messages
+* iOS: not sending broadcast messages
 
 ## Contributing
 
