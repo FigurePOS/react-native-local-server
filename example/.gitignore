@@ -1,0 +1,5 @@
+# Bundle artifact
+*.jsbundle
+# Ruby / CocoaPods
+/ios/Pods/
+/vendor/bundle/
