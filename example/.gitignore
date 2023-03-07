@@ -3,3 +3,4 @@
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
+.cxx/
