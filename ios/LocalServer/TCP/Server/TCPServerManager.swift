@@ -101,10 +101,11 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
         servers.removeAll()
     }
     
-    private func handleLifecycleEvent(serverId: String, eventName: String, reason: String? = nil) {
+    private func handleLifecycleEvent(serverId: String, eventName: String, port: UInt16, reason: String? = nil) {
         RNLSLog("TCPServerManager [\(serverId)] - event \(eventName)")
         let event: JSEvent = JSEvent(name: eventName)
         event.putString(key: "serverId", value: serverId)
+        event.putInt(key: "port", value: port)
         if (reason != nil) {
             event.putString(key: "reason", value: reason!)
         }
@@ -123,13 +124,13 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     }
     
     //MARK: - ServerDelegateProtocol
-    func handleServerReady(serverId: String) {
-        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Ready)
+    func handleServerReady(serverId: String, port: UInt16) {
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Ready, port: port)
     }
     
-    func handleServerStopped(serverId: String, reason: String?) {
+    func handleServerStopped(serverId: String, port: UInt16, reason: String?) {
         servers.removeValue(forKey: serverId)
-        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Stopped, reason: reason)
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Stopped, port: port, reason: reason)
     }
     
     func handleConnectionAccepted(serverId: String, connectionId: String) {
@@ -154,10 +155,10 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     
     //MARK: - ServiceDelegateProtocol
     func serviceAdded(serverId: String, endpoint: NWEndpoint) {
-        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryRegistered)
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryRegistered, port: 0)
     }
     
     func serviceRemoved(serverId: String, endpoint: NWEndpoint) {
-        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryUnregistered)
+        handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryUnregistered, port: 0)
     }
 }

@@ -39,7 +39,7 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer theme={MyTheme}>
-                <Drawer.Navigator initialRouteName={ScreenNames.Counter}>
+                <Drawer.Navigator initialRouteName={ScreenNames.TCPServer}>
                     <Drawer.Screen name={ScreenNames.TCPServer} component={TCPServerScreen} />
                     <Drawer.Screen name={ScreenNames.TCPClient} component={TCPClientScreen} />
                     <Drawer.Screen name={ScreenNames.ServiceBrowser} component={ServiceBrowserScreen} />

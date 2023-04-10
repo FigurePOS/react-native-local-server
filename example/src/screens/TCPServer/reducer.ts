@@ -31,7 +31,7 @@ export type TCPServerConnectionStateObject = {
 
 export const createDefaultState = (): TCPServerStateObject => ({
     state: ServerState.StandBy,
-    port: "12000",
+    port: "",
     error: null,
     connections: [],
     activeConnectionId: null,
@@ -59,6 +59,7 @@ export const TCPServerReducer: Reducer = (
             return {
                 ...state,
                 state: ServerState.Ready,
+                port: `${action.payload.port}`,
             }
         case BARE_TCP_SERVER_STOP_REQUESTED:
             return {

@@ -6,13 +6,13 @@ import { MessagingServiceInformation, MessagingStoppedReason } from "../types"
 
 /**
  * Object containing configuration of messaging server
- * @property port - port to listen on
+ * @property port - port to listen on (if not provided, random port is used)
  * @property name - name of the server
  * @property service - service information about the server
  * @property ping - ping configuration of the server
  */
 export type MessagingServerConfiguration = {
-    port: number
+    port?: number | null
     name?: string
     service?: Omit<MessagingServiceInformation, "shortId">
 
@@ -56,6 +56,7 @@ export type MessagingServerLifecycleStatusEvent = {
         | MessagingServerStatusEventName.Stopped
         | MessagingServerStatusEventName.Unknown
     reason?: MessagingStoppedReason | string
+    port: number
 }
 
 export type MessagingServerConnectionStatusEvent = {

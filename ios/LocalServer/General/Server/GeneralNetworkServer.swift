@@ -22,7 +22,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     private var onStartFailed: ((_ reason: String) -> ())? = nil
     
     let id: String
-    let port: NWEndpoint.Port
+    var port: NWEndpoint.Port
     let numberOfDroppedBytesFromMsgStart: UInt16
     let listener: NWListener
     let queue: DispatchQueue
@@ -32,7 +32,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         self.delegate = delegate
         queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
         self.id = id
-        self.port = NWEndpoint.Port(rawValue: port)!
+        self.port = port == 0 ? NWEndpoint.Port.any : NWEndpoint.Port(rawValue: port)!
         self.numberOfDroppedBytesFromMsgStart = 0
         self.listener = try NWListener(using: params, on: self.port)
     }
@@ -41,7 +41,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         self.delegate = delegate
         queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
         self.id = id
-        self.port = NWEndpoint.Port(rawValue: port)!
+        self.port = port == 0 ? NWEndpoint.Port.any : NWEndpoint.Port(rawValue: port)!
         self.numberOfDroppedBytesFromMsgStart = numberOfDroppedBytesFromMsgStart
         self.listener = try NWListener(using: params, on: self.port)
     }
@@ -116,8 +116,10 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
             case .ready:
                 RNLSLog("\tstate: ready")
                 wasReady = true
+                self.port = listener.port!
+                let tmpPort = listener.port?.rawValue ?? 0
                 self.onStartSucceeded?()
-                delegate.handleServerReady(serverId: id)
+                delegate.handleServerReady(serverId: id, port: tmpPort)
                 break
             case .failed(let error):
                 RNLSLog("\tstate: failure, error: \(error.debugDescription)")
@@ -147,7 +149,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
             return
         }
         let reason = error == nil ? lastReasonToStop : error?.debugDescription
-        delegate.handleServerStopped(serverId: id, reason: reason)
+        delegate.handleServerStopped(serverId: id, port: self.port.rawValue, reason: reason)
     }
     
     private func serviceRegistrationHandler(update: NWListener.ServiceRegistrationChange) {

@@ -38,6 +38,12 @@ public class TCPServerDiscovery {
         }
         nsdManager.unregisterService(listener);
     }
+    public void setPort(int port) {
+        if (this.config == null) {
+            return;
+        }
+        this.config.setPort(port);
+    }
 
     class RegistrationHandler implements NsdManager.RegistrationListener {
 

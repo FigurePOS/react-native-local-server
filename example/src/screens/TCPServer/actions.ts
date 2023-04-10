@@ -32,8 +32,11 @@ export const createActionBareTcpServerErrored = (error: string) => ({
 })
 
 export const BARE_TCP_SERVER_READY = "BARE_TCP_SERVER_READY"
-export const createActionBareTcpServerReady = () => ({
+export const createActionBareTcpServerReady = (port: number) => ({
     type: BARE_TCP_SERVER_READY,
+    payload: {
+        port: port,
+    },
 })
 
 export const BARE_TCP_SERVER_STOPPED = "BARE_TCP_SERVER_STOPPED"

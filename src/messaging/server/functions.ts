@@ -11,9 +11,11 @@ import { getShortServiceId } from "../functions/composeDataServiceInfoObject"
 
 export const composeMessagingServerLifecycleStatusEvent = (
     type: MessagingServerLifecycleStatusEvent["type"],
+    port: string,
     reason?: StopReason
 ): MessagingServerLifecycleStatusEvent => ({
     type: type,
+    port: Number.parseInt(port, 10),
     ...(reason ? { reason: reason } : null),
 })
 
@@ -30,10 +32,11 @@ export const composeMessagingServerConnectionStatusEvent = (
 export const composeMessagingServerStatusEvent = (nativeEvent: TCPServerNativeEvent): MessagingServerStatusEvent => {
     switch (nativeEvent.type) {
         case TCPServerEventName.Ready:
-            return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Ready)
+            return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Ready, nativeEvent.port)
         case TCPServerEventName.Stopped:
             return composeMessagingServerLifecycleStatusEvent(
                 MessagingServerStatusEventName.Stopped,
+                nativeEvent.port,
                 nativeEvent.reason
             )
         case TCPServerEventName.ConnectionAccepted:
@@ -53,7 +56,7 @@ export const composeMessagingServerStatusEvent = (nativeEvent: TCPServerNativeEv
                 nativeEvent.reason
             )
         default:
-            return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Unknown)
+            return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Unknown, "0")
     }
 }
 
