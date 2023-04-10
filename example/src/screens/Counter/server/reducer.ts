@@ -48,6 +48,7 @@ export const counterServerReducer: Reducer = (
             return {
                 ...state,
                 state: action.payload.state,
+                port: `${action.payload.port}`,
             }
 
         case COUNTER_SERVER_ERRORED:

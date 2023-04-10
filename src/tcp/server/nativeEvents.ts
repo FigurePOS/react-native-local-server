@@ -12,11 +12,13 @@ export enum TCPServerEventName {
 export type TCPServerReadyNativeEvent = {
     type: TCPServerEventName.Ready
     serverId: string
+    port: string
 }
 
 export type TCPServerStoppedNativeEvent = {
     type: TCPServerEventName.Stopped
     serverId: string
+    port: string
     reason?: StopReason
 }
 

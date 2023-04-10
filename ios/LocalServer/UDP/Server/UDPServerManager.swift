@@ -116,11 +116,11 @@ class UDPServerManager: ServerDelegateProtocol {
 //    }
     
     //MARK: - ServerDelegateProtocol
-    func handleServerReady(serverId: String) {
+    func handleServerReady(serverId: String, port: UInt16) {
         handleLifecycleEvent(serverId: serverId, eventName: UDPServerEventName.Ready)
     }
     
-    func handleServerStopped(serverId: String, reason: String?) {
+    func handleServerStopped(serverId: String, port: UInt16, reason: String?) {
         servers.removeValue(forKey: serverId)
         handleLifecycleEvent(serverId: serverId, eventName: UDPServerEventName.Stopped, reason: reason)
     }

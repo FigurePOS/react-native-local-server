@@ -24,7 +24,7 @@ public class TCPServer implements EventHandler {
     private final EventEmitter eventEmitter;
     private final TCPServerDiscovery discovery;
     private final String id;
-    private final int port;
+    private int port;
 
     private NsdManager nsdManager;
     private Integer maxConnections = null;
@@ -86,6 +86,8 @@ public class TCPServer implements EventHandler {
         this.nsdManager = manager;
         try {
             serverSocket = socketFactory.of(port);
+            this.port = serverSocket.getLocalPort();
+            this.discovery.setPort(this.port);
             runnable = new TCPRunnable();
             thread = new Thread(runnable, "com.react-native-messaging.tcp.server." + id);
             thread.start();
@@ -156,6 +158,7 @@ public class TCPServer implements EventHandler {
     public void handleLifecycleEvent(String eventName, String reason) {
         JSEvent event = new JSEvent(eventName);
         event.putString("serverId", id);
+        event.putInt("port", port);
         if (reason != null) {
             event.putString("reason", reason);
         }

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { FormTextInput } from "../form/formTextInput"
 import { Colors, FontSize } from "../../constants"
@@ -19,6 +19,9 @@ type Props = {
 
 export const ServerConfiguration = (props: Props) => {
     const [port, setPort] = useState<Maybe<string>>(props.initialPort)
+    useEffect(() => {
+        setPort(props.initialPort)
+    }, [props.initialPort, setPort])
     return (
         <View style={[styles.container, props.style]}>
             {port != null ? (

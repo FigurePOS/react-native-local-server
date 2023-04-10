@@ -20,10 +20,11 @@ export const createActionCounterServerRestartRequested = () => ({
 })
 
 export const COUNTER_SERVER_STATE_CHANGED = "COUNTER_SERVER_STATE_CHANGED"
-export const createActionCounterServerStateChanged = (state: ServerState) => ({
+export const createActionCounterServerStateChanged = (state: ServerState, port: number) => ({
     type: COUNTER_SERVER_STATE_CHANGED,
     payload: {
         state: state,
+        port: port,
     },
 })
 

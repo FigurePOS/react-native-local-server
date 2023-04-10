@@ -24,4 +24,7 @@ public class JSEvent {
     public void putString(String key, String data) {
         body.put(key, data);
     }
+    public void putInt(String key, int data) {
+        body.put(key, String.valueOf(data));
+    }
 }

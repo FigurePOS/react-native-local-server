@@ -2,14 +2,17 @@ import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../i
 
 export const MessagingServerStatusEventReady: MessagingServerStatusEvent = {
     type: MessagingServerStatusEventName.Ready,
+    port: 1234,
 }
 
 export const MessagingServerStatusEventStopped: MessagingServerStatusEvent = {
     type: MessagingServerStatusEventName.Stopped,
+    port: 1234,
 }
 
 export const MessagingServerStatusEventUnknown: MessagingServerStatusEvent = {
     type: MessagingServerStatusEventName.Unknown,
+    port: 0,
 }
 
 export const MessagingServerStatusEventConnectionAccepted: MessagingServerStatusEvent = {

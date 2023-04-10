@@ -78,7 +78,7 @@ export class TCPServer {
         try {
             await TCPServerModule.createServer(
                 this.getId(),
-                this.config.port,
+                this.config.port ?? 0,
                 this.config.discovery?.group ?? null,
                 this.config.discovery?.name ?? null
             )

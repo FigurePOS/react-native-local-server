@@ -9,8 +9,8 @@
 import Foundation
 
 protocol ServerDelegateProtocol {
-    func handleServerReady(serverId: String)
-    func handleServerStopped(serverId: String, reason: String?)
+    func handleServerReady(serverId: String, port: UInt16)
+    func handleServerStopped(serverId: String, port: UInt16, reason: String?)
     func handleConnectionAccepted(serverId: String, connectionId: String)
     func handleConnectionReady(serverId: String, connectionId: String)
     func handleConnectionStopped(serverId: String, connectionId: String, reason: String?)

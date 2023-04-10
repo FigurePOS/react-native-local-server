@@ -13,7 +13,7 @@ import {
     createActionBareTcpServerStartSucceeded,
     createActionBareTcpServerStopped,
 } from "./actions"
-import { catchError, filter, mapTo, switchMap } from "rxjs/operators"
+import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
 import { defer } from "rxjs"
 import { BareTCPServer } from "./network"
 import {
@@ -34,12 +34,14 @@ const bareTcpServerStartRequestedEpic: Epic = (action$: ActionsObservable<StateA
     action$.pipe(
         ofType(BARE_TCP_SERVER_START_REQUESTED),
         switchMap((action: StateAction) => {
-            const port = Number.parseInt(action.payload.port, 10)
-            if (!port || Number.isNaN(port)) {
+            const port = action.payload.port
+            const parsedPort = Number.parseInt(port, 10)
+            const isPortValid = port.length === 0 || !Number.isNaN(parsedPort)
+            if (!isPortValid) {
                 return [createActionBareTcpServerStartFailed("Invalid Port")]
             }
             const serverConfig: TCPServerConfiguration = {
-                port: port,
+                port: port.length === 0 ? null : parsedPort,
             }
             return defer(() => BareTCPServer.start(serverConfig)).pipe(
                 mapTo(createActionBareTcpServerStartSucceeded()),
@@ -51,7 +53,7 @@ const bareTcpServerStartRequestedEpic: Epic = (action$: ActionsObservable<StateA
 const bareTcpServerReadyEpic: Epic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.Ready).pipe(
         filter((event: TCPServerReadyNativeEvent) => event.serverId === BareTCPServer.getId()),
-        mapTo(createActionBareTcpServerReady())
+        map((event: TCPServerReadyNativeEvent) => createActionBareTcpServerReady(Number.parseInt(event.port, 10)))
     )
 
 const bareTcpServerStoppedEpic: Epic = () =>

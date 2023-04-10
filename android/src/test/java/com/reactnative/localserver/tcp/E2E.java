@@ -73,6 +73,7 @@ public class E2E {
         verify(serverEventEmitter, times(3)).emitEvent(serverEventCaptor.capture());
         List<JSEvent> serverEvents = serverEventCaptor.getAllValues();
         assertThat(serverEvents.get(0).getName()).isEqualTo(TCPServerEventName.Ready);
+        assertThat(serverEvents.get(0).getBody()).containsEntry("port", String.valueOf(port));
         assertThat(serverEvents.get(1).getName()).isEqualTo(TCPServerEventName.ConnectionAccepted);
         assertThat(serverEvents.get(2).getName()).isEqualTo(TCPServerEventName.ConnectionReady);
         String connectionId = serverEvents.get(2).getBody().get("connectionId");

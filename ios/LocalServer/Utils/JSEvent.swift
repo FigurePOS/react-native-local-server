@@ -19,6 +19,10 @@ class JSEvent {
         body[key] = value
     }
     
+    func putInt(key: String!, value: UInt16) -> Void {
+        body[key] = value
+    }
+    
     func getBody() -> Dictionary<String, Any> {
         return body
     }

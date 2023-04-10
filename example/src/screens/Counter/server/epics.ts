@@ -28,8 +28,10 @@ const counterServerStartRequested: Epic = (action$: ActionsObservable<StateActio
     action$.pipe(
         ofType(COUNTER_SERVER_START_REQUESTED),
         switchMap((action) => {
-            const port = Number.parseInt(action.payload.port, 10)
-            if (!port || Number.isNaN(port)) {
+            const port = action.payload.port
+            const parsedPort = Number.parseInt(port, 10)
+            const isPortValid = port.length === 0 || !Number.isNaN(parsedPort)
+            if (!isPortValid) {
                 return [createActionCounterServerErrored("Invalid Port")]
             }
             const config: MessagingServerConfiguration = {
@@ -41,7 +43,7 @@ const counterServerStartRequested: Epic = (action$: ActionsObservable<StateActio
                 discovery: {
                     group: "fgr-counter",
                 },
-                port: port,
+                port: port.length === 0 ? null : parsedPort,
                 ping: {
                     interval: 1000,
                     retryCount: 10,
@@ -60,9 +62,9 @@ const counterServerStatus: Epic = () =>
         mergeMap((e) => {
             switch (e.type) {
                 case MessagingServerStatusEventName.Ready:
-                    return [createActionCounterServerStateChanged(ServerState.Ready)]
+                    return [createActionCounterServerStateChanged(ServerState.Ready, e.port)]
                 case MessagingServerStatusEventName.Stopped:
-                    return [createActionCounterServerStateChanged(ServerState.StandBy)]
+                    return [createActionCounterServerStateChanged(ServerState.StandBy, e.port)]
                 case MessagingServerStatusEventName.ConnectionAccepted:
                     return [
                         createActionCounterServerConnectionStateChanged(e.connectionId, ServerConnectionState.Accepted),
