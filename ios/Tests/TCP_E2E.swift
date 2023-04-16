@@ -321,9 +321,16 @@ class TCP_E2E: XCTestCase {
             XCTAssertEqual(serverEvents?[0].getName(), TCPServerEventName.Ready)
             XCTAssertEqual(serverEvents?[1].getName(), TCPServerEventName.ConnectionAccepted)
             XCTAssertEqual(serverEvents?[2].getName(), TCPServerEventName.ConnectionReady)
-            XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
-            XCTAssertEqual(serverEvents?[4].getName(), TCPServerEventName.Stopped)
-            XCTAssertEqual(serverEvents?[4].getBody()["reason"] as? String, "custom-reason")
+            // For now there is not ensured order of events ConnectionClosed and Stopped
+            if (serverEvents?[3].getName() == TCPServerEventName.ConnectionClosed) {
+                XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.ConnectionClosed)
+                XCTAssertEqual(serverEvents?[4].getName(), TCPServerEventName.Stopped)
+                XCTAssertEqual(serverEvents?[4].getBody()["reason"] as? String, "custom-reason")
+            } else {
+                XCTAssertEqual(serverEvents?[4].getName(), TCPServerEventName.ConnectionClosed)
+                XCTAssertEqual(serverEvents?[3].getName(), TCPServerEventName.Stopped)
+                XCTAssertEqual(serverEvents?[3].getBody()["reason"] as? String, "custom-reason")
+            }
             XCTAssert(serverManager!.getServerIds().isEmpty, "There should be no servers in server manager")
 
             let clientEvents = clientEventEmitter?.getEvents()
