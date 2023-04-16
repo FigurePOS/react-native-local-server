@@ -8,6 +8,7 @@ import MessagingServerEpics from "./screens/MessagingServer/epics"
 import MessagingClientEpics from "./screens/MessagingClient/epics"
 import CounterEpics from "./screens/Counter/epics"
 import CallerIdEpics from "./screens/CallerId/epics"
+import ServiceBrowserEpics from "./screens/ServiceBrowser/epics"
 
 const epics: Epic[] = [
     ...TCPServerEpics,
@@ -17,6 +18,7 @@ const epics: Epic[] = [
     ...MessagingClientEpics,
     ...CounterEpics,
     ...CallerIdEpics,
+    ...ServiceBrowserEpics,
 ]
 
 export const rootEpic: Epic = (
