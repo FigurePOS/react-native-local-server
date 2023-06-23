@@ -1,3 +1,25 @@
+## [0.14.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.4...v0.14.0) (2023-06-23)
+
+
+### Features
+
+* add PutToBackground to MessagingStoppedReason ([791c220](https://github.com/FigurePOS/react-native-local-server/commit/791c220905b2b5ac525a51f9422fa1d150926672))
+* add service browser example ([#35](https://github.com/FigurePOS/react-native-local-server/issues/35)) ([021f7dd](https://github.com/FigurePOS/react-native-local-server/commit/021f7dd669c73e4aac89fa43ab61164b187edcad))
+* allow dynamic port for TCP and Messaging servers ([#34](https://github.com/FigurePOS/react-native-local-server/issues/34)) ([93f560c](https://github.com/FigurePOS/react-native-local-server/commit/93f560caaa7a68cd877a546ea8722585949a5f66))
+
+
+### Bug Fixes
+
+* improve iOS flaky test ([#36](https://github.com/FigurePOS/react-native-local-server/issues/36)) ([90f45ef](https://github.com/FigurePOS/react-native-local-server/commit/90f45ef91eb8fb7e4f7176cd59e562f385bbb535))
+
+
+### Chores
+
+* **example:** update react-native to 0.67.5 ([4baabce](https://github.com/FigurePOS/react-native-local-server/commit/4baabceaab2eafa4f796901b19908d3d45ea80fb))
+* **example:** update react-native to 0.68.6 ([0295b14](https://github.com/FigurePOS/react-native-local-server/commit/0295b1412a06e18b04b500aee3478d5bdacca632))
+* **example:** update react-native to 0.69.8 ([5950993](https://github.com/FigurePOS/react-native-local-server/commit/595099355906130af9ae1b2136ab5351a9bd5823))
+* **example:** update react-native to 0.70.6 ([6f7166d](https://github.com/FigurePOS/react-native-local-server/commit/6f7166d7defeb0cab0d460aee959b96e357afbd6))
+
 ### [0.13.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.3...v0.13.4) (2023-02-03)
 
 
