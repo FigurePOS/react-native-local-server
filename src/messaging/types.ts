@@ -20,6 +20,7 @@ export enum MessagingStoppedReason {
     Invalidation = "invalidation",
     PingTimedOut = "ping-timed-out",
     ConnectionTimedOut = "connection-timed-out",
+    PutToBackground = "put-to-background",
 }
 
 /**
