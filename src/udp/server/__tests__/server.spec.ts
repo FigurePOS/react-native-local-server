@@ -26,7 +26,7 @@ describe("UDPServer", () => {
         return expect(server.getId()).toEqual(serverId)
     })
 
-    it("should start server", async (done) => {
+    it("should start server", async () => {
         const spy = jest.spyOn(UDPServerModule, "createServer")
         const config: UDPServerConfiguration = {
             port: 12000,
@@ -34,10 +34,9 @@ describe("UDPServer", () => {
         await server.start(config)
         expect(spy).toBeCalledWith(serverId, config.port, 0)
         expect(server.getConfiguration()).toEqual(config)
-        done()
     })
 
-    it("should start server with set number of bytes to drop", async (done) => {
+    it("should start server with set number of bytes to drop", async () => {
         const spy = jest.spyOn(UDPServerModule, "createServer")
         const config: UDPServerConfiguration = {
             port: 12000,
@@ -46,10 +45,9 @@ describe("UDPServer", () => {
         await server.start(config)
         expect(spy).toBeCalledWith(serverId, config.port, config.numberOfDroppedBytesFromMsgStart)
         expect(server.getConfiguration()).toEqual(config)
-        done()
     })
 
-    it("should start server - error", async (done) => {
+    it("should start server - error", async () => {
         const spy = jest.spyOn(UDPServerModule, "createServer")
         const e = new Error("failed")
         UDPServerModule.createServer.mockRejectedValue(e)
@@ -58,45 +56,39 @@ describe("UDPServer", () => {
         }
         await expect(server.start(config)).rejects.toEqual(e)
         expect(spy).toBeCalledWith(serverId, config.port, 0)
-        done()
     })
 
-    it("should send data to native", async (done) => {
+    it("should send data to native", async () => {
         const spy = jest.spyOn(UDPServerModule, "send")
         await server.sendData("192.168.0.1", 500, "sample data")
         expect(spy).toBeCalledWith("192.168.0.1", 500, "sample data")
-        done()
     })
 
-    it("should send data to native - error", async (done) => {
+    it("should send data to native - error", async () => {
         const spy = jest.spyOn(UDPServerModule, "send")
         const e = new Error("failed")
         UDPServerModule.send.mockRejectedValue(e)
         await expect(server.sendData("192.168.0.1", 500, "sample data")).rejects.toEqual(e)
         expect(spy).toBeCalledWith("192.168.0.1", 500, "sample data")
-        done()
     })
 
-    it("should stop server", async (done) => {
+    it("should stop server", async () => {
         const spy = jest.spyOn(UDPServerModule, "stopServer")
         await server.stop()
         expect(spy).toBeCalledWith(serverId, StopReasonEnum.Manual)
-        done()
     })
 
-    it("should stop server with custom reason", async (done) => {
+    it("should stop server with custom reason", async () => {
         const spy = jest.spyOn(UDPServerModule, "stopServer")
         await server.stop("custom-reason")
         expect(spy).toBeCalledWith(serverId, "custom-reason")
-        done()
     })
 
-    it("should stop server - error", async (done) => {
+    it("should stop server - error", async () => {
         const spy = jest.spyOn(UDPServerModule, "stopServer")
         const e = new Error("failed")
         UDPServerModule.stopServer.mockRejectedValue(e)
         await expect(server.stop()).rejects.toEqual(e)
         expect(spy).toBeCalledWith(serverId, StopReasonEnum.Manual)
-        done()
     })
 })
