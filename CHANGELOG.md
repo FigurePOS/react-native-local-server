@@ -1,3 +1,19 @@
+### [0.14.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.0...v0.14.1) (2023-07-19)
+
+
+### Chores
+
+* dependabot setup & codeowners ([#37](https://github.com/FigurePOS/react-native-local-server/issues/37)) ([7f90056](https://github.com/FigurePOS/react-native-local-server/commit/7f9005650c772da3b30e0d65a9a4d74d7ee7a82d))
+* **deps:** bump @sideway/formula from 3.0.0 to 3.0.1 in /example ([#41](https://github.com/FigurePOS/react-native-local-server/issues/41)) ([206a6ff](https://github.com/FigurePOS/react-native-local-server/commit/206a6ffe4cf339faf1a7ccacccfa22086e52c41c))
+* **deps:** bump activesupport from 7.0.4.2 to 7.0.6 in /example ([#42](https://github.com/FigurePOS/react-native-local-server/issues/42)) ([80e6177](https://github.com/FigurePOS/react-native-local-server/commit/80e6177b488909c61846497d3b2d0c48366b2c0b))
+* **deps:** bump http-cache-semantics from 4.1.0 to 4.1.1 ([#43](https://github.com/FigurePOS/react-native-local-server/issues/43)) ([2305a6d](https://github.com/FigurePOS/react-native-local-server/commit/2305a6d7b41e8be0d4afea9a3814c54859f8c678))
+* **deps:** bump json5 from 2.2.1 to 2.2.3 ([#45](https://github.com/FigurePOS/react-native-local-server/issues/45)) ([e8f4af7](https://github.com/FigurePOS/react-native-local-server/commit/e8f4af73b6bdf74b6b0df54ed5eace4dbb378bf0))
+* **deps:** bump semver from 5.7.1 to 5.7.2 ([#40](https://github.com/FigurePOS/react-native-local-server/issues/40)) ([30607dc](https://github.com/FigurePOS/react-native-local-server/commit/30607dc3a39e02cdbf4afb3dcf962094c0e5cd8a))
+* **deps:** bump semver from 5.7.1 to 5.7.2 in /example ([#39](https://github.com/FigurePOS/react-native-local-server/issues/39)) ([c0c6eae](https://github.com/FigurePOS/react-native-local-server/commit/c0c6eaeab486f9269ade8e11405117856c4aed4c))
+* **deps:** bump tough-cookie from 4.0.0 to 4.1.3 ([#38](https://github.com/FigurePOS/react-native-local-server/issues/38)) ([ecad5ca](https://github.com/FigurePOS/react-native-local-server/commit/ecad5cac8c9f1e2ac03643e05938b0040f1ae12f))
+* **deps:** bump ua-parser-js from 0.7.31 to 0.7.35 ([#44](https://github.com/FigurePOS/react-native-local-server/issues/44)) ([84857f2](https://github.com/FigurePOS/react-native-local-server/commit/84857f2c6eaa81a0ea4527ae5a8577b54beaacdc))
+* update react native to v0.72.3 ([#46](https://github.com/FigurePOS/react-native-local-server/issues/46)) ([d47979f](https://github.com/FigurePOS/react-native-local-server/commit/d47979f1fbdc01cd476c86bfebaf480f5253c2ab))
+
 ## [0.14.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.13.4...v0.14.0) (2023-06-23)
 
 
