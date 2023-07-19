@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 jest.mock("react-native", () => {
     // use original implementation, which comes with mocks out of the box
     const RN = jest.requireActual("react-native")
