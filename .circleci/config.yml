@@ -11,7 +11,7 @@ executors:
     working_directory: ~/project
   ios:
     macos:
-      xcode: 14.3.0
+      xcode: 14.3.1
     resource_class: macos.x86.medium.gen2
     working_directory: ~/project
 
