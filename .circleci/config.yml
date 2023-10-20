@@ -113,8 +113,8 @@ jobs:
     steps:
       - attach_project
       - run:
-          name: "Set Ruby version"
-          command: echo "ruby-3.1.0" > ~/.ruby-version
+          name: Set Ruby Version
+          command: rbenv install 3.1.0 && rbenv global 3.1.0 && rbenv rehash
       - run:
           name: "Configure Bundler"
           command: |
