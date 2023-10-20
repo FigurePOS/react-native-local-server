@@ -11,7 +11,8 @@ executors:
     working_directory: ~/project
   ios:
     macos:
-      xcode: "13.2.1"
+      xcode: 14.3.1
+    resource_class: macos.x86.medium.gen2
     working_directory: ~/project
 
 commands:
@@ -112,8 +113,8 @@ jobs:
     steps:
       - attach_project
       - run:
-          name: "Set Ruby version"
-          command: echo "ruby-3.1.0" > ~/.ruby-version
+          name: Set Ruby Version
+          command: rbenv install 3.1.0 && rbenv global 3.1.0 && rbenv rehash
       - run:
           name: "Configure Bundler"
           command: |
