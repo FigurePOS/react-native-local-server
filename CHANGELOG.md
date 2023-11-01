@@ -1,3 +1,17 @@
+### [0.14.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.1...v0.14.2) (2023-11-01)
+
+
+### Features
+
+* add handler output stream ([#54](https://github.com/FigurePOS/react-native-local-server/issues/54)) ([e72eadf](https://github.com/FigurePOS/react-native-local-server/commit/e72eadfd3bf4cca9536b6fb8e659c6ade5c7cfaf))
+
+
+### Chores
+
+* **deps:** bump react-devtools-core from 4.28.0 to 4.28.4 ([#53](https://github.com/FigurePOS/react-native-local-server/issues/53)) ([d2160c4](https://github.com/FigurePOS/react-native-local-server/commit/d2160c46cbb922510e8babd91bb6bed14b092540))
+* **deps:** bump word-wrap from 1.2.3 to 1.2.4 ([#47](https://github.com/FigurePOS/react-native-local-server/issues/47)) ([8be48c7](https://github.com/FigurePOS/react-native-local-server/commit/8be48c7a05f4f5ff879939ed6ec759d02d1676c9))
+* upgrade ci resource class ([#51](https://github.com/FigurePOS/react-native-local-server/issues/51)) ([d4a0d80](https://github.com/FigurePOS/react-native-local-server/commit/d4a0d80df2d5d33a3de39fef7b1692c7f2eda09f))
+
 ### [0.14.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.0...v0.14.1) (2023-07-19)
 
 
