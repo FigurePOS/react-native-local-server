@@ -200,6 +200,8 @@ const counterClientSearchUpdate: Epic = () =>
         })
     )
 
+const counterClientHandlersOutput = () => CounterClient.getHandlerOutput$()
+
 export default [
     counterClientStartRequested,
     counterClientStartFromServiceRequested,
@@ -212,4 +214,5 @@ export default [
     counterClientSearchStopRequested,
     counterClientSearchRestartRequested,
     counterClientSearchUpdate,
+    counterClientHandlersOutput,
 ]

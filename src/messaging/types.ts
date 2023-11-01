@@ -11,7 +11,10 @@ export type Message<B = any> = {
     body: B
 }
 
-export type MessageHandler<In, Deps = any> = (message$: Observable<Message<In>>, deps: Deps) => Observable<any>
+export type MessageHandler<In, Deps = any, Result = any> = (
+    message$: Observable<Message<In>>,
+    deps: Deps
+) => Observable<Result>
 
 export enum MessagingStoppedReason {
     Manual = "manual",

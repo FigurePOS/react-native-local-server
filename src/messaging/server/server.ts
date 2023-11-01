@@ -32,12 +32,13 @@ import { Logger, LoggerWrapper } from "../../utils/logger"
 import { waitForMessagingServerStopped } from "./operators/waitForMessagingServerEvent"
 import { composeTCPServerConfiguration } from "./functions"
 
-export class MessagingServer<In, Out = In, Deps = any> {
+export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
     private readonly serverId: string
     private readonly handler$: Subject<MessageHandler<In, Deps>>
     private readonly dep$: Subject<Deps>
     private readonly error$: Subject<any>
     private readonly dataOutput$: Subject<DataObject>
+    private readonly handlerOutput$: Subject<HandlerOutput>
     private readonly tcpServer: TCPServer
     private readonly statusEvent$: Observable<MessagingServerStatusEvent>
 
@@ -55,10 +56,11 @@ export class MessagingServer<In, Out = In, Deps = any> {
      */
     constructor(id: string) {
         this.serverId = id
-        this.handler$ = new Subject<MessageHandler<In, Deps>>()
+        this.handler$ = new Subject<MessageHandler<In, Deps, HandlerOutput>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
+        this.handlerOutput$ = new Subject<HandlerOutput>()
         this.statusEvent$ = fromMessagingServerStatusEvent(id).pipe(
             log(LoggerVerbosity.Low, this.logger, `MessagingServer [${this.serverId}] - status event`),
             tap((event) => {
@@ -89,11 +91,12 @@ export class MessagingServer<In, Out = In, Deps = any> {
         this.startData = [rootHandler, dependencies]
         this.cleanSubscriptions()
 
-        const output$: Observable<boolean> = this.handler$.pipe(
+        const output$: Observable<HandlerOutput> = this.handler$.pipe(
             withLatestFrom(this.dep$),
-            mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
+            mergeMap(([handler, deps]: [MessageHandler<In, Deps, HandlerOutput>, Deps]) => {
                 return fromMessagingServerMessageReceived<In>(this.serverId, this.logger).pipe(
                     handleBy(handler, deps),
+                    tap((output) => this.handlerOutput$.next(output)),
                     catchError((err) => {
                         this.logger.error(LoggerVerbosity.Low, "fromServerDataReceived - error", {
                             error: err,
@@ -267,6 +270,13 @@ export class MessagingServer<In, Out = In, Deps = any> {
      */
     getStatusEvent$(): Observable<MessagingServerStatusEvent> {
         return this.statusEvent$
+    }
+
+    /**
+     * This method returns stream of outputs from all handlers.
+     */
+    getHandlerOutput$(): Observable<HandlerOutput> {
+        return this.handlerOutput$
     }
 
     /**
