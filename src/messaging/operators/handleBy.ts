@@ -2,9 +2,9 @@ import { Message, MessageHandler } from "../types"
 import { Observable } from "rxjs"
 
 export const handleBy =
-    <In, Deps = any>(handler: MessageHandler<In, Deps>, deps: Deps) =>
-    (source$: Observable<Message<In>>): Observable<boolean> =>
-        source$.pipe((s$: Observable<Message<In>>): Observable<boolean> => {
+    <In, Deps = any, Result = any>(handler: MessageHandler<In, Deps, Result>, deps: Deps) =>
+    (source$: Observable<Message<In>>): Observable<Result> =>
+        source$.pipe((s$: Observable<Message<In>>): Observable<Result> => {
             const out$ = handler(s$, deps)
             if (!out$) {
                 throw new Error("Handlers should return Observable")

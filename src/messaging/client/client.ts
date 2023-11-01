@@ -32,7 +32,7 @@ import { Logger, LoggerWrapper } from "../../utils/logger"
 import { composeTCPClientConfiguration, getBrowserIdFromMessagingClientId } from "./functions"
 import { fromMessagingClientServiceSearchEvent } from "./operators/fromMessagingClientServiceSearchEvent"
 
-export class MessagingClient<In, Out = In, Deps = any> {
+export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
     private readonly clientId: string
     private readonly browserId: string
     private readonly discoveryGroup: string | null = null
@@ -40,6 +40,7 @@ export class MessagingClient<In, Out = In, Deps = any> {
     private readonly dep$: Subject<Deps>
     private readonly error$: Subject<any>
     private readonly dataOutput$: Subject<DataObject>
+    private readonly handlerOutput$: Subject<HandlerOutput>
     private readonly tcpClient: TCPClient
     private readonly serviceBrowser: ServiceBrowser
     private readonly statusEvent$: Observable<MessagingClientStatusEvent>
@@ -61,10 +62,11 @@ export class MessagingClient<In, Out = In, Deps = any> {
         this.clientId = id
         this.browserId = getBrowserIdFromMessagingClientId(id)
         this.discoveryGroup = discoveryGroup ?? null
-        this.handler$ = new Subject<MessageHandler<In, Deps>>()
+        this.handler$ = new Subject<MessageHandler<In, Deps, HandlerOutput>>()
         this.dep$ = new Subject<Deps>()
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
+        this.handlerOutput$ = new Subject<HandlerOutput>()
         this.statusEvent$ = fromMessagingClientStatusEvent(this.clientId).pipe(
             log(LoggerVerbosity.Low, this.logger, `MessagingClient [${this.clientId}] - status event`),
             tap((event) => {
@@ -160,11 +162,12 @@ export class MessagingClient<In, Out = In, Deps = any> {
             return throwError("Failed to prepare tcp configuration")
         }
 
-        const output$: Observable<boolean> = this.handler$.pipe(
+        const output$: Observable<HandlerOutput> = this.handler$.pipe(
             withLatestFrom(this.dep$),
-            mergeMap(([handler, deps]: [MessageHandler<In, Deps>, Deps]) => {
+            mergeMap(([handler, deps]: [MessageHandler<In, Deps, HandlerOutput>, Deps]) => {
                 return fromMessagingClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
+                    tap((output) => this.handlerOutput$.next(output)),
                     catchError((err) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
@@ -309,6 +312,13 @@ export class MessagingClient<In, Out = In, Deps = any> {
      */
     getSearchUpdate$(): Observable<MessagingClientServiceSearchEvent> {
         return this.searchEvent$
+    }
+
+    /**
+     * This method returns stream of outputs from all handlers.
+     */
+    getHandlerOutput$(): Observable<HandlerOutput> {
+        return this.handlerOutput$
     }
 
     /**

@@ -5,24 +5,27 @@ import { CounterMessage, CounterMessageType, createCounterMessageCountChanged } 
 import { createActionCounterCountReset } from "../data/actionts"
 import { getCounterCount } from "../data/selectors"
 import { CounterServer } from "./server"
+import { StateAction } from "../../../types"
 
-export const counterResetRequestedHandler: MessageHandler<CounterMessage, SampleMessagingClientDependenciesType> = (
-    message$,
-    deps
-) =>
+export const counterResetRequestedHandler: MessageHandler<
+    CounterMessage,
+    SampleMessagingClientDependenciesType,
+    StateAction
+> = (message$) =>
     message$.pipe(
         switchMap((message) => {
             if (message.body.type === CounterMessageType.CountResetRequested) {
-                deps.dispatch(createActionCounterCountReset())
+                return [createActionCounterCountReset()]
             }
             return []
         })
     )
 
-export const counterRequestedHandler: MessageHandler<CounterMessage, SampleMessagingClientDependenciesType> = (
-    message$,
-    deps
-) =>
+export const counterRequestedHandler: MessageHandler<
+    CounterMessage,
+    SampleMessagingClientDependenciesType,
+    StateAction
+> = (message$, deps) =>
     message$.pipe(
         switchMap((message) => {
             if (message.body.type === CounterMessageType.CountRequested) {

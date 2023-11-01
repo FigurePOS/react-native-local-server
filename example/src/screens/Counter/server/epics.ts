@@ -138,6 +138,8 @@ const counterServerIpAddressEpic: Epic = (action$: ActionsObservable<StateAction
         catchError((err) => [createActionCounterServerErrored(err)])
     )
 
+const counterServerHandlersOutput = () => CounterServer.getHandlerOutput$()
+
 export default [
     counterServerStartRequested,
     counterServerStatus,
@@ -145,4 +147,5 @@ export default [
     counterServerCountChanged,
     counterServerIpAddressEpic,
     counterServerRestartRequested,
+    counterServerHandlersOutput,
 ]
