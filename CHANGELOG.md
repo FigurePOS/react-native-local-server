@@ -1,3 +1,20 @@
+### [0.14.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.2...v0.14.3) (2024-04-05)
+
+
+### Bug Fixes
+
+* handle parsing errors FGR3-4212 ([#58](https://github.com/FigurePOS/react-native-local-server/issues/58)) ([943ef20](https://github.com/FigurePOS/react-native-local-server/commit/943ef2089f2d7bb2655fd464e682aaa680d62d1a))
+
+
+### Chores
+
+* **deps:** bump @babel/traverse from 7.18.2 to 7.23.2 ([#49](https://github.com/FigurePOS/react-native-local-server/issues/49)) [skip ci] ([c3c9523](https://github.com/FigurePOS/react-native-local-server/commit/c3c95237d61277ddd3ed8ddb7f227712a4c8a0e8))
+* **deps:** bump @babel/traverse from 7.18.2 to 7.23.2 in /example ([#50](https://github.com/FigurePOS/react-native-local-server/issues/50)) [skip ci] ([d8b5578](https://github.com/FigurePOS/react-native-local-server/commit/d8b557859849c83bab54de37733f9e968042a2a1))
+* **deps:** bump activesupport from 7.0.6 to 7.1.3.2 in /example ([#57](https://github.com/FigurePOS/react-native-local-server/issues/57)) [skip ci] ([30351dd](https://github.com/FigurePOS/react-native-local-server/commit/30351dd5fdbbd2a7922bc459f9de1d17c6ff2b3c))
+* **deps:** bump ip from 1.1.8 to 1.1.9 ([#56](https://github.com/FigurePOS/react-native-local-server/issues/56)) [skip ci] ([1c66452](https://github.com/FigurePOS/react-native-local-server/commit/1c66452a86f66c1a231645d69d7aed0609e689cf))
+* **deps:** bump ip from 1.1.8 to 1.1.9 in /example ([#55](https://github.com/FigurePOS/react-native-local-server/issues/55)) [skip ci] ([951875e](https://github.com/FigurePOS/react-native-local-server/commit/951875ecc41d5634b451a907d84894af0c57fdd2))
+* **deps:** bump react-devtools-core from 4.28.0 to 4.28.4 in /example ([#52](https://github.com/FigurePOS/react-native-local-server/issues/52)) [skip ci] ([7c59ae4](https://github.com/FigurePOS/react-native-local-server/commit/7c59ae487f5ba7dfed5f401c4d9cb06e20d39068))
+
 ### [0.14.2](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.1...v0.14.2) (2023-11-01)
 
 
