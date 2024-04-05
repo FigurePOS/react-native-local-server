@@ -1,3 +1,10 @@
+### [0.14.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.3...v0.14.4) (2024-04-05)
+
+
+### Bug Fixes
+
+* replace output$ mergeMap to secure only one at time FGR3-4212  ([#59](https://github.com/FigurePOS/react-native-local-server/issues/59)) ([b34e878](https://github.com/FigurePOS/react-native-local-server/commit/b34e878b1a1ea5140951fde54ee628d9fc08046b))
+
 ### [0.14.3](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.2...v0.14.3) (2024-04-05)
 
 
