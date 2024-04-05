@@ -101,7 +101,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     catchError((err) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
-                            `MessagingServer [${this.serverId}] - fatal error in output$`,
+                            `MessagingServer [${this.serverId}] fatal error in output$`,
                             {
                                 error: err,
                                 ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
@@ -141,7 +141,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                 return pingMessagingServerConnection(
                     connectionId,
                     this.statusEvent$,
-                    fromMessagingServerDataReceived(this.serverId),
+                    fromMessagingServerDataReceived(this.serverId, this.logger),
                     this.dataOutput$,
                     this.configuration?.ping?.interval ?? PING_INTERVAL,
                     this.configuration?.ping?.timeout ?? PING_INTERVAL,

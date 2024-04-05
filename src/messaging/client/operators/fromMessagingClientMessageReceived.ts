@@ -13,7 +13,7 @@ export const fromMessagingClientMessageReceived = <Body>(
     clientId: string,
     logger: LoggerWrapper
 ): Observable<Message<Body>> =>
-    fromMessagingClientDataReceived(clientId).pipe(
+    fromMessagingClientDataReceived(clientId, logger).pipe(
         ofDataTypeMessage,
         map(parseClientMessage),
         deduplicateBy(getMessageId),
