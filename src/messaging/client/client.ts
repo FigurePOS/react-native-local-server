@@ -67,7 +67,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.error$ = new Subject<any>()
         this.dataOutput$ = new Subject<DataObject>()
         this.handlerOutput$ = new Subject<HandlerOutput>()
-        this.statusEvent$ = fromMessagingClientStatusEvent(this.clientId).pipe(
+        this.statusEvent$ = fromMessagingClientStatusEvent(this.clientId, this.logger).pipe(
             log(LoggerVerbosity.Low, this.logger, `MessagingClient [${this.clientId}] - status event`),
             tap((event) => {
                 if (event.type === MessagingClientStatusEventName.Stopped) {
@@ -171,12 +171,15 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     catchError((err) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
-                            `MessagingClient [${this.clientId}] fromClientDataReceived - error`,
+                            `MessagingClient [${this.clientId}] fatal error in output$`,
                             {
                                 error: err,
                                 ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
                             }
                         )
+                        // Because this stream errored, we need to restart the processing.
+                        // This inserts the handler again into the handler subject, which re-triggers this switchMap.
+                        this.handler$.next(handler)
                         return EMPTY
                     })
                 )
@@ -190,7 +193,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             switchMap(() => {
                 return pingMessagingClient(
                     this.statusEvent$,
-                    fromMessagingClientDataReceived(this.clientId),
+                    fromMessagingClientDataReceived(this.clientId, this.logger),
                     this.dataOutput$,
                     this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY
                 ).pipe(
@@ -268,7 +271,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - restart`)
         return concat(
             defer(() => this.tcpClient.stop(MessagingStoppedReason.Restart)).pipe(
-                waitForMessagingClientStopped(this.clientId),
+                waitForMessagingClientStopped(this.clientId, this.logger),
                 catchError((err) => {
                     this.logger.error(
                         LoggerVerbosity.Low,

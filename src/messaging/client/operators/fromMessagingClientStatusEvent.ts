@@ -9,8 +9,12 @@ import {
 import { fromTCPClientEvent } from "../../../tcp/client/operators"
 import { fromMessagingClientDataReceived } from "./fromMessagingClientDataReceived"
 import { ofDataTypeServiceInfo } from "../../operators/ofDataType"
+import { LoggerWrapper } from "../../../utils/logger"
 
-export const fromMessagingClientStatusEvent = (clientId: string): Observable<MessagingClientStatusEvent> =>
+export const fromMessagingClientStatusEvent = (
+    clientId: string,
+    logger: LoggerWrapper
+): Observable<MessagingClientStatusEvent> =>
     merge(
         merge(
             fromTCPClientEvent(clientId, TCPClient.EventName.Ready),
@@ -18,7 +22,7 @@ export const fromMessagingClientStatusEvent = (clientId: string): Observable<Mes
             fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.Started),
             fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.Stopped)
         ).pipe(map(composeMessagingClientStatusEvent)),
-        fromMessagingClientDataReceived(clientId).pipe(
+        fromMessagingClientDataReceived(clientId, logger).pipe(
             ofDataTypeServiceInfo,
             map(composeMessagingClientServiceInformationStatusEvent)
         )
