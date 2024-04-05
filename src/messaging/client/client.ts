@@ -11,7 +11,7 @@ import {
     TCPClient,
     TCPClientConfiguration,
 } from "../../"
-import { catchError, concatMap, mapTo, mergeMap, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
+import { catchError, concatMap, mapTo, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
 import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
 import { handleBy } from "../operators/handleBy"
 import {
@@ -164,7 +164,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
 
         const output$: Observable<HandlerOutput> = this.handler$.pipe(
             withLatestFrom(this.dep$),
-            mergeMap(([handler, deps]: [MessageHandler<In, Deps, HandlerOutput>, Deps]) => {
+            switchMap(([handler, deps]: [MessageHandler<In, Deps, HandlerOutput>, Deps]) => {
                 return fromMessagingClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
                     tap((output) => this.handlerOutput$.next(output)),
