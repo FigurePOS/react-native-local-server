@@ -7,6 +7,7 @@ import {
     mapTo,
     mergeMap,
     share,
+    switchMap,
     tap,
     timeout,
     withLatestFrom,
@@ -93,15 +94,22 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
 
         const output$: Observable<HandlerOutput> = this.handler$.pipe(
             withLatestFrom(this.dep$),
-            mergeMap(([handler, deps]: [MessageHandler<In, Deps, HandlerOutput>, Deps]) => {
+            switchMap(([handler, deps]: [MessageHandler<In, Deps, HandlerOutput>, Deps]) => {
                 return fromMessagingServerMessageReceived<In>(this.serverId, this.logger).pipe(
                     handleBy(handler, deps),
                     tap((output) => this.handlerOutput$.next(output)),
                     catchError((err) => {
-                        this.logger.error(LoggerVerbosity.Low, "fromServerDataReceived - error", {
-                            error: err,
-                            ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
-                        })
+                        this.logger.error(
+                            LoggerVerbosity.Low,
+                            `MessagingServer [${this.serverId}] - fatal error in output$`,
+                            {
+                                error: err,
+                                ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
+                            }
+                        )
+                        // Because this stream errored, we need to restart the processing.
+                        // This inserts the handler again into the handler subject, which re-triggers this switchMap.
+                        this.handler$.next(handler)
                         return EMPTY
                     })
                 )
