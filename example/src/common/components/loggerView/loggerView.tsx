@@ -1,5 +1,5 @@
 import React, { useCallback } from "react"
-import { View, StyleSheet, FlatList, Text, TouchableOpacity } from "react-native"
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Colors, FontSize, FontWeight } from "../../constants"
 import { Icon, IconNames } from "../icon"
 import { LoggerMessageComponent } from "./loggerMessage"
@@ -20,6 +20,7 @@ export const LoggerView = (props: Props) => {
             <View style={styles.nameContainer}>
                 <Text style={styles.nameLabel}>{props.name}</Text>
                 <TouchableOpacity onPress={props.onClearPressed}>
+                    {/* @ts-expect-error */}
                     <Icon name={IconNames.clear} size={FontSize.Big} />
                 </TouchableOpacity>
             </View>
