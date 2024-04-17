@@ -1,3 +1,17 @@
+## [0.15.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.4...v0.15.0) (2024-04-17)
+
+
+### Bug Fixes
+
+* example ios build [skip ci] ([#61](https://github.com/FigurePOS/react-native-local-server/issues/61)) ([033df0a](https://github.com/FigurePOS/react-native-local-server/commit/033df0a7e7135c418fe9f805c174223670961af2))
+* **example:** fix android builds ([#62](https://github.com/FigurePOS/react-native-local-server/issues/62)) ([144f835](https://github.com/FigurePOS/react-native-local-server/commit/144f835c6d6ece7225066762ba30f62bf1c32cf6))
+* use dnssd for service discovery FGR3-4285 ([#63](https://github.com/FigurePOS/react-native-local-server/issues/63)) ([87bfe80](https://github.com/FigurePOS/react-native-local-server/commit/87bfe80834affabff5c32c0d1b99cf93f080a8f3))
+
+
+### Chores
+
+* **example:** upgrade rn to v0.73.6 FGR3-4212 [skip ci] ([#60](https://github.com/FigurePOS/react-native-local-server/issues/60)) ([ebc0020](https://github.com/FigurePOS/react-native-local-server/commit/ebc002042d768b1b4a8bb4ffd92e44d4e2ceec76))
+
 ### [0.14.4](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.3...v0.14.4) (2024-04-05)
 
 
