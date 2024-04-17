@@ -11,6 +11,16 @@ import com.github.druk.dnssd.RegisterListener;
 import com.reactnativelocalserver.utils.EventHandler;
 import com.reactnativelocalserver.utils.TCPServerEventName;
 
+/**
+ * TCPServerDiscovery
+ * This class is responsible for registering and unregistering the server with the network service discovery manager.
+ * Currently, it supports both NsdManager and DNSSD.
+ * We had to switch to DNSSD because NsdManager was having following issue:
+ * - The service was registered and discoverable fine on iOS devices.
+ * - But when the iOS device tried to connect to the service, it was getting stuck in preparing state.
+ * - In logs of the Android device we found following error:
+ *   Error parsing mDNSpacket, Failed to read NSEC record from mDNS response, Invalid label pointer: 00F2
+ */
 public class TCPServerDiscovery {
     private static final String TAG = "TCPServerDiscovery";
     private final NsdServiceInfo config;
@@ -24,6 +34,9 @@ public class TCPServerDiscovery {
         this.eventHandler = eventHandler;
     }
 
+    /**
+     * Register the server with the system NsdManager.
+     */
     public void register(NsdManager nsdManager) {
         if (listener != null) {
             Log.d(TAG, "register - already registered");
@@ -37,6 +50,9 @@ public class TCPServerDiscovery {
         nsdManager.registerService(this.config, NsdManager.PROTOCOL_DNS_SD, listener);
     }
 
+    /**
+     * Register the server with the DNSSD.
+     */
     public void register(DNSSD dnssd) {
         if (listener != null) {
             Log.d(TAG, "register - already registered");
@@ -53,6 +69,9 @@ public class TCPServerDiscovery {
         }
     }
 
+    /**
+     * Unregister the server from the system NsdManager.
+     */
     public void unregister(NsdManager nsdManager) {
         if (listener == null) {
             Log.d(TAG, "unregister - not registered");
@@ -61,6 +80,9 @@ public class TCPServerDiscovery {
         nsdManager.unregisterService(listener);
     }
 
+    /**
+     * Unregister the server from the DNSSD.
+     */
     public void unregister() {
         if (dnssdService == null) {
             Log.d(TAG, "unregister - not registered");
@@ -76,6 +98,9 @@ public class TCPServerDiscovery {
         this.config.setPort(port);
     }
 
+    /**
+     * Registration listener for NsdManager.
+     */
     class RegistrationHandler implements NsdManager.RegistrationListener {
 
         @Override
@@ -99,6 +124,9 @@ public class TCPServerDiscovery {
         }
     }
 
+    /**
+     * Registration listener for DNSSD.
+     */
     class DNSSDRegistrationListener implements RegisterListener {
         @Override
         public void serviceRegistered(DNSSDRegistration registration, int flags, String serviceName, String regType, String domain) {

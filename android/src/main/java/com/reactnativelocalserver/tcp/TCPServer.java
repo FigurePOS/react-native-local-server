@@ -134,6 +134,7 @@ public class TCPServer implements EventHandler {
 
     private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
+        // This way we make sure that DNSSD is used instead of the NSDManager
         if (dnssd != null) {
             discovery.unregister();
         } else if (nsdManager != null) {
@@ -177,6 +178,7 @@ public class TCPServer implements EventHandler {
         @Override
         public void run() {
             handleLifecycleEvent(TCPServerEventName.Ready);
+            // This way we make sure that DNSSD is used instead of the NSDManager
             if (dnssd != null) {
                 discovery.register(dnssd);
             } else if (nsdManager != null) {
