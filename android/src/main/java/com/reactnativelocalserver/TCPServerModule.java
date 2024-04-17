@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
+import com.github.druk.dnssd.DNSSDEmbedded;
 import com.reactnativelocalserver.tcp.TCPServer;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
@@ -68,7 +69,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         }
         NsdServiceInfo discoveryConfig = NsdServiceInfoFactory.of(discoveryName, discoveryGroup, port);
         try {
-            TCPServer server = serverFactory.of(id, port, discoveryConfig, eventEmitter);
+            TCPServer server = serverFactory.of(id, port, discoveryConfig, new DNSSDEmbedded(reactApplicationContext), eventEmitter);
             server.start(nsdManagerFactory.of());
             servers.put(id, server);
             promise.resolve(true);

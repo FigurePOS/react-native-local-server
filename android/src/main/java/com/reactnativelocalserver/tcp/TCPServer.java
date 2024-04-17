@@ -4,6 +4,7 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
+import com.github.druk.dnssd.DNSSD;
 import com.reactnativelocalserver.tcp.factory.ServerSocketFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.EventHandler;
@@ -33,23 +34,28 @@ public class TCPServer implements EventHandler {
     private TCPRunnable runnable;
     private Thread thread;
     private String lastStopReason = null;
-
+    private DNSSD dnssd = null;
 
     public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter) {
-        this(id, port, discoveryConfig, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
+        this(id, port, discoveryConfig, null, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
+    }
+
+    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter, DNSSD dnssd) {
+        this(id, port, discoveryConfig, dnssd, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
     }
 
     public TCPServer(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
-        this(id, port, null, eventEmitter, socketFactory, connectionManager);
+        this(id, port, null, null, eventEmitter, socketFactory, connectionManager);
     }
 
-    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
+    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, DNSSD dnssd, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
         this.id = id;
         this.port = port;
         this.discovery = new TCPServerDiscovery(discoveryConfig, this);
         this.eventEmitter = eventEmitter;
         this.socketFactory = socketFactory;
         this.connectionManager = connectionManager;
+        this.dnssd = dnssd;
     }
 
     public String getId() {
@@ -128,7 +134,9 @@ public class TCPServer implements EventHandler {
 
     private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
-        if (nsdManager != null) {
+        if (dnssd != null) {
+            discovery.unregister();
+        } else if (nsdManager != null) {
             discovery.unregister(nsdManager);
         }
         connectionManager.clear();
@@ -169,7 +177,9 @@ public class TCPServer implements EventHandler {
         @Override
         public void run() {
             handleLifecycleEvent(TCPServerEventName.Ready);
-            if (nsdManager != null) {
+            if (dnssd != null) {
+                discovery.register(dnssd);
+            } else if (nsdManager != null) {
                 discovery.register(nsdManager);
             }
             try {
