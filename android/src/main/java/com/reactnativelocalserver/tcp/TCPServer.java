@@ -136,7 +136,7 @@ public class TCPServer implements EventHandler {
         Log.d(TAG, "clean up: " + id);
         // This way we make sure that DNSSD is used instead of the NSDManager
         if (dnssd != null) {
-            discovery.unregister();
+            discovery.unregister(dnssd);
         } else if (nsdManager != null) {
             discovery.unregister(nsdManager);
         }

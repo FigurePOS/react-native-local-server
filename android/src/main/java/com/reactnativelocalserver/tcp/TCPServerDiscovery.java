@@ -83,7 +83,7 @@ public class TCPServerDiscovery {
     /**
      * Unregister the server from the DNSSD.
      */
-    public void unregister() {
+    public void unregister(DNSSD dnssd) {
         if (dnssdService == null) {
             Log.d(TAG, "unregister - not registered");
             return;
