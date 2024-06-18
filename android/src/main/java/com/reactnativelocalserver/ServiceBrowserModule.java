@@ -63,7 +63,6 @@ public class ServiceBrowserModule extends ReactContextBaseJavaModule {
         Log.d(NAME, "createBrowser started for id: " + id);
         ServiceBrowser browser = browsers.get(id);
         if (browser == null) {
-            promise.reject("service.browser.not-exists", "Browser with this id does not exist");
             return;
         }
         try {

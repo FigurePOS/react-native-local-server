@@ -55,7 +55,7 @@ class ServiceBrowserModule: RCTEventEmitter {
             }
             try manager.stopBrowser(id: id, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesNotExist {
-            reject("service.browser.not-exists", "Browser with this id does not exist", nil)
+            resolve(true)
         } catch {
             reject("service.browser.error", "Failed to stop browser", error)
         }
