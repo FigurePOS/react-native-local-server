@@ -5,6 +5,7 @@
     "private": true,
     "scripts": {
         "install-native": "echo \"Installing example JS dependecies\" && yarn && cd ios/ && echo \"Installing example native dependecies\" && bundle exec pod install",
+        "in": "yarn install-native",
         "bundle": "react-native start",
         "android": "react-native run-android",
         "android:release": "react-native run-android --variant=release",
