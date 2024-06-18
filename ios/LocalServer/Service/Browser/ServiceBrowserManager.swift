@@ -31,7 +31,9 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
         let browser: ServiceBrowser = ServiceBrowser.init(id: id, discoveryGroup: discoveryGroup)
         browsers[id] = browser
         let onStartFailed = { (_ reason: String) in
-            self.browsers.removeValue(forKey: id)
+            if (self.browsers[id] != nil) {
+                self.browsers.removeValue(forKey: id)
+            }
             onFailure(reason)
         }
         browser.start(delegate: self, onSuccess: onSuccess, onFailure: onStartFailed)
@@ -89,7 +91,9 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     }
 
     func handleBrowserStopped(browserId: String) {
-        self.browsers.removeValue(forKey: browserId)
+        if (self.browsers[browserId] != nil) {
+            self.browsers.removeValue(forKey: browserId)
+        }
         handleLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.Stopped)
     }
 
