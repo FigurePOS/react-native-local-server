@@ -42,7 +42,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
     func stopBrowser(id: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         RNLSLog("ServiceBrowserManager [\(id)] - stopBrowser - started")
         guard let browser = browsers[id] else {
-            throw LocalServerError.ServerDoesAlreadyExist
+            throw LocalServerError.ServerDoesNotExist
         }
         browser.stop(onSuccess: onSuccess, onFailure: onFailure)
     }
