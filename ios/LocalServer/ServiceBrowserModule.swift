@@ -22,11 +22,11 @@ class ServiceBrowserModule: RCTEventEmitter {
         super.init()
         eventEmitter.setEventEmitter(eventEmitter: self)
     }
-    
+
     @objc override static func requiresMainQueueSetup() -> Bool {
         return false
     }
-    
+
     @objc(createBrowser:withDiscoveryGroup:withResolver:withRejecter:)
     func createBrowser(id: String, discoveryGroup: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
@@ -61,11 +61,11 @@ class ServiceBrowserModule: RCTEventEmitter {
         }
     }
 
-    
+
     override func supportedEvents() -> [String]! {
         return self.eventNames
     }
-    
+
     override func invalidate() {
         manager.invalidate()
         super.invalidate()

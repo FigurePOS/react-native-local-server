@@ -21,13 +21,13 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
         self.eventEmitter = eventEmitter;
     }
 
-    
+
     func createBrowser(id: String, discoveryGroup: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         RNLSLog("ServiceBrowserManager [\(id)] - createBrowser - started")
         if let _: ServiceBrowser = browsers[id] {
             throw LocalServerError.ServerDoesAlreadyExist
         }
-        
+
         let browser: ServiceBrowser = ServiceBrowser.init(id: id, discoveryGroup: discoveryGroup)
         browsers[id] = browser
         let onStartFailed = { (_ reason: String) in
@@ -44,7 +44,7 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
         }
         browser.stop(onSuccess: onSuccess, onFailure: onFailure)
     }
-    
+
     func invalidate() {
         RNLSLog("ServiceBrowserManager - invalidate - \(browsers.count) browsers")
         self.shouldEmitEvents = false
@@ -53,9 +53,9 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
             let onFailure = { (_: String) in }
             browser.stop(onSuccess: onSuccess, onFailure: onFailure)
         }
-        
+
     }
-    
+
     private func handleLifecycleEvent(browserId: String, eventName: String, reason: String? = nil) {
         RNLSLog("ServiceBrowserManager [\(browserId)] - event \(eventName)")
         if (!shouldEmitEvents) {
@@ -82,21 +82,21 @@ class ServiceBrowserManager: ServiceBrowserDelegateProtocol {
         event.putString(key: "group", value: service.group)
         eventEmitter.emitEvent(event: event)
     }
-    
+
     // MARK: - ServiceBrowserDelegateProtocol
     func handleBrowserReady(browserId: String) {
         handleLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.Started)
     }
-    
+
     func handleBrowserStopped(browserId: String) {
         self.browsers.removeValue(forKey: browserId)
         handleLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.Stopped)
     }
-    
+
     func handleServiceFound(browserId: String, service: ServiceBrowserResult) {
         handleServiceLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.ServiceFound, service: service)
     }
-    
+
     func handleServiceLost(browserId: String, service: ServiceBrowserResult) {
         handleServiceLifecycleEvent(browserId: browserId, eventName: ServiceBrowserEventName.ServiceLost, service: service)
     }
