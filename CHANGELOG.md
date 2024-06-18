@@ -1,3 +1,17 @@
+## [0.16.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.15.0...v0.16.0) (2024-06-18)
+
+
+### Bug Fixes
+
+* check for browser existence before removing FGR3-4679 ([#67](https://github.com/FigurePOS/react-native-local-server/issues/67)) ([0e41008](https://github.com/FigurePOS/react-native-local-server/commit/0e410085ca68bfb115200b428bc0331c8d7fafa3))
+* do not report error when stopping a stopped browser FGR3-4670 ([#70](https://github.com/FigurePOS/react-native-local-server/issues/70)) ([04b808f](https://github.com/FigurePOS/react-native-local-server/commit/04b808f9d3db556c8ac5b509708a6093dd4703c5))
+
+
+### Chores
+
+* **deps:** bump braces from 3.0.2 to 3.0.3 in /example ([#65](https://github.com/FigurePOS/react-native-local-server/issues/65)) ([833e554](https://github.com/FigurePOS/react-native-local-server/commit/833e554e8f09d4c9d06bd5e27a96d090e0457934))
+* **deps:** bump rexml from 3.2.6 to 3.2.8 in /example ([#64](https://github.com/FigurePOS/react-native-local-server/issues/64)) ([e96a35b](https://github.com/FigurePOS/react-native-local-server/commit/e96a35bb0d6c77e6773cccb2acee4c6f04cfadcf))
+
 ## [0.15.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.14.4...v0.15.0) (2024-04-17)
 
 
