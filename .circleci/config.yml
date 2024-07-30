@@ -7,7 +7,7 @@ executors:
     working_directory: ~/project
   android:
     docker:
-      - image: circleci/android:api-30-node
+      - image: cimg/2024.07-node
     working_directory: ~/project
   ios:
     macos:
