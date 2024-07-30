@@ -113,9 +113,6 @@ jobs:
     steps:
       - attach_project
       - run:
-          name: Set Ruby Version
-          command: rbenv install 3.1.0 && rbenv global 3.1.0 && rbenv rehash
-      - run:
           name: "Configure Bundler"
           command: |
             echo $(export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")) >> $BASH_ENV
