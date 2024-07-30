@@ -7,7 +7,7 @@ executors:
     working_directory: ~/project
   android:
     docker:
-      - image: cimg/2024.07-node
+      - image: cimg/android:2024.07-node
     working_directory: ~/project
   ios:
     macos:
