@@ -1,3 +1,17 @@
+## [0.17.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.16.0...v0.17.0) (2024-11-28)
+
+
+### Bug Fixes
+
+* change mDNS implementation to fix crashes on app reload ([#76](https://github.com/FigurePOS/react-native-local-server/issues/76)) ([1914f2f](https://github.com/FigurePOS/react-native-local-server/commit/1914f2fe53128ad563b080941fd6086b2e8d713e))
+
+
+### Chores
+
+* **deps:** bump ws from 6.2.2 to 6.2.3 ([#69](https://github.com/FigurePOS/react-native-local-server/issues/69)) ([a98f0dd](https://github.com/FigurePOS/react-native-local-server/commit/a98f0dddeeb7dbdaebd96e581c3cf277a83e13da))
+* **deps:** bump ws from 6.2.2 to 6.2.3 in /example ([#68](https://github.com/FigurePOS/react-native-local-server/issues/68)) ([c6988e7](https://github.com/FigurePOS/react-native-local-server/commit/c6988e72ca620bfd9b9560bac790a886412ca7ec))
+* release 0.16.0 [skip ci] ([#71](https://github.com/FigurePOS/react-native-local-server/issues/71)) ([7063d58](https://github.com/FigurePOS/react-native-local-server/commit/7063d58a64c10393d1786187111d0ec5e6c9478d))
+
 ## [0.16.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.15.0...v0.16.0) (2024-06-18)
 
 
