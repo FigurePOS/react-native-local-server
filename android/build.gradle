@@ -61,7 +61,7 @@ dependencies {
     // From node_modules
     implementation "com.facebook.react:react-native:+"
     // This is used for Zeroconf service registration instead of the system NsdManager
-    implementation 'com.github.andriydruk:dnssd:0.9.17'
+    implementation 'org.jmdns:jmdns:3.6.0'
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.assertj:assertj-core:3.11.1"

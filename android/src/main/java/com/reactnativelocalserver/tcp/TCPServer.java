@@ -4,7 +4,6 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
-import com.github.druk.dnssd.DNSSD;
 import com.reactnativelocalserver.tcp.factory.ServerSocketFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.EventHandler;
@@ -34,28 +33,28 @@ public class TCPServer implements EventHandler {
     private TCPRunnable runnable;
     private Thread thread;
     private String lastStopReason = null;
-    private DNSSD dnssd = null;
+    private boolean useJmDNS;
 
     public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter) {
-        this(id, port, discoveryConfig, null, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
+        this(id, port, discoveryConfig, false, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
     }
 
-    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter, DNSSD dnssd) {
-        this(id, port, discoveryConfig, dnssd, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
+    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, EventEmitter eventEmitter, boolean useJmDNS) {
+        this(id, port, discoveryConfig, useJmDNS, eventEmitter, new ServerSocketFactory(), new TCPServerConnectionManager());
     }
 
     public TCPServer(String id, int port, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
-        this(id, port, null, null, eventEmitter, socketFactory, connectionManager);
+        this(id, port, null, false, eventEmitter, socketFactory, connectionManager);
     }
 
-    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, DNSSD dnssd, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
+    public TCPServer(String id, int port, NsdServiceInfo discoveryConfig, boolean useJmDNS, EventEmitter eventEmitter, ServerSocketFactory socketFactory, TCPServerConnectionManager connectionManager) {
         this.id = id;
         this.port = port;
         this.discovery = new TCPServerDiscovery(discoveryConfig, this);
         this.eventEmitter = eventEmitter;
         this.socketFactory = socketFactory;
         this.connectionManager = connectionManager;
-        this.dnssd = dnssd;
+        this.useJmDNS = useJmDNS;
     }
 
     public String getId() {
@@ -134,9 +133,9 @@ public class TCPServer implements EventHandler {
 
     private void cleanUp(String reason) {
         Log.d(TAG, "clean up: " + id);
-        // This way we make sure that DNSSD is used instead of the NSDManager
-        if (dnssd != null) {
-            discovery.unregister(dnssd);
+        // This way we make sure that JmDNS is used instead of the NSDManager
+        if (useJmDNS) {
+            discovery.unregister();
         } else if (nsdManager != null) {
             discovery.unregister(nsdManager);
         }
@@ -178,9 +177,9 @@ public class TCPServer implements EventHandler {
         @Override
         public void run() {
             handleLifecycleEvent(TCPServerEventName.Ready);
-            // This way we make sure that DNSSD is used instead of the NSDManager
-            if (dnssd != null) {
-                discovery.register(dnssd);
+            // This way we make sure that JmDNS is used instead of the NSDManager
+            if (useJmDNS) {
+                discovery.register();
             } else if (nsdManager != null) {
                 discovery.register(nsdManager);
             }

@@ -9,7 +9,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.github.druk.dnssd.DNSSDEmbedded;
 import com.reactnativelocalserver.tcp.factory.TCPClientFactory;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.udp.factory.UDPServerFactory;
@@ -36,7 +35,7 @@ public class LocalServerPackage implements ReactPackage {
         eventEmitter = new EventEmitter(reactContext);
         nsdManagerFactory = new NsdManagerFactory(reactContext);
         modules.add(new TCPClientModule(reactContext, eventEmitter, tcpClientFactory));
-        modules.add(new TCPServerModule(reactContext, eventEmitter, tcpServerFactory, nsdManagerFactory, new DNSSDEmbedded(reactContext)));
+        modules.add(new TCPServerModule(reactContext, eventEmitter, tcpServerFactory, nsdManagerFactory, true));
         modules.add(new UDPServerModule(reactContext, eventEmitter, udpServerFactory));
         modules.add(new ServiceBrowserModule(reactContext, eventEmitter, nsdManagerFactory));
         return modules;
