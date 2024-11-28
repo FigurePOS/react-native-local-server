@@ -13,8 +13,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
-import com.github.druk.dnssd.DNSSD;
-import com.github.druk.dnssd.DNSSDEmbedded;
 import com.reactnativelocalserver.tcp.TCPServer;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
@@ -39,19 +37,19 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     private final Map<String, TCPServer> servers = new HashMap();
     private final ReactApplicationContext reactApplicationContext;
 
-    private final DNSSD dnssd;
+    private final boolean useJmDNS;
 
     public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPServerFactory serverFactory, NsdManagerFactory nsdManagerFactory) {
-        this(reactContext, eventEmitter, serverFactory, nsdManagerFactory, null);
+        this(reactContext, eventEmitter, serverFactory, nsdManagerFactory, false);
     }
 
-    public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPServerFactory serverFactory, NsdManagerFactory nsdManagerFactory, DNSSD dnssd) {
+    public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPServerFactory serverFactory, NsdManagerFactory nsdManagerFactory, boolean useJmDNS) {
         super(reactContext);
         this.reactApplicationContext = reactContext;
         this.eventEmitter = eventEmitter;
         this.serverFactory = serverFactory;
         this.nsdManagerFactory = nsdManagerFactory;
-        this.dnssd = dnssd;
+        this.useJmDNS = useJmDNS;
     }
 
     public Map<String, TCPServer> getServers() {
@@ -77,7 +75,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         }
         NsdServiceInfo discoveryConfig = NsdServiceInfoFactory.of(discoveryName, discoveryGroup, port);
         try {
-            TCPServer server = serverFactory.of(id, port, discoveryConfig, dnssd, eventEmitter);
+            TCPServer server = serverFactory.of(id, port, discoveryConfig, true, eventEmitter);
             server.start(nsdManagerFactory.of());
             servers.put(id, server);
             promise.resolve(true);

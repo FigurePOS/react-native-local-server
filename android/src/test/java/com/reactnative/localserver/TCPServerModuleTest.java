@@ -88,12 +88,12 @@ public class TCPServerModuleTest {
         Exception exception = new UnknownHostException("Could not connect to localhost:12000");
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory, nsdManagerFactory);
         when(nsdManagerFactory.of()).thenReturn(nsdManager);
-        when(serverFactory.of("server-1", 12000, null, null, eventEmitter)).thenReturn(server);
+        when(serverFactory.of("server-1", 12000, null, false, eventEmitter)).thenReturn(server);
         doThrow(exception).when(server).start(nsdManager);
 
         module.createServer("server-1", 12000, promise);
 
-        verify(serverFactory, times(1)).of("server-1", 12000, null, null, eventEmitter);
+        verify(serverFactory, times(1)).of("server-1", 12000, null, false, eventEmitter);
         verify(server, times(1)).start(nsdManager);
         verify(promise, times(1)).reject("tcp.server.error", exception.getMessage());
         assertThat(module.getServers()).doesNotContainEntry("server-1", server);
@@ -102,7 +102,7 @@ public class TCPServerModuleTest {
     @Test
     public void shouldStopServer() throws Exception {
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory, nsdManagerFactory);
-        when(serverFactory.of("server-1", 12000, null, null, eventEmitter)).thenReturn(server);
+        when(serverFactory.of("server-1", 12000, null, false, eventEmitter)).thenReturn(server);
 
         module.createServer("server-1", 12000, promise);
         module.stopServer("server-1", null, promise2);
@@ -123,7 +123,7 @@ public class TCPServerModuleTest {
     public void shouldNotStopServer_ServerStopThrowsException() throws Exception {
         Exception exception = new Exception("Failed to stop server");
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory, nsdManagerFactory);
-        when(serverFactory.of("server-1", 12000, null, null, eventEmitter)).thenReturn(server);
+        when(serverFactory.of("server-1", 12000, null, false, eventEmitter)).thenReturn(server);
         doThrow(exception).when(server).stop(null);
 
         module.createServer("server-1", 12000, promise);
@@ -138,7 +138,7 @@ public class TCPServerModuleTest {
     public void shouldSendData() throws Exception {
         String message = "This is the message";
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory, nsdManagerFactory);
-        when(serverFactory.of("server-1", 12000, null, null, eventEmitter)).thenReturn(server);
+        when(serverFactory.of("server-1", 12000, null, false, eventEmitter)).thenReturn(server);
         module.createServer("server-1", 12000, promise);
         module.send("server-1", "connection-1", message, promise2);
 
@@ -151,7 +151,7 @@ public class TCPServerModuleTest {
         String message = "This is the message";
         Exception exception = new Exception("Failed to send message");
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory, nsdManagerFactory);
-        when(serverFactory.of("server-1", 12000, null, null, eventEmitter)).thenReturn(server);
+        when(serverFactory.of("server-1", 12000, null, false, eventEmitter)).thenReturn(server);
         doThrow(exception).when(server).send("connection-1", message);
 
         module.createServer("server-1", 12000, promise);
@@ -174,7 +174,7 @@ public class TCPServerModuleTest {
     @Test
     public void shouldInvalidate() throws Exception {
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory, nsdManagerFactory);
-        when(serverFactory.of("server-1", 12000, null, null, eventEmitter)).thenReturn(server);
+        when(serverFactory.of("server-1", 12000, null, false, eventEmitter)).thenReturn(server);
 
         module.createServer("server-1", 12000, promise);
 
@@ -187,7 +187,7 @@ public class TCPServerModuleTest {
     public void shouldInvalidate_EvenWhenStopFails() throws Exception {
         Exception exception = new Exception("Failed to stop server");
         TCPServerModule module = new TCPServerModule(context, eventEmitter, serverFactory, nsdManagerFactory);
-        when(serverFactory.of("server-1", 12000, null, null, eventEmitter)).thenReturn(server);
+        when(serverFactory.of("server-1", 12000, null, false, eventEmitter)).thenReturn(server);
         doThrow(exception).when(server).stop(StopReasonEnum.Invalidation);
 
         module.createServer("server-1", 12000, promise);
