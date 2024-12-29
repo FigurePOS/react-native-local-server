@@ -17,11 +17,11 @@ export const pingMessagingClient = (
         catchError((err) => {
             if (err instanceof TimeoutError) {
                 if (scheduler) {
-                    throwError(() => new Error("Server ping timed out")).pipe(observeOn(scheduler))
+                    return throwError(() => "Server ping timed out").pipe(observeOn(scheduler))
                 }
-                throwError(() => new Error("Server ping timed out"))
+                return throwError(() => "Server ping timed out")
             }
-            return throwError(() => new Error(err))
+            return throwError(() => err)
         }),
         mergeMap((data: DataObject) => {
             if (data.type === DataObjectType.Ping) {
