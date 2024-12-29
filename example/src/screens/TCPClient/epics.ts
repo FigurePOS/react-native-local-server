@@ -1,7 +1,7 @@
-import { ActionsObservable, Epic, ofType } from "redux-observable"
+import { Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
 import { catchError, filter, switchMap } from "rxjs/operators"
-import { defer } from "rxjs"
+import { defer, Observable } from "rxjs"
 import { BareTCPClient } from "./network"
 import {
     TCPClient,
@@ -23,7 +23,7 @@ import {
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
 
-const bareTCPClientStartRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareTCPClientStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_CLIENT_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -64,7 +64,7 @@ const bareTCPClientStoppedEpic: Epic = () =>
         ])
     )
 
-const bareTCPClientStopRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareTCPClientStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_CLIENT_STOP_REQUESTED),
         switchMap(() => {
@@ -83,10 +83,10 @@ const bareTCPClientDataReceivedEpic: Epic = () =>
         ])
     )
 
-const bareTCPClientDataSendRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareTCPClientDataSendRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_CLIENT_DATA_SEND_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const data = action.payload.data
             return defer(() => BareTCPClient.sendData(data)).pipe(
                 switchMap(() => [createActionBareTcpClientNewData(createMessageData("client", data))]),

@@ -1,4 +1,4 @@
-import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observable"
+import { Epic, ofType, StateObservable } from "redux-observable"
 import { StateAction } from "../../../types"
 import {
     COUNTER_AUTO_INCREMENT_STARTED,
@@ -14,15 +14,12 @@ import {
 import { switchMap, takeUntil } from "rxjs/operators"
 import { StateObject } from "../../../rootReducer"
 import { getCounterCount } from "./selectors"
-import { interval } from "rxjs"
+import { interval, Observable } from "rxjs"
 import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { isCounterClientRunning } from "../client/selectors"
 import { not, pipe } from "ramda"
 
-export const counterIncrementedEpic: Epic = (
-    action$: ActionsObservable<StateAction>,
-    state$: StateObservable<StateObject>
-) =>
+export const counterIncrementedEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
     action$.pipe(
         ofType(COUNTER_COUNT_INCREMENTED),
         switchMap(() => {
@@ -31,10 +28,7 @@ export const counterIncrementedEpic: Epic = (
         })
     )
 
-export const counterDecreasedEpic: Epic = (
-    action$: ActionsObservable<StateAction>,
-    state$: StateObservable<StateObject>
-) =>
+export const counterDecreasedEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
     action$.pipe(
         ofType(COUNTER_COUNT_DECREASED),
         switchMap(() => {
@@ -43,7 +37,7 @@ export const counterDecreasedEpic: Epic = (
         })
     )
 
-export const counterResetEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+export const counterResetEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_COUNT_RESET),
         switchMap(() => {
@@ -51,7 +45,7 @@ export const counterResetEpic: Epic = (action$: ActionsObservable<StateAction>) 
         })
     )
 export const counterResetRequestedEpic: Epic = (
-    action$: ActionsObservable<StateAction>,
+    action$: Observable<StateAction>,
     state$: StateObservable<StateObject>
 ) =>
     action$.pipe(
@@ -62,7 +56,7 @@ export const counterResetRequestedEpic: Epic = (
         })
     )
 
-export const counterAutoIncrementEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+export const counterAutoIncrementEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_AUTO_INCREMENT_STARTED),
         switchMap(() => {

@@ -1,4 +1,4 @@
-import { ActionsObservable, Epic, ofType } from "redux-observable"
+import { Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
 import {
     BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED,
@@ -14,7 +14,7 @@ import {
     createActionBareTcpServerStopped,
 } from "./actions"
 import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
-import { defer } from "rxjs"
+import { defer, Observable } from "rxjs"
 import { BareTCPServer } from "./network"
 import {
     TCPServer,
@@ -30,7 +30,7 @@ import { fromEventFixed } from "../../common/utils"
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ServerConnectionState } from "../../common/types"
 
-const bareTcpServerStartRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -62,7 +62,7 @@ const bareTcpServerStoppedEpic: Epic = () =>
         mapTo(createActionBareTcpServerStopped(null))
     )
 
-const bareTcpServerStopRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareTcpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_STOP_REQUESTED),
         switchMap(() => {
@@ -108,10 +108,10 @@ const bareTcpServerDataReceivedEpic: Epic = () =>
         ])
     )
 
-const bareTcpServerCloseConnectionRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareTcpServerCloseConnectionRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const connectionId = action.payload.connectionId
             return defer(() => BareTCPServer.closeConnection(connectionId)).pipe(
                 switchMap(() => []),
@@ -120,10 +120,10 @@ const bareTcpServerCloseConnectionRequested: Epic = (action$: ActionsObservable<
         })
     )
 
-const bareTcpServerDataSendRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareTcpServerDataSendRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_DATA_SEND_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const connectionId = action.payload.connectionId
             const data = action.payload.data
             return defer(() => BareTCPServer.sendData(connectionId, data)).pipe(

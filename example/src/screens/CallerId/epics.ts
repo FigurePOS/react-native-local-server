@@ -1,4 +1,4 @@
-import { ActionsObservable, Epic, ofType } from "redux-observable"
+import { Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
 import {
     CALLER_ID_SERVER_SIMULATE_CALL_REQUESTED,
@@ -12,7 +12,7 @@ import {
     createActionCallerIdServerStopped,
 } from "./actions"
 import { catchError, map, mapTo, switchMap } from "rxjs/operators"
-import { defer } from "rxjs"
+import { defer, Observable } from "rxjs"
 import { ExampleCallerIdServer } from "./network"
 import {
     CallerIdServerStatusEvent,
@@ -20,7 +20,7 @@ import {
     PhoneCall,
 } from "@figuredev/react-native-local-server"
 
-const callerIdServerStartRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const callerIdServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(CALLER_ID_SERVER_START_REQUESTED),
         switchMap(() => {
@@ -31,7 +31,7 @@ const callerIdServerStartRequestedEpic: Epic = (action$: ActionsObservable<State
         })
     )
 
-const callerIdServerStopRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const callerIdServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(CALLER_ID_SERVER_STOP_REQUESTED),
         switchMap(() => {
@@ -42,10 +42,10 @@ const callerIdServerStopRequestedEpic: Epic = (action$: ActionsObservable<StateA
         })
     )
 
-const callerIdServerSimulateCallRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const callerIdServerSimulateCallRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(CALLER_ID_SERVER_SIMULATE_CALL_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const call: PhoneCall = {
                 number: action.payload.phoneNumber,
                 name: action.payload.name,

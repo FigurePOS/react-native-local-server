@@ -64,7 +64,7 @@ export class CallerIdServer {
             filter(isPhoneCallInbound),
             log(LoggerVerbosity.Low, this.logger, `CallerIdServer [${this.serverId}] - call detected`),
             share()
-        )
+        ) as Observable<PhoneCall>
         this.statusEvent$ = fromCallerIdServerStatusEvent(this.serverId).pipe(
             log(LoggerVerbosity.Low, this.logger, `CallerIdServer [${this.serverId}] - status event`),
             share()

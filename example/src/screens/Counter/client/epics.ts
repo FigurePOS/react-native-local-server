@@ -1,4 +1,4 @@
-import { ActionsObservable, Epic, ofType, StateObservable } from "redux-observable"
+import { Epic, ofType, StateObservable } from "redux-observable"
 import { StateAction } from "../../../types"
 import { catchError, filter, mergeMap, mergeMapTo, switchMap, switchMapTo } from "rxjs/operators"
 import {
@@ -30,11 +30,12 @@ import { COUNTER_COUNT_RESET_REQUESTED } from "../data/actionts"
 import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { getCounterClientAvailableServices, isCounterClientRunning } from "./selectors"
 import { StateObject } from "../../../rootReducer"
+import { Observable } from "rxjs"
 
-const counterClientStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const port = Number.parseInt(action.payload.port, 10)
             if (!port || Number.isNaN(port)) {
                 return [createActionCounterClientErrored("Invalid Port")]
@@ -58,12 +59,12 @@ const counterClientStartRequested: Epic = (action$: ActionsObservable<StateActio
     )
 
 const counterClientStartFromServiceRequested: Epic = (
-    action$: ActionsObservable<StateAction>,
+    action$: Observable<StateAction>,
     state$: StateObservable<StateObject>
 ) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const { serviceId } = action.payload
             const availableServices = getCounterClientAvailableServices(state$.value)
             const service = availableServices.find((s) => s.shortId === serviceId)
@@ -105,7 +106,7 @@ const counterClientStatus: Epic = () =>
         })
     )
 
-const counterClientStopRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientStopRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_STOP_REQUESTED),
         switchMap(() => {
@@ -116,7 +117,7 @@ const counterClientStopRequested: Epic = (action$: ActionsObservable<StateAction
         })
     )
 
-const counterClientRestartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientRestartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_RESTART_REQUESTED),
         switchMap(() => {
@@ -128,7 +129,7 @@ const counterClientRestartRequested: Epic = (action$: ActionsObservable<StateAct
     )
 
 const counterClientCountResetRequested: Epic = (
-    action$: ActionsObservable<StateAction>,
+    action$: Observable<StateAction>,
     state$: StateObservable<StateObject>
 ) =>
     action$.pipe(
@@ -145,10 +146,10 @@ const counterClientCountResetRequested: Epic = (
         catchError((err) => [createActionCounterClientErrored(err)])
     )
 
-const counterClientCountRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientCountRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_STATE_CHANGED),
-        filter((action) => action.payload.state === ClientState.Ready),
+        filter((action: StateAction) => action.payload.state === ClientState.Ready),
         switchMap(() => {
             const message = createCounterMessageCountRequested()
             return CounterClient.send(message).pipe(
@@ -160,7 +161,7 @@ const counterClientCountRequested: Epic = (action$: ActionsObservable<StateActio
         catchError((err) => [createActionCounterClientErrored(err)])
     )
 
-const counterClientSearchStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientSearchStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_SEARCH_START_REQUESTED),
         switchMap(() => {
@@ -171,7 +172,7 @@ const counterClientSearchStartRequested: Epic = (action$: ActionsObservable<Stat
         })
     )
 
-const counterClientSearchStopRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientSearchStopRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_SEARCH_STOP_REQUESTED),
         switchMap(() => {
@@ -182,7 +183,7 @@ const counterClientSearchStopRequested: Epic = (action$: ActionsObservable<State
         })
     )
 
-const counterClientSearchRestartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const counterClientSearchRestartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_SEARCH_RESTART_REQUESTED),
         switchMap(() => {

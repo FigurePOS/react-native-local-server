@@ -1,4 +1,4 @@
-import { ActionsObservable, combineEpics, Epic, StateObservable } from "redux-observable"
+import { combineEpics, Epic, StateObservable } from "redux-observable"
 import { StateAction } from "./types"
 import { StateObject } from "./rootReducer"
 import TCPServerEpics from "./screens/TCPServer/epics"
@@ -9,6 +9,7 @@ import MessagingClientEpics from "./screens/MessagingClient/epics"
 import CounterEpics from "./screens/Counter/epics"
 import CallerIdEpics from "./screens/CallerId/epics"
 import ServiceBrowserEpics from "./screens/ServiceBrowser/epics"
+import { Observable } from "rxjs"
 
 const epics: Epic[] = [
     ...TCPServerEpics,
@@ -21,8 +22,5 @@ const epics: Epic[] = [
     ...ServiceBrowserEpics,
 ]
 
-export const rootEpic: Epic = (
-    action$: ActionsObservable<StateAction>,
-    state$: StateObservable<StateObject>,
-    deps: any
-) => combineEpics(...epics)(action$, state$, deps)
+export const rootEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>, deps: any) =>
+    combineEpics(...epics)(action$, state$, deps)
