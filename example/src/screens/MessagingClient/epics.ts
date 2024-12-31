@@ -1,4 +1,4 @@
-import { ActionsObservable, Epic, ofType } from "redux-observable"
+import { Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
 import { catchError, mergeMap, switchMap, switchMapTo } from "rxjs/operators"
 import {
@@ -20,11 +20,12 @@ import {
 } from "@figuredev/react-native-local-server"
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
+import { Observable } from "rxjs"
 
-const messagingClientStartRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_START_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const port = Number.parseInt(action.payload.port, 10)
             if (!port || Number.isNaN(port)) {
                 return [createActionMessagingClientErrored("Invalid Port")]
@@ -59,7 +60,7 @@ const messagingClientStatus: Epic = () =>
         catchError((err) => [createActionMessagingClientErrored(err)])
     )
 
-const messagingClientStopRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_STOP_REQUESTED),
         switchMap(() => {
@@ -70,10 +71,10 @@ const messagingClientStopRequested: Epic = (action$: ActionsObservable<StateActi
         })
     )
 
-const messagingClientDataSendRequested: Epic = (action$: ActionsObservable<StateAction>) =>
+const messagingClientDataSendRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_DATA_SEND_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const text = action.payload.data
             const message = createMessageTextMessageSent(text)
             return SampleMessagingClient.send(message).pipe(

@@ -39,6 +39,7 @@ describe("pingClient", () => {
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         })
     )
+
     it(
         "should fail when it doesn't get the second ping till timeout",
         marbles((m) => {

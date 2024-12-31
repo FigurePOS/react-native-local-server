@@ -1,4 +1,4 @@
-import { ActionsObservable, Epic, ofType } from "redux-observable"
+import { Epic, ofType } from "redux-observable"
 import { StateAction } from "../../types"
 import {
     BARE_UDP_SERVER_DATA_SEND_REQUESTED,
@@ -12,7 +12,7 @@ import {
     createActionBareUdpServerStopped,
 } from "./actions"
 import { catchError, filter, mapTo, switchMap } from "rxjs/operators"
-import { defer } from "rxjs"
+import { defer, Observable } from "rxjs"
 import { BareUDPServer } from "./network"
 import {
     UDPServer,
@@ -24,7 +24,7 @@ import {
 import { fromEventFixed } from "../../common/utils"
 import { createMessageData } from "../../common/components/messaging/functions"
 
-const bareUdpServerStartRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareUdpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_UDP_SERVER_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -54,7 +54,7 @@ const bareUdpServerStoppedEpic: Epic = () =>
         mapTo(createActionBareUdpServerStopped(null))
     )
 
-const bareUdpServerStopRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareUdpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_UDP_SERVER_STOP_REQUESTED),
         switchMap(() => {
@@ -74,10 +74,10 @@ const bareUdpServerDataReceivedEpic: Epic = () =>
         ])
     )
 
-const bareUdpServerDataSendRequestedEpic: Epic = (action$: ActionsObservable<StateAction>) =>
+const bareUdpServerDataSendRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_UDP_SERVER_DATA_SEND_REQUESTED),
-        switchMap((action) => {
+        switchMap((action: StateAction) => {
             const { host, port, data } = action.payload
             return defer(() => BareUDPServer.sendData(host, port, data)).pipe(
                 switchMap(() => [createActionBareUdpServerDataReceived(createMessageData("server", data))]),
