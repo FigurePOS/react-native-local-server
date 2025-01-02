@@ -1,3 +1,18 @@
+
+
+### [0.17.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.17.0...v0.17.1) (2025-01-02)
+
+
+### Features
+
+* update rxjs version FGR3-5592 ([#77](https://github.com/FigurePOS/react-native-local-server/issues/77)) ([2c73132](https://github.com/FigurePOS/react-native-local-server/commit/2c73132790fc488b0e6035654a14addd2a61a671))
+
+
+### Chores
+
+* disable ios and android tests FGR3-5592 ([#78](https://github.com/FigurePOS/react-native-local-server/issues/78)) ([df17a42](https://github.com/FigurePOS/react-native-local-server/commit/df17a420c25716244b23984e159299b9a3437ee6))
+* upgrade conventional-changelog to match release-it version FGR3-5592 ([#79](https://github.com/FigurePOS/react-native-local-server/issues/79)) ([2f5b5a1](https://github.com/FigurePOS/react-native-local-server/commit/2f5b5a163f69c1b66e18575e9212326a7c8306fd))
+
 ## [0.17.0](https://github.com/FigurePOS/react-native-local-server/compare/v0.16.0...v0.17.0) (2024-11-28)
 
 
@@ -509,4 +524,3 @@
 
 * changed package name ([73fbdfc](https://github.com/FigurePOS/react-native-local-server/commit/73fbdfcc253b44e83a7cfdb0b26e491a506aab74))
 * initial commit ([e1b4317](https://github.com/FigurePOS/react-native-local-server/commit/e1b43170beb701183b735e8008cbbe2eb52293a1))
-
