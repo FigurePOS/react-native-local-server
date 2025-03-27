@@ -14,5 +14,5 @@ export const TCPServerModule = NativeModules.TCPServerModule
               get: function () {
                   throw new Error(LINKING_ERROR)
               },
-          }
+          },
       )

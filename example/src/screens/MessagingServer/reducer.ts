@@ -34,7 +34,7 @@ export const createDefaultState = (): MessagingServerStateObject => ({
 
 export const MessagingServerReducer: Reducer = (
     state: MessagingServerStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): MessagingServerStateObject => {
     switch (action.type) {
         case MESSAGING_SERVER_START_REQUESTED:
@@ -74,12 +74,12 @@ export const MessagingServerReducer: Reducer = (
                 connections: updateConnectionState(
                     state.connections,
                     action.payload.connectionId,
-                    action.payload.state
+                    action.payload.state,
                 ),
                 connectionData: updateConnectionData(
                     state.connectionData,
                     action.payload.connectionId,
-                    createMessageData("status", action.payload.state)
+                    createMessageData("status", action.payload.state),
                 ),
             }
 
@@ -89,7 +89,7 @@ export const MessagingServerReducer: Reducer = (
                 connectionData: updateConnectionData(
                     state.connectionData,
                     action.payload.connectionId,
-                    action.payload.data
+                    action.payload.data,
                 ),
             }
 
@@ -101,7 +101,7 @@ export const MessagingServerReducer: Reducer = (
 export const updateConnectionState = (
     connections: ServerConnection[],
     connectionId: string,
-    state: ServerConnectionState
+    state: ServerConnectionState,
 ): ServerConnection[] => {
     if (none((connection) => connection.id === connectionId, connections)) {
         const newConnection: ServerConnection = {
@@ -124,7 +124,7 @@ export const updateConnectionState = (
 export const updateConnectionData = (
     data: Record<string, MessageData[]>,
     connectionId: string,
-    newData: MessageData
+    newData: MessageData,
 ): Record<string, MessageData[]> => ({
     ...data,
     [connectionId]: prepend(newData, data[connectionId] ?? []),

@@ -55,7 +55,7 @@ export const createActionBareTcpServerStopRequested = () => ({
 export const BARE_TCP_SERVER_CONNECTION_STATE_CHANGED = "BARE_TCP_SERVER_CONNECTION_STATE_CHANGED"
 export const createActionBareTcpServerConnectionStateChanged = (
     connectionId: string,
-    state: ServerConnectionState
+    state: ServerConnectionState,
 ) => ({
     type: BARE_TCP_SERVER_CONNECTION_STATE_CHANGED,
     payload: {

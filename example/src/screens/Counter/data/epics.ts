@@ -25,7 +25,7 @@ export const counterIncrementedEpic: Epic = (action$: Observable<StateAction>, s
         switchMap(() => {
             const current = getCounterCount(state$.value)
             return [createActionCounterCountChanged(current + 1)]
-        })
+        }),
     )
 
 export const counterDecreasedEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
@@ -34,7 +34,7 @@ export const counterDecreasedEpic: Epic = (action$: Observable<StateAction>, sta
         switchMap(() => {
             const current = getCounterCount(state$.value)
             return [createActionCounterCountChanged(current - 1)]
-        })
+        }),
     )
 
 export const counterResetEpic: Epic = (action$: Observable<StateAction>) =>
@@ -42,18 +42,18 @@ export const counterResetEpic: Epic = (action$: Observable<StateAction>) =>
         ofType(COUNTER_COUNT_RESET),
         switchMap(() => {
             return [createActionCounterCountChanged(0)]
-        })
+        }),
     )
 export const counterResetRequestedEpic: Epic = (
     action$: Observable<StateAction>,
-    state$: StateObservable<StateObject>
+    state$: StateObservable<StateObject>,
 ) =>
     action$.pipe(
         ofType(COUNTER_COUNT_RESET_REQUESTED),
         filterWithSelector(pipe(isCounterClientRunning, not), state$),
         switchMap(() => {
             return [createActionCounterCountReset()]
-        })
+        }),
     )
 
 export const counterAutoIncrementEpic: Epic = (action$: Observable<StateAction>) =>
@@ -64,9 +64,9 @@ export const counterAutoIncrementEpic: Epic = (action$: Observable<StateAction>)
                 takeUntil(action$.pipe(ofType(COUNTER_AUTO_INCREMENT_STOPPED))),
                 switchMap(() => {
                     return [createActionCounterCountIncremented()]
-                })
+                }),
             )
-        })
+        }),
     )
 
 export default [

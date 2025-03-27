@@ -13,7 +13,7 @@ export const pingMessagingServerConnection = (
     pingInterval: number,
     pingTimeout: number,
     pingRetry: number,
-    scheduler?: SchedulerLike
+    scheduler?: SchedulerLike,
 ): Observable<boolean> => {
     return interval(pingInterval, scheduler).pipe(
         mergeMap(() => {
@@ -26,27 +26,27 @@ export const pingMessagingServerConnection = (
                     mapTo(true),
                     catchError(() => {
                         return of(false)
-                    })
+                    }),
                 )
             })
         }),
         takeUntil(
             merge(
                 statusEvent$.pipe(ofMessagingServerConnectionClosed(connectionId)),
-                statusEvent$.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped))
-            )
+                statusEvent$.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped)),
+            ),
         ),
         scan(
             ([failedCount, _]: [number, boolean], current: boolean): [number, boolean] => {
                 return current ? [0, current] : [failedCount + 1, current]
             },
-            [0, true]
+            [0, true],
         ),
         mergeMap(([failedCount, last]: [number, boolean]) => {
             if (failedCount >= pingRetry) {
                 return throwError(`Ping failed ${failedCount} times`)
             }
             return of(last)
-        })
+        }),
     )
 }

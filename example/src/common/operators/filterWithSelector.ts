@@ -4,5 +4,5 @@ import { filter } from "rxjs/operators"
 
 export const filterWithSelector = <T>(
     selector: (state: StateObject) => boolean,
-    state$: StateObservable<StateObject>
+    state$: StateObservable<StateObject>,
 ) => filter<T>(() => selector(state$.value))

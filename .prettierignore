@@ -7,3 +7,4 @@ scripts/*
 coverage/*
 *.spec.js
 lib/*
+example/vendor/bundle/*

@@ -7,7 +7,7 @@ import { MessageHandler } from "src/messaging"
 
 export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessagingServerDependenciesType> = (
     message$,
-    deps
+    deps,
 ) =>
     message$.pipe(
         switchMap((message) => {
@@ -15,10 +15,10 @@ export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessag
                 deps.dispatch(
                     createActionMessagingServerDataReceived(
                         message.source.connectionId,
-                        createMessageData("client", message.body.payload.text)
-                    )
+                        createMessageData("client", message.body.payload.text),
+                    ),
                 )
             }
             return []
-        })
+        }),
     )

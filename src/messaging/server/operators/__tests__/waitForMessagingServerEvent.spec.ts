@@ -22,9 +22,9 @@ describe("waitForMessagingServerEvent", () => {
             fromMessagingServerStatusEvent.mockReturnValue(___m)
             const _out = m.hot("---|")
             m.expect(
-                _in1.pipe(waitForMessagingServerEvent("server-1", MessagingServerStatusEventName.Stopped))
+                _in1.pipe(waitForMessagingServerEvent("server-1", MessagingServerStatusEventName.Stopped)),
                 // @ts-ignore
             ).toBeObservable(_out)
-        })
+        }),
     )
 })

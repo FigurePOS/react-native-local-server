@@ -20,7 +20,7 @@ export const ServiceBrowserScreen = () => {
 
     const onStarted = useCallback(
         (requestedGroup: string) => dispatch(createActionServiceBrowserStartRequested(requestedGroup)),
-        [dispatch]
+        [dispatch],
     )
     const onStopped = useCallback(() => dispatch(createActionServiceBrowserStopRequested()), [dispatch])
     return (

@@ -80,7 +80,7 @@ export class TCPServer {
                 this.getId(),
                 this.config.port ?? 0,
                 this.config.discovery?.group ?? null,
-                this.config.discovery?.name ?? null
+                this.config.discovery?.name ?? null,
             )
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - start - success`)
             return Promise.resolve()

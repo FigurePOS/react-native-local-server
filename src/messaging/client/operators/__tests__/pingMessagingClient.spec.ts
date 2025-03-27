@@ -37,7 +37,7 @@ describe("pingClient", () => {
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
 
     it(
@@ -61,7 +61,7 @@ describe("pingClient", () => {
                 {
                     a: true,
                 },
-                "Server ping timed out"
+                "Server ping timed out",
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
@@ -70,7 +70,7 @@ describe("pingClient", () => {
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should timeout based on last ping",
@@ -96,7 +96,7 @@ describe("pingClient", () => {
                     a: true,
                     b: true,
                 },
-                "Server ping timed out"
+                "Server ping timed out",
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
@@ -105,7 +105,7 @@ describe("pingClient", () => {
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should not timeout when receiving data instead of ping",
@@ -133,7 +133,7 @@ describe("pingClient", () => {
                     b: true,
                     c: true,
                 },
-                "Server ping timed out"
+                "Server ping timed out",
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
@@ -142,7 +142,7 @@ describe("pingClient", () => {
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should stop on connection stopped",
@@ -172,6 +172,6 @@ describe("pingClient", () => {
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
 })

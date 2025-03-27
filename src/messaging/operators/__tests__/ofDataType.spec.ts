@@ -25,7 +25,7 @@ describe("ofDataTypeMessage", () => {
             })
             // @ts-ignore
             m.expect(__in.pipe(ofDataTypeMessage)).toBeObservable(_out)
-        })
+        }),
     )
 })
 
@@ -45,6 +45,6 @@ describe("ofDataTypeMessageAck", () => {
             })
             // @ts-ignore
             m.expect(__in.pipe(ofDataTypeMessageAck)).toBeObservable(_out)
-        })
+        }),
     )
 })

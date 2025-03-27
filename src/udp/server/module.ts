@@ -14,5 +14,5 @@ export const UDPServerModule = NativeModules.UDPServerModule
               get: function () {
                   throw new Error(LINKING_ERROR)
               },
-          }
+          },
       )

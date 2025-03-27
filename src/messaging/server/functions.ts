@@ -12,7 +12,7 @@ import { getShortServiceId } from "../functions/composeDataServiceInfoObject"
 export const composeMessagingServerLifecycleStatusEvent = (
     type: MessagingServerLifecycleStatusEvent["type"],
     port: string,
-    reason?: StopReason
+    reason?: StopReason,
 ): MessagingServerLifecycleStatusEvent => ({
     type: type,
     port: Number.parseInt(port, 10),
@@ -22,7 +22,7 @@ export const composeMessagingServerLifecycleStatusEvent = (
 export const composeMessagingServerConnectionStatusEvent = (
     type: MessagingServerConnectionStatusEvent["type"],
     connectionId: string,
-    reason?: StopReason
+    reason?: StopReason,
 ): MessagingServerConnectionStatusEvent => ({
     type: type,
     connectionId: connectionId,
@@ -37,23 +37,23 @@ export const composeMessagingServerStatusEvent = (nativeEvent: TCPServerNativeEv
             return composeMessagingServerLifecycleStatusEvent(
                 MessagingServerStatusEventName.Stopped,
                 nativeEvent.port,
-                nativeEvent.reason
+                nativeEvent.reason,
             )
         case TCPServerEventName.ConnectionAccepted:
             return composeMessagingServerConnectionStatusEvent(
                 MessagingServerStatusEventName.ConnectionAccepted,
-                nativeEvent.connectionId
+                nativeEvent.connectionId,
             )
         case TCPServerEventName.ConnectionReady:
             return composeMessagingServerConnectionStatusEvent(
                 MessagingServerStatusEventName.ConnectionReady,
-                nativeEvent.connectionId
+                nativeEvent.connectionId,
             )
         case TCPServerEventName.ConnectionClosed:
             return composeMessagingServerConnectionStatusEvent(
                 MessagingServerStatusEventName.ConnectionClosed,
                 nativeEvent.connectionId,
-                nativeEvent.reason
+                nativeEvent.reason,
             )
         default:
             return composeMessagingServerLifecycleStatusEvent(MessagingServerStatusEventName.Unknown, "0")

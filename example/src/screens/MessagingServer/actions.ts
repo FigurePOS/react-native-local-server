@@ -50,7 +50,7 @@ export const createActionMessagingServerErrored = (error: string) => ({
 export const MESSAGING_SERVER_CONNECTION_STATE_CHANGED = "MESSAGING_SERVER_CONNECTION_STATE_CHANGED"
 export const createActionMessagingServerConnectionStateChanged = (
     connectionId: string,
-    state: ServerConnectionState
+    state: ServerConnectionState,
 ) => ({
     type: MESSAGING_SERVER_CONNECTION_STATE_CHANGED,
     payload: {

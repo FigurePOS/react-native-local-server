@@ -14,7 +14,7 @@ export const fromMessagingServerDataReceived = (serverId: string, logger: Logger
                 catchError((err) => {
                     logger.error(LoggerVerbosity.Low, `MessagingServer [${serverId}] - failed to parse data`, err)
                     return EMPTY
-                })
-            )
-        )
+                }),
+            ),
+        ),
     )

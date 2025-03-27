@@ -27,7 +27,7 @@ export const createDefaultState = (): CallerIDServerStateObject => ({
 
 export const CallerIdServerReducer: Reducer = (
     state: CallerIDServerStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): CallerIDServerStateObject => {
     switch (action.type) {
         case CALLER_ID_SERVER_START_REQUESTED:

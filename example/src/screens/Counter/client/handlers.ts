@@ -16,7 +16,7 @@ export const counterChangedHandler: MessageHandler<
                 return [createActionCounterCountChanged(message.body.payload.count)]
             }
             return []
-        })
+        }),
     )
 
 export default [counterChangedHandler]

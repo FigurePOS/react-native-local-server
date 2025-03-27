@@ -39,7 +39,7 @@ export const createActionCounterServerErrored = (error: string) => ({
 export const COUNTER_SERVER_CONNECTION_STATE_CHANGED = "COUNTER_SERVER_CONNECTION_STATE_CHANGED"
 export const createActionCounterServerConnectionStateChanged = (
     connectionId: string,
-    state: ServerConnectionState
+    state: ServerConnectionState,
 ) => ({
     type: COUNTER_SERVER_CONNECTION_STATE_CHANGED,
     payload: {

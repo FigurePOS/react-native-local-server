@@ -29,7 +29,7 @@ export const createDefaultState = (): UDPServerStateObject => ({
 
 export const UDPServerReducer: Reducer = (
     state: UDPServerStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): UDPServerStateObject => {
     switch (action.type) {
         case BARE_UDP_SERVER_START_REQUESTED:

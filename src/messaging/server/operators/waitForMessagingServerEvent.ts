@@ -11,7 +11,7 @@ export const waitForMessagingServerEvent =
             switchMapTo(fromMessagingServerStatusEvent(serverId)),
             ofMessagingServerStatusEvent(event),
             take(1),
-            switchMapTo([])
+            switchMapTo([]),
         )
 
 export const waitForMessagingServerStopped = (serverId: string) =>

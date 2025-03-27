@@ -5,8 +5,8 @@ import { fromEventFixed } from "../../../utils/operators/fromEventFixed"
 
 export const fromTCPClientEvent = <T extends TCPClientEventName>(
     clientId: string,
-    eventName: T
+    eventName: T,
 ): Observable<Extract<TCPClientNativeEvent, { type: T }>> =>
     fromEventFixed<Extract<TCPClientNativeEvent, { type: T }>>(TCPClient.EventEmitter, eventName).pipe(
-        filter((event: Extract<TCPClientNativeEvent, { type: T }>): boolean => event.clientId === clientId)
+        filter((event: Extract<TCPClientNativeEvent, { type: T }>): boolean => event.clientId === clientId),
     )

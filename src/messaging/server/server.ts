@@ -69,7 +69,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.cleanSubscriptions()
                 }
             }),
-            share()
+            share(),
         )
         this.tcpServer = new TCPServer(id)
         this.tcpServer.setLogger(null)
@@ -85,7 +85,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
     start(
         configuration: MessagingServerConfiguration,
         rootHandler: MessageHandler<In, Deps>,
-        dependencies: Deps
+        dependencies: Deps,
     ): Observable<void> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingServer [${this.serverId}] - start`, configuration)
         this.configuration = configuration
@@ -105,15 +105,15 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                             {
                                 error: err,
                                 ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
-                            }
+                            },
                         )
                         // Because this stream errored, we need to restart the processing.
                         // This inserts the handler again into the handler subject, which re-triggers this switchMap.
                         this.handler$.next(handler)
                         return EMPTY
-                    })
+                    }),
                 )
-            })
+            }),
         )
 
         const data$: Observable<boolean> = this.dataOutput$.pipe(
@@ -124,14 +124,14 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                         if (!data.connectionId) {
                             this.logger.error(
                                 LoggerVerbosity.Low,
-                                `MessagingServer [${this.serverId}] - sending data without connection id`
+                                `MessagingServer [${this.serverId}] - sending data without connection id`,
                             )
                             return of(false)
                         }
                         return this.sendData(data, data.connectionId)
-                    })
-                )
-            )
+                    }),
+                ),
+            ),
         )
 
         const ping$: Observable<boolean> = this.statusEvent$.pipe(
@@ -145,20 +145,20 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.dataOutput$,
                     this.configuration?.ping?.interval ?? PING_INTERVAL,
                     this.configuration?.ping?.timeout ?? PING_INTERVAL,
-                    this.configuration?.ping?.retryCount ?? PING_RETRY
+                    this.configuration?.ping?.retryCount ?? PING_RETRY,
                 ).pipe(
                     catchError((err) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingServer [${this.serverId}] - error in ping stream - closing the connection ${connectionId}`,
-                            err
+                            err,
                         )
                         return defer(() =>
-                            this.tcpServer.closeConnection(connectionId, MessagingStoppedReason.PingTimedOut)
+                            this.tcpServer.closeConnection(connectionId, MessagingStoppedReason.PingTimedOut),
                         ).pipe(mapTo(false))
-                    })
+                    }),
                 )
-            })
+            }),
         )
 
         const info$: Observable<boolean> = this.statusEvent$.pipe(
@@ -169,12 +169,12 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.logger.warn(
                         LoggerVerbosity.Low,
                         `MessagingServer [${this.serverId}] - service info - missing service configuration`,
-                        this.configuration
+                        this.configuration,
                     )
                     return of(false)
                 }
                 return this.sendData(composeDataServiceInfoObject(this.configuration.service), connectionId)
-            })
+            }),
         )
 
         this.mainSubscription = output$.subscribe()
@@ -247,10 +247,10 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingServer [${this.serverId}] - restart - failed to stop`,
-                        err
+                        err,
                     )
                     return []
-                })
+                }),
             ),
             defer(() => {
                 if (this.configuration == null) {
@@ -265,11 +265,11 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingServer [${this.serverId}] - restart - failed to start`,
-                        err
+                        err,
                     )
                     return throwError(err)
-                })
-            )
+                }),
+            ),
         )
     }
 
@@ -355,7 +355,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.error$.next(err)
                     this.logger.error(LoggerVerbosity.Low, `MessagingServer [${this.serverId}] - send data error`, err)
                     return of(false)
-                })
+                }),
             )
         })
     }

@@ -8,7 +8,7 @@ describe("deduplicateBy", () => {
             const __in = m.hot("--|", {})
             const _out = m.hot("--|", {})
             m.expect(__in.pipe(deduplicateBy(() => null))).toBeObservable(_out)
-        })
+        }),
     )
     it(
         "should deduplicate objects with the same key",
@@ -54,7 +54,7 @@ describe("deduplicateBy", () => {
                 },
             })
             m.expect(__in.pipe(deduplicateBy((t) => t.key))).toBeObservable(_out)
-        })
+        }),
     )
     it(
         "should deduplicate objects with the same key and reset after duration",
@@ -120,6 +120,6 @@ describe("deduplicateBy", () => {
                 },
             })
             m.expect(__in.pipe(deduplicateBy((t) => t.key, m.time("--|")))).toBeObservable(_out)
-        })
+        }),
     )
 })

@@ -9,7 +9,7 @@ export const pingMessagingClient = (
     dataInput$: Observable<DataObject>,
     dataOutput$: Subject<DataObject>,
     pingTimeout: number,
-    scheduler?: SchedulerLike
+    scheduler?: SchedulerLike,
 ): Observable<boolean> => {
     return dataInput$.pipe(
         takeUntil(statusEvent$.pipe(ofMessagingClientStatusEvent(MessagingClientStatusEventName.Stopped))),
@@ -28,6 +28,6 @@ export const pingMessagingClient = (
                 dataOutput$.next(data)
             }
             return of(true)
-        })
+        }),
     )
 }

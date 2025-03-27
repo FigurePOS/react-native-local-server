@@ -33,7 +33,7 @@ export type LocalCommunicationReplyTextMessageSent = {
 
 export const createMessageReplyTextMessageSent = (
     text: string,
-    replyId: string
+    replyId: string,
 ): LocalCommunicationReplyTextMessageSent => ({
     type: LocalCommunicationMessageType.ReplyTextMessageSent,
     payload: {

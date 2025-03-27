@@ -30,7 +30,7 @@ export const createDefaultState = (): MessagingClientStateObject => ({
 
 export const MessagingClientReducer: Reducer = (
     state: MessagingClientStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): MessagingClientStateObject => {
     switch (action.type) {
         case MESSAGING_CLIENT_START_REQUESTED:

@@ -13,7 +13,7 @@ export type Message<B = any> = {
 
 export type MessageHandler<In, Deps = any, Result = any> = (
     message$: Observable<Message<In>>,
-    deps: Deps
+    deps: Deps,
 ) => Observable<Result>
 
 export enum MessagingStoppedReason {

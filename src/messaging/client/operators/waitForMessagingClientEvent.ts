@@ -11,7 +11,7 @@ export const waitForMessagingClientEvent =
             switchMapTo(fromMessagingClientStatusEvent(clientId, logger)),
             ofMessagingClientStatusEvent(event),
             take(1),
-            switchMapTo([])
+            switchMapTo([]),
         )
 
 export const waitForMessagingClientStopped = (clientId: string, logger: LoggerWrapper) =>

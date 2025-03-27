@@ -18,7 +18,7 @@ export const counterResetRequestedHandler: MessageHandler<
                 return [createActionCounterCountReset()]
             }
             return []
-        })
+        }),
     )
 
 export const counterRequestedHandler: MessageHandler<
@@ -33,7 +33,7 @@ export const counterRequestedHandler: MessageHandler<
                 CounterServer.send(createCounterMessageCountChanged(count), message.source.connectionId)
             }
             return []
-        })
+        }),
     )
 
 export default [counterResetRequestedHandler, counterRequestedHandler]

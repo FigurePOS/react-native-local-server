@@ -59,6 +59,15 @@ jobs:
           paths: example/node_modules
       - persist_project
 
+  prettier:
+    executor: default
+    steps:
+      - attach_project
+      - run:
+          name: Format files
+          command: |
+            yarn check:format
+
   lint:
     executor: default
     steps:
@@ -149,7 +158,11 @@ workflows:
   build-and-test:
     jobs:
       - install-dependencies:
+          context: react-native   
+      - prettier:
           context: react-native
+          requires:
+            - install-dependencies
       - lint:
           context: react-native
           requires:

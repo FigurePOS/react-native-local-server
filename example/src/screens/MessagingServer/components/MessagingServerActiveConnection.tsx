@@ -19,7 +19,7 @@ export const MessagingServerActiveConnection = () => {
                 dispatch(createActionMessagingServerSendMessageRequested(connectionId, d))
             }
         },
-        [dispatch, connectionId]
+        [dispatch, connectionId],
     )
     if (data === null || data === undefined) {
         return (

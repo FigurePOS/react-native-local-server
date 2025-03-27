@@ -27,7 +27,7 @@ export const createDefaultState = (): ServiceBrowserStateObject => ({
 
 export const ServiceBrowserReducer: Reducer = (
     state: ServiceBrowserStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): ServiceBrowserStateObject => {
     switch (action.type) {
         case SERVICE_BROWSER_START_REQUESTED:

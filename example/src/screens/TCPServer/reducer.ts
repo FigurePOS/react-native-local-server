@@ -39,7 +39,7 @@ export const createDefaultState = (): TCPServerStateObject => ({
 
 export const TCPServerReducer: Reducer = (
     state: TCPServerStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): TCPServerStateObject => {
     switch (action.type) {
         case BARE_TCP_SERVER_START_REQUESTED:
@@ -78,7 +78,7 @@ export const TCPServerReducer: Reducer = (
                 connections: updateConnectionState(
                     state.connections,
                     action.payload.connectionId,
-                    action.payload.state
+                    action.payload.state,
                 ),
             }
         case BARE_TCP_SERVER_CONNECTION_NEW_DATA:
@@ -99,7 +99,7 @@ export const TCPServerReducer: Reducer = (
 export const updateConnectionState = (
     connections: TCPServerConnectionStateObject[],
     connectionId: string,
-    state: ServerConnectionState
+    state: ServerConnectionState,
 ): TCPServerConnectionStateObject[] => {
     if (none((connection) => connection.connectionId === connectionId, connections)) {
         const newConnection: TCPServerConnectionStateObject = {
@@ -123,7 +123,7 @@ export const updateConnectionState = (
 export const updateConnectionData = (
     connections: TCPServerConnectionStateObject[],
     connectionId: string,
-    data: MessageData
+    data: MessageData,
 ): TCPServerConnectionStateObject[] =>
     map((connection) => {
         if (connection.connectionId === connectionId) {

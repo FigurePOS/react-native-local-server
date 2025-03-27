@@ -20,21 +20,21 @@ import { DataObjectServiceInfo } from "../types"
 
 export const composeMessagingClientLifecycleStatusEvent = (
     type: MessagingClientLifecycleStatusEvent["type"],
-    reason?: StopReason
+    reason?: StopReason,
 ): MessagingClientLifecycleStatusEvent => ({
     type: type,
     ...(reason ? { reason: reason } : null),
 })
 
 export const composeMessagingClientServiceInformationStatusEvent = (
-    data: DataObjectServiceInfo
+    data: DataObjectServiceInfo,
 ): MessagingClientStatusEvent => ({
     type: MessagingClientStatusEventName.ServiceInformationChanged,
     info: data.info,
 })
 
 export const composeMessagingClientStatusEvent = (
-    nativeEvent: TCPClientNativeEvent | ServiceBrowserNativeEvent
+    nativeEvent: TCPClientNativeEvent | ServiceBrowserNativeEvent,
 ): MessagingClientStatusEvent => {
     switch (nativeEvent.type) {
         case TCPClientEventName.Ready:
@@ -42,7 +42,7 @@ export const composeMessagingClientStatusEvent = (
         case TCPClientEventName.Stopped:
             return composeMessagingClientLifecycleStatusEvent(
                 MessagingClientStatusEventName.Stopped,
-                nativeEvent.reason
+                nativeEvent.reason,
             )
         case ServiceBrowserEventName.Started:
             return composeMessagingClientLifecycleStatusEvent(MessagingClientStatusEventName.ServiceSearchStarted)
@@ -56,7 +56,7 @@ export const composeMessagingClientStatusEvent = (
 export const getBrowserIdFromMessagingClientId = (clientId: string): string => `${clientId}__service_browser`
 
 export const mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate = (
-    event: ServiceBrowserNativeEvent
+    event: ServiceBrowserNativeEvent,
 ): MessagingClientServiceSearchEventUpdate => {
     const service = mapServiceBrowserEventToMessagingService(event)
     switch (event.type) {
@@ -79,7 +79,7 @@ export const mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate = (
 }
 
 export const mapServiceBrowserEventToMessagingService = (
-    event: ServiceBrowserNativeEvent
+    event: ServiceBrowserNativeEvent,
 ): MessagingClientServiceSearchResult | null => {
     if (event.type === ServiceBrowserEventName.ServiceFound || event.type === ServiceBrowserEventName.ServiceLost) {
         return parseMessagingServiceInformation(event.name)
@@ -104,7 +104,7 @@ export const parseMessagingServiceInformation = (text: string): MessagingClientS
 
 export const reduceMessagingClientServiceSearchEventUpdate = (
     current: MessagingClientServiceSearchEvent,
-    update: MessagingClientServiceSearchEventUpdate
+    update: MessagingClientServiceSearchEventUpdate,
 ): MessagingClientServiceSearchEvent => {
     switch (update.type) {
         case MessagingClientServiceSearchUpdate.ServiceFound:
@@ -137,7 +137,7 @@ export const reduceMessagingClientServiceSearchEventUpdate = (
 
 export const composeTCPClientConfiguration = (
     config: MessagingClientConfiguration,
-    discoveryGroup: string | null
+    discoveryGroup: string | null,
 ): TCPClientConfiguration | null => {
     switch (config.connection.method) {
         case MessagingClientConnectionMethod.Raw:

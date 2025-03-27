@@ -58,13 +58,13 @@ describe("pingServerConnection", () => {
                 pingInterval,
                 pingTimeout,
                 3,
-                m.scheduler
+                m.scheduler,
             )
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should not stop after one unsuccessful ping",
@@ -107,13 +107,13 @@ describe("pingServerConnection", () => {
                 pingInterval,
                 pingTimeout,
                 3,
-                m.scheduler
+                m.scheduler,
             )
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should not stop on other connection closed",
@@ -157,13 +157,13 @@ describe("pingServerConnection", () => {
                 pingInterval,
                 pingTimeout,
                 3,
-                m.scheduler
+                m.scheduler,
             )
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should stop on server stopped",
@@ -200,13 +200,13 @@ describe("pingServerConnection", () => {
                 pingInterval,
                 pingTimeout,
                 3,
-                m.scheduler
+                m.scheduler,
             )
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should throw an error after 2 unsuccessful pings",
@@ -235,7 +235,7 @@ describe("pingServerConnection", () => {
                     a: true,
                     b: false,
                 },
-                "Ping failed 2 times"
+                "Ping failed 2 times",
             )
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
@@ -248,13 +248,13 @@ describe("pingServerConnection", () => {
                 pingInterval,
                 pingTimeout,
                 2,
-                m.scheduler
+                m.scheduler,
             )
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should not throw an error after 1 ping being delayed",
@@ -284,7 +284,7 @@ describe("pingServerConnection", () => {
                     b: false,
                     c: true,
                 },
-                "Ping failed 2 times"
+                "Ping failed 2 times",
             )
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
@@ -297,13 +297,13 @@ describe("pingServerConnection", () => {
                 pingInterval,
                 pingTimeout,
                 2,
-                m.scheduler
+                m.scheduler,
             )
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
     it(
         "should not throw an error if some data arrived instead of ping",
@@ -333,7 +333,7 @@ describe("pingServerConnection", () => {
                     b: false,
                     c: true,
                 },
-                "Ping failed 2 times"
+                "Ping failed 2 times",
             )
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
@@ -346,12 +346,12 @@ describe("pingServerConnection", () => {
                 pingInterval,
                 pingTimeout,
                 2,
-                m.scheduler
+                m.scheduler,
             )
             // @ts-ignore
             m.expect(result).toBeObservable(_out)
             // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
-        })
+        }),
     )
 })

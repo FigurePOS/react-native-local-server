@@ -37,7 +37,7 @@ export const createDefaultState = (): CounterClientStateObject => ({
 
 export const counterClientReducer: Reducer = (
     state: CounterClientStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): CounterClientStateObject => {
     switch (action.type) {
         case COUNTER_CLIENT_START_REQUESTED:

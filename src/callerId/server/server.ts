@@ -63,11 +63,11 @@ export class CallerIdServer {
             filter(hasPhoneCallGoodChecksum),
             filter(isPhoneCallInbound),
             log(LoggerVerbosity.Low, this.logger, `CallerIdServer [${this.serverId}] - call detected`),
-            share()
+            share(),
         ) as Observable<PhoneCall>
         this.statusEvent$ = fromCallerIdServerStatusEvent(this.serverId).pipe(
             log(LoggerVerbosity.Low, this.logger, `CallerIdServer [${this.serverId}] - status event`),
-            share()
+            share(),
         )
         this.udpServer = new UDPServer(id)
     }
@@ -101,7 +101,9 @@ export class CallerIdServer {
         const port = this.config.port
         return interval(options?.interval ?? 200).pipe(
             take(options?.numberOfCalls ?? 5),
-            concatMap(() => defer(() => from(this.udpServer.sendData("255.255.255.255", port, data))).pipe(mapTo(true)))
+            concatMap(() =>
+                defer(() => from(this.udpServer.sendData("255.255.255.255", port, data))).pipe(mapTo(true)),
+            ),
         )
     }
 
