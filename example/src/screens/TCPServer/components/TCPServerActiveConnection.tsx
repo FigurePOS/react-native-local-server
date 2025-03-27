@@ -19,7 +19,7 @@ export const TCPServerActiveConnection = () => {
                 dispatch(createActionBareTcpServerDataSendRequested(connectionId, d))
             }
         },
-        [dispatch, connectionId]
+        [dispatch, connectionId],
     )
     if (data == null) {
         return (

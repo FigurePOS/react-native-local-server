@@ -14,5 +14,5 @@ export const ServiceBrowserModule = NativeModules.ServiceBrowserModule
               get: function () {
                   throw new Error(LINKING_ERROR)
               },
-          }
+          },
       )

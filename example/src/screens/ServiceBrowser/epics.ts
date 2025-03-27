@@ -32,15 +32,15 @@ const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>
             }
             return defer(() => BareServiceBrowser.start(config)).pipe(
                 mapTo(createActionServiceBrowserStarted()),
-                catchError((err) => [createActionServiceBrowserErrored(err)])
+                catchError((err) => [createActionServiceBrowserErrored(err)]),
             )
-        })
+        }),
     )
 
 const serviceBrowserReadyEpic: Epic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.Started).pipe(
         filter((event: ServiceBrowserStartedNativeEvent) => event.browserId === BareServiceBrowser.getId()),
-        map(() => createActionServiceBrowserStarted())
+        map(() => createActionServiceBrowserStarted()),
     )
 
 const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
@@ -49,27 +49,27 @@ const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>)
         switchMap(() => {
             return defer(() => BareServiceBrowser.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionServiceBrowserErrored(err)])
+                catchError((err) => [createActionServiceBrowserErrored(err)]),
             )
-        })
+        }),
     )
 
 const serviceBrowserStoppedEpic: Epic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.Stopped).pipe(
         filter((event: ServiceBrowserStoppedNativeEvent) => event.browserId === BareServiceBrowser.getId()),
-        mapTo(createActionServiceBrowserStopped())
+        mapTo(createActionServiceBrowserStopped()),
     )
 
 const serviceBrowserServiceFoundEpic: Epic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.ServiceFound).pipe(
         filter((event: ServiceBrowserServiceFoundNativeEvent) => event.browserId === BareServiceBrowser.getId()),
-        map((event: ServiceBrowserServiceFoundNativeEvent) => createActionServiceBrowserServiceFound(event.name))
+        map((event: ServiceBrowserServiceFoundNativeEvent) => createActionServiceBrowserServiceFound(event.name)),
     )
 
 const serviceBrowserServiceLostEpic: Epic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.ServiceLost).pipe(
         filter((event: ServiceBrowserServiceLostNativeEvent) => event.browserId === BareServiceBrowser.getId()),
-        map((event: ServiceBrowserServiceLostNativeEvent) => createActionServiceBrowserServiceLost(event.name))
+        map((event: ServiceBrowserServiceLostNativeEvent) => createActionServiceBrowserServiceLost(event.name)),
     )
 
 export default [

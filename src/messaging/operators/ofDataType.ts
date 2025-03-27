@@ -22,7 +22,7 @@ export const ofDataTypeMessageAck: <M>(source$: Observable<DataObject<M>>) => Ob
     ofDataType(DataObjectType.MessageAck)
 
 export const ofDataTypePing: <M>(source$: Observable<DataObject<M>>) => Observable<DataObjectPing> = ofDataType(
-    DataObjectType.Ping
+    DataObjectType.Ping,
 )
 
 export const ofDataTypeServiceInfo: <M>(source$: Observable<DataObject<M>>) => Observable<DataObjectServiceInfo> =

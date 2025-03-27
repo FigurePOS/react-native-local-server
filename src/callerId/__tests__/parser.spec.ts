@@ -14,7 +14,7 @@ describe("parsePhoneCallFromPacketData", () => {
         return expect(parsePhoneCallFromPacketData(TestPackets.no__name)).toEqual(
             composeTestPhoneCall({
                 name: undefined,
-            })
+            }),
         )
     })
     it("should parse packet with private number", () => {
@@ -22,7 +22,7 @@ describe("parsePhoneCallFromPacketData", () => {
             composeTestPhoneCall({
                 number: PhoneCallNumberException.Private,
                 name: undefined,
-            })
+            }),
         )
     })
     it("should parse packet with out of area number", () => {
@@ -30,14 +30,14 @@ describe("parsePhoneCallFromPacketData", () => {
             composeTestPhoneCall({
                 number: PhoneCallNumberException.OutOfArea,
                 name: undefined,
-            })
+            }),
         )
     })
     it("should parse outbound packet", () => {
         return expect(parsePhoneCallFromPacketData(TestPackets.outbound)).toEqual(
             composeTestPhoneCall({
                 direction: PhoneCallDirection.Outbound,
-            })
+            }),
         )
     })
     it("should parse end packet", () => {
@@ -45,14 +45,14 @@ describe("parsePhoneCallFromPacketData", () => {
             composeTestPhoneCall({
                 update: PhoneCallUpdate.End,
                 duration: 257,
-            })
+            }),
         )
     })
     it("should parse packet with bad checksum", () => {
         return expect(parsePhoneCallFromPacketData(TestPackets.bad_csum)).toEqual(
             composeTestPhoneCall({
                 checksum: PhoneCallChecksum.Bad,
-            })
+            }),
         )
     })
 })
@@ -67,8 +67,8 @@ describe("composePacketDataFromPhoneCall", () => {
             composePacketDataFromPhoneCall(
                 composeTestPhoneCall({
                     name: undefined,
-                })
-            )
+                }),
+            ),
         ).toEqual(TestPackets.no__name)
     })
 
@@ -78,8 +78,8 @@ describe("composePacketDataFromPhoneCall", () => {
                 composeTestPhoneCall({
                     name: undefined,
                     number: undefined,
-                })
-            )
+                }),
+            ),
         ).toEqual(TestPackets.priv_num)
     })
 
@@ -88,8 +88,8 @@ describe("composePacketDataFromPhoneCall", () => {
             composePacketDataFromPhoneCall(
                 composeTestPhoneCall({
                     direction: PhoneCallDirection.Outbound,
-                })
-            )
+                }),
+            ),
         ).toEqual(TestPackets.outbound)
     })
 
@@ -99,8 +99,8 @@ describe("composePacketDataFromPhoneCall", () => {
                 composeTestPhoneCall({
                     update: PhoneCallUpdate.End,
                     duration: 257,
-                })
-            )
+                }),
+            ),
         ).toEqual(TestPackets.end_call)
     })
 
@@ -109,8 +109,8 @@ describe("composePacketDataFromPhoneCall", () => {
             composePacketDataFromPhoneCall(
                 composeTestPhoneCall({
                     checksum: PhoneCallChecksum.Bad,
-                })
-            )
+                }),
+            ),
         ).toEqual(TestPackets.bad_csum)
     })
 })

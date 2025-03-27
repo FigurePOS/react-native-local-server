@@ -8,13 +8,13 @@ import { fromMessagingClientServiceBrowserEvent } from "./fromMessagingClientSer
 import { MessagingClientServiceSearchEvent, MessagingClientServiceSearchUpdate } from "../types"
 
 export const fromMessagingClientServiceSearchEvent = (
-    clientId: string
+    clientId: string,
 ): Observable<MessagingClientServiceSearchEvent> => {
     return fromMessagingClientServiceBrowserEvent(clientId).pipe(
         map(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate),
         scan(reduceMessagingClientServiceSearchEventUpdate, {
             services: [],
             update: { type: MessagingClientServiceSearchUpdate.Unknown },
-        })
+        }),
     )
 }

@@ -38,5 +38,5 @@ export const getBareTCPServerActiveConnection = (state: StateObject): Maybe<Serv
 
 export const getBareTCPServerActiveConnectionData = (state: StateObject): Maybe<MessageData[]> =>
     getBareTCPServerStateObject(state).connections.find(
-        (c) => c.connectionId === getBareTCPServerActiveConnectionId(state)
+        (c) => c.connectionId === getBareTCPServerActiveConnectionId(state),
     )?.data

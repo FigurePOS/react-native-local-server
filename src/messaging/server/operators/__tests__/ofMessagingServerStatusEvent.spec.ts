@@ -26,7 +26,7 @@ describe("ofServerStatusEvent", () => {
             })
             // @ts-ignore
             m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Ready))).toBeObservable(_out)
-        })
+        }),
     )
     it(
         "should filter messages - server stopped",
@@ -43,9 +43,9 @@ describe("ofServerStatusEvent", () => {
             })
             m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped))).toBeObservable(
                 // @ts-ignore
-                _out
+                _out,
             )
-        })
+        }),
     )
     it(
         "should filter messages - connection accepted",
@@ -62,11 +62,11 @@ describe("ofServerStatusEvent", () => {
             })
 
             m.expect(
-                __in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionAccepted))
+                __in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionAccepted)),
             ).toBeObservable(
                 // @ts-ignore
-                _out
+                _out,
             )
-        })
+        }),
     )
 })

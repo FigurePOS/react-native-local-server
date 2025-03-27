@@ -11,12 +11,12 @@ import { LoggerVerbosity, LoggerWrapper } from "../../../utils/logger"
 
 export const fromMessagingServerMessageReceived = <Body>(
     serverId: string,
-    logger: LoggerWrapper
+    logger: LoggerWrapper,
 ): Observable<Message<Body>> =>
     fromMessagingServerDataReceived(serverId, logger).pipe(
         ofDataTypeMessage,
         map(parseServerMessage),
         deduplicateBy(getMessageId),
         log(LoggerVerbosity.High, logger, `MessagingServer [${serverId}] - received message`),
-        share()
+        share(),
     )

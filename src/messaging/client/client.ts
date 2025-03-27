@@ -74,11 +74,11 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.cleanSubscriptions()
                 }
             }),
-            share()
+            share(),
         )
         this.searchEvent$ = fromMessagingClientServiceSearchEvent(this.clientId).pipe(
             log(LoggerVerbosity.Low, this.logger, `MessagingClient [${this.clientId}] - search update`),
-            share()
+            share(),
         )
 
         this.tcpClient = new TCPClient(id)
@@ -128,12 +128,12 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                         `MessagingClient [${this.clientId}] - restartServiceSearch error when stopping service search`,
                         {
                             error: err,
-                        }
+                        },
                     )
                     return []
-                })
+                }),
             ),
-            defer(() => this.startServiceSearch())
+            defer(() => this.startServiceSearch()),
         )
     }
 
@@ -147,7 +147,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
     start(
         configuration: MessagingClientConfiguration,
         rootHandler: MessageHandler<In, Deps>,
-        dependencies: Deps
+        dependencies: Deps,
     ): Observable<void> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - start`, configuration)
         this.configuration = configuration
@@ -155,7 +155,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.cleanSubscriptions()
         const tcpConfig: TCPClientConfiguration | null = composeTCPClientConfiguration(
             configuration,
-            this.discoveryGroup
+            this.discoveryGroup,
         )
         if (!tcpConfig) {
             this.logger.error(LoggerVerbosity.Low, `MessagingClient [${this.clientId}] - missing tcp configuration`)
@@ -175,15 +175,15 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                             {
                                 error: err,
                                 ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
-                            }
+                            },
                         )
                         // Because this stream errored, we need to restart the processing.
                         // This inserts the handler again into the handler subject, which re-triggers this switchMap.
                         this.handler$.next(handler)
                         return EMPTY
-                    })
+                    }),
                 )
-            })
+            }),
         )
 
         const data$: Observable<boolean> = this.dataOutput$.pipe(concatMap((data: DataObject) => this.sendData(data)))
@@ -195,13 +195,13 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.statusEvent$,
                     fromMessagingClientDataReceived(this.clientId, this.logger),
                     this.dataOutput$,
-                    this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY
+                    this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY,
                 ).pipe(
                     catchError((err) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingClient [${this.clientId}] - ping timed out`,
-                            err
+                            err,
                         )
                         return defer(() => this.tcpClient.stop(MessagingStoppedReason.PingTimedOut)).pipe(
                             mapTo(false),
@@ -209,14 +209,14 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                                 this.logger.error(
                                     LoggerVerbosity.Low,
                                     `MessagingClient [${this.clientId}] - stop client failed - error`,
-                                    e
+                                    e,
                                 )
                                 return of(false)
-                            })
+                            }),
                         )
-                    })
+                    }),
                 )
-            })
+            }),
         )
 
         this.mainSubscription = output$.subscribe()
@@ -233,9 +233,9 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     return throwError(err)
                 }
                 return defer(() => this.tcpClient.stop(MessagingStoppedReason.ConnectionTimedOut)).pipe(
-                    switchMap(() => throwError(err))
+                    switchMap(() => throwError(err)),
                 )
-            })
+            }),
         )
     }
 
@@ -276,10 +276,10 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingClient [${this.clientId}] - restart - failed to stop`,
-                        err
+                        err,
                     )
                     return []
-                })
+                }),
             ),
             defer(() => {
                 if (this.configuration == null) {
@@ -294,11 +294,11 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingClient [${this.clientId}] - restart - failed to start`,
-                        err
+                        err,
                     )
                     return throwError(err)
-                })
-            )
+                }),
+            ),
         )
     }
 
@@ -381,7 +381,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                 catchError((err) => {
                     this.error$.next(err)
                     return of(false)
-                })
+                }),
             )
         })
     }

@@ -5,8 +5,8 @@ import { fromEventFixed } from "../../../utils/operators/fromEventFixed"
 
 export const fromTCPServerEvent = <T extends TCPServerEventName>(
     serverId: string,
-    eventName: T
+    eventName: T,
 ): Observable<Extract<TCPServerNativeEvent, { type: T }>> =>
     fromEventFixed<Extract<TCPServerNativeEvent, { type: T }>>(TCPServer.EventEmitter, eventName).pipe(
-        filter((event: Extract<TCPServerNativeEvent, { type: T }>): boolean => event.serverId === serverId)
+        filter((event: Extract<TCPServerNativeEvent, { type: T }>): boolean => event.serverId === serverId),
     )

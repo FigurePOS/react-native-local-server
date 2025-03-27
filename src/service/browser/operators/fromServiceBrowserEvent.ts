@@ -5,8 +5,8 @@ import { fromEventFixed } from "../../../utils/operators/fromEventFixed"
 
 export const fromServiceBrowserEvent = <T extends ServiceBrowserEventName>(
     browserId: string,
-    eventName: T
+    eventName: T,
 ): Observable<Extract<ServiceBrowserNativeEvent, { type: T }>> =>
     fromEventFixed<Extract<ServiceBrowserNativeEvent, { type: T }>>(ServiceBrowser.EventEmitter, eventName).pipe(
-        filter((event: Extract<ServiceBrowserNativeEvent, { type: T }>): boolean => event.browserId === browserId)
+        filter((event: Extract<ServiceBrowserNativeEvent, { type: T }>): boolean => event.browserId === browserId),
     )

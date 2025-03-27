@@ -14,5 +14,5 @@ export const TCPClientModule = NativeModules.TCPClientModule
               get: function () {
                   throw new Error(LINKING_ERROR)
               },
-          }
+          },
       )

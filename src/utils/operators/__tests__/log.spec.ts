@@ -24,6 +24,6 @@ describe("log", () => {
             m.flush()
             expect(spy).toBeCalledWith(LoggerVerbosity.Low, "This is the message", "data 1")
             expect(spy).toBeCalledWith(LoggerVerbosity.Low, "This is the message", "data 2")
-        })
+        }),
     )
 })

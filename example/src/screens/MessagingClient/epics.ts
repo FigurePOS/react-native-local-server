@@ -40,9 +40,9 @@ const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =
             }
             return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
                 switchMapTo([]),
-                catchError((err) => [createActionMessagingClientErrored(err)])
+                catchError((err) => [createActionMessagingClientErrored(err)]),
             )
-        })
+        }),
     )
 
 const messagingClientStatus: Epic = () =>
@@ -57,7 +57,7 @@ const messagingClientStatus: Epic = () =>
                     return []
             }
         }),
-        catchError((err) => [createActionMessagingClientErrored(err)])
+        catchError((err) => [createActionMessagingClientErrored(err)]),
     )
 
 const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
@@ -66,9 +66,9 @@ const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return SampleMessagingClient.stop().pipe(
                 switchMapTo([]),
-                catchError((err) => [createActionMessagingClientErrored(err)])
+                catchError((err) => [createActionMessagingClientErrored(err)]),
             )
-        })
+        }),
     )
 
 const messagingClientDataSendRequested: Epic = (action$: Observable<StateAction>) =>
@@ -80,10 +80,10 @@ const messagingClientDataSendRequested: Epic = (action$: Observable<StateAction>
             return SampleMessagingClient.send(message).pipe(
                 switchMap(() => {
                     return [createActionMessagingClientDataReceived(createMessageData("client", text))]
-                })
+                }),
             )
         }),
-        catchError((err) => [createActionMessagingClientErrored(err)])
+        catchError((err) => [createActionMessagingClientErrored(err)]),
     )
 
 export default [

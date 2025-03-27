@@ -24,7 +24,7 @@ export const createDefaultState = (): CounterDataStateObject => ({
 
 export const counterDataReducer: Reducer = (
     state: CounterDataStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): CounterDataStateObject => {
     switch (action.type) {
         case COUNTER_COUNT_CHANGED:

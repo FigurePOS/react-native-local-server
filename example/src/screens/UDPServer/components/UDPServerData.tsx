@@ -12,7 +12,7 @@ export const BareUDPServerData = () => {
         (host: string, port: number, d: string) => {
             dispatch(createActionBareUdpServerDataSendRequested(host, port, d))
         },
-        [dispatch]
+        [dispatch],
     )
     return (
         <MessageView data={data}>

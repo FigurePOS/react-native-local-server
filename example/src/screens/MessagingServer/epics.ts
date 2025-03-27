@@ -34,9 +34,9 @@ const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =
             }
             return SampleMessagingServer.start(config, rootHandler, SampleMessagingServerDependencies).pipe(
                 mergeMapTo([]),
-                catchError((err) => [createActionMessagingServerErrored(err)])
+                catchError((err) => [createActionMessagingServerErrored(err)]),
             )
-        })
+        }),
     )
 
 const messagingServerStatus: Epic = () =>
@@ -51,7 +51,7 @@ const messagingServerStatus: Epic = () =>
                     return [
                         createActionMessagingServerConnectionStateChanged(
                             e.connectionId,
-                            ServerConnectionState.Accepted
+                            ServerConnectionState.Accepted,
                         ),
                     ]
                 case MessagingServerStatusEventName.ConnectionReady:
@@ -64,7 +64,7 @@ const messagingServerStatus: Epic = () =>
                     ]
             }
             return []
-        })
+        }),
     )
 
 const messagingServerStopRequested: Epic = (action$: Observable<StateAction>) =>
@@ -73,9 +73,9 @@ const messagingServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         mergeMap(() => {
             return SampleMessagingServer.stop().pipe(
                 mergeMapTo([]),
-                catchError((err) => [createActionMessagingServerErrored(err)])
+                catchError((err) => [createActionMessagingServerErrored(err)]),
             )
-        })
+        }),
     )
 
 const messagingServerSendDataRequested: Epic = (action$: Observable<StateAction>) =>
@@ -88,9 +88,9 @@ const messagingServerSendDataRequested: Epic = (action$: Observable<StateAction>
             return SampleMessagingServer.send(message, connectionId).pipe(
                 switchMap(() => [
                     createActionMessagingServerDataReceived(connectionId, createMessageData("server", data)),
-                ])
+                ]),
             )
-        })
+        }),
     )
 
 const messagingServerCloseConnectionRequested: Epic = (action$: Observable<StateAction>) =>
@@ -99,7 +99,7 @@ const messagingServerCloseConnectionRequested: Epic = (action$: Observable<State
         switchMap((action: StateAction) => {
             const connectionId = action.payload.connectionId
             return SampleMessagingServer.closeConnection(connectionId).pipe(switchMap(() => []))
-        })
+        }),
     )
 
 export default [

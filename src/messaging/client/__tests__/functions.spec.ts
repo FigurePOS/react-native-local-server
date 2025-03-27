@@ -123,7 +123,7 @@ describe("reduceMessagingClientServiceSearchEventUpdate", () => {
             update: update,
         }
         return expect(
-            reduceMessagingClientServiceSearchEventUpdate({} as MessagingClientServiceSearchEvent, update)
+            reduceMessagingClientServiceSearchEventUpdate({} as MessagingClientServiceSearchEvent, update),
         ).toEqual(expected)
     })
     it("should return do not modify state on unknown", () => {

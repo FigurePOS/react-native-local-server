@@ -7,6 +7,6 @@ export const fromMessagingClientServiceBrowserEvent = (clientId: string): Observ
         fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.Stopped),
         fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.Started),
         fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.ServiceFound),
-        fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.ServiceLost)
+        fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.ServiceLost),
     )
 }

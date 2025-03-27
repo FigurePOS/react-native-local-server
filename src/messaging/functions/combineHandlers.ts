@@ -6,6 +6,6 @@ export const combineHandlers = (...handlers: MessageHandler<any>[]): MessageHand
         merge(
             ...handlers.map((handler) => {
                 return handler(...args)
-            })
+            }),
         )
 }

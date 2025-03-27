@@ -29,7 +29,7 @@ export const createDefaultState = (): TCPClientStateObject => ({
 
 export const TCPClientReducer: Reducer = (
     state: TCPClientStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): TCPClientStateObject => {
     switch (action.type) {
         case BARE_TCP_CLIENT_START_REQUESTED:

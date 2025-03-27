@@ -5,12 +5,12 @@ export const deduplicateBy =
     <T>(
         keyExtractor: (value: T) => string | null | undefined,
         duration: number | undefined = undefined,
-        scheduler: SchedulerLike | undefined = undefined
+        scheduler: SchedulerLike | undefined = undefined,
     ) =>
     (source$: Observable<T>): Observable<T> =>
         source$.pipe(
             groupBy(keyExtractor, undefined, groupDuration(duration, scheduler)),
-            mergeMap((group$) => (group$.key == null ? group$ : group$.pipe(take(1))))
+            mergeMap((group$) => (group$.key == null ? group$ : group$.pipe(take(1)))),
         )
 
 const groupDuration = (duration: number | undefined, scheduler: SchedulerLike | undefined) => {

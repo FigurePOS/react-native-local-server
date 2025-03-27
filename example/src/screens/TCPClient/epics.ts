@@ -41,9 +41,9 @@ const bareTCPClientStartRequestedEpic: Epic = (action$: Observable<StateAction>)
             }
             return defer(() => BareTCPClient.start(serverConfig)).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpClientErrored(err)])
+                catchError((err) => [createActionBareTcpClientErrored(err)]),
             )
-        })
+        }),
     )
 
 const bareTCPClientReadyEpic: Epic = () =>
@@ -52,7 +52,7 @@ const bareTCPClientReadyEpic: Epic = () =>
         switchMap(() => [
             createActionBareTcpClientStateChanged(ClientState.Ready),
             createActionBareTcpClientNewData(createMessageData("status", "READY")),
-        ])
+        ]),
     )
 
 const bareTCPClientStoppedEpic: Epic = () =>
@@ -61,7 +61,7 @@ const bareTCPClientStoppedEpic: Epic = () =>
         switchMap(() => [
             createActionBareTcpClientStateChanged(ClientState.StandBy),
             createActionBareTcpClientNewData(createMessageData("status", "STOPPED")),
-        ])
+        ]),
     )
 
 const bareTCPClientStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
@@ -70,9 +70,9 @@ const bareTCPClientStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         switchMap(() => {
             return defer(() => BareTCPClient.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpClientErrored(err)])
+                catchError((err) => [createActionBareTcpClientErrored(err)]),
             )
-        })
+        }),
     )
 
 const bareTCPClientDataReceivedEpic: Epic = () =>
@@ -80,7 +80,7 @@ const bareTCPClientDataReceivedEpic: Epic = () =>
         filter((event: TCPClientDataReceivedNativeEvent) => event.clientId === BareTCPClient.getId()),
         switchMap((event: TCPClientDataReceivedNativeEvent) => [
             createActionBareTcpClientNewData(createMessageData("server", event.data)),
-        ])
+        ]),
     )
 
 const bareTCPClientDataSendRequestedEpic: Epic = (action$: Observable<StateAction>) =>
@@ -90,9 +90,9 @@ const bareTCPClientDataSendRequestedEpic: Epic = (action$: Observable<StateActio
             const data = action.payload.data
             return defer(() => BareTCPClient.sendData(data)).pipe(
                 switchMap(() => [createActionBareTcpClientNewData(createMessageData("client", data))]),
-                catchError((err) => [createActionBareTcpClientErrored(err)])
+                catchError((err) => [createActionBareTcpClientErrored(err)]),
             )
-        })
+        }),
     )
 
 export default [

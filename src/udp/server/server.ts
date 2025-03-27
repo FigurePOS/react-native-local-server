@@ -61,7 +61,7 @@ export class UDPServer {
             await UDPServerModule.createServer(
                 this.getId(),
                 this.config.port,
-                this.config.numberOfDroppedBytesFromMsgStart ?? 0
+                this.config.numberOfDroppedBytesFromMsgStart ?? 0,
             )
             this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - start - success`)
             return Promise.resolve()

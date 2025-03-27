@@ -3,7 +3,7 @@ import { TCPClientDataReceivedNativeEvent, TCPServerDataReceivedNativeEvent } fr
 import { ErrorWithMetadata } from "../../utils/errors"
 
 export const parseDataObject = (
-    nativeEvent: TCPClientDataReceivedNativeEvent | TCPServerDataReceivedNativeEvent
+    nativeEvent: TCPClientDataReceivedNativeEvent | TCPServerDataReceivedNativeEvent,
 ): DataObject => {
     try {
         return {

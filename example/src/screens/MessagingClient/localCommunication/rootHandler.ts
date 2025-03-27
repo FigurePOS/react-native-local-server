@@ -7,15 +7,15 @@ import { createMessageData } from "../../../common/components/messaging/function
 
 export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessagingClientDependenciesType> = (
     message$,
-    deps
+    deps,
 ) =>
     message$.pipe(
         switchMap((message) => {
             if (message.body.type === LocalCommunicationMessageType.TextMessageSent) {
                 deps.dispatch(
-                    createActionMessagingClientDataReceived(createMessageData("server", message.body.payload.text))
+                    createActionMessagingClientDataReceived(createMessageData("server", message.body.payload.text)),
                 )
             }
             return []
-        })
+        }),
     )

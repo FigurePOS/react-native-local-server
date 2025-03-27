@@ -11,5 +11,5 @@ export const fromMessagingServerStatusEvent = (serverId: string): Observable<Mes
         fromTCPServerEvent(serverId, TCPServer.EventName.Stopped),
         fromTCPServerEvent(serverId, TCPServer.EventName.ConnectionAccepted),
         fromTCPServerEvent(serverId, TCPServer.EventName.ConnectionReady),
-        fromTCPServerEvent(serverId, TCPServer.EventName.ConnectionClosed)
+        fromTCPServerEvent(serverId, TCPServer.EventName.ConnectionClosed),
     ).pipe(map(composeMessagingServerStatusEvent))

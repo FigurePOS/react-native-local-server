@@ -17,5 +17,5 @@ export const ofMessagingServerConnectionClosed =
     (source$: Observable<MessagingServerStatusEvent>): Observable<MessagingServerConnectionStatusEvent> =>
         source$.pipe(
             ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionClosed),
-            filter((e: MessagingServerConnectionStatusEvent) => e.connectionId === connectionId)
+            filter((e: MessagingServerConnectionStatusEvent) => e.connectionId === connectionId),
         )

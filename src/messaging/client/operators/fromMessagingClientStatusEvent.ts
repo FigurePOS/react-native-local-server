@@ -13,17 +13,17 @@ import { LoggerWrapper } from "../../../utils/logger"
 
 export const fromMessagingClientStatusEvent = (
     clientId: string,
-    logger: LoggerWrapper
+    logger: LoggerWrapper,
 ): Observable<MessagingClientStatusEvent> =>
     merge(
         merge(
             fromTCPClientEvent(clientId, TCPClient.EventName.Ready),
             fromTCPClientEvent(clientId, TCPClient.EventName.Stopped),
             fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.Started),
-            fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.Stopped)
+            fromServiceBrowserEvent(getBrowserIdFromMessagingClientId(clientId), ServiceBrowser.EventName.Stopped),
         ).pipe(map(composeMessagingClientStatusEvent)),
         fromMessagingClientDataReceived(clientId, logger).pipe(
             ofDataTypeServiceInfo,
-            map(composeMessagingClientServiceInformationStatusEvent)
-        )
+            map(composeMessagingClientServiceInformationStatusEvent),
+        ),
     )

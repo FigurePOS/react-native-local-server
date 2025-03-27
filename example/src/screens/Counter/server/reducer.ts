@@ -29,7 +29,7 @@ export const createDefaultState = (): CounterServerStateObject => ({
 
 export const counterServerReducer: Reducer = (
     state: CounterServerStateObject = createDefaultState(),
-    action: StateAction
+    action: StateAction,
 ): CounterServerStateObject => {
     switch (action.type) {
         case COUNTER_SERVER_START_REQUESTED:
@@ -64,7 +64,7 @@ export const counterServerReducer: Reducer = (
                 connections: updateConnectionState(
                     state.connections,
                     action.payload.connectionId,
-                    action.payload.state
+                    action.payload.state,
                 ),
             }
 
@@ -82,7 +82,7 @@ export const counterServerReducer: Reducer = (
 export const updateConnectionState = (
     connections: ServerConnection[],
     connectionId: string,
-    state: ServerConnectionState
+    state: ServerConnectionState,
 ): ServerConnection[] => {
     if (none((connection) => connection.id === connectionId, connections)) {
         const newConnection: ServerConnection = {
