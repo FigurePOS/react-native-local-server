@@ -24,6 +24,7 @@
     "scripts": {
         "example": "yarn --cwd example",
         "check:ts": "tsc --noEmit",
+        "check:ts:ci": "tsc --noEmit -p tsconfig.build.json",
         "check:format": "prettier --check .",
         "fix:format": "prettier --write .",
         "check:lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -55,6 +56,7 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.22.5",
+        "@changesets/cli": "2.29.4",
         "@commitlint/config-conventional": "^11.0.0",
         "@figuredev/prettier-config": "2.2.1",
         "@react-native-community/eslint-config": "^2.0.0",

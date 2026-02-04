@@ -1,0 +1,36 @@
+name: Run Checks
+
+on:
+  push:
+    branches-ignore:
+      # don't run checks on changeset-release/master branch since there are only release PRs there
+      - changeset-release/master
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  test:
+    runs-on: blacksmith-2vcpu-ubuntu-2204
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: FigurePOS/github-actions/.github/actions/setup-node@v1
+
+      - name: Install Dependencies
+        uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
+
+        # Add Lint check after fixing lint issues based on our newest config (953 errors now)
+        # Lint does not even run now with the current configuration
+
+      - name: Check TS
+        run: yarn check:ts:ci
+
+      - name: Run Tests
+        run: yarn test:ts:ci
+
+      - name: Format Code
+        run: yarn check:format
