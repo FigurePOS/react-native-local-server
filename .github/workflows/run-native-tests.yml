@@ -42,4 +42,8 @@ jobs:
         run: brew install xcbeautify
 
       - name: Run iOS Unit Tests
-        run: ./scripts/run-ios-tests.sh
+        run: |
+          set -e
+          set -o pipefail
+          ./scripts/run-ios-tests.sh
+      
