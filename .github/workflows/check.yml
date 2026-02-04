@@ -27,7 +27,7 @@ jobs:
         # Lint does not even run now with the current configuration
 
       - name: Check TS
-        run: yarn check:ts
+        run: yarn check:ts:ci
 
       - name: Run Tests
         run: yarn test:ts:ci
