@@ -24,7 +24,7 @@ jobs:
         uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
 
       - name: Run Android Unit Tests
-        run: cd android && ./gradlew clean && ./gradlew testDebugUnitTest --stacktrace --info
+        run: cd android && ./gradlew clean && ./gradlew testDebugUnitTest -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true
 #  ios:
 #    runs-on: macos-latest
 #    steps:
