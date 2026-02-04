@@ -23,14 +23,6 @@ jobs:
       - name: Install Dependencies
         uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
 
-      - name: Install React Native for CI (Temporary)
-        run: yarn add react-native --dev --ignore-workspace-root-check # Use --dev to avoid committing; adjust version if needed, e.g., yarn add react-native@0.73.0 --dev
-
-      - name: Verify React Native Android Artifacts
-        run: |
-          ls -l node_modules/react-native/android || echo "Directory not found!"
-          ls -l node_modules/react-native/android/com/facebook/react/react-native || echo "Version directory not found!"
-
       - name: Run Android Unit Tests
         run: cd android && ./gradlew testDebugUnitTest --stacktrace --info
 #  ios:

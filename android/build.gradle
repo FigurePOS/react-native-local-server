@@ -1,16 +1,21 @@
+import groovy.json.JsonSlurper
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+def reactNativeVersion = new JsonSlurper()
+        .parse(file("$rootDir/../package.json"))
+        .devDependencies["react-native"]
+
 
 buildscript {
     if (project == rootProject) {
         repositories {
             google()
             mavenCentral()
-            jcenter()
         }
 
         dependencies {
-            classpath 'com.android.tools.build:gradle:3.5.3'
+            classpath("com.android.tools.build:gradle:7.4.2")
         }
     }
 }
@@ -53,13 +58,12 @@ repositories {
     }
     google()
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
     //noinspection GradleDynamicVersion
     // From node_modules
-    implementation "com.facebook.react:react-native:+"
+    implementation("com.facebook.react:react-android:$reactNativeVersion")
     // This is used for Zeroconf service registration instead of the system NsdManager
     implementation 'org.jmdns:jmdns:3.6.0'
 
