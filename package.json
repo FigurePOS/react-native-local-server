@@ -23,7 +23,7 @@
     ],
     "scripts": {
         "example": "yarn --cwd example",
-        "check:ts": "tsc --noEmit",
+        "check:ts": "tsc --noEmit -p tsconfig.build.json",
         "check:format": "prettier --check .",
         "fix:format": "prettier --write .",
         "check:lint": "eslint \"**/*.{js,ts,tsx}\"",
