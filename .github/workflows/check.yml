@@ -30,7 +30,7 @@ jobs:
         run: yarn check:ts
 
       - name: Run Tests
-        run: yarn test
+        run: yarn test:ts:ci
 
       - name: Format Code
         run: yarn check:format
