@@ -46,4 +46,3 @@ jobs:
           set -e
           set -o pipefail
           ./scripts/run-ios-tests.sh
-      
