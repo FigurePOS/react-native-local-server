@@ -24,9 +24,7 @@ jobs:
         uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
 
       - name: Run Android Unit Tests
-        run: cd android && ./gradlew testDebugUnitTest -Pandroid.useAndroidX=true -Pandroid.enableJetifier=true
-        env:
-          GRADLE_OPTS: -Xmx2048m -Dorg.gradle.daemon=false # Increase heap to avoid OOM; disable daemon for CI stability
+        run: ./scripts/run-android-tests.sh
 
   ios:
     runs-on: macos-latest
