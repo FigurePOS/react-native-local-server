@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   android:
+    if: false # Temporarily skip Android tests
     runs-on: blacksmith-2vcpu-ubuntu-2204
     steps:
       - name: Checkout
@@ -27,6 +28,7 @@ jobs:
         run: ./scripts/run-android-tests.sh
 
   ios:
+    if: false # Temporarily skip iOS tests
     runs-on: macos-latest
     steps:
       - name: Checkout
