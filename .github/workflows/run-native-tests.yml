@@ -1,0 +1,47 @@
+name: Run Native Tests
+
+on:
+  push:
+    branches-ignore:
+      # don't run checks on changeset-release/master branch since there are only release PRs there
+      - changeset-release/master
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  android:
+    if: false # Temporarily skip Android tests
+    runs-on: blacksmith-2vcpu-ubuntu-2204
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: FigurePOS/github-actions/.github/actions/setup-node@v1
+
+      - name: Install Dependencies
+        uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
+
+      - name: Run Android Unit Tests
+        run: ./scripts/run-android-tests.sh
+
+  ios:
+    if: false # Temporarily skip iOS tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: FigurePOS/github-actions/.github/actions/setup-node@v1
+
+      - name: Install Dependencies
+        uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Run iOS Unit Tests
+        run: ./scripts/run-ios-tests.sh
