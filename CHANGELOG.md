@@ -1,5 +1,12 @@
 ### [0.17.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.17.0...v0.17.1) (2025-01-02)
 
+## 0.17.2
+
+### Patch Changes
+
+- 87c395d: feat: switch to GHA from Circle CI FGR3-8438
+- f4f510d: feat: run native tests on GitHub FGR3-8438
+
 ### Features
 
 - update rxjs version FGR3-5592 ([#77](https://github.com/FigurePOS/react-native-local-server/issues/77)) ([2c73132](https://github.com/FigurePOS/react-native-local-server/commit/2c73132790fc488b0e6035654a14addd2a61a671))
