@@ -14,7 +14,6 @@ export const fromEventFixed = (eventEmitter: any, eventName: string) =>
             })
             return () => subscription.remove()
         } else {
-            subscriber.complete()
-            return
+            return () => subscriber.complete()
         }
     })
