@@ -65,8 +65,9 @@ const messagingServerStatus: Epic = () =>
                     return [
                         createActionMessagingServerConnectionStateChanged(e.connectionId, ServerConnectionState.Closed),
                     ]
+                default:
+                    return []
             }
-            return []
         }),
     )
 

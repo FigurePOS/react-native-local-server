@@ -18,6 +18,7 @@ export const LoggerMessageComponent = (props: Props) => {
             extraStyle = styles.warn
             break
         case "error":
+        default:
             extraStyle = styles.error
             break
     }
