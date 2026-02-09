@@ -98,7 +98,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - startServiceSearch`)
         if (!this.discoveryGroup) {
             this.logger.error(LoggerVerbosity.Low, `MessagingClient [${this.clientId}] - missing discovery group`)
-            return throwError("No discovery group provided")
+            return throwError(() => new Error("No discovery group provided"))
         }
         const config: ServiceBrowserConfiguration = {
             type: `_${this.discoveryGroup}._tcp`,
@@ -161,7 +161,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         )
         if (!tcpConfig) {
             this.logger.error(LoggerVerbosity.Low, `MessagingClient [${this.clientId}] - missing tcp configuration`)
-            return throwError("Failed to prepare tcp configuration")
+            return throwError(() => new Error("Failed to prepare tcp configuration"))
         }
 
         const output$: Observable<HandlerOutput> = this.handler$.pipe(
@@ -232,10 +232,10 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             timeout(this.configuration?.connection.timeout ?? MESSAGING_CLIENT_DEFAULT_TIMEOUT),
             catchError((err: unknown) => {
                 if (!(err instanceof TimeoutError)) {
-                    return throwError(err)
+                    return throwError(() => err)
                 }
                 return defer(() => this.tcpClient.stop(MessagingStoppedReason.ConnectionTimedOut)).pipe(
-                    switchMap(() => throwError(err)),
+                    switchMap(() => throwError(() => err)),
                 )
             }),
         )
@@ -285,10 +285,10 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             ),
             defer(() => {
                 if (this.configuration == null) {
-                    return throwError(`MessagingClient [${this.clientId}] - restart - no config`)
+                    return throwError(() => new Error(`MessagingClient [${this.clientId}] - restart - no config`))
                 }
                 if (this.startData == null) {
-                    return throwError(`MessagingClient [${this.clientId}] - restart - no start data`)
+                    return throwError(() => new Error(`MessagingClient [${this.clientId}] - restart - no start data`))
                 }
                 return this.start(this.configuration, ...this.startData)
             }).pipe(
@@ -298,7 +298,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                         `MessagingClient [${this.clientId}] - restart - failed to start`,
                         err,
                     )
-                    return throwError(err)
+                    return throwError(() => err)
                 }),
             ),
         )

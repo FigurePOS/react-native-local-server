@@ -256,10 +256,10 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
             ),
             defer(() => {
                 if (this.configuration == null) {
-                    return throwError(`MessagingServer [${this.serverId}] - restart - no config`)
+                    return throwError(() => new Error(`MessagingServer [${this.serverId}] - restart - no config`))
                 }
                 if (this.startData == null) {
-                    return throwError(`MessagingServer [${this.serverId}] - restart - no start data`)
+                    return throwError(() => new Error(`MessagingServer [${this.serverId}] - restart - no start data`))
                 }
                 return this.start(this.configuration, ...this.startData)
             }).pipe(
@@ -269,7 +269,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                         `MessagingServer [${this.serverId}] - restart - failed to start`,
                         err,
                     )
-                    return throwError(err)
+                    return throwError(() => err)
                 }),
             ),
         )

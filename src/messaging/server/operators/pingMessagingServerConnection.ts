@@ -46,7 +46,7 @@ export const pingMessagingServerConnection = (
         ),
         mergeMap(([failedCount, last]: [number, boolean]) => {
             if (failedCount >= pingRetry) {
-                return throwError(`Ping failed ${failedCount} times`)
+                return throwError(() => new Error(`Ping failed ${failedCount} times`))
             }
             return of(last)
         }),

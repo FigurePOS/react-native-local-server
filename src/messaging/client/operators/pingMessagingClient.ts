@@ -19,9 +19,9 @@ export const pingMessagingClient = (
         catchError((err: unknown) => {
             if (err instanceof TimeoutError) {
                 if (scheduler) {
-                    return throwError(() => "Server ping timed out").pipe(observeOn(scheduler))
+                    return throwError(() => new Error("Server ping timed out")).pipe(observeOn(scheduler))
                 }
-                return throwError(() => "Server ping timed out")
+                return throwError(() => new Error("Server ping timed out"))
             }
             return throwError(() => err)
         }),
