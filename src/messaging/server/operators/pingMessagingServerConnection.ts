@@ -1,9 +1,12 @@
-import * as uuid from "uuid"
 import { defer, interval, merge, Observable, of, SchedulerLike, Subject, throwError } from "rxjs"
 import { catchError, mapTo, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
-import { ofMessagingServerConnectionClosed, ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
-import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../types"
+import * as uuid from "uuid"
+
+
 import { composeDataObjectPing, DataObject } from "../../types"
+import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../types"
+
+import { ofMessagingServerConnectionClosed, ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
 
 export const pingMessagingServerConnection = (
     connectionId: string,

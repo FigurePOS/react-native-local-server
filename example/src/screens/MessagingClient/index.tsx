@@ -1,7 +1,9 @@
 import React from "react"
 import { StyleSheet, View } from "react-native"
-import { MessagingClientConfiguration } from "./components/MessagingClientConfiguration"
+
 import { HorizontalLine } from "../../common/components/horizontalLine"
+
+import { MessagingClientConfiguration } from "./components/MessagingClientConfiguration"
 import { MessagingClientData } from "./components/MessagingClientData"
 
 export const MessagingClientScreen = () => {

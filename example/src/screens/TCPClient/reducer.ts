@@ -1,5 +1,10 @@
-import { Maybe, StateAction } from "../../types"
+import { prepend } from "ramda"
 import { Reducer } from "redux"
+
+import { MessageData } from "../../common/components/messaging/types"
+import { ClientState } from "../../common/types"
+import { Maybe, StateAction } from "../../types"
+
 import {
     BARE_TCP_CLIENT_ERRORED,
     BARE_TCP_CLIENT_NEW_DATA,
@@ -7,9 +12,6 @@ import {
     BARE_TCP_CLIENT_STATE_CHANGED,
     BARE_TCP_CLIENT_STOP_REQUESTED,
 } from "./actions"
-import { prepend } from "ramda"
-import { MessageData } from "../../common/components/messaging/types"
-import { ClientState } from "../../common/types"
 
 export type TCPClientStateObject = {
     state: ClientState

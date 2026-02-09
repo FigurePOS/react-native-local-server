@@ -1,5 +1,6 @@
 import { Observable } from "rxjs"
 import { filter } from "rxjs/operators"
+
 import { MessagingClientStatusEvent, MessagingClientStatusEventName } from "../types"
 
 export const ofMessagingClientStatusEvent =

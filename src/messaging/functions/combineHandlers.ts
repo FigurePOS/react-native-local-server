@@ -1,5 +1,6 @@
-import { MessageHandler } from "../.."
 import { merge } from "rxjs"
+
+import { MessageHandler } from "../.."
 
 export const combineHandlers = (...handlers: MessageHandler<any>[]): MessageHandler<any> => {
     return (...args: Parameters<MessageHandler<any>>) =>

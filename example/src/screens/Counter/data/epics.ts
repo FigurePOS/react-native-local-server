@@ -1,5 +1,13 @@
+import { not, pipe } from "ramda"
 import { Epic, ofType, StateObservable } from "redux-observable"
+import { interval, Observable } from "rxjs"
+import { switchMap, takeUntil } from "rxjs/operators"
+
+import { filterWithSelector } from "../../../common/operators/filterWithSelector"
+import { StateObject } from "../../../rootReducer"
 import { StateAction } from "../../../types"
+import { isCounterClientRunning } from "../client/selectors"
+
 import {
     COUNTER_AUTO_INCREMENT_STARTED,
     COUNTER_AUTO_INCREMENT_STOPPED,
@@ -11,13 +19,9 @@ import {
     createActionCounterCountIncremented,
     createActionCounterCountReset,
 } from "./actionts"
-import { switchMap, takeUntil } from "rxjs/operators"
-import { StateObject } from "../../../rootReducer"
 import { getCounterCount } from "./selectors"
-import { interval, Observable } from "rxjs"
-import { filterWithSelector } from "../../../common/operators/filterWithSelector"
-import { isCounterClientRunning } from "../client/selectors"
-import { not, pipe } from "ramda"
+
+
 
 export const counterIncrementedEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
     action$.pipe(

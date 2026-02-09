@@ -1,9 +1,10 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { useDispatch, useSelector } from "react-redux"
-import { getCounterCount, isCounterAutoIncrementOn } from "../../data/selectors"
-import { Colors, FontSize } from "../../../../common/constants"
+
 import { Button } from "../../../../common/components/form/button"
+import { Colors, FontSize } from "../../../../common/constants"
+import { isCounterClientRunning } from "../../client/selectors"
 import {
     createActionCounterAutoIncrementStarted,
     createActionCounterAutoIncrementStopped,
@@ -11,7 +12,7 @@ import {
     createActionCounterCountIncremented,
     createActionCounterCountResetRequested,
 } from "../../data/actionts"
-import { isCounterClientRunning } from "../../client/selectors"
+import { getCounterCount, isCounterAutoIncrementOn } from "../../data/selectors"
 
 export const CounterView = () => {
     const dispatch = useDispatch()

@@ -1,8 +1,9 @@
 import React, { useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { FormTextInput } from "../form/formTextInput"
-import { Button } from "../form/button"
+
 import { Colors, FontSize } from "../../constants"
+import { Button } from "../form/button"
+import { FormTextInput } from "../form/formTextInput"
 
 type Props = {
     stateLabel: string

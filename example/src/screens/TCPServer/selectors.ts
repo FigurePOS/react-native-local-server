@@ -1,8 +1,9 @@
-import { StateObject } from "../../rootReducer"
-import { TCPServerStateObject } from "./reducer"
-import { Maybe } from "../../types"
-import { ServerConnection, ServerState } from "../../common/types"
 import { MessageData } from "../../common/components/messaging/types"
+import { ServerConnection, ServerState } from "../../common/types"
+import { StateObject } from "../../rootReducer"
+import { Maybe } from "../../types"
+
+import { TCPServerStateObject } from "./reducer"
 
 export const getBareTCPServerStateObject = (state: StateObject): TCPServerStateObject => state.TCPServer
 

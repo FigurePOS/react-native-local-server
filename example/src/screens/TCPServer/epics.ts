@@ -1,5 +1,23 @@
 import { Epic, ofType } from "redux-observable"
+import { defer, Observable } from "rxjs"
+import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
+
+import {
+    TCPServer,
+    TCPServerConfiguration,
+    TCPServerConnectionAcceptedNativeEvent,
+    TCPServerConnectionClosedNativeEvent,
+    TCPServerConnectionReadyNativeEvent,
+    TCPServerDataReceivedNativeEvent,
+    TCPServerReadyNativeEvent,
+    TCPServerStoppedNativeEvent,
+} from "@figuredev/react-native-local-server"
+
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ServerConnectionState } from "../../common/types"
+import { fromEventFixed } from "../../common/utils"
 import { StateAction } from "../../types"
+
 import {
     BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED,
     BARE_TCP_SERVER_DATA_SEND_REQUESTED,
@@ -13,22 +31,7 @@ import {
     createActionBareTcpServerStartSucceeded,
     createActionBareTcpServerStopped,
 } from "./actions"
-import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
-import { defer, Observable } from "rxjs"
 import { BareTCPServer } from "./network"
-import {
-    TCPServer,
-    TCPServerConfiguration,
-    TCPServerConnectionAcceptedNativeEvent,
-    TCPServerConnectionClosedNativeEvent,
-    TCPServerConnectionReadyNativeEvent,
-    TCPServerDataReceivedNativeEvent,
-    TCPServerReadyNativeEvent,
-    TCPServerStoppedNativeEvent,
-} from "@figuredev/react-native-local-server"
-import { fromEventFixed } from "../../common/utils"
-import { createMessageData } from "../../common/components/messaging/functions"
-import { ServerConnectionState } from "../../common/types"
 
 const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(

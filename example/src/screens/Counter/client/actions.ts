@@ -1,5 +1,6 @@
-import { ClientState } from "../../../common/types"
 import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
+
+import { ClientState } from "../../../common/types"
 
 export const COUNTER_CLIENT_START_REQUESTED = "COUNTER_CLIENT_START_REQUESTED"
 export const createActionCounterClientStartRequested = (host: string, port: string) => ({

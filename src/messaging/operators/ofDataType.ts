@@ -1,4 +1,6 @@
 import { Observable } from "rxjs"
+import { filter } from "rxjs/operators"
+
 import {
     DataObject,
     DataObjectMessage,
@@ -7,7 +9,6 @@ import {
     DataObjectServiceInfo,
     DataObjectType,
 } from "../types"
-import { filter } from "rxjs/operators"
 
 export const ofDataType =
     <T extends DataObjectType, M>(...types: T[]) =>

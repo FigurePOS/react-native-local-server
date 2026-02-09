@@ -1,10 +1,14 @@
+import { NativeEventEmitter } from "react-native"
+
+import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
+import { StopReason, StopReasonEnum } from "../../utils/types"
+
+import { TCPClientModule } from "./module"
+import { TCPClientEventName } from "./nativeEvents"
 import type { TCPClientConfiguration } from "./types"
 import { TCPClientConnectionConfiguration, TCPClientConnectionMethod } from "./types"
-import { TCPClientModule } from "./module"
-import { NativeEventEmitter } from "react-native"
-import { TCPClientEventName } from "./nativeEvents"
-import { StopReason, StopReasonEnum } from "../../utils/types"
-import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
+
+
 
 const eventEmitter = new NativeEventEmitter(TCPClientModule)
 

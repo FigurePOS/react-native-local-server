@@ -1,8 +1,9 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
+
 import { ServerConfiguration } from "../../../common/components/configuration/ServerConfiguration"
-import { getMessagingServerPort, getMessagingServerStateLabel, isMessagingServerRunning } from "../selectors"
 import { createActionMessagingServerStartRequested, createActionMessagingServerStopRequested } from "../actions"
+import { getMessagingServerPort, getMessagingServerStateLabel, isMessagingServerRunning } from "../selectors"
 
 export const MessagingServerConfiguration = () => {
     const dispatch = useDispatch()

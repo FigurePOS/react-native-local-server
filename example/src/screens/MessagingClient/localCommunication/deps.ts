@@ -1,6 +1,6 @@
+import { store } from "../../../configureStore"
 import { StateObject } from "../../../rootReducer"
 import { StateAction } from "../../../types"
-import { store } from "../../../configureStore"
 
 export type SampleMessagingClientDependenciesType = {
     getState: () => StateObject

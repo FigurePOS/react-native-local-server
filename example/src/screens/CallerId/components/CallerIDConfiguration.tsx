@@ -1,8 +1,9 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
+
+import { ServerConfiguration } from "../../../common/components/configuration/ServerConfiguration"
 import { createActionCallerIdServerStartRequested, createActionCallerIdServerStopRequested } from "../actions"
 import { getCallerIDServerStateLabel, isCallerIDServerRunning } from "../selectors"
-import { ServerConfiguration } from "../../../common/components/configuration/ServerConfiguration"
 
 export const CallerIDConfiguration = () => {
     const dispatch = useDispatch()

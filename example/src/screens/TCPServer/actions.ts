@@ -1,6 +1,6 @@
-import { Maybe } from "../../types"
 import { MessageData } from "../../common/components/messaging/types"
 import { ServerConnectionState } from "../../common/types"
+import { Maybe } from "../../types"
 
 export const BARE_TCP_SERVER_START_REQUESTED = "BARE_TCP_SERVER_START_REQUESTED"
 export const createActionBareTcpServerStartRequested = (port: string) => ({

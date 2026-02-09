@@ -1,6 +1,10 @@
-import { Maybe, StateAction } from "../../../types"
 import { Reducer } from "redux"
+
+import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
+
 import { ClientState } from "../../../common/types"
+import { Maybe, StateAction } from "../../../types"
+
 import {
     COUNTER_CLIENT_AVAILABLE_SERVICES_CHANGED,
     COUNTER_CLIENT_ERRORED,
@@ -13,7 +17,7 @@ import {
     COUNTER_CLIENT_STATE_CHANGED,
     COUNTER_CLIENT_STOP_REQUESTED,
 } from "./actions"
-import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
+
 
 export type CounterClientStateObject = {
     state: ClientState

@@ -1,8 +1,11 @@
-import { CounterClientStateObject } from "./reducer"
-import { StateObject } from "../../../rootReducer"
-import { ClientState } from "../../../common/types"
-import { Maybe } from "../../../types"
 import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
+
+import { ClientState } from "../../../common/types"
+import { StateObject } from "../../../rootReducer"
+import { Maybe } from "../../../types"
+
+import { CounterClientStateObject } from "./reducer"
+
 
 export const getCounterClientStateObject = (state: StateObject): CounterClientStateObject => state.Counter.client
 

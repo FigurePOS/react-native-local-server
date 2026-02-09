@@ -1,13 +1,14 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
+
+import { ClientConfiguration } from "../../../common/components/configuration/ClientConfiguration"
+import { createActionBareTcpClientStartRequested, createActionBareTcpClientStopRequested } from "../actions"
 import {
     getBareTCPClientHost,
     getBareTCPClientPort,
     getBareTCPClientStateLabel,
     isBareTCPClientRunning,
 } from "../selectors"
-import { createActionBareTcpClientStartRequested, createActionBareTcpClientStopRequested } from "../actions"
-import { ClientConfiguration } from "../../../common/components/configuration/ClientConfiguration"
 
 export const TCPClientConfiguration = () => {
     const dispatch = useDispatch()

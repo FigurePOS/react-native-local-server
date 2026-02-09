@@ -1,5 +1,6 @@
-import { Message, MessageHandler } from "../types"
 import { Observable } from "rxjs"
+
+import { Message, MessageHandler } from "../types"
 
 export const handleBy =
     <In, Deps = any, Result = any>(handler: MessageHandler<In, Deps, Result>, deps: Deps) =>

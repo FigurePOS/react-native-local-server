@@ -1,13 +1,14 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
+
+import { ClientConfiguration } from "../../../common/components/configuration/ClientConfiguration"
+import { createActionMessagingClientStartRequested, createActionMessagingClientStopRequested } from "../actions"
 import {
     getMessagingClientHost,
     getMessagingClientPort,
     getMessagingClientStateLabel,
     isMessagingClientRunning,
 } from "../selectors"
-import { createActionMessagingClientStartRequested, createActionMessagingClientStopRequested } from "../actions"
-import { ClientConfiguration } from "../../../common/components/configuration/ClientConfiguration"
 
 export const MessagingClientConfiguration = () => {
     const dispatch = useDispatch()

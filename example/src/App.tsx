@@ -1,18 +1,19 @@
 import "react-native-gesture-handler"
-import * as React from "react"
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { createDrawerNavigator } from "@react-navigation/drawer"
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
+import * as React from "react"
 import { Provider } from "react-redux"
-import { store } from "./configureStore"
+
 import { Colors } from "./common/constants"
-import { TCPServerScreen } from "./screens/TCPServer"
-import { TCPClientScreen } from "./screens/TCPClient"
-import { UDPServerScreen } from "./screens/UDPServer"
-import { MessagingServerScreen } from "./screens/MessagingServer"
-import { MessagingClientScreen } from "./screens/MessagingClient"
-import { CounterScreen } from "./screens/Counter"
+import { store } from "./configureStore"
 import { CallerIDServerScreen } from "./screens/CallerId"
+import { CounterScreen } from "./screens/Counter"
+import { MessagingClientScreen } from "./screens/MessagingClient"
+import { MessagingServerScreen } from "./screens/MessagingServer"
 import { ServiceBrowserScreen } from "./screens/ServiceBrowser"
+import { TCPClientScreen } from "./screens/TCPClient"
+import { TCPServerScreen } from "./screens/TCPServer"
+import { UDPServerScreen } from "./screens/UDPServer"
 
 const Drawer = createDrawerNavigator()
 

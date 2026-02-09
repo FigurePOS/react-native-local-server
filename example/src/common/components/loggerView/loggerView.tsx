@@ -1,7 +1,9 @@
 import React, { useCallback } from "react"
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+
 import { Colors, FontSize, FontWeight } from "../../constants"
 import { Icon, IconNames } from "../icon"
+
 import { LoggerMessageComponent } from "./loggerMessage"
 import { LoggerMessage } from "./types"
 

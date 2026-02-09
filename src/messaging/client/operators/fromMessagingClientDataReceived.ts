@@ -1,10 +1,11 @@
 import { EMPTY, Observable, of } from "rxjs"
-import { DataObject } from "../../types"
-import { LoggerVerbosity, TCPClient } from "../../../"
 import { catchError, map, mergeMap } from "rxjs/operators"
-import { parseDataObject } from "../../functions/parseDataObject"
+
+import { LoggerVerbosity, TCPClient } from "../../../"
 import { fromTCPClientEvent } from "../../../tcp/client/operators"
 import { LoggerWrapper } from "../../../utils/logger"
+import { parseDataObject } from "../../functions/parseDataObject"
+import { DataObject } from "../../types"
 
 export const fromMessagingClientDataReceived = (clientId: string, logger: LoggerWrapper): Observable<DataObject> =>
     fromTCPClientEvent(clientId, TCPClient.EventName.DataReceived).pipe(

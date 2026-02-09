@@ -1,5 +1,10 @@
-import { Maybe, StateAction } from "../../types"
+import { append, map, none, prepend } from "ramda"
 import { Reducer } from "redux"
+
+import { MessageData } from "../../common/components/messaging/types"
+import { ServerConnectionState, ServerState } from "../../common/types"
+import { Maybe, StateAction } from "../../types"
+
 import {
     BARE_TCP_SERVER_ACTIVE_CONNECTION_CHANGED,
     BARE_TCP_SERVER_CONNECTION_NEW_DATA,
@@ -11,9 +16,6 @@ import {
     BARE_TCP_SERVER_STOP_REQUESTED,
     BARE_TCP_SERVER_STOPPED,
 } from "./actions"
-import { append, map, none, prepend } from "ramda"
-import { MessageData } from "../../common/components/messaging/types"
-import { ServerConnectionState, ServerState } from "../../common/types"
 
 export type TCPServerStateObject = {
     state: ServerState

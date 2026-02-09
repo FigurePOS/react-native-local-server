@@ -1,7 +1,9 @@
 import { Observable, of, SchedulerLike, Subject, throwError, TimeoutError } from "rxjs"
 import { catchError, mergeMap, observeOn, takeUntil, timeout } from "rxjs/operators"
-import { MessagingClientStatusEvent, MessagingClientStatusEventName } from "../types"
+
 import { DataObject, DataObjectType } from "../../types"
+import { MessagingClientStatusEvent, MessagingClientStatusEventName } from "../types"
+
 import { ofMessagingClientStatusEvent } from "./"
 
 export const pingMessagingClient = (

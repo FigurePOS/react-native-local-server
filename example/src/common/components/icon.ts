@@ -1,6 +1,6 @@
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-import MaterialIconsGlyphs from "react-native-vector-icons/glyphmaps/MaterialIcons.json"
 import { mapObjIndexed } from "ramda"
+import MaterialIconsGlyphs from "react-native-vector-icons/glyphmaps/MaterialIcons.json"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 type names = keyof typeof MaterialIconsGlyphs
 

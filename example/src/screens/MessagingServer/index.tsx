@@ -1,9 +1,11 @@
 import React from "react"
-import { View, StyleSheet } from "react-native"
-import { MessagingServerConfiguration } from "./components/MessagingServerConfiguration"
+import { StyleSheet, View } from "react-native"
+
 import { HorizontalLine } from "../../common/components/horizontalLine"
-import { MessagingServerConnections } from "./components/MessagingServerConnections"
+
 import { MessagingServerActiveConnection } from "./components/MessagingServerActiveConnection"
+import { MessagingServerConfiguration } from "./components/MessagingServerConfiguration"
+import { MessagingServerConnections } from "./components/MessagingServerConnections"
 
 export const MessagingServerScreen = () => {
     return (

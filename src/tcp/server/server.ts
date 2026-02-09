@@ -1,9 +1,11 @@
-import type { TCPServerConfiguration } from "./types"
-import { TCPServerModule } from "./module"
 import { NativeEventEmitter } from "react-native"
-import { TCPServerEventName } from "./nativeEvents"
-import { StopReason, StopReasonEnum } from "../../utils/types"
+
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
+import { StopReason, StopReasonEnum } from "../../utils/types"
+
+import { TCPServerModule } from "./module"
+import { TCPServerEventName } from "./nativeEvents"
+import type { TCPServerConfiguration } from "./types"
 
 const eventEmitter = new NativeEventEmitter(TCPServerModule)
 

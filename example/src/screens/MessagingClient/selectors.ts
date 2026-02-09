@@ -1,8 +1,9 @@
-import { MessagingClientStateObject } from "./reducer"
-import { StateObject } from "../../rootReducer"
-import { ClientState } from "../../common/types"
-import { Maybe } from "../../types"
 import { MessageData } from "../../common/components/messaging/types"
+import { ClientState } from "../../common/types"
+import { StateObject } from "../../rootReducer"
+import { Maybe } from "../../types"
+
+import { MessagingClientStateObject } from "./reducer"
 
 export const getMessagingClientStateObject = (state: StateObject): MessagingClientStateObject => state.MessagingClient
 

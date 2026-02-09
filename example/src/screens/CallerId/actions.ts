@@ -1,5 +1,6 @@
-import { Maybe } from "../../types"
 import { PhoneCall } from "@figuredev/react-native-local-server"
+
+import { Maybe } from "../../types"
 
 export const CALLER_ID_SERVER_START_REQUESTED = "CALLER_ID_SERVER_START_REQUESTED"
 export const createActionCallerIdServerStartRequested = () => ({

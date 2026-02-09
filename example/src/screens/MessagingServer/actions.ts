@@ -1,5 +1,5 @@
-import { ServerConnectionState, ServerState } from "../../common/types"
 import { MessageData } from "../../common/components/messaging/types"
+import { ServerConnectionState, ServerState } from "../../common/types"
 
 export const MESSAGING_SERVER_START_REQUESTED = "MESSAGING_SERVER_START_REQUESTED"
 export const createActionMessagingServerStartRequested = (port: string) => ({

@@ -1,5 +1,15 @@
 import { Epic, ofType } from "redux-observable"
+import { defer, Observable } from "rxjs"
+import { catchError, map, mapTo, switchMap } from "rxjs/operators"
+
+import {
+    CallerIdServerStatusEvent,
+    CallerIdServerStatusEventName,
+    PhoneCall,
+} from "@figuredev/react-native-local-server"
+
 import { StateAction } from "../../types"
+
 import {
     CALLER_ID_SERVER_SIMULATE_CALL_REQUESTED,
     CALLER_ID_SERVER_START_REQUESTED,
@@ -11,14 +21,8 @@ import {
     createActionCallerIdServerStartSucceeded,
     createActionCallerIdServerStopped,
 } from "./actions"
-import { catchError, map, mapTo, switchMap } from "rxjs/operators"
-import { defer, Observable } from "rxjs"
 import { ExampleCallerIdServer } from "./network"
-import {
-    CallerIdServerStatusEvent,
-    CallerIdServerStatusEventName,
-    PhoneCall,
-} from "@figuredev/react-native-local-server"
+
 
 const callerIdServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(

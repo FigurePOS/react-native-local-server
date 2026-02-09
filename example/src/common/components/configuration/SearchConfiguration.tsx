@@ -1,8 +1,10 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
+
 import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
-import { Button } from "../form/button"
+
 import { Colors, FontSize } from "../../constants"
+import { Button } from "../form/button"
 
 type Props = {
     stateLabel: string

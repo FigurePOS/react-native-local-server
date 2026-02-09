@@ -1,7 +1,11 @@
-import { Maybe, StateAction } from "../../types"
+import { append, map, none, prepend } from "ramda"
 import { Reducer } from "redux"
+
+import { createMessageData } from "../../common/components/messaging/functions"
 import { MessageData } from "../../common/components/messaging/types"
 import { ServerConnection, ServerConnectionState, ServerState } from "../../common/types"
+import { Maybe, StateAction } from "../../types"
+
 import {
     MESSAGING_SERVER_ACTIVE_CONNECTION_CHANGED,
     MESSAGING_SERVER_CONNECTION_STATE_CHANGED,
@@ -11,8 +15,8 @@ import {
     MESSAGING_SERVER_STATE_CHANGED,
     MESSAGING_SERVER_STOP_REQUESTED,
 } from "./actions"
-import { append, map, none, prepend } from "ramda"
-import { createMessageData } from "../../common/components/messaging/functions"
+
+
 
 export type MessagingServerStateObject = {
     state: ServerState

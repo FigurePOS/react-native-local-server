@@ -1,8 +1,8 @@
 export * from "./server"
 export {
     MessagingServerConfiguration,
-    MessagingServerStatusEvent,
-    MessagingServerStatusEventName,
     MessagingServerConnectionStatusEvent,
     MessagingServerLifecycleStatusEvent,
+    MessagingServerStatusEvent,
+    MessagingServerStatusEventName,
 } from "./types"

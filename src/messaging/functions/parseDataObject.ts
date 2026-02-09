@@ -1,6 +1,6 @@
-import { DataObject } from "../types"
 import { TCPClientDataReceivedNativeEvent, TCPServerDataReceivedNativeEvent } from "../../"
 import { ErrorWithMetadata } from "../../utils/errors"
+import { DataObject } from "../types"
 
 export const parseDataObject = (
     nativeEvent: TCPClientDataReceivedNativeEvent | TCPServerDataReceivedNativeEvent,

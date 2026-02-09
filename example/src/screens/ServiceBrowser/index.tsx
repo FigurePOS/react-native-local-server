@@ -1,15 +1,17 @@
 import React, { useCallback } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { ServiceBrowserConfiguration } from "./components/ServiceBrowserConfiguration"
 import { useDispatch, useSelector } from "react-redux"
+
+import { HorizontalLine } from "../../common/components/horizontalLine"
+
+import { createActionServiceBrowserStartRequested, createActionServiceBrowserStopRequested } from "./actions"
+import { ServiceBrowserConfiguration } from "./components/ServiceBrowserConfiguration"
 import {
     getServiceBrowserGroup,
     getServiceBrowserServices,
     getServiceBrowserStateLabel,
     isServiceBrowserRunning,
 } from "./selectors"
-import { HorizontalLine } from "../../common/components/horizontalLine"
-import { createActionServiceBrowserStartRequested, createActionServiceBrowserStopRequested } from "./actions"
 
 export const ServiceBrowserScreen = () => {
     const dispatch = useDispatch()

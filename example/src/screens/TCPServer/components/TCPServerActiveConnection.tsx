@@ -1,13 +1,14 @@
 import React, { useCallback } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { Maybe } from "../../../types"
 import { useDispatch, useSelector } from "react-redux"
-import { getBareTCPServerActiveConnectionData, getBareTCPServerActiveConnectionId } from "../selectors"
-import { Colors, FontSize } from "../../../common/constants"
-import { createActionBareTcpServerDataSendRequested } from "../actions"
+
+import { MessageControl } from "../../../common/components/messaging/MessageControl"
 import { MessageView } from "../../../common/components/messaging/MessageView"
 import { MessageData } from "../../../common/components/messaging/types"
-import { MessageControl } from "../../../common/components/messaging/MessageControl"
+import { Colors, FontSize } from "../../../common/constants"
+import { Maybe } from "../../../types"
+import { createActionBareTcpServerDataSendRequested } from "../actions"
+import { getBareTCPServerActiveConnectionData, getBareTCPServerActiveConnectionId } from "../selectors"
 
 export const TCPServerActiveConnection = () => {
     const dispatch = useDispatch()

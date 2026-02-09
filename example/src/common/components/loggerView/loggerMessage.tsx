@@ -1,8 +1,10 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
+
 import { Colors, FontSize, FontWeight } from "../../constants"
-import { LoggerMessage } from "./types"
 import { JSONView } from "../JSONView"
+
+import { LoggerMessage } from "./types"
 
 type Props = {
     message: LoggerMessage

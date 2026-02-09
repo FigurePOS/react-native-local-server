@@ -1,9 +1,13 @@
-import { MessageHandler } from "@figuredev/react-native-local-server"
-import { LocalCommunicationMessage, LocalCommunicationMessageType } from "./messages"
 import { switchMap } from "rxjs/operators"
-import { SampleMessagingClientDependenciesType } from "./deps"
-import { createActionMessagingClientDataReceived } from "../actions"
+
+import { MessageHandler } from "@figuredev/react-native-local-server"
+
 import { createMessageData } from "../../../common/components/messaging/functions"
+import { createActionMessagingClientDataReceived } from "../actions"
+
+import { SampleMessagingClientDependenciesType } from "./deps"
+import { LocalCommunicationMessage, LocalCommunicationMessageType } from "./messages"
+
 
 export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessagingClientDependenciesType> = (
     message$,

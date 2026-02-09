@@ -1,9 +1,11 @@
 import React from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
+
 import { Maybe } from "../../../types"
-import { ServerConnection } from "../../types"
-import { ConnectionButton } from "./ConnectionButton"
 import { Colors, FontSize } from "../../constants"
+import { ServerConnection } from "../../types"
+
+import { ConnectionButton } from "./ConnectionButton"
 
 export type Props = {
     connections: ServerConnection[]

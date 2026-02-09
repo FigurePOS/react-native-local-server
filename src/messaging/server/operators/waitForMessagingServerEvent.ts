@@ -1,8 +1,10 @@
+import { Observable } from "rxjs"
 import { switchMapTo, take } from "rxjs/operators"
+
+import { MessagingServerStatusEventName } from "../"
+
 import { fromMessagingServerStatusEvent } from "./fromMessagingServerStatusEvent"
 import { ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
-import { MessagingServerStatusEventName } from "../"
-import { Observable } from "rxjs"
 
 export const waitForMessagingServerEvent =
     <T = any>(serverId: string, event: MessagingServerStatusEventName) =>

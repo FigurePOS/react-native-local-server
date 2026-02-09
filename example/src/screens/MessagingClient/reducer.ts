@@ -1,7 +1,11 @@
-import { Maybe, StateAction } from "../../types"
+import { prepend } from "ramda"
 import { Reducer } from "redux"
+
+import { createMessageData } from "../../common/components/messaging/functions"
 import { MessageData } from "../../common/components/messaging/types"
 import { ClientState } from "../../common/types"
+import { Maybe, StateAction } from "../../types"
+
 import {
     MESSAGING_CLIENT_DATA_RECEIVED,
     MESSAGING_CLIENT_ERRORED,
@@ -9,8 +13,8 @@ import {
     MESSAGING_CLIENT_STATE_CHANGED,
     MESSAGING_CLIENT_STOP_REQUESTED,
 } from "./actions"
-import { prepend } from "ramda"
-import { createMessageData } from "../../common/components/messaging/functions"
+
+
 
 export type MessagingClientStateObject = {
     state: ClientState

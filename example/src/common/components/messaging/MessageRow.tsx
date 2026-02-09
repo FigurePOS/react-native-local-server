@@ -1,7 +1,9 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { MessageData } from "./types"
+
 import { Colors, FontSize } from "../../constants"
+
+import { MessageData } from "./types"
 
 type Props = {
     data: MessageData

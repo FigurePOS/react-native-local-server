@@ -1,8 +1,9 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
+
+import { ServerConfiguration } from "../../../common/components/configuration/ServerConfiguration"
 import { createActionBareUdpServerStartRequested, createActionBareUdpServerStopRequested } from "../actions"
 import { getBareUDPServerPort, getBareUDPServerStateLabel, isBareUDPServerRunning } from "../selectors"
-import { ServerConfiguration } from "../../../common/components/configuration/ServerConfiguration"
 
 export const UDPServerConfiguration = () => {
     const dispatch = useDispatch()

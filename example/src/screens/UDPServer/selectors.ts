@@ -1,8 +1,9 @@
-import { StateObject } from "../../rootReducer"
-import { UDPServerStateObject } from "./reducer"
-import { Maybe } from "../../types"
-import { ServerState } from "../../common/types"
 import { MessageData } from "../../common/components/messaging/types"
+import { ServerState } from "../../common/types"
+import { StateObject } from "../../rootReducer"
+import { Maybe } from "../../types"
+
+import { UDPServerStateObject } from "./reducer"
 
 export const getBareUDPServerStateObject = (state: StateObject): UDPServerStateObject => state.UDPServer
 

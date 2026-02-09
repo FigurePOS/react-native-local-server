@@ -1,6 +1,13 @@
 import { Epic, ofType } from "redux-observable"
-import { StateAction } from "../../types"
+import { Observable } from "rxjs"
 import { catchError, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
+
+import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
+
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ServerConnectionState, ServerState } from "../../common/types"
+import { StateAction } from "../../types"
+
 import {
     createActionMessagingServerConnectionStateChanged,
     createActionMessagingServerDataReceived,
@@ -11,14 +18,15 @@ import {
     MESSAGING_SERVER_START_REQUESTED,
     MESSAGING_SERVER_STOP_REQUESTED,
 } from "./actions"
-import { SampleMessagingServer } from "./localCommunication/server"
-import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingServerDependencies } from "./localCommunication/deps"
-import { ServerConnectionState, ServerState } from "../../common/types"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
-import { createMessageData } from "../../common/components/messaging/functions"
-import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
-import { Observable } from "rxjs"
+import { rootHandler } from "./localCommunication/rootHandler"
+import { SampleMessagingServer } from "./localCommunication/server"
+
+
+
+
+
 
 const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(

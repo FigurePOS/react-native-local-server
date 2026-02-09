@@ -1,12 +1,17 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { ServerConfiguration } from "./ServerConfiguration"
-import { ClientConfiguration } from "./ClientConfiguration"
-import { HorizontalLine } from "../horizontalLine"
-import { Colors, FontSize } from "../../constants"
-import { Maybe } from "../../../types"
-import { SearchConfiguration } from "./SearchConfiguration"
+
 import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
+
+import { Maybe } from "../../../types"
+import { Colors, FontSize } from "../../constants"
+import { HorizontalLine } from "../horizontalLine"
+
+import { ClientConfiguration } from "./ClientConfiguration"
+import { SearchConfiguration } from "./SearchConfiguration"
+import { ServerConfiguration } from "./ServerConfiguration"
+
+
 
 type Props = {
     stateLabelServer: string

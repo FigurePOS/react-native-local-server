@@ -1,5 +1,19 @@
 import { Epic, ofType } from "redux-observable"
+import { defer, Observable } from "rxjs"
+import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
+
+import {
+    ServiceBrowser,
+    ServiceBrowserConfiguration,
+    ServiceBrowserServiceFoundNativeEvent,
+    ServiceBrowserServiceLostNativeEvent,
+    ServiceBrowserStartedNativeEvent,
+    ServiceBrowserStoppedNativeEvent,
+} from "@figuredev/react-native-local-server"
+
+import { fromEventFixed } from "../../common/utils"
 import { StateAction } from "../../types"
+
 import {
     createActionServiceBrowserErrored,
     createActionServiceBrowserServiceFound,
@@ -9,18 +23,9 @@ import {
     SERVICE_BROWSER_START_REQUESTED,
     SERVICE_BROWSER_STOP_REQUESTED,
 } from "./actions"
-import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
-import { defer, Observable } from "rxjs"
 import { BareServiceBrowser } from "./network"
-import {
-    ServiceBrowser,
-    ServiceBrowserConfiguration,
-    ServiceBrowserServiceFoundNativeEvent,
-    ServiceBrowserServiceLostNativeEvent,
-    ServiceBrowserStartedNativeEvent,
-    ServiceBrowserStoppedNativeEvent,
-} from "@figuredev/react-native-local-server"
-import { fromEventFixed } from "../../common/utils"
+
+
 
 const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(

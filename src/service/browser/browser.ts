@@ -1,8 +1,10 @@
-import { ServiceBrowserConfiguration } from "./types"
-import { ServiceBrowserModule } from "./module"
 import { NativeEventEmitter } from "react-native"
-import { ServiceBrowserEventName } from "./nativeEvents"
+
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
+
+import { ServiceBrowserModule } from "./module"
+import { ServiceBrowserEventName } from "./nativeEvents"
+import { ServiceBrowserConfiguration } from "./types"
 
 const eventEmitter = new NativeEventEmitter(ServiceBrowserModule)
 

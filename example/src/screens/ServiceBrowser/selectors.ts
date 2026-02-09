@@ -1,5 +1,5 @@
-import { StateObject } from "../../rootReducer"
 import { ServerState } from "../../common/types"
+import { StateObject } from "../../rootReducer"
 import { getBareTCPServerState } from "../TCPServer/selectors"
 
 export const getServiceBrowserStateObject = (state: StateObject) => state.ServiceBrowser

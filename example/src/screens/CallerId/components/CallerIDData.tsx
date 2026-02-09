@@ -1,13 +1,14 @@
 import React, { useState } from "react"
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native"
-import { HorizontalLine } from "../../../common/components/horizontalLine"
 import { useDispatch, useSelector } from "react-redux"
-import { getCallerIDIncomingCalls } from "../selectors"
-import { JSONView } from "../../../common/components/JSONView"
-import { FormTextInput } from "../../../common/components/form/formTextInput"
+
 import { Button } from "../../../common/components/form/button"
+import { FormTextInput } from "../../../common/components/form/formTextInput"
+import { HorizontalLine } from "../../../common/components/horizontalLine"
+import { JSONView } from "../../../common/components/JSONView"
 import { FontSize } from "../../../common/constants"
 import { createActionCallerIdServerSimulateCallRequested } from "../actions"
+import { getCallerIDIncomingCalls } from "../selectors"
 
 export const CallerIDData = () => {
     const dispatch = useDispatch()

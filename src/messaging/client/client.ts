@@ -1,4 +1,6 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError, TimeoutError } from "rxjs"
+import { catchError, concatMap, mapTo, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
+
 import {
     LoggerVerbosity,
     MESSAGING_CLIENT_DEFAULT_TIMEOUT,
@@ -11,9 +13,16 @@ import {
     TCPClient,
     TCPClientConfiguration,
 } from "../../"
-import { catchError, concatMap, mapTo, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
-import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
+import { Logger, LoggerWrapper } from "../../utils/logger"
+import { log } from "../../utils/operators/log"
+import { PING_INTERVAL, PING_RETRY } from "../constants"
+import { composeMessageObject } from "../functions"
+import { composeDataMessageObject } from "../functions/composeDataMessageObject"
+import { serializeDataObject } from "../functions/serializeDataObject"
 import { handleBy } from "../operators/handleBy"
+import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
+
+import { composeTCPClientConfiguration, getBrowserIdFromMessagingClientId } from "./functions"
 import {
     fromMessagingClientDataReceived,
     fromMessagingClientMessageReceived,
@@ -22,15 +31,8 @@ import {
     pingMessagingClient,
     waitForMessagingClientStopped,
 } from "./operators"
-import { MessagingClientConfiguration } from "./types"
-import { composeDataMessageObject } from "../functions/composeDataMessageObject"
-import { serializeDataObject } from "../functions/serializeDataObject"
-import { composeMessageObject } from "../functions"
-import { log } from "../../utils/operators/log"
-import { PING_INTERVAL, PING_RETRY } from "../constants"
-import { Logger, LoggerWrapper } from "../../utils/logger"
-import { composeTCPClientConfiguration, getBrowserIdFromMessagingClientId } from "./functions"
 import { fromMessagingClientServiceSearchEvent } from "./operators/fromMessagingClientServiceSearchEvent"
+import { MessagingClientConfiguration } from "./types"
 
 export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
     private readonly clientId: string

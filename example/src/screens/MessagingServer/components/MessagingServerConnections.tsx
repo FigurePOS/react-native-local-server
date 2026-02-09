@@ -1,13 +1,14 @@
 import React from "react"
-import { getMessagingServerActiveConnectionId, getMessagingServerConnections } from "../selectors"
 import { useDispatch, useSelector } from "react-redux"
-import { Maybe } from "../../../types"
+
 import { ConnectionRow } from "../../../common/components/messaging/ConnectionRow"
+import { ServerConnection } from "../../../common/types"
+import { Maybe } from "../../../types"
 import {
     createActionMessagingServerActiveConnectionChanged,
     createActionMessagingServerConnectionCloseRequested,
 } from "../actions"
-import { ServerConnection } from "../../../common/types"
+import { getMessagingServerActiveConnectionId, getMessagingServerConnections } from "../selectors"
 
 export const MessagingServerConnections = () => {
     const dispatch = useDispatch()

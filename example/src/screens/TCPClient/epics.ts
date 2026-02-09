@@ -1,8 +1,7 @@
 import { Epic, ofType } from "redux-observable"
-import { StateAction } from "../../types"
-import { catchError, filter, switchMap } from "rxjs/operators"
 import { defer, Observable } from "rxjs"
-import { BareTCPClient } from "./network"
+import { catchError, filter, switchMap } from "rxjs/operators"
+
 import {
     TCPClient,
     TCPClientConfiguration,
@@ -11,7 +10,12 @@ import {
     TCPClientReadyNativeEvent,
     TCPClientStoppedNativeEvent,
 } from "@figuredev/react-native-local-server"
+
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ClientState } from "../../common/types"
 import { fromEventFixed } from "../../common/utils"
+import { StateAction } from "../../types"
+
 import {
     BARE_TCP_CLIENT_DATA_SEND_REQUESTED,
     BARE_TCP_CLIENT_START_REQUESTED,
@@ -20,8 +24,7 @@ import {
     createActionBareTcpClientNewData,
     createActionBareTcpClientStateChanged,
 } from "./actions"
-import { createMessageData } from "../../common/components/messaging/functions"
-import { ClientState } from "../../common/types"
+import { BareTCPClient } from "./network"
 
 const bareTCPClientStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
