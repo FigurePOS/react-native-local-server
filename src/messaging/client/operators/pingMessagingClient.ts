@@ -16,7 +16,7 @@ export const pingMessagingClient = (
     return dataInput$.pipe(
         takeUntil(statusEvent$.pipe(ofMessagingClientStatusEvent(MessagingClientStatusEventName.Stopped))),
         timeout(pingTimeout, scheduler),
-        catchError((err) => {
+        catchError((err: unknown) => {
             if (err instanceof TimeoutError) {
                 if (scheduler) {
                     return throwError(() => "Server ping timed out").pipe(observeOn(scheduler))

@@ -30,7 +30,7 @@ const callerIdServerStartRequestedEpic: Epic = (action$: Observable<StateAction>
         switchMap(() => {
             return defer(() => ExampleCallerIdServer.start()).pipe(
                 mapTo(createActionCallerIdServerStartSucceeded()),
-                catchError((err) => [createActionCallerIdServerStartFailed(err)]),
+                catchError((err: unknown) => [createActionCallerIdServerStartFailed(err)]),
             )
         }),
     )
@@ -41,7 +41,7 @@ const callerIdServerStopRequestedEpic: Epic = (action$: Observable<StateAction>)
         switchMap(() => {
             return defer(() => ExampleCallerIdServer.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionCallerIdServerErrored(err)]),
+                catchError((err: unknown) => [createActionCallerIdServerErrored(err)]),
             )
         }),
     )
@@ -56,7 +56,7 @@ const callerIdServerSimulateCallRequestedEpic: Epic = (action$: Observable<State
             }
             return defer(() => ExampleCallerIdServer.simulateCall(call)).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionCallerIdServerErrored(err)]),
+                catchError((err: unknown) => [createActionCallerIdServerErrored(err)]),
             )
         }),
     )

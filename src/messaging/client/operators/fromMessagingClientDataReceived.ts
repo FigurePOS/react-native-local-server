@@ -12,7 +12,7 @@ export const fromMessagingClientDataReceived = (clientId: string, logger: Logger
         mergeMap((data) =>
             of(data).pipe(
                 map(parseDataObject),
-                catchError((err) => {
+                catchError((err: unknown) => {
                     logger.error(LoggerVerbosity.Low, `MessagingClient [${clientId}] - failed to parse data`, err)
                     return EMPTY
                 }),

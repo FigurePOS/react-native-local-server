@@ -103,7 +103,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                 return fromMessagingServerMessageReceived<In>(this.serverId, this.logger).pipe(
                     handleBy(handler, deps),
                     tap((output) => this.handlerOutput$.next(output)),
-                    catchError((err) => {
+                    catchError((err: unknown) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingServer [${this.serverId}] fatal error in output$`,
@@ -152,7 +152,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.configuration?.ping?.timeout ?? PING_INTERVAL,
                     this.configuration?.ping?.retryCount ?? PING_RETRY,
                 ).pipe(
-                    catchError((err) => {
+                    catchError((err: unknown) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingServer [${this.serverId}] - error in ping stream - closing the connection ${connectionId}`,
@@ -248,7 +248,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
         return concat(
             defer(() => this.tcpServer.stop(MessagingStoppedReason.Restart)).pipe(
                 waitForMessagingServerStopped(this.serverId),
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingServer [${this.serverId}] - restart - failed to stop`,
@@ -266,7 +266,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                 }
                 return this.start(this.configuration, ...this.startData)
             }).pipe(
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingServer [${this.serverId}] - restart - failed to start`,
@@ -356,7 +356,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
             return from(this.tcpServer.sendData(connectionId, serialized)).pipe(
                 timeout(t),
                 mapTo(true),
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.error$.next(err)
                     this.logger.error(LoggerVerbosity.Low, `MessagingServer [${this.serverId}] - send data error`, err)
                     return of(false)

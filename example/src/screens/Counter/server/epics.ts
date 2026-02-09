@@ -58,10 +58,10 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
             }
             return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
                 mergeMapTo([]),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),
-        catchError((err) => [createActionCounterServerErrored(err)]),
+        catchError((err: unknown) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerStatus: Epic = () =>
@@ -95,7 +95,7 @@ const counterServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return CounterServer.stop().pipe(
                 mergeMapTo([]),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),
     )
@@ -106,7 +106,7 @@ const counterServerRestartRequested: Epic = (action$: Observable<StateAction>) =
         switchMap(() => {
             return CounterServer.restart().pipe(
                 mergeMapTo([]),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),
     )
@@ -128,7 +128,7 @@ const counterServerCountChanged: Epic = (action$: Observable<StateAction>, state
                 }),
             )
         }),
-        catchError((err) => [createActionCounterServerErrored(err)]),
+        catchError((err: unknown) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
@@ -139,7 +139,7 @@ const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
                 switchMap((ip: Maybe<string>) => [createActionCounterServerIpAddressChanged(ip)]),
             )
         }),
-        catchError((err) => [createActionCounterServerErrored(err)]),
+        catchError((err: unknown) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerHandlersOutput = () => CounterServer.getHandlerOutput$()

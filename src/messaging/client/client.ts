@@ -124,7 +124,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - restartServiceSearch`)
         return concat(
             defer(() => this.stopServiceSearch()).pipe(
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Medium,
                         `MessagingClient [${this.clientId}] - restartServiceSearch error when stopping service search`,
@@ -170,7 +170,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                 return fromMessagingClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
                     tap((output) => this.handlerOutput$.next(output)),
-                    catchError((err) => {
+                    catchError((err: unknown) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingClient [${this.clientId}] fatal error in output$`,
@@ -199,7 +199,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.dataOutput$,
                     this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY,
                 ).pipe(
-                    catchError((err) => {
+                    catchError((err: unknown) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingClient [${this.clientId}] - ping timed out`,
@@ -207,7 +207,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                         )
                         return defer(() => this.tcpClient.stop(MessagingStoppedReason.PingTimedOut)).pipe(
                             mapTo(false),
-                            catchError((e) => {
+                            catchError((e: unknown) => {
                                 this.logger.error(
                                     LoggerVerbosity.Low,
                                     `MessagingClient [${this.clientId}] - stop client failed - error`,
@@ -230,7 +230,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
 
         return defer(() => this.tcpClient.start(tcpConfig)).pipe(
             timeout(this.configuration?.connection.timeout ?? MESSAGING_CLIENT_DEFAULT_TIMEOUT),
-            catchError((err) => {
+            catchError((err: unknown) => {
                 if (!(err instanceof TimeoutError)) {
                     return throwError(err)
                 }
@@ -274,7 +274,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         return concat(
             defer(() => this.tcpClient.stop(MessagingStoppedReason.Restart)).pipe(
                 waitForMessagingClientStopped(this.clientId, this.logger),
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingClient [${this.clientId}] - restart - failed to stop`,
@@ -292,7 +292,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                 }
                 return this.start(this.configuration, ...this.startData)
             }).pipe(
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingClient [${this.clientId}] - restart - failed to start`,
@@ -380,7 +380,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             return from(this.tcpClient.sendData(serialized)).pipe(
                 timeout(t),
                 mapTo(true),
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.error$.next(err)
                     return of(false)
                 }),
