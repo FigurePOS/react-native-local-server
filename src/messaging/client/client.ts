@@ -1,5 +1,5 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError, TimeoutError } from "rxjs"
-import { catchError, concatMap, map, mapTo, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
+import { catchError, concatMap, map, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
 
 import {
     LoggerVerbosity,
@@ -379,7 +379,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             const serialized = serializeDataObject(data)
             return from(this.tcpClient.sendData(serialized)).pipe(
                 timeout(t),
-                mapTo(true),
+                map(() => true),
                 catchError((err: unknown) => {
                     this.error$.next(err)
                     return of(false)

@@ -4,7 +4,6 @@ import {
     concatMap,
     groupBy,
     map,
-    mapTo,
     mergeMap,
     share,
     switchMap,
@@ -353,7 +352,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
             const serialized = serializeDataObject(data)
             return from(this.tcpServer.sendData(connectionId, serialized)).pipe(
                 timeout(t),
-                mapTo(true),
+                map(() => true),
                 catchError((err: unknown) => {
                     this.error$.next(err)
                     this.logger.error(LoggerVerbosity.Low, `MessagingServer [${this.serverId}] - send data error`, err)
