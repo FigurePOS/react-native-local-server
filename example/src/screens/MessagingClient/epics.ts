@@ -84,9 +84,9 @@ const messagingClientDataSendRequested: Epic = (action$: Observable<StateAction>
                 switchMap(() => {
                     return [createActionMessagingClientDataReceived(createMessageData("client", text))]
                 }),
+                catchError((err: unknown) => [createActionMessagingClientErrored(err)]),
             )
         }),
-        catchError((err: unknown) => [createActionMessagingClientErrored(err)]),
     )
 
 export default [

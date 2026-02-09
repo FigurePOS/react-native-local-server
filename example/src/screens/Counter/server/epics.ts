@@ -57,7 +57,6 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
                 catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),
-        catchError((err: unknown) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerStatus: Epic = () =>
@@ -120,11 +119,11 @@ const counterServerCountChanged: Epic = (action$: Observable<StateAction>, state
                         switchMap(() => {
                             return []
                         }),
+                        catchError((err: unknown) => [createActionCounterServerErrored(err)]),
                     )
                 }),
             )
         }),
-        catchError((err: unknown) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
@@ -133,9 +132,9 @@ const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return CounterServer.getLocalIpAddress().pipe(
                 switchMap((ip: Maybe<string>) => [createActionCounterServerIpAddressChanged(ip)]),
+                catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),
-        catchError((err: unknown) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerHandlersOutput = () => CounterServer.getHandlerOutput$()

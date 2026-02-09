@@ -144,9 +144,9 @@ const counterClientCountResetRequested: Epic = (
                 switchMap(() => {
                     return []
                 }),
+                catchError((err: unknown) => [createActionCounterClientErrored(err)]),
             )
         }),
-        catchError((err: unknown) => [createActionCounterClientErrored(err)]),
     )
 
 const counterClientCountRequested: Epic = (action$: Observable<StateAction>) =>
@@ -159,9 +159,9 @@ const counterClientCountRequested: Epic = (action$: Observable<StateAction>) =>
                 switchMap(() => {
                     return []
                 }),
+                catchError((err: unknown) => [createActionCounterClientErrored(err)]),
             )
         }),
-        catchError((err: unknown) => [createActionCounterClientErrored(err)]),
     )
 
 const counterClientSearchStartRequested: Epic = (action$: Observable<StateAction>) =>
