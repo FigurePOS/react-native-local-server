@@ -79,8 +79,9 @@ const counterServerStatus: Epic = () =>
                     return [
                         createActionCounterServerConnectionStateChanged(e.connectionId, ServerConnectionState.Closed),
                     ]
+                default:
+                    return []
             }
-            return []
         }),
     )
 
