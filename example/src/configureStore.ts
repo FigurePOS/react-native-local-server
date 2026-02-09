@@ -9,11 +9,11 @@ const configureStore = (): Store => {
     const epicMiddleware = createEpicMiddleware()
     const middlewares: Middleware[] = [epicMiddleware]
 
-    let middleware
+    const middleware = applyMiddleware(...middlewares)
     if (__DEV__) {
+        // eslint-disable-next-line functional/immutable-data
         middlewares.push(createLogger({ collapsed: true, diff: true }))
     }
-    middleware = applyMiddleware(...middlewares)
 
     const store: Store = createStore(rootReducer, middleware)
     epicMiddleware.run(rootEpic)
