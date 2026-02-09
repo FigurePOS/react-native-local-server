@@ -29,11 +29,6 @@ const styles = StyleSheet.create({
         marginVertical: FontSize.ExtraExtraSmall,
         marginRight: FontSize.SmallMedium,
     },
-    label: {
-        fontSize: FontSize.Medium,
-        // padding: FontSize.Small,
-        color: Colors.Black,
-    },
     input: {
         flex: 1,
         fontSize: FontSize.Medium,
