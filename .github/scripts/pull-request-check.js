@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 const exec = require("child_process").exec
 
 // @ts-check
 /** @param {import('@types/github-script').AsyncFunctionArguments} AsyncFunctionArguments */
-module.exports = async ({ core, context, github, changedFiles }) => {
+module.exports = async ({ context, github, changedFiles }) => {
   const prName = context.payload.pull_request.title
   console.log("Running pull-request-check")
   console.log("Deleting old comments...")
