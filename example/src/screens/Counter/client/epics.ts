@@ -31,21 +31,11 @@ import {
     createActionCounterClientSearchStateChanged,
     createActionCounterClientStateChanged,
 } from "./actions"
-import {
-    MessagingClientConfiguration,
-    MessagingClientConnectionMethod,
-    MessagingClientStatusEventName,
-} from "@figuredev/react-native-local-server"
-import { ClientState } from "../../../common/types"
-import { CounterDependencies } from "../common/deps"
 import { CounterClient } from "./client"
 import { rootHandler } from "./rootHandler"
-import { createCounterMessageCountRequested, createCounterMessageCountResetRequested } from "../common/messages"
-import { COUNTER_COUNT_RESET_REQUESTED } from "../data/actionts"
-import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { getCounterClientAvailableServices, isCounterClientRunning } from "./selectors"
-import { StateObject } from "../../../rootReducer"
-import { Observable } from "rxjs"
+
+
 
 const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
