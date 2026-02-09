@@ -1,6 +1,6 @@
 import { Epic, ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
-import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
+import { catchError, filter, map, switchMap } from "rxjs/operators"
 
 import {
     ServiceBrowser,
@@ -25,8 +25,6 @@ import {
 } from "./actions"
 import { BareServiceBrowser } from "./network"
 
-
-
 const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(SERVICE_BROWSER_START_REQUESTED),
@@ -36,7 +34,7 @@ const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>
                 type: group,
             }
             return defer(() => BareServiceBrowser.start(config)).pipe(
-                mapTo(createActionServiceBrowserStarted()),
+                map(() => createActionServiceBrowserStarted()),
                 catchError((err: unknown) => [createActionServiceBrowserErrored(err)]),
             )
         }),
@@ -62,7 +60,7 @@ const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>)
 const serviceBrowserStoppedEpic: Epic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.Stopped).pipe(
         filter((event: ServiceBrowserStoppedNativeEvent) => event.browserId === BareServiceBrowser.getId()),
-        mapTo(createActionServiceBrowserStopped()),
+        map(() => createActionServiceBrowserStopped()),
     )
 
 const serviceBrowserServiceFoundEpic: Epic = () =>

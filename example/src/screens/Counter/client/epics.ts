@@ -1,6 +1,6 @@
 import { Epic, ofType, StateObservable } from "redux-observable"
 import { Observable } from "rxjs"
-import { catchError, filter, mergeMap, mergeMapTo, switchMap, switchMapTo } from "rxjs/operators"
+import { catchError, filter, mergeMap, switchMap } from "rxjs/operators"
 
 import {
     MessagingClientConfiguration,
@@ -35,8 +35,6 @@ import { CounterClient } from "./client"
 import { rootHandler } from "./rootHandler"
 import { getCounterClientAvailableServices, isCounterClientRunning } from "./selectors"
 
-
-
 const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_REQUESTED),
@@ -57,7 +55,7 @@ const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
                 },
             }
             return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionCounterClientErrored(err)]),
             )
         }),
@@ -87,7 +85,7 @@ const counterClientStartFromServiceRequested: Epic = (
                 },
             }
             return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionCounterClientErrored(err)]),
             )
         }),
@@ -116,7 +114,7 @@ const counterClientStopRequested: Epic = (action$: Observable<StateAction>) =>
         ofType(COUNTER_CLIENT_STOP_REQUESTED),
         switchMap(() => {
             return CounterClient.stop().pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionCounterClientErrored(err)]),
             )
         }),
@@ -127,7 +125,7 @@ const counterClientRestartRequested: Epic = (action$: Observable<StateAction>) =
         ofType(COUNTER_CLIENT_RESTART_REQUESTED),
         switchMap(() => {
             return CounterClient.restart().pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionCounterClientErrored(err)]),
             )
         }),
@@ -171,7 +169,7 @@ const counterClientSearchStartRequested: Epic = (action$: Observable<StateAction
         ofType(COUNTER_CLIENT_SEARCH_START_REQUESTED),
         switchMap(() => {
             return CounterClient.startServiceSearch().pipe(
-                switchMapTo([]),
+                switchMap(() => []),
                 catchError((err: unknown) => [createActionCounterClientSearchErrored(err)]),
             )
         }),
@@ -182,7 +180,7 @@ const counterClientSearchStopRequested: Epic = (action$: Observable<StateAction>
         ofType(COUNTER_CLIENT_SEARCH_STOP_REQUESTED),
         switchMap(() => {
             return CounterClient.stopServiceSearch().pipe(
-                switchMapTo([]),
+                switchMap(() => []),
                 catchError((err: unknown) => [createActionCounterClientSearchErrored(err)]),
             )
         }),
@@ -193,7 +191,7 @@ const counterClientSearchRestartRequested: Epic = (action$: Observable<StateActi
         ofType(COUNTER_CLIENT_SEARCH_RESTART_REQUESTED),
         switchMap(() => {
             return CounterClient.restartServiceSearch().pipe(
-                switchMapTo([]),
+                switchMap(() => []),
                 catchError((err: unknown) => [createActionCounterClientSearchErrored(err)]),
             )
         }),

@@ -1,6 +1,6 @@
 import { Epic, ofType, StateObservable } from "redux-observable"
 import { from, Observable } from "rxjs"
-import { catchError, concatMap, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
+import { catchError, concatMap, mergeMap, switchMap } from "rxjs/operators"
 import * as uuid from "uuid"
 
 import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
@@ -26,10 +26,6 @@ import {
 import { rootHandler } from "./rootHandler"
 import { getCounterServerReadyConnections, isCounterServerRunning } from "./selectors"
 import { CounterServer } from "./server"
-
-
-
-
 
 const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
@@ -57,7 +53,7 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
                 },
             }
             return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),
@@ -94,7 +90,7 @@ const counterServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         ofType(COUNTER_SERVER_STOP_REQUESTED),
         switchMap(() => {
             return CounterServer.stop().pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),
@@ -105,7 +101,7 @@ const counterServerRestartRequested: Epic = (action$: Observable<StateAction>) =
         ofType(COUNTER_SERVER_RESTART_REQUESTED),
         switchMap(() => {
             return CounterServer.restart().pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionCounterServerErrored(err)]),
             )
         }),

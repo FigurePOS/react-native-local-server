@@ -1,7 +1,6 @@
 import { defer, interval, merge, Observable, of, SchedulerLike, Subject, throwError } from "rxjs"
-import { catchError, mapTo, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
+import { catchError, map, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
 import * as uuid from "uuid"
-
 
 import { composeDataObjectPing, DataObject } from "../../types"
 import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../types"
@@ -26,7 +25,7 @@ export const pingMessagingServerConnection = (
                 return dataInput$.pipe(
                     take(1),
                     timeout(pingTimeout, scheduler),
-                    mapTo(true),
+                    map(() => true),
                     catchError(() => {
                         return of(false)
                     }),

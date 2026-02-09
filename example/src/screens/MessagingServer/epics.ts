@@ -1,6 +1,6 @@
 import { Epic, ofType } from "redux-observable"
 import { Observable } from "rxjs"
-import { catchError, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
+import { catchError, mergeMap, switchMap } from "rxjs/operators"
 
 import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
 
@@ -23,11 +23,6 @@ import { createMessageTextMessageSent } from "./localCommunication/messages"
 import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingServer } from "./localCommunication/server"
 
-
-
-
-
-
 const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_SERVER_START_REQUESTED),
@@ -41,7 +36,7 @@ const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =
                 port: port,
             }
             return SampleMessagingServer.start(config, rootHandler, SampleMessagingServerDependencies).pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionMessagingServerErrored(err)]),
             )
         }),
@@ -80,7 +75,7 @@ const messagingServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         ofType(MESSAGING_SERVER_STOP_REQUESTED),
         mergeMap(() => {
             return SampleMessagingServer.stop().pipe(
-                mergeMapTo([]),
+                mergeMap(() => []),
                 catchError((err: unknown) => [createActionMessagingServerErrored(err)]),
             )
         }),

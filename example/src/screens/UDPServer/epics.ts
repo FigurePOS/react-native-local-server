@@ -1,6 +1,6 @@
 import { Epic, ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
-import { catchError, filter, mapTo, switchMap } from "rxjs/operators"
+import { catchError, filter, map, switchMap } from "rxjs/operators"
 
 import {
     UDPServer,
@@ -27,8 +27,6 @@ import {
 } from "./actions"
 import { BareUDPServer } from "./network"
 
-
-
 const bareUdpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_UDP_SERVER_START_REQUESTED),
@@ -41,7 +39,7 @@ const bareUdpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
                 port: port,
             }
             return defer(() => BareUDPServer.start(serverConfig)).pipe(
-                mapTo(createActionBareUdpServerStartSucceeded()),
+                map(() => createActionBareUdpServerStartSucceeded()),
                 catchError((err: unknown) => [createActionBareUdpServerStartFailed(err)]),
             )
         }),
@@ -50,13 +48,13 @@ const bareUdpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
 const bareUdpServerReadyEpic: Epic = () =>
     fromEventFixed(UDPServer.EventEmitter, UDPServer.EventName.Ready).pipe(
         filter((event: UDPServerReadyNativeEvent) => event.serverId === BareUDPServer.getId()),
-        mapTo(createActionBareUdpServerReady()),
+        map(() => createActionBareUdpServerReady()),
     )
 
 const bareUdpServerStoppedEpic: Epic = () =>
     fromEventFixed(UDPServer.EventEmitter, UDPServer.EventName.Stopped).pipe(
         filter((event: UDPServerStoppedNativeEvent) => event.serverId === BareUDPServer.getId()),
-        mapTo(createActionBareUdpServerStopped(null)),
+        map(() => createActionBareUdpServerStopped(null)),
     )
 
 const bareUdpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>

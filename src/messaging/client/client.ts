@@ -1,5 +1,5 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError, TimeoutError } from "rxjs"
-import { catchError, concatMap, mapTo, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
+import { catchError, concatMap, map, mapTo, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
 
 import {
     LoggerVerbosity,
@@ -206,7 +206,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                             err,
                         )
                         return defer(() => this.tcpClient.stop(MessagingStoppedReason.PingTimedOut)).pipe(
-                            mapTo(false),
+                            map(() => false),
                             catchError((e: unknown) => {
                                 this.logger.error(
                                     LoggerVerbosity.Low,

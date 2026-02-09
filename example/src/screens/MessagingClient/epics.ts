@@ -1,6 +1,6 @@
 import { Epic, ofType } from "redux-observable"
 import { Observable } from "rxjs"
-import { catchError, mergeMap, switchMap, switchMapTo } from "rxjs/operators"
+import { catchError, mergeMap, switchMap } from "rxjs/operators"
 
 import {
     MessagingClientConfiguration,
@@ -25,9 +25,6 @@ import { SampleMessagingClientDependencies } from "./localCommunication/deps"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
 import { rootHandler } from "./localCommunication/rootHandler"
 
-
-
-
 const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_START_REQUESTED),
@@ -45,7 +42,7 @@ const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =
                 },
             }
             return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
-                switchMapTo([]),
+                switchMap(() => []),
                 catchError((err: unknown) => [createActionMessagingClientErrored(err)]),
             )
         }),
@@ -71,7 +68,7 @@ const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
         ofType(MESSAGING_CLIENT_STOP_REQUESTED),
         switchMap(() => {
             return SampleMessagingClient.stop().pipe(
-                switchMapTo([]),
+                switchMap(() => []),
                 catchError((err: unknown) => [createActionMessagingClientErrored(err)]),
             )
         }),

@@ -36,8 +36,6 @@ import {
 import { waitForMessagingServerStopped } from "./operators/waitForMessagingServerEvent"
 import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
 
-
-
 export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
     private readonly serverId: string
     private readonly handler$: Subject<MessageHandler<In, Deps>>
@@ -160,7 +158,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                         )
                         return defer(() =>
                             this.tcpServer.closeConnection(connectionId, MessagingStoppedReason.PingTimedOut),
-                        ).pipe(mapTo(false))
+                        ).pipe(map(() => false))
                     }),
                 )
             }),

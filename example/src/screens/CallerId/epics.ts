@@ -1,6 +1,6 @@
 import { Epic, ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
-import { catchError, map, mapTo, switchMap } from "rxjs/operators"
+import { catchError, map, switchMap } from "rxjs/operators"
 
 import {
     CallerIdServerStatusEvent,
@@ -23,13 +23,12 @@ import {
 } from "./actions"
 import { ExampleCallerIdServer } from "./network"
 
-
 const callerIdServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(CALLER_ID_SERVER_START_REQUESTED),
         switchMap(() => {
             return defer(() => ExampleCallerIdServer.start()).pipe(
-                mapTo(createActionCallerIdServerStartSucceeded()),
+                map(() => createActionCallerIdServerStartSucceeded()),
                 catchError((err: unknown) => [createActionCallerIdServerStartFailed(err)]),
             )
         }),

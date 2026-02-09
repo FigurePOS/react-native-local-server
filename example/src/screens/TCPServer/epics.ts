@@ -1,6 +1,6 @@
 import { Epic, ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
-import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
+import { catchError, filter, map, switchMap } from "rxjs/operators"
 
 import {
     TCPServer,
@@ -47,7 +47,7 @@ const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
                 port: port.length === 0 ? null : parsedPort,
             }
             return defer(() => BareTCPServer.start(serverConfig)).pipe(
-                mapTo(createActionBareTcpServerStartSucceeded()),
+                map(() => createActionBareTcpServerStartSucceeded()),
                 catchError((err: unknown) => [createActionBareTcpServerStartFailed(err)]),
             )
         }),
@@ -62,7 +62,7 @@ const bareTcpServerReadyEpic: Epic = () =>
 const bareTcpServerStoppedEpic: Epic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.Stopped).pipe(
         filter((event: TCPServerStoppedNativeEvent) => event.serverId === BareTCPServer.getId()),
-        mapTo(createActionBareTcpServerStopped(null)),
+        map(() => createActionBareTcpServerStopped(null)),
     )
 
 const bareTcpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
