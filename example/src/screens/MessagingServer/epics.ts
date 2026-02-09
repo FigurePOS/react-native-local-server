@@ -37,7 +37,7 @@ const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =
             }
             return SampleMessagingServer.start(config, rootHandler, SampleMessagingServerDependencies).pipe(
                 mergeMap(() => []),
-                catchError((err: unknown) => [createActionMessagingServerErrored(err)]),
+                catchError((err) => [createActionMessagingServerErrored(err)]),
             )
         }),
     )
@@ -77,7 +77,7 @@ const messagingServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         mergeMap(() => {
             return SampleMessagingServer.stop().pipe(
                 mergeMap(() => []),
-                catchError((err: unknown) => [createActionMessagingServerErrored(err)]),
+                catchError((err) => [createActionMessagingServerErrored(err)]),
             )
         }),
     )

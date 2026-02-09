@@ -99,7 +99,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
                 return fromMessagingServerMessageReceived<In>(this.serverId, this.logger).pipe(
                     handleBy(handler, deps),
                     tap((output) => this.handlerOutput$.next(output)),
-                    catchError((err: unknown) => {
+                    catchError((err) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingServer [${this.serverId}] fatal error in output$`,

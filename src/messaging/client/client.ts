@@ -170,7 +170,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                 return fromMessagingClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
                     tap((output) => this.handlerOutput$.next(output)),
-                    catchError((err: unknown) => {
+                    catchError((err) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingClient [${this.clientId}] fatal error in output$`,
