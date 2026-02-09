@@ -10,7 +10,6 @@ import { getCounterCount } from "../data/selectors"
 
 import { CounterServer } from "./server"
 
-
 export const counterResetRequestedHandler: MessageHandler<
     CounterMessage,
     SampleMessagingClientDependenciesType,
@@ -34,7 +33,9 @@ export const counterRequestedHandler: MessageHandler<
         switchMap((message) => {
             if (message.body.type === CounterMessageType.CountRequested) {
                 const count = getCounterCount(deps.getState())
-                CounterServer.send(createCounterMessageCountChanged(count), message.source.connectionId)
+                return CounterServer.send(createCounterMessageCountChanged(count), message.source.connectionId).pipe(
+                    switchMap(() => []),
+                )
             }
             return []
         }),
