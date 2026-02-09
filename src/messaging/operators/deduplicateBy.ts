@@ -9,7 +9,7 @@ export const deduplicateBy =
     ) =>
     (source$: Observable<T>): Observable<T> =>
         source$.pipe(
-            groupBy(keyExtractor, undefined, groupDuration(duration, scheduler)),
+            groupBy(keyExtractor, { duration: groupDuration(duration, scheduler) }),
             mergeMap((group$) => (group$.key == null ? group$ : group$.pipe(take(1)))),
         )
 
