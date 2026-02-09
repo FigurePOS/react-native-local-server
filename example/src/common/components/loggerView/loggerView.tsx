@@ -22,7 +22,7 @@ export const LoggerView = (props: Props) => {
             <View style={styles.nameContainer}>
                 <Text style={styles.nameLabel}>{props.name}</Text>
                 <TouchableOpacity onPress={props.onClearPressed}>
-                    {/* @ts-expect-error */}
+                    {/* @ts-expect-error - this should be fixed by updating RN */}
                     <Icon name={IconNames.clear} size={FontSize.Big} />
                 </TouchableOpacity>
             </View>

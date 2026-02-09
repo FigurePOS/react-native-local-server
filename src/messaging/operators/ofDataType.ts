@@ -13,7 +13,7 @@ import {
 export const ofDataType =
     <T extends DataObjectType, M>(...types: T[]) =>
     (source$: Observable<DataObject<M>>): Observable<Extract<DataObject<M>, { type: T }>> =>
-        // @ts-ignore
+        // @ts-expect-error - TypeScript does not handle this generic well
         source$.pipe(filter((data: DataObject): boolean => types.includes(data.type)))
 
 export const ofDataTypeMessage: <M>(source$: Observable<DataObject<M>>) => Observable<DataObjectMessage<M>> =
