@@ -60,10 +60,10 @@ export class ServiceBrowser {
         try {
             await ServiceBrowserModule.createBrowser(this.getId(), this.config.type)
             this.logger.log(LoggerVerbosity.Medium, `ServiceBrowser [${this.getId()}] - start - success`)
-            return Promise.resolve()
+            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `ServiceBrowser [${this.getId()}] - start - error`, e)
-            return Promise.reject(e)
+            await Promise.reject(e)
         }
     }
 
@@ -75,10 +75,10 @@ export class ServiceBrowser {
         try {
             await ServiceBrowserModule.stopBrowser(this.getId())
             this.logger.log(LoggerVerbosity.Medium, `ServiceBrowser [${this.getId()}] - stop - success`)
-            return Promise.resolve()
+            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `ServiceBrowser [${this.getId()}] - stop - error`, e)
-            return Promise.reject(e)
+            await Promise.reject(e)
         }
     }
 }
