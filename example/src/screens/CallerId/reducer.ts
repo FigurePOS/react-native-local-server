@@ -16,9 +16,6 @@ import {
     CALLER_ID_SERVER_STOPPED,
 } from "./actions"
 
-
-
-
 export type CallerIDServerStateObject = {
     state: ServerState
     error: Maybe<string>
@@ -32,6 +29,7 @@ export const createDefaultState = (): CallerIDServerStateObject => ({
 })
 
 export const CallerIdServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: CallerIDServerStateObject = createDefaultState(),
     action: StateAction,
 ): CallerIDServerStateObject => {

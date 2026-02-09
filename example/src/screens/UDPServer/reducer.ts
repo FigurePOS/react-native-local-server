@@ -15,9 +15,6 @@ import {
     BARE_UDP_SERVER_STOPPED,
 } from "./actions"
 
-
-
-
 export type UDPServerStateObject = {
     state: ServerState
     port: Maybe<string>
@@ -33,6 +30,7 @@ export const createDefaultState = (): UDPServerStateObject => ({
 })
 
 export const UDPServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: UDPServerStateObject = createDefaultState(),
     action: StateAction,
 ): UDPServerStateObject => {

@@ -12,8 +12,6 @@ import {
     COUNTER_LOGGED,
 } from "./actionts"
 
-
-
 export type CounterDataStateObject = {
     count: number
     autoIncrementOn: boolean
@@ -27,6 +25,7 @@ export const createDefaultState = (): CounterDataStateObject => ({
 })
 
 export const counterDataReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: CounterDataStateObject = createDefaultState(),
     action: StateAction,
 ): CounterDataStateObject => {

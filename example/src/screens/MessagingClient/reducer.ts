@@ -14,8 +14,6 @@ import {
     MESSAGING_CLIENT_STOP_REQUESTED,
 } from "./actions"
 
-
-
 export type MessagingClientStateObject = {
     state: ClientState
     host: Maybe<string>
@@ -33,6 +31,7 @@ export const createDefaultState = (): MessagingClientStateObject => ({
 })
 
 export const MessagingClientReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: MessagingClientStateObject = createDefaultState(),
     action: StateAction,
 ): MessagingClientStateObject => {

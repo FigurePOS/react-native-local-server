@@ -13,7 +13,6 @@ import {
     COUNTER_SERVER_STOP_REQUESTED,
 } from "./actions"
 
-
 export type CounterServerStateObject = {
     state: ServerState
     port: Maybe<string>
@@ -31,6 +30,7 @@ export const createDefaultState = (): CounterServerStateObject => ({
 })
 
 export const counterServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: CounterServerStateObject = createDefaultState(),
     action: StateAction,
 ): CounterServerStateObject => {

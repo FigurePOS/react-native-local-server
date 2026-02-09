@@ -40,6 +40,7 @@ export const createDefaultState = (): TCPServerStateObject => ({
 })
 
 export const TCPServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: TCPServerStateObject = createDefaultState(),
     action: StateAction,
 ): TCPServerStateObject => {

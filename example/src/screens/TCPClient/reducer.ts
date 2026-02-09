@@ -30,6 +30,7 @@ export const createDefaultState = (): TCPClientStateObject => ({
 })
 
 export const TCPClientReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: TCPClientStateObject = createDefaultState(),
     action: StateAction,
 ): TCPClientStateObject => {

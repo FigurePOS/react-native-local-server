@@ -28,6 +28,7 @@ export const createDefaultState = (): ServiceBrowserStateObject => ({
 })
 
 export const ServiceBrowserReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: ServiceBrowserStateObject = createDefaultState(),
     action: StateAction,
 ): ServiceBrowserStateObject => {

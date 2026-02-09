@@ -18,7 +18,6 @@ import {
     COUNTER_CLIENT_STOP_REQUESTED,
 } from "./actions"
 
-
 export type CounterClientStateObject = {
     state: ClientState
     host: Maybe<string>
@@ -40,6 +39,7 @@ export const createDefaultState = (): CounterClientStateObject => ({
 })
 
 export const counterClientReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: CounterClientStateObject = createDefaultState(),
     action: StateAction,
 ): CounterClientStateObject => {

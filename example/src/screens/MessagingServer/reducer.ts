@@ -16,8 +16,6 @@ import {
     MESSAGING_SERVER_STOP_REQUESTED,
 } from "./actions"
 
-
-
 export type MessagingServerStateObject = {
     state: ServerState
     port: Maybe<string>
@@ -37,6 +35,7 @@ export const createDefaultState = (): MessagingServerStateObject => ({
 })
 
 export const MessagingServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: MessagingServerStateObject = createDefaultState(),
     action: StateAction,
 ): MessagingServerStateObject => {
