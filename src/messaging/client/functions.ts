@@ -59,16 +59,21 @@ export const mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate = (
     event: ServiceBrowserNativeEvent,
 ): MessagingClientServiceSearchEventUpdate => {
     const service = mapServiceBrowserEventToMessagingService(event)
+
+    if (!service) {
+        return { type: MessagingClientServiceSearchUpdate.Unknown }
+    }
+
     switch (event.type) {
         case ServiceBrowserEventName.ServiceFound:
             return {
                 type: MessagingClientServiceSearchUpdate.ServiceFound,
-                service: service!,
+                service: service,
             }
         case ServiceBrowserEventName.ServiceLost:
             return {
                 type: MessagingClientServiceSearchUpdate.ServiceLost,
-                service: service!,
+                service: service,
             }
         case ServiceBrowserEventName.Started:
         case ServiceBrowserEventName.Stopped:
