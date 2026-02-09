@@ -31,7 +31,6 @@ import {
     ofMessagingServerStatusEvent,
     pingMessagingServerConnection,
 } from "./operators"
-
 import { waitForMessagingServerStopped } from "./operators/waitForMessagingServerEvent"
 import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
 
@@ -179,9 +178,13 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
             }),
         )
 
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.mainSubscription = output$.subscribe()
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.dataSubscription = data$.subscribe()
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.pingSubscription = ping$.subscribe()
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.infoSubscription = info$.subscribe()
 
         this.dep$.next(dependencies)

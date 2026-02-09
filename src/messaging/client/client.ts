@@ -221,8 +221,11 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             }),
         )
 
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.mainSubscription = output$.subscribe()
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.dataSubscription = data$.subscribe()
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.pingSubscription = ping$.subscribe()
 
         this.dep$.next(dependencies)
