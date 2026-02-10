@@ -23,5 +23,5 @@ const epics: Epic[] = [
     ...ServiceBrowserEpics,
 ]
 
-export const rootEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>, deps: any) =>
+export const rootEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>, deps: unknown) =>
     combineEpics(...epics)(action$, state$, deps)

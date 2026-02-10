@@ -17,6 +17,6 @@ const groupDuration = (duration: number | undefined, scheduler: SchedulerLike | 
     if (duration == null) {
         return undefined
     }
-    return (group$: GroupedObservable<any, any>) =>
+    return (group$: GroupedObservable<unknown, unknown>) =>
         group$.key == null ? NEVER : group$.pipe(exhaustMap(() => timer(duration, scheduler)))
 }

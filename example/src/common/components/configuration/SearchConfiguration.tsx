@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View, ViewStyle } from "react-native"
 
 import { MessagingClientServiceSearchResult } from "@figuredev/react-native-local-server"
 
@@ -9,7 +9,7 @@ import { Button } from "../form/button"
 type Props = {
     stateLabel: string
     services: MessagingClientServiceSearchResult[]
-    style?: any
+    style?: ViewStyle
 
     onStarted: () => void
     onStopped: () => void

@@ -1,9 +1,9 @@
 import { tap } from "rxjs/operators"
 
-import { LoggerWrapper } from "../logger/loggerWrapper"
+import { LoggerWrapper } from "../logger"
 import { LoggerVerbosity } from "../logger/types"
 
-export const log = <T = any>(verbosity: LoggerVerbosity, logger: LoggerWrapper, message: string) =>
+export const log = <T = unknown>(verbosity: LoggerVerbosity, logger: LoggerWrapper, message: string) =>
     tap((value: T) => {
         logger.log(verbosity, message, value)
     })

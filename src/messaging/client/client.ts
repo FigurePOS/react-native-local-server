@@ -35,13 +35,13 @@ import {
 import { fromMessagingClientServiceSearchEvent } from "./operators/fromMessagingClientServiceSearchEvent"
 import { MessagingClientConfiguration } from "./types"
 
-export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
+export class MessagingClient<In, Out = In, Deps = unknown, HandlerOutput = unknown> {
     private readonly clientId: string
     private readonly browserId: string
     private readonly discoveryGroup: string | null = null
     private readonly handler$: Subject<MessageHandler<In, Deps>>
     private readonly dep$: Subject<Deps>
-    private readonly error$: Subject<any>
+    private readonly error$: Subject<unknown>
     private readonly dataOutput$: Subject<DataObject>
     private readonly handlerOutput$: Subject<HandlerOutput>
     private readonly tcpClient: TCPClient
@@ -67,7 +67,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.discoveryGroup = discoveryGroup ?? null
         this.handler$ = new Subject<MessageHandler<In, Deps, HandlerOutput>>()
         this.dep$ = new Subject<Deps>()
-        this.error$ = new Subject<any>()
+        this.error$ = new Subject<unknown>()
         this.dataOutput$ = new Subject<DataObject>()
         this.handlerOutput$ = new Subject<HandlerOutput>()
         this.statusEvent$ = fromMessagingClientStatusEvent(this.clientId, this.logger).pipe(
@@ -249,7 +249,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
      * This method sends a message to the server.
      * @param body - a message body to be sent
      */
-    send(body: Out): Observable<any> {
+    send(body: Out): Observable<boolean> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - sending message`, {
             body: body,
         })

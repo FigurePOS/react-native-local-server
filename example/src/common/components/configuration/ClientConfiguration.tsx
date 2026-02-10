@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View, ViewStyle } from "react-native"
 
 import { Colors, FontSize } from "../../constants"
 import { Button } from "../form/button"
@@ -10,7 +10,7 @@ type Props = {
     isRunning: boolean
     initialPort: string
     initialHost: string
-    style?: any
+    style?: ViewStyle
 
     onStarted: (host: string, port: string) => void
     onStopped: () => void

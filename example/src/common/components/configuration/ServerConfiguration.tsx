@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View, ViewStyle } from "react-native"
 
 import { Maybe } from "../../../types"
 import { Colors, FontSize } from "../../constants"
@@ -11,7 +11,7 @@ type Props = {
     isRunning: boolean
     initialPort: Maybe<string>
     ipAddress: Maybe<string>
-    style?: any
+    style?: ViewStyle
 
     onStarted: (port: string) => void
     onStopped: () => void

@@ -35,11 +35,11 @@ import {
 import { waitForMessagingServerStopped } from "./operators/waitForMessagingServerEvent"
 import { MessagingServerConfiguration, MessagingServerStatusEvent, MessagingServerStatusEventName } from "./types"
 
-export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
+export class MessagingServer<In, Out = In, Deps = unknown, HandlerOutput = unknown> {
     private readonly serverId: string
     private readonly handler$: Subject<MessageHandler<In, Deps>>
     private readonly dep$: Subject<Deps>
-    private readonly error$: Subject<any>
+    private readonly error$: Subject<unknown>
     private readonly dataOutput$: Subject<DataObject>
     private readonly handlerOutput$: Subject<HandlerOutput>
     private readonly tcpServer: TCPServer
@@ -61,7 +61,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
         this.serverId = id
         this.handler$ = new Subject<MessageHandler<In, Deps, HandlerOutput>>()
         this.dep$ = new Subject<Deps>()
-        this.error$ = new Subject<any>()
+        this.error$ = new Subject<unknown>()
         this.dataOutput$ = new Subject<DataObject>()
         this.handlerOutput$ = new Subject<HandlerOutput>()
         this.statusEvent$ = fromMessagingServerStatusEvent(id).pipe(
@@ -200,7 +200,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
      * @param body - a message body to be sent
      * @param connectionId - target connection id
      */
-    send(body: Out, connectionId: string): Observable<any> {
+    send(body: Out, connectionId: string): Observable<boolean> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingServer [${this.serverId}] - sending message`, {
             body: body,
             connectionId: connectionId,
@@ -213,7 +213,7 @@ export class MessagingServer<In, Out = In, Deps = any, HandlerOutput = any> {
      * @param connectionId - target connection id
      * @param reason - internal reason for closing the connection
      */
-    closeConnection(connectionId: string, reason?: string): Observable<any> {
+    closeConnection(connectionId: string, reason?: string): Observable<void> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingServer [${this.serverId}] - closing connection`, {
             connectionId: connectionId,
             reason: reason,

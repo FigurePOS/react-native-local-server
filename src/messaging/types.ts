@@ -11,7 +11,7 @@ export type Message<B = any> = {
     body: B
 }
 
-export type MessageHandler<In, Deps = any, Result = any> = (
+export type MessageHandler<In, Deps = unknown, Result = any> = (
     message$: Observable<Message<In>>,
     deps: Deps,
 ) => Observable<Result>
@@ -84,4 +84,8 @@ export const composeDataObjectPing = (pingId: string, connectionId?: string): Da
     ...(connectionId ? { connectionId: connectionId } : null),
 })
 
-export type DataObject<M = any> = DataObjectMessage<M> | DataObjectMessageAck | DataObjectPing | DataObjectServiceInfo
+export type DataObject<M = unknown> =
+    | DataObjectMessage<M>
+    | DataObjectMessageAck
+    | DataObjectPing
+    | DataObjectServiceInfo

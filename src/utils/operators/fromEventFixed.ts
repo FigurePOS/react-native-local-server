@@ -6,12 +6,12 @@ import { ErrorWithMetadata } from "../errors"
 export const fromEventFixed = <T>(eventEmitter: any, eventName: string): Observable<T> =>
     new Observable((subscriber: Subscriber<any>) => {
         if (eventEmitter.addListener != null) {
-            const subscription = eventEmitter.addListener(eventName, (event: any) => {
+            const subscription = eventEmitter.addListener(eventName, (event: unknown) => {
                 subscriber.next(event)
             })
             return () => subscription.remove()
         } else if (eventEmitter.addEventListener != null) {
-            const subscription = eventEmitter.addEventListener(eventName, (event: any) => {
+            const subscription = eventEmitter.addEventListener(eventName, (event: unknown) => {
                 subscriber.next(event)
             })
             return () => subscription.remove()

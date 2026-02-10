@@ -7,7 +7,7 @@ import { fromMessagingServerStatusEvent } from "./fromMessagingServerStatusEvent
 import { ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
 
 export const waitForMessagingServerEvent =
-    <T = any>(serverId: string, event: MessagingServerStatusEventName) =>
+    <T = unknown>(serverId: string, event: MessagingServerStatusEventName) =>
     (source$: Observable<T>) =>
         source$.pipe(
             switchMap(() => fromMessagingServerStatusEvent(serverId)),
