@@ -54,7 +54,7 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
             }
             return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
                 mergeMap(() => []),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
     )
@@ -91,7 +91,7 @@ const counterServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return CounterServer.stop().pipe(
                 mergeMap(() => []),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
     )
@@ -102,7 +102,7 @@ const counterServerRestartRequested: Epic = (action$: Observable<StateAction>) =
         switchMap(() => {
             return CounterServer.restart().pipe(
                 mergeMap(() => []),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
     )
@@ -120,7 +120,7 @@ const counterServerCountChanged: Epic = (action$: Observable<StateAction>, state
                         switchMap(() => {
                             return []
                         }),
-                        catchError((err) => [createActionCounterServerErrored(err)]),
+                        catchError((err) => [createActionCounterServerErrored(err.message)]),
                     )
                 }),
             )
@@ -133,7 +133,7 @@ const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return CounterServer.getLocalIpAddress().pipe(
                 switchMap((ip: Maybe<string>) => [createActionCounterServerIpAddressChanged(ip)]),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
     )
