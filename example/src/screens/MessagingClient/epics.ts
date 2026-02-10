@@ -10,8 +10,7 @@ import {
 
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
-import { Maybe, StateAction } from "../../types"
-import { createActionCounterServerIpAddressChanged } from "../Counter/server/actions"
+import { StateAction } from "../../types"
 
 import {
     createActionMessagingClientDataReceived,
@@ -44,7 +43,6 @@ const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =
             }
             return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
                 switchMap(() => []),
-                switchMap((ip: Maybe<string>) => [createActionCounterServerIpAddressChanged(ip)]),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)
                     return [createActionMessagingClientErrored(message)]
