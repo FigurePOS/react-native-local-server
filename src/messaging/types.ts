@@ -4,6 +4,7 @@ import { Observable } from "rxjs"
  * PUBLIC types
  */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Message<B = any> = {
     id: string
     timestamp: string
@@ -11,6 +12,7 @@ export type Message<B = any> = {
     body: B
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MessageHandler<In, Deps = unknown, Result = any> = (
     message$: Observable<Message<In>>,
     deps: Deps,
@@ -54,6 +56,7 @@ export enum DataObjectType {
     ServiceInfo = "service-info",
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DataObjectMessage<M = any> = {
     type: DataObjectType.Message
     message: Message<M>
