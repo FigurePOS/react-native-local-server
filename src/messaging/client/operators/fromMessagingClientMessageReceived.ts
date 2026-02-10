@@ -11,7 +11,6 @@ import { Message } from "../../types"
 
 import { fromMessagingClientDataReceived } from "./"
 
-
 export const fromMessagingClientMessageReceived = <Body>(
     clientId: string,
     logger: LoggerWrapper,

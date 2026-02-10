@@ -6,7 +6,6 @@ import { Maybe } from "../../../types"
 
 import { CounterClientStateObject } from "./reducer"
 
-
 export const getCounterClientStateObject = (state: StateObject): CounterClientStateObject => state.Counter.client
 
 export const getCounterClientState = (state: StateObject): ClientState => getCounterClientStateObject(state).state

@@ -8,7 +8,6 @@ import { createActionMessagingClientDataReceived } from "../actions"
 import { SampleMessagingClientDependenciesType } from "./deps"
 import { LocalCommunicationMessage, LocalCommunicationMessageType } from "./messages"
 
-
 export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessagingClientDependenciesType> = (
     message$,
     deps,

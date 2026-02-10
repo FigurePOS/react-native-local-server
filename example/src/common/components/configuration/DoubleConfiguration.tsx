@@ -11,8 +11,6 @@ import { ClientConfiguration } from "./ClientConfiguration"
 import { SearchConfiguration } from "./SearchConfiguration"
 import { ServerConfiguration } from "./ServerConfiguration"
 
-
-
 type Props = {
     stateLabelServer: string
     initialPortServer: string

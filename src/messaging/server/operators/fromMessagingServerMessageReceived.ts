@@ -11,7 +11,6 @@ import { Message } from "../../types"
 
 import { fromMessagingServerDataReceived } from "./fromMessagingServerDataReceived"
 
-
 export const fromMessagingServerMessageReceived = <Body>(
     serverId: string,
     logger: LoggerWrapper,

@@ -21,8 +21,6 @@ import {
 } from "./actionts"
 import { getCounterCount } from "./selectors"
 
-
-
 export const counterIncrementedEpic: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
     action$.pipe(
         ofType(COUNTER_COUNT_INCREMENTED),

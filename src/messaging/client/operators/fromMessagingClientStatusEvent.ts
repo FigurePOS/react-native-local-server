@@ -13,7 +13,6 @@ import {
 
 import { fromMessagingClientDataReceived } from "./fromMessagingClientDataReceived"
 
-
 export const fromMessagingClientStatusEvent = (
     clientId: string,
     logger: LoggerWrapper,
