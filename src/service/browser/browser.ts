@@ -60,7 +60,6 @@ export class ServiceBrowser {
         try {
             await ServiceBrowserModule.createBrowser(this.getId(), this.config.type)
             this.logger.log(LoggerVerbosity.Medium, `ServiceBrowser [${this.getId()}] - start - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `ServiceBrowser [${this.getId()}] - start - error`, e)
             await Promise.reject(e)
@@ -75,7 +74,6 @@ export class ServiceBrowser {
         try {
             await ServiceBrowserModule.stopBrowser(this.getId())
             this.logger.log(LoggerVerbosity.Medium, `ServiceBrowser [${this.getId()}] - stop - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `ServiceBrowser [${this.getId()}] - stop - error`, e)
             await Promise.reject(e)

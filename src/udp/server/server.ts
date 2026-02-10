@@ -66,7 +66,6 @@ export class UDPServer {
                 this.config.numberOfDroppedBytesFromMsgStart ?? 0,
             )
             this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - start - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - start - error`, e)
             await Promise.reject(e)
@@ -88,7 +87,6 @@ export class UDPServer {
         try {
             await UDPServerModule.send(host, port, data)
             this.logger?.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - sendData - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger?.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - sendData - error`, e)
             await Promise.reject(e)
@@ -104,7 +102,6 @@ export class UDPServer {
         try {
             await UDPServerModule.stopServer(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - stop - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger?.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - stop - error`, e)
             await Promise.reject(e)

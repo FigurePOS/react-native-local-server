@@ -63,7 +63,6 @@ export class TCPClient {
             this.configuration = configuration
             await this.connect(configuration.connection)
             this.logger.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - start - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPClient [${this.getId()}] - start - error`, e)
             await Promise.reject(e)
@@ -79,7 +78,6 @@ export class TCPClient {
         try {
             await TCPClientModule.send(this.getId(), data)
             this.logger?.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - sendData - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger?.error(LoggerVerbosity.Low, `TCPClient [${this.getId()}] - sendData - error`, e)
             await Promise.reject(e)
@@ -94,7 +92,6 @@ export class TCPClient {
         try {
             await TCPClientModule.stopClient(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger?.log(LoggerVerbosity.Medium, `TCPClient [${this.getId()}] - stop - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger?.error(LoggerVerbosity.Low, `TCPClient [${this.getId()}] - stop - error`, e)
             await Promise.reject(e)

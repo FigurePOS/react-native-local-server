@@ -85,7 +85,6 @@ export class TCPServer {
                 this.config.discovery?.name ?? null,
             )
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - start - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - start - error`, e)
             return Promise.reject(e)
@@ -105,7 +104,6 @@ export class TCPServer {
         try {
             await TCPServerModule.send(this.getId(), connectionId, data)
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - sendData - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - sendData - error`, e)
             return Promise.reject(e)
@@ -124,7 +122,6 @@ export class TCPServer {
         try {
             await TCPServerModule.closeConnection(this.getId(), connectionId, reason ?? StopReasonEnum.Manual)
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - closeConnection - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - closeConnection - error`, e)
             return Promise.reject(e)
@@ -155,7 +152,6 @@ export class TCPServer {
         try {
             await TCPServerModule.stopServer(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - stop - success`)
-            await Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - stop - error`, e)
             return Promise.reject(e)
