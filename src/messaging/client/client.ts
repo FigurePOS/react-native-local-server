@@ -13,6 +13,7 @@ import {
     TCPClient,
     TCPClientConfiguration,
 } from "../../"
+import { ErrorWithMetadata } from "../../utils/errors"
 import { Logger, LoggerWrapper } from "../../utils/logger"
 import { log } from "../../utils/operators/log"
 import { PING_INTERVAL, PING_RETRY } from "../constants"
@@ -170,13 +171,13 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                 return fromMessagingClientMessageReceived<In>(this.clientId, this.logger).pipe(
                     handleBy(handler, deps),
                     tap((output) => this.handlerOutput$.next(output)),
-                    catchError((err) => {
+                    catchError((err: unknown) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingClient [${this.clientId}] fatal error in output$`,
                             {
                                 error: err,
-                                ...("getMetadata" in err ? { metadata: err.getMetadata() } : {}),
+                                ...(err instanceof ErrorWithMetadata ? { metadata: err.getMetadata() } : {}),
                             },
                         )
                         // Because this stream errored, we need to restart the processing.

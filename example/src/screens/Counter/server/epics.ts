@@ -54,7 +54,10 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
             }
             return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
                 mergeMap(() => []),
-                catchError((err) => [createActionCounterServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionCounterServerErrored(message)]
+                }),
             )
         }),
     )
@@ -91,7 +94,10 @@ const counterServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return CounterServer.stop().pipe(
                 mergeMap(() => []),
-                catchError((err) => [createActionCounterServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionCounterServerErrored(message)]
+                }),
             )
         }),
     )
@@ -102,7 +108,10 @@ const counterServerRestartRequested: Epic = (action$: Observable<StateAction>) =
         switchMap(() => {
             return CounterServer.restart().pipe(
                 mergeMap(() => []),
-                catchError((err) => [createActionCounterServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionCounterServerErrored(message)]
+                }),
             )
         }),
     )
@@ -120,7 +129,10 @@ const counterServerCountChanged: Epic = (action$: Observable<StateAction>, state
                         switchMap(() => {
                             return []
                         }),
-                        catchError((err) => [createActionCounterServerErrored(err.message)]),
+                        catchError((err: unknown) => {
+                            const message = err instanceof Error ? err.message : String(err)
+                            return [createActionCounterServerErrored(message)]
+                        }),
                     )
                 }),
             )
@@ -133,7 +145,10 @@ const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return CounterServer.getLocalIpAddress().pipe(
                 switchMap((ip: Maybe<string>) => [createActionCounterServerIpAddressChanged(ip)]),
-                catchError((err) => [createActionCounterServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionCounterServerErrored(message)]
+                }),
             )
         }),
     )

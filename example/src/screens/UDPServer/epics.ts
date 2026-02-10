@@ -40,7 +40,10 @@ const bareUdpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
             }
             return defer(() => BareUDPServer.start(serverConfig)).pipe(
                 map(() => createActionBareUdpServerStartSucceeded()),
-                catchError((err) => [createActionBareUdpServerStartFailed(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareUdpServerStartFailed(message)]
+                }),
             )
         }),
     )
@@ -63,7 +66,10 @@ const bareUdpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         switchMap(() => {
             return defer(() => BareUDPServer.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareUdpServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareUdpServerErrored(message)]
+                }),
             )
         }),
     )
@@ -84,7 +90,10 @@ const bareUdpServerDataSendRequestedEpic: Epic = (action$: Observable<StateActio
             const { host, port, data } = action.payload
             return defer(() => BareUDPServer.sendData(host, port, data)).pipe(
                 switchMap(() => [createActionBareUdpServerDataReceived(createMessageData("server", data))]),
-                catchError((err) => [createActionBareUdpServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareUdpServerErrored(message)]
+                }),
             )
         }),
     )
