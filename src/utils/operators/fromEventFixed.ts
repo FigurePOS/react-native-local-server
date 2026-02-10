@@ -3,7 +3,9 @@ import { Observable, Subscriber } from "rxjs"
 import { ErrorWithMetadata } from "../errors"
 
 // We use this because rxjs fromEvent calls deprecated method on event emitter
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fromEventFixed = <T>(eventEmitter: any, eventName: string): Observable<T> =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     new Observable((subscriber: Subscriber<any>) => {
         if (eventEmitter.addListener != null) {
             const subscription = eventEmitter.addListener(eventName, (event: unknown) => {
