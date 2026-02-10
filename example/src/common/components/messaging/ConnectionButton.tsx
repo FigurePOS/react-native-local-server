@@ -23,7 +23,7 @@ export const ConnectionButton = (props: Props) => {
                 label={label}
                 disabled={isActive}
                 style={styles.button}
-                labelStyle={isActive ? styles.labelActive : null}
+                labelStyle={isActive ? styles.labelActive : undefined}
                 onPress={() => props.onPress(id)}
             />
             {isActive ? (
