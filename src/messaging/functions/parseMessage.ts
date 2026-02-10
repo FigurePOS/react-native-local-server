@@ -1,15 +1,15 @@
 import { ErrorWithMetadata } from "../../utils/errors"
 import { DataObjectMessage, Message } from "../types"
 
-export const parseMessage = <B = any>(data: DataObjectMessage): Message<B> => {
+export const parseMessage = (data: DataObjectMessage): Message => {
     return data.message
 }
 
-export const parseClientMessage = <B = any>(data: DataObjectMessage): Message<B> => {
+export const parseClientMessage = (data: DataObjectMessage): Message => {
     return parseMessage(data)
 }
 
-export const parseServerMessage = <B = any>(data: DataObjectMessage): Message<B> => {
+export const parseServerMessage = (data: DataObjectMessage): Message => {
     if (data.connectionId == null) {
         throw new ErrorWithMetadata("parseServerMessage - connection id is missing")
     }
