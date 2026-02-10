@@ -1,6 +1,13 @@
 import { Epic, ofType } from "redux-observable"
+import { Observable } from "rxjs"
+import { catchError, mergeMap, switchMap } from "rxjs/operators"
+
+import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
+
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ServerConnectionState, ServerState } from "../../common/types"
 import { StateAction } from "../../types"
-import { catchError, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
+
 import {
     createActionMessagingServerConnectionStateChanged,
     createActionMessagingServerDataReceived,
@@ -11,14 +18,10 @@ import {
     MESSAGING_SERVER_START_REQUESTED,
     MESSAGING_SERVER_STOP_REQUESTED,
 } from "./actions"
-import { SampleMessagingServer } from "./localCommunication/server"
-import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingServerDependencies } from "./localCommunication/deps"
-import { ServerConnectionState, ServerState } from "../../common/types"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
-import { createMessageData } from "../../common/components/messaging/functions"
-import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
-import { Observable } from "rxjs"
+import { rootHandler } from "./localCommunication/rootHandler"
+import { SampleMessagingServer } from "./localCommunication/server"
 
 const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
@@ -33,8 +36,8 @@ const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =
                 port: port,
             }
             return SampleMessagingServer.start(config, rootHandler, SampleMessagingServerDependencies).pipe(
-                mergeMapTo([]),
-                catchError((err) => [createActionMessagingServerErrored(err)]),
+                mergeMap(() => []),
+                catchError((err) => [createActionMessagingServerErrored(err.message)]),
             )
         }),
     )
@@ -62,8 +65,9 @@ const messagingServerStatus: Epic = () =>
                     return [
                         createActionMessagingServerConnectionStateChanged(e.connectionId, ServerConnectionState.Closed),
                     ]
+                default:
+                    return []
             }
-            return []
         }),
     )
 
@@ -72,8 +76,8 @@ const messagingServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         ofType(MESSAGING_SERVER_STOP_REQUESTED),
         mergeMap(() => {
             return SampleMessagingServer.stop().pipe(
-                mergeMapTo([]),
-                catchError((err) => [createActionMessagingServerErrored(err)]),
+                mergeMap(() => []),
+                catchError((err) => [createActionMessagingServerErrored(err.message)]),
             )
         }),
     )

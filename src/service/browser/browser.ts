@@ -1,8 +1,10 @@
-import { ServiceBrowserConfiguration } from "./types"
-import { ServiceBrowserModule } from "./module"
 import { NativeEventEmitter } from "react-native"
-import { ServiceBrowserEventName } from "./nativeEvents"
+
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
+
+import { ServiceBrowserModule } from "./module"
+import { ServiceBrowserEventName } from "./nativeEvents"
+import { ServiceBrowserConfiguration } from "./types"
 
 const eventEmitter = new NativeEventEmitter(ServiceBrowserModule)
 
@@ -58,10 +60,9 @@ export class ServiceBrowser {
         try {
             await ServiceBrowserModule.createBrowser(this.getId(), this.config.type)
             this.logger.log(LoggerVerbosity.Medium, `ServiceBrowser [${this.getId()}] - start - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `ServiceBrowser [${this.getId()}] - start - error`, e)
-            return Promise.reject(e)
+            await Promise.reject(e)
         }
     }
 
@@ -73,10 +74,9 @@ export class ServiceBrowser {
         try {
             await ServiceBrowserModule.stopBrowser(this.getId())
             this.logger.log(LoggerVerbosity.Medium, `ServiceBrowser [${this.getId()}] - stop - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `ServiceBrowser [${this.getId()}] - stop - error`, e)
-            return Promise.reject(e)
+            await Promise.reject(e)
         }
     }
 }

@@ -1,8 +1,9 @@
 import React from "react"
 import { StyleSheet, View } from "react-native"
+
+import { Colors } from "../../constants"
 import { ServerConnection } from "../../types"
 import { Button } from "../form/button"
-import { Colors } from "../../constants"
 
 type Props = {
     connection: ServerConnection

@@ -1,6 +1,7 @@
 import { Observable } from "rxjs"
-import { UDPServer, UDPServerEventName, UDPServerNativeEvent } from "../"
 import { filter } from "rxjs/operators"
+
+import { UDPServer, UDPServerEventName, UDPServerNativeEvent } from "../"
 import { fromEventFixed } from "../../../utils/operators/fromEventFixed"
 
 export const fromUDPServerEvent = <T extends UDPServerEventName>(

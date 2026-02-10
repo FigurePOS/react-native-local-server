@@ -1,11 +1,13 @@
 import { Observable } from "rxjs"
 import { map, scan } from "rxjs/operators"
+
 import {
     mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate,
     reduceMessagingClientServiceSearchEventUpdate,
 } from "../functions"
-import { fromMessagingClientServiceBrowserEvent } from "./fromMessagingClientServiceBrowserEvent"
 import { MessagingClientServiceSearchEvent, MessagingClientServiceSearchUpdate } from "../types"
+
+import { fromMessagingClientServiceBrowserEvent } from "./fromMessagingClientServiceBrowserEvent"
 
 export const fromMessagingClientServiceSearchEvent = (
     clientId: string,

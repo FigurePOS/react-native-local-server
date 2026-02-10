@@ -1,6 +1,8 @@
-import { Maybe, StateAction } from "../../types"
-import { ServerState } from "../../common/types"
 import { Reducer } from "redux"
+
+import { ServerState } from "../../common/types"
+import { Maybe, StateAction } from "../../types"
+
 import {
     SERVICE_BROWSER_ERRORED,
     SERVICE_BROWSER_SERVICE_FOUND,
@@ -26,6 +28,7 @@ export const createDefaultState = (): ServiceBrowserStateObject => ({
 })
 
 export const ServiceBrowserReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: ServiceBrowserStateObject = createDefaultState(),
     action: StateAction,
 ): ServiceBrowserStateObject => {

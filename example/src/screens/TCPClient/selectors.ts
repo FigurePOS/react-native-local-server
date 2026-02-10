@@ -1,8 +1,9 @@
-import { StateObject } from "../../rootReducer"
-import { TCPClientStateObject } from "./reducer"
-import { Maybe } from "../../types"
 import { MessageData } from "../../common/components/messaging/types"
 import { ClientState } from "../../common/types"
+import { StateObject } from "../../rootReducer"
+import { Maybe } from "../../types"
+
+import { TCPClientStateObject } from "./reducer"
 
 export const getBareTCPClientStateObject = (state: StateObject): TCPClientStateObject => state.TCPClient
 

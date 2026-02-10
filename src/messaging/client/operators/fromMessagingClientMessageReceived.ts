@@ -1,13 +1,15 @@
 import { Observable } from "rxjs"
-import { Message } from "../../types"
 import { map, share } from "rxjs/operators"
-import { fromMessagingClientDataReceived } from "./"
-import { ofDataTypeMessage } from "../../operators/ofDataType"
+
+import { LoggerVerbosity, LoggerWrapper } from "../../../utils/logger"
+import { log } from "../../../utils/operators/log"
+import { getMessageId } from "../../functions/getMessageId"
 import { parseClientMessage } from "../../functions/parseMessage"
 import { deduplicateBy } from "../../operators/deduplicateBy"
-import { getMessageId } from "../../functions/getMessageId"
-import { log } from "../../../utils/operators/log"
-import { LoggerVerbosity, LoggerWrapper } from "../../../utils/logger"
+import { ofDataTypeMessage } from "../../operators/ofDataType"
+import { Message } from "../../types"
+
+import { fromMessagingClientDataReceived } from "./"
 
 export const fromMessagingClientMessageReceived = <Body>(
     clientId: string,

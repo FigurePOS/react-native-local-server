@@ -1,4 +1,5 @@
 import { Observable, Subscriber } from "rxjs"
+
 import { ErrorWithMetadata } from "../errors"
 
 // We use this because rxjs fromEvent calls deprecated method on event emitter

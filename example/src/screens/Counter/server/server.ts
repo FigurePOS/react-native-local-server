@@ -1,8 +1,9 @@
 import { MessagingServer } from "@figuredev/react-native-local-server"
+
 import { ConsoleLogger } from "../../../common/ConsoleLogger"
-import { CounterMessage } from "../common/messages"
 import { StateAction } from "../../../types"
 import { SampleMessagingClientDependenciesType } from "../../MessagingClient/localCommunication/deps"
+import { CounterMessage } from "../common/messages"
 
 export const CounterServer = new MessagingServer<
     CounterMessage,

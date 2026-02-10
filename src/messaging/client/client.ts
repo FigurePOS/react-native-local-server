@@ -1,4 +1,6 @@
 import { concat, defer, EMPTY, from, Observable, of, Subject, Subscription, throwError, TimeoutError } from "rxjs"
+import { catchError, concatMap, map, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
+
 import {
     LoggerVerbosity,
     MESSAGING_CLIENT_DEFAULT_TIMEOUT,
@@ -11,9 +13,16 @@ import {
     TCPClient,
     TCPClientConfiguration,
 } from "../../"
-import { catchError, concatMap, mapTo, share, switchMap, tap, timeout, withLatestFrom } from "rxjs/operators"
-import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
+import { Logger, LoggerWrapper } from "../../utils/logger"
+import { log } from "../../utils/operators/log"
+import { PING_INTERVAL, PING_RETRY } from "../constants"
+import { composeMessageObject } from "../functions"
+import { composeDataMessageObject } from "../functions/composeDataMessageObject"
+import { serializeDataObject } from "../functions/serializeDataObject"
 import { handleBy } from "../operators/handleBy"
+import { DataObject, DataObjectType, MessageHandler, MessageSource } from "../types"
+
+import { composeTCPClientConfiguration, getBrowserIdFromMessagingClientId } from "./functions"
 import {
     fromMessagingClientDataReceived,
     fromMessagingClientMessageReceived,
@@ -22,15 +31,8 @@ import {
     pingMessagingClient,
     waitForMessagingClientStopped,
 } from "./operators"
-import { MessagingClientConfiguration } from "./types"
-import { composeDataMessageObject } from "../functions/composeDataMessageObject"
-import { serializeDataObject } from "../functions/serializeDataObject"
-import { composeMessageObject } from "../functions"
-import { log } from "../../utils/operators/log"
-import { PING_INTERVAL, PING_RETRY } from "../constants"
-import { Logger, LoggerWrapper } from "../../utils/logger"
-import { composeTCPClientConfiguration, getBrowserIdFromMessagingClientId } from "./functions"
 import { fromMessagingClientServiceSearchEvent } from "./operators/fromMessagingClientServiceSearchEvent"
+import { MessagingClientConfiguration } from "./types"
 
 export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
     private readonly clientId: string
@@ -96,7 +98,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - startServiceSearch`)
         if (!this.discoveryGroup) {
             this.logger.error(LoggerVerbosity.Low, `MessagingClient [${this.clientId}] - missing discovery group`)
-            return throwError("No discovery group provided")
+            return throwError(() => new Error("No discovery group provided"))
         }
         const config: ServiceBrowserConfiguration = {
             type: `_${this.discoveryGroup}._tcp`,
@@ -122,7 +124,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         this.logger.log(LoggerVerbosity.Medium, `MessagingClient [${this.clientId}] - restartServiceSearch`)
         return concat(
             defer(() => this.stopServiceSearch()).pipe(
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Medium,
                         `MessagingClient [${this.clientId}] - restartServiceSearch error when stopping service search`,
@@ -159,7 +161,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         )
         if (!tcpConfig) {
             this.logger.error(LoggerVerbosity.Low, `MessagingClient [${this.clientId}] - missing tcp configuration`)
-            return throwError("Failed to prepare tcp configuration")
+            return throwError(() => new Error("Failed to prepare tcp configuration"))
         }
 
         const output$: Observable<HandlerOutput> = this.handler$.pipe(
@@ -197,15 +199,15 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
                     this.dataOutput$,
                     this.configuration?.ping?.timeout ?? PING_INTERVAL * PING_RETRY,
                 ).pipe(
-                    catchError((err) => {
+                    catchError((err: unknown) => {
                         this.logger.error(
                             LoggerVerbosity.Low,
                             `MessagingClient [${this.clientId}] - ping timed out`,
                             err,
                         )
                         return defer(() => this.tcpClient.stop(MessagingStoppedReason.PingTimedOut)).pipe(
-                            mapTo(false),
-                            catchError((e) => {
+                            map(() => false),
+                            catchError((e: unknown) => {
                                 this.logger.error(
                                     LoggerVerbosity.Low,
                                     `MessagingClient [${this.clientId}] - stop client failed - error`,
@@ -219,8 +221,11 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             }),
         )
 
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.mainSubscription = output$.subscribe()
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.dataSubscription = data$.subscribe()
+        // eslint-disable-next-line @smarttools/rxjs/no-ignored-subscribe
         this.pingSubscription = ping$.subscribe()
 
         this.dep$.next(dependencies)
@@ -228,12 +233,12 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
 
         return defer(() => this.tcpClient.start(tcpConfig)).pipe(
             timeout(this.configuration?.connection.timeout ?? MESSAGING_CLIENT_DEFAULT_TIMEOUT),
-            catchError((err) => {
+            catchError((err: unknown) => {
                 if (!(err instanceof TimeoutError)) {
-                    return throwError(err)
+                    return throwError(() => err)
                 }
                 return defer(() => this.tcpClient.stop(MessagingStoppedReason.ConnectionTimedOut)).pipe(
-                    switchMap(() => throwError(err)),
+                    switchMap(() => throwError(() => err)),
                 )
             }),
         )
@@ -272,7 +277,7 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
         return concat(
             defer(() => this.tcpClient.stop(MessagingStoppedReason.Restart)).pipe(
                 waitForMessagingClientStopped(this.clientId, this.logger),
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingClient [${this.clientId}] - restart - failed to stop`,
@@ -283,20 +288,20 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             ),
             defer(() => {
                 if (this.configuration == null) {
-                    return throwError(`MessagingClient [${this.clientId}] - restart - no config`)
+                    return throwError(() => new Error(`MessagingClient [${this.clientId}] - restart - no config`))
                 }
                 if (this.startData == null) {
-                    return throwError(`MessagingClient [${this.clientId}] - restart - no start data`)
+                    return throwError(() => new Error(`MessagingClient [${this.clientId}] - restart - no start data`))
                 }
                 return this.start(this.configuration, ...this.startData)
             }).pipe(
-                catchError((err) => {
+                catchError((err: unknown) => {
                     this.logger.error(
                         LoggerVerbosity.Low,
                         `MessagingClient [${this.clientId}] - restart - failed to start`,
                         err,
                     )
-                    return throwError(err)
+                    return throwError(() => err)
                 }),
             ),
         )
@@ -377,8 +382,8 @@ export class MessagingClient<In, Out = In, Deps = any, HandlerOutput = any> {
             const serialized = serializeDataObject(data)
             return from(this.tcpClient.sendData(serialized)).pipe(
                 timeout(t),
-                mapTo(true),
-                catchError((err) => {
+                map(() => true),
+                catchError((err: unknown) => {
                     this.error$.next(err)
                     return of(false)
                 }),

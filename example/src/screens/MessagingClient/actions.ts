@@ -1,5 +1,5 @@
-import { ClientState } from "../../common/types"
 import { MessageData } from "../../common/components/messaging/types"
+import { ClientState } from "../../common/types"
 
 export const MESSAGING_CLIENT_START_REQUESTED = "MESSAGING_CLIENT_START_REQUESTED"
 export const createActionMessagingClientStartRequested = (host: string, port: string) => ({

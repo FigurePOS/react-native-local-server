@@ -58,17 +58,16 @@ export const getBrowserIdFromMessagingClientId = (clientId: string): string => `
 export const mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate = (
     event: ServiceBrowserNativeEvent,
 ): MessagingClientServiceSearchEventUpdate => {
-    const service = mapServiceBrowserEventToMessagingService(event)
     switch (event.type) {
         case ServiceBrowserEventName.ServiceFound:
             return {
                 type: MessagingClientServiceSearchUpdate.ServiceFound,
-                service: service!,
+                service: parseMessagingServiceInformation(event.name),
             }
         case ServiceBrowserEventName.ServiceLost:
             return {
                 type: MessagingClientServiceSearchUpdate.ServiceLost,
-                service: service!,
+                service: parseMessagingServiceInformation(event.name),
             }
         case ServiceBrowserEventName.Started:
         case ServiceBrowserEventName.Stopped:
@@ -76,15 +75,6 @@ export const mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate = (
         default:
             return { type: MessagingClientServiceSearchUpdate.Unknown }
     }
-}
-
-export const mapServiceBrowserEventToMessagingService = (
-    event: ServiceBrowserNativeEvent,
-): MessagingClientServiceSearchResult | null => {
-    if (event.type === ServiceBrowserEventName.ServiceFound || event.type === ServiceBrowserEventName.ServiceLost) {
-        return parseMessagingServiceInformation(event.name)
-    }
-    return null
 }
 
 export const parseMessagingServiceInformation = (text: string): MessagingClientServiceSearchResult => {

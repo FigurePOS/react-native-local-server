@@ -1,8 +1,9 @@
-import { MessagingServerStateObject } from "./reducer"
-import { StateObject } from "../../rootReducer"
-import { ServerConnection, ServerState } from "../../common/types"
-import { Maybe } from "../../types"
 import { MessageData } from "../../common/components/messaging/types"
+import { ServerConnection, ServerState } from "../../common/types"
+import { StateObject } from "../../rootReducer"
+import { Maybe } from "../../types"
+
+import { MessagingServerStateObject } from "./reducer"
 
 export const getMessagingServerStateObject = (state: StateObject): MessagingServerStateObject => state.MessagingServer
 

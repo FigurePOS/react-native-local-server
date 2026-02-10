@@ -1,3 +1,7 @@
+import { TCPServerConfiguration, TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
+import { StopReason } from "../../utils/types"
+import { getShortServiceId } from "../functions/composeDataServiceInfoObject"
+
 import {
     MessagingServerConfiguration,
     MessagingServerConnectionStatusEvent,
@@ -5,9 +9,6 @@ import {
     MessagingServerStatusEvent,
     MessagingServerStatusEventName,
 } from "./types"
-import { TCPServerConfiguration, TCPServerEventName, TCPServerNativeEvent } from "../../tcp"
-import { StopReason } from "../../utils/types"
-import { getShortServiceId } from "../functions/composeDataServiceInfoObject"
 
 export const composeMessagingServerLifecycleStatusEvent = (
     type: MessagingServerLifecycleStatusEvent["type"],

@@ -1,9 +1,18 @@
 import { Epic, ofType, StateObservable } from "redux-observable"
+import { from, Observable } from "rxjs"
+import { catchError, concatMap, mergeMap, switchMap } from "rxjs/operators"
 import * as uuid from "uuid"
-import { Maybe, StateAction } from "../../../types"
-import { catchError, concatMap, mergeMap, mergeMapTo, switchMap } from "rxjs/operators"
+
 import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@figuredev/react-native-local-server"
+
+import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { ServerConnectionState, ServerState } from "../../../common/types"
+import { StateObject } from "../../../rootReducer"
+import { Maybe, StateAction } from "../../../types"
+import { CounterDependencies } from "../common/deps"
+import { createCounterMessageCountChanged } from "../common/messages"
+import { COUNTER_COUNT_CHANGED } from "../data/actionts"
+
 import {
     COUNTER_SERVER_RESTART_REQUESTED,
     COUNTER_SERVER_START_REQUESTED,
@@ -14,15 +23,9 @@ import {
     createActionCounterServerIpAddressChanged,
     createActionCounterServerStateChanged,
 } from "./actions"
-import { CounterServer } from "./server"
-import { CounterDependencies } from "../common/deps"
 import { rootHandler } from "./rootHandler"
-import { COUNTER_COUNT_CHANGED } from "../data/actionts"
-import { createCounterMessageCountChanged } from "../common/messages"
-import { StateObject } from "../../../rootReducer"
 import { getCounterServerReadyConnections, isCounterServerRunning } from "./selectors"
-import { from, Observable } from "rxjs"
-import { filterWithSelector } from "../../../common/operators/filterWithSelector"
+import { CounterServer } from "./server"
 
 const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
@@ -50,11 +53,10 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
                 },
             }
             return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
-                mergeMapTo([]),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                mergeMap(() => []),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
-        catchError((err) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerStatus: Epic = () =>
@@ -77,8 +79,9 @@ const counterServerStatus: Epic = () =>
                     return [
                         createActionCounterServerConnectionStateChanged(e.connectionId, ServerConnectionState.Closed),
                     ]
+                default:
+                    return []
             }
-            return []
         }),
     )
 
@@ -87,8 +90,8 @@ const counterServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         ofType(COUNTER_SERVER_STOP_REQUESTED),
         switchMap(() => {
             return CounterServer.stop().pipe(
-                mergeMapTo([]),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                mergeMap(() => []),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
     )
@@ -98,8 +101,8 @@ const counterServerRestartRequested: Epic = (action$: Observable<StateAction>) =
         ofType(COUNTER_SERVER_RESTART_REQUESTED),
         switchMap(() => {
             return CounterServer.restart().pipe(
-                mergeMapTo([]),
-                catchError((err) => [createActionCounterServerErrored(err)]),
+                mergeMap(() => []),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
     )
@@ -117,11 +120,11 @@ const counterServerCountChanged: Epic = (action$: Observable<StateAction>, state
                         switchMap(() => {
                             return []
                         }),
+                        catchError((err) => [createActionCounterServerErrored(err.message)]),
                     )
                 }),
             )
         }),
-        catchError((err) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
@@ -130,9 +133,9 @@ const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return CounterServer.getLocalIpAddress().pipe(
                 switchMap((ip: Maybe<string>) => [createActionCounterServerIpAddressChanged(ip)]),
+                catchError((err) => [createActionCounterServerErrored(err.message)]),
             )
         }),
-        catchError((err) => [createActionCounterServerErrored(err)]),
     )
 
 const counterServerHandlersOutput = () => CounterServer.getHandlerOutput$()

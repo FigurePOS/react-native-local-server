@@ -1,5 +1,5 @@
-import { DataObjectMessage, Message } from "../types"
 import { ErrorWithMetadata } from "../../utils/errors"
+import { DataObjectMessage, Message } from "../types"
 
 export const parseMessage = <B = any>(data: DataObjectMessage): Message<B> => {
     return data.message

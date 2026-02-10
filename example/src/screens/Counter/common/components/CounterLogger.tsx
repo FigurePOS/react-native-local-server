@@ -1,7 +1,8 @@
 import React from "react"
-import { createActionCounterLogClearRequested } from "../../data/actionts"
-import { LoggerView } from "../../../../common/components/loggerView/loggerView"
 import { useDispatch } from "react-redux"
+
+import { LoggerView } from "../../../../common/components/loggerView/loggerView"
+import { createActionCounterLogClearRequested } from "../../data/actionts"
 
 export const CounterLogger = () => {
     const dispatch = useDispatch()

@@ -1,5 +1,11 @@
-import { Maybe, StateAction } from "../../types"
+import { prepend } from "ramda"
 import { Reducer } from "redux"
+
+import { PhoneCall } from "@figuredev/react-native-local-server"
+
+import { ServerState } from "../../common/types"
+import { Maybe, StateAction } from "../../types"
+
 import {
     CALLER_ID_SERVER_CALL_DETECTED,
     CALLER_ID_SERVER_ERRORED,
@@ -9,9 +15,6 @@ import {
     CALLER_ID_SERVER_STOP_REQUESTED,
     CALLER_ID_SERVER_STOPPED,
 } from "./actions"
-import { ServerState } from "../../common/types"
-import { PhoneCall } from "@figuredev/react-native-local-server"
-import { prepend } from "ramda"
 
 export type CallerIDServerStateObject = {
     state: ServerState
@@ -26,6 +29,7 @@ export const createDefaultState = (): CallerIDServerStateObject => ({
 })
 
 export const CallerIdServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: CallerIDServerStateObject = createDefaultState(),
     action: StateAction,
 ): CallerIDServerStateObject => {

@@ -1,9 +1,10 @@
 import { merge, Observable } from "rxjs"
-import { TCPServer } from "../../../"
 import { map } from "rxjs/operators"
+
+import { TCPServer } from "../../../"
+import { fromTCPServerEvent } from "../../../tcp/server/operators"
 import { composeMessagingServerStatusEvent } from "../functions"
 import { MessagingServerStatusEvent } from "../types"
-import { fromTCPServerEvent } from "../../../tcp/server/operators"
 
 export const fromMessagingServerStatusEvent = (serverId: string): Observable<MessagingServerStatusEvent> =>
     merge(

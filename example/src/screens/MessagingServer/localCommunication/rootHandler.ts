@@ -1,9 +1,11 @@
-import { LocalCommunicationMessage, LocalCommunicationMessageType } from "./messages"
 import { switchMap } from "rxjs/operators"
-import { SampleMessagingServerDependenciesType } from "./deps"
-import { createActionMessagingServerDataReceived } from "../actions"
-import { createMessageData } from "../../../common/components/messaging/functions"
 import { MessageHandler } from "src/messaging"
+
+import { createMessageData } from "../../../common/components/messaging/functions"
+import { createActionMessagingServerDataReceived } from "../actions"
+
+import { SampleMessagingServerDependenciesType } from "./deps"
+import { LocalCommunicationMessage, LocalCommunicationMessageType } from "./messages"
 
 export const rootHandler: MessageHandler<LocalCommunicationMessage, SampleMessagingServerDependenciesType> = (
     message$,

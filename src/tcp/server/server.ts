@@ -1,9 +1,11 @@
-import type { TCPServerConfiguration } from "./types"
-import { TCPServerModule } from "./module"
 import { NativeEventEmitter } from "react-native"
-import { TCPServerEventName } from "./nativeEvents"
-import { StopReason, StopReasonEnum } from "../../utils/types"
+
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
+import { StopReason, StopReasonEnum } from "../../utils/types"
+
+import { TCPServerModule } from "./module"
+import { TCPServerEventName } from "./nativeEvents"
+import type { TCPServerConfiguration } from "./types"
 
 const eventEmitter = new NativeEventEmitter(TCPServerModule)
 
@@ -60,7 +62,7 @@ export class TCPServer {
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - getLocalIpAddress - success`, {
                 ip: ip,
             })
-            return Promise.resolve(ip)
+            return ip
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - getLocalIpAddress - error`, e)
             return Promise.reject(e)
@@ -83,7 +85,6 @@ export class TCPServer {
                 this.config.discovery?.name ?? null,
             )
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - start - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - start - error`, e)
             return Promise.reject(e)
@@ -103,7 +104,6 @@ export class TCPServer {
         try {
             await TCPServerModule.send(this.getId(), connectionId, data)
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - sendData - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - sendData - error`, e)
             return Promise.reject(e)
@@ -122,7 +122,6 @@ export class TCPServer {
         try {
             await TCPServerModule.closeConnection(this.getId(), connectionId, reason ?? StopReasonEnum.Manual)
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - closeConnection - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - closeConnection - error`, e)
             return Promise.reject(e)
@@ -137,7 +136,7 @@ export class TCPServer {
         try {
             const result: string[] = await TCPServerModule.getConnectionIds(this.getId())
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - getConnectionIds - success`, result)
-            return Promise.resolve(result)
+            return result
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - getConnectionIds - error`, e)
             return Promise.reject(e)
@@ -153,7 +152,6 @@ export class TCPServer {
         try {
             await TCPServerModule.stopServer(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger.log(LoggerVerbosity.Medium, `TCPServer [${this.getId()}] - stop - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `TCPServer [${this.getId()}] - stop - error`, e)
             return Promise.reject(e)

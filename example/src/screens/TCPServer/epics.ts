@@ -1,5 +1,23 @@
 import { Epic, ofType } from "redux-observable"
+import { defer, Observable } from "rxjs"
+import { catchError, filter, map, switchMap } from "rxjs/operators"
+
+import {
+    TCPServer,
+    TCPServerConfiguration,
+    TCPServerConnectionAcceptedNativeEvent,
+    TCPServerConnectionClosedNativeEvent,
+    TCPServerConnectionReadyNativeEvent,
+    TCPServerDataReceivedNativeEvent,
+    TCPServerReadyNativeEvent,
+    TCPServerStoppedNativeEvent,
+} from "@figuredev/react-native-local-server"
+
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ServerConnectionState } from "../../common/types"
+import { fromEventFixed } from "../../common/utils"
 import { StateAction } from "../../types"
+
 import {
     BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED,
     BARE_TCP_SERVER_DATA_SEND_REQUESTED,
@@ -13,22 +31,7 @@ import {
     createActionBareTcpServerStartSucceeded,
     createActionBareTcpServerStopped,
 } from "./actions"
-import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
-import { defer, Observable } from "rxjs"
 import { BareTCPServer } from "./network"
-import {
-    TCPServer,
-    TCPServerConfiguration,
-    TCPServerConnectionAcceptedNativeEvent,
-    TCPServerConnectionClosedNativeEvent,
-    TCPServerConnectionReadyNativeEvent,
-    TCPServerDataReceivedNativeEvent,
-    TCPServerReadyNativeEvent,
-    TCPServerStoppedNativeEvent,
-} from "@figuredev/react-native-local-server"
-import { fromEventFixed } from "../../common/utils"
-import { createMessageData } from "../../common/components/messaging/functions"
-import { ServerConnectionState } from "../../common/types"
 
 const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
@@ -44,8 +47,8 @@ const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
                 port: port.length === 0 ? null : parsedPort,
             }
             return defer(() => BareTCPServer.start(serverConfig)).pipe(
-                mapTo(createActionBareTcpServerStartSucceeded()),
-                catchError((err) => [createActionBareTcpServerStartFailed(err)]),
+                map(() => createActionBareTcpServerStartSucceeded()),
+                catchError((err) => [createActionBareTcpServerStartFailed(err.message)]),
             )
         }),
     )
@@ -59,7 +62,7 @@ const bareTcpServerReadyEpic: Epic = () =>
 const bareTcpServerStoppedEpic: Epic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.Stopped).pipe(
         filter((event: TCPServerStoppedNativeEvent) => event.serverId === BareTCPServer.getId()),
-        mapTo(createActionBareTcpServerStopped(null)),
+        map(() => createActionBareTcpServerStopped(null)),
     )
 
 const bareTcpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
@@ -68,7 +71,7 @@ const bareTcpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         switchMap(() => {
             return defer(() => BareTCPServer.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpServerErrored(err)]),
+                catchError((err) => [createActionBareTcpServerErrored(err.message)]),
             )
         }),
     )
@@ -115,7 +118,7 @@ const bareTcpServerCloseConnectionRequested: Epic = (action$: Observable<StateAc
             const connectionId = action.payload.connectionId
             return defer(() => BareTCPServer.closeConnection(connectionId)).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpServerErrored(err)]),
+                catchError((err) => [createActionBareTcpServerErrored(err.message)]),
             )
         }),
     )
@@ -130,7 +133,7 @@ const bareTcpServerDataSendRequestedEpic: Epic = (action$: Observable<StateActio
                 switchMap(() => [
                     createActionBareTcpServerConnectionNewData(connectionId, createMessageData("server", data)),
                 ]),
-                catchError((err) => [createActionBareTcpServerErrored(err)]),
+                catchError((err) => [createActionBareTcpServerErrored(err.message)]),
             )
         }),
     )

@@ -1,9 +1,11 @@
-import * as uuid from "uuid"
 import { defer, interval, merge, Observable, of, SchedulerLike, Subject, throwError } from "rxjs"
-import { catchError, mapTo, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
-import { ofMessagingServerConnectionClosed, ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
-import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../types"
+import { catchError, map, mergeMap, scan, take, takeUntil, timeout } from "rxjs/operators"
+import * as uuid from "uuid"
+
 import { composeDataObjectPing, DataObject } from "../../types"
+import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../types"
+
+import { ofMessagingServerConnectionClosed, ofMessagingServerStatusEvent } from "./ofMessagingServerStatusEvent"
 
 export const pingMessagingServerConnection = (
     connectionId: string,
@@ -23,7 +25,7 @@ export const pingMessagingServerConnection = (
                 return dataInput$.pipe(
                     take(1),
                     timeout(pingTimeout, scheduler),
-                    mapTo(true),
+                    map(() => true),
                     catchError(() => {
                         return of(false)
                     }),
@@ -44,7 +46,7 @@ export const pingMessagingServerConnection = (
         ),
         mergeMap(([failedCount, last]: [number, boolean]) => {
             if (failedCount >= pingRetry) {
-                return throwError(`Ping failed ${failedCount} times`)
+                return throwError(() => new Error(`Ping failed ${failedCount} times`))
             }
             return of(last)
         }),

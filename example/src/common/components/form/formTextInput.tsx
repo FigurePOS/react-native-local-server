@@ -1,8 +1,10 @@
 import React from "react"
-import { StyleSheet, TextInputProps, TextInput, View } from "react-native"
+import { StyleSheet, TextInput, TextInputProps, View } from "react-native"
+
 import { Colors, FontSize } from "../../constants"
-import { FormComponentProps } from "./types"
+
 import { FormLabel } from "./formLabel"
+import { FormComponentProps } from "./types"
 
 type Props = FormComponentProps<TextInputProps>
 
@@ -26,11 +28,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginVertical: FontSize.ExtraExtraSmall,
         marginRight: FontSize.SmallMedium,
-    },
-    label: {
-        fontSize: FontSize.Medium,
-        // padding: FontSize.Small,
-        color: Colors.Black,
     },
     input: {
         flex: 1,

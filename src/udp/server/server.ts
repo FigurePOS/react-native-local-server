@@ -1,9 +1,11 @@
 import { NativeEventEmitter } from "react-native"
+
+import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 import { StopReason, StopReasonEnum } from "../../utils/types"
+
 import { UDPServerModule } from "./module"
 import { UDPServerEventName } from "./nativeEvents"
 import { UDPServerConfiguration } from "./types"
-import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 
 const eventEmitter = new NativeEventEmitter(UDPServerModule)
 
@@ -64,10 +66,9 @@ export class UDPServer {
                 this.config.numberOfDroppedBytesFromMsgStart ?? 0,
             )
             this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - start - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - start - error`, e)
-            return Promise.reject(e)
+            await Promise.reject(e)
         }
     }
 
@@ -86,10 +87,9 @@ export class UDPServer {
         try {
             await UDPServerModule.send(host, port, data)
             this.logger?.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - sendData - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger?.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - sendData - error`, e)
-            return Promise.reject(e)
+            await Promise.reject(e)
         }
     }
 
@@ -102,10 +102,9 @@ export class UDPServer {
         try {
             await UDPServerModule.stopServer(this.getId(), reason ?? StopReasonEnum.Manual)
             this.logger.log(LoggerVerbosity.Medium, `UDPServer [${this.getId()}] - stop - success`)
-            return Promise.resolve()
         } catch (e) {
             this.logger?.error(LoggerVerbosity.Low, `UDPServer [${this.getId()}] - stop - error`, e)
-            return Promise.reject(e)
+            await Promise.reject(e)
         }
     }
 }

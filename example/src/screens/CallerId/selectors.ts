@@ -1,8 +1,10 @@
-import { StateObject } from "../../rootReducer"
-import { CallerIDServerStateObject } from "./reducer"
-import { Maybe } from "../../types"
-import { ServerState } from "../../common/types"
 import { PhoneCall } from "@figuredev/react-native-local-server"
+
+import { ServerState } from "../../common/types"
+import { StateObject } from "../../rootReducer"
+import { Maybe } from "../../types"
+
+import { CallerIDServerStateObject } from "./reducer"
 
 export const getCallerIDServerStateObject = (state: StateObject): CallerIDServerStateObject => state.CallerID
 

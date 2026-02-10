@@ -1,15 +1,16 @@
 import { combineEpics, Epic, StateObservable } from "redux-observable"
-import { StateAction } from "./types"
-import { StateObject } from "./rootReducer"
-import TCPServerEpics from "./screens/TCPServer/epics"
-import TCPClientEpics from "./screens/TCPClient/epics"
-import UDPServerEpics from "./screens/UDPServer/epics"
-import MessagingServerEpics from "./screens/MessagingServer/epics"
-import MessagingClientEpics from "./screens/MessagingClient/epics"
-import CounterEpics from "./screens/Counter/epics"
-import CallerIdEpics from "./screens/CallerId/epics"
-import ServiceBrowserEpics from "./screens/ServiceBrowser/epics"
 import { Observable } from "rxjs"
+
+import { StateObject } from "./rootReducer"
+import CallerIdEpics from "./screens/CallerId/epics"
+import CounterEpics from "./screens/Counter/epics"
+import MessagingClientEpics from "./screens/MessagingClient/epics"
+import MessagingServerEpics from "./screens/MessagingServer/epics"
+import ServiceBrowserEpics from "./screens/ServiceBrowser/epics"
+import TCPClientEpics from "./screens/TCPClient/epics"
+import TCPServerEpics from "./screens/TCPServer/epics"
+import UDPServerEpics from "./screens/UDPServer/epics"
+import { StateAction } from "./types"
 
 const epics: Epic[] = [
     ...TCPServerEpics,

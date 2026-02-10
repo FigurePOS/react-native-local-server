@@ -1,6 +1,7 @@
 import { MessagingServer } from "@figuredev/react-native-local-server"
-import { LocalCommunicationMessage } from "./messages"
+
 import { SampleMessagingServerDependenciesType } from "./deps"
+import { LocalCommunicationMessage } from "./messages"
 
 export const SampleMessagingServer = new MessagingServer<
     LocalCommunicationMessage,

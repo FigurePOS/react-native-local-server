@@ -1,5 +1,6 @@
-import { CallerIdServerStatusEvent, CallerIdServerStatusEventName } from "./types"
 import { UDPServer, UDPServerNativeEvent } from "../../udp"
+
+import { CallerIdServerStatusEvent, CallerIdServerStatusEventName } from "./types"
 
 export const composeCallerIdServerStatusEvent = (nativeEvent: UDPServerNativeEvent): CallerIdServerStatusEvent => {
     switch (nativeEvent.type) {

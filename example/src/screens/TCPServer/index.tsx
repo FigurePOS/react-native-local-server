@@ -1,9 +1,11 @@
 import React from "react"
-import { View, StyleSheet } from "react-native"
-import { TCPServerConfiguration } from "./components/TCPServerConfiguration"
+import { StyleSheet, View } from "react-native"
+
 import { HorizontalLine } from "../../common/components/horizontalLine"
-import { TCPServerConnections } from "./components/TCPServerConnections"
+
 import { TCPServerActiveConnection } from "./components/TCPServerActiveConnection"
+import { TCPServerConfiguration } from "./components/TCPServerConfiguration"
+import { TCPServerConnections } from "./components/TCPServerConnections"
 
 export const TCPServerScreen = () => {
     return (

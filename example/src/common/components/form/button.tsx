@@ -1,7 +1,9 @@
 import React from "react"
-import { TouchableOpacity, StyleSheet, Text, TouchableOpacityProps } from "react-native"
-import { FormComponentProps } from "./types"
+import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from "react-native"
+
 import { Colors, FontSize } from "../../constants"
+
+import { FormComponentProps } from "./types"
 
 type Props = FormComponentProps<TouchableOpacityProps>
 

@@ -1,7 +1,9 @@
 import { Observable, of, SchedulerLike, Subject, throwError, TimeoutError } from "rxjs"
 import { catchError, mergeMap, observeOn, takeUntil, timeout } from "rxjs/operators"
-import { MessagingClientStatusEvent, MessagingClientStatusEventName } from "../types"
+
 import { DataObject, DataObjectType } from "../../types"
+import { MessagingClientStatusEvent, MessagingClientStatusEventName } from "../types"
+
 import { ofMessagingClientStatusEvent } from "./"
 
 export const pingMessagingClient = (
@@ -14,12 +16,12 @@ export const pingMessagingClient = (
     return dataInput$.pipe(
         takeUntil(statusEvent$.pipe(ofMessagingClientStatusEvent(MessagingClientStatusEventName.Stopped))),
         timeout(pingTimeout, scheduler),
-        catchError((err) => {
+        catchError((err: unknown) => {
             if (err instanceof TimeoutError) {
                 if (scheduler) {
-                    return throwError(() => "Server ping timed out").pipe(observeOn(scheduler))
+                    return throwError(() => new Error("Server ping timed out")).pipe(observeOn(scheduler))
                 }
-                return throwError(() => "Server ping timed out")
+                return throwError(() => new Error("Server ping timed out"))
             }
             return throwError(() => err)
         }),

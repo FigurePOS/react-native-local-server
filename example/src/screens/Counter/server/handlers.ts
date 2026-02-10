@@ -1,11 +1,14 @@
-import { MessageHandler } from "@figuredev/react-native-local-server"
-import { SampleMessagingClientDependenciesType } from "../../MessagingClient/localCommunication/deps"
 import { switchMap } from "rxjs/operators"
+
+import { MessageHandler } from "@figuredev/react-native-local-server"
+
+import { StateAction } from "../../../types"
+import { SampleMessagingClientDependenciesType } from "../../MessagingClient/localCommunication/deps"
 import { CounterMessage, CounterMessageType, createCounterMessageCountChanged } from "../common/messages"
 import { createActionCounterCountReset } from "../data/actionts"
 import { getCounterCount } from "../data/selectors"
+
 import { CounterServer } from "./server"
-import { StateAction } from "../../../types"
 
 export const counterResetRequestedHandler: MessageHandler<
     CounterMessage,
@@ -30,7 +33,9 @@ export const counterRequestedHandler: MessageHandler<
         switchMap((message) => {
             if (message.body.type === CounterMessageType.CountRequested) {
                 const count = getCounterCount(deps.getState())
-                CounterServer.send(createCounterMessageCountChanged(count), message.source.connectionId)
+                return CounterServer.send(createCounterMessageCountChanged(count), message.source.connectionId).pipe(
+                    switchMap(() => []),
+                )
             }
             return []
         }),

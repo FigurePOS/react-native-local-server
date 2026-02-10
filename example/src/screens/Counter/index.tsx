@@ -1,9 +1,11 @@
 import React from "react"
 import { StyleSheet, View } from "react-native"
-import { CounterConfiguration } from "./common/components/CounterConfiguration"
+
 import { HorizontalLine } from "../../common/components/horizontalLine"
-import { CounterView } from "./common/components/CounterView"
+
+import { CounterConfiguration } from "./common/components/CounterConfiguration"
 import { CounterLogger } from "./common/components/CounterLogger"
+import { CounterView } from "./common/components/CounterView"
 
 export const CounterScreen = () => {
     return (

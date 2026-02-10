@@ -1,8 +1,10 @@
 import React, { PropsWithChildren } from "react"
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native"
-import { MessageData } from "./types"
-import { MessageRow } from "./MessageRow"
+
 import { HorizontalLine } from "../horizontalLine"
+
+import { MessageRow } from "./MessageRow"
+import { MessageData } from "./types"
 
 type Props = PropsWithChildren<{
     data: MessageData[]

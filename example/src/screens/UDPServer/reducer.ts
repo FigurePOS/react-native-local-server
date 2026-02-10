@@ -1,5 +1,10 @@
-import { Maybe, StateAction } from "../../types"
+import { prepend } from "ramda"
 import { Reducer } from "redux"
+
+import { MessageData } from "../../common/components/messaging/types"
+import { ServerState } from "../../common/types"
+import { Maybe, StateAction } from "../../types"
+
 import {
     BARE_UDP_SERVER_DATA_RECEIVED,
     BARE_UDP_SERVER_ERRORED,
@@ -9,9 +14,6 @@ import {
     BARE_UDP_SERVER_STOP_REQUESTED,
     BARE_UDP_SERVER_STOPPED,
 } from "./actions"
-import { ServerState } from "../../common/types"
-import { prepend } from "ramda"
-import { MessageData } from "../../common/components/messaging/types"
 
 export type UDPServerStateObject = {
     state: ServerState
@@ -28,6 +30,7 @@ export const createDefaultState = (): UDPServerStateObject => ({
 })
 
 export const UDPServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: UDPServerStateObject = createDefaultState(),
     action: StateAction,
 ): UDPServerStateObject => {

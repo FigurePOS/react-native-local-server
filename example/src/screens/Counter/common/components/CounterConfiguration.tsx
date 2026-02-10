@@ -1,6 +1,24 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
+
 import { DoubleConfiguration } from "../../../../common/components/configuration/DoubleConfiguration"
+import {
+    createActionCounterClientRestartRequested,
+    createActionCounterClientSearchRestartRequested,
+    createActionCounterClientSearchStartRequested,
+    createActionCounterClientSearchStopRequested,
+    createActionCounterClientStartFromServiceRequested,
+    createActionCounterClientStartRequested,
+    createActionCounterClientStopRequested,
+} from "../../client/actions"
+import {
+    getCounterClientAvailableServices,
+    getCounterClientHost,
+    getCounterClientPort,
+    getCounterClientSearchStateLabel,
+    getCounterClientStateLabel,
+    isCounterClientRunning,
+} from "../../client/selectors"
 import {
     createActionCounterServerRestartRequested,
     createActionCounterServerStartRequested,
@@ -12,23 +30,6 @@ import {
     getCounterServerStateLabel,
     isCounterServerRunning,
 } from "../../server/selectors"
-import {
-    getCounterClientAvailableServices,
-    getCounterClientHost,
-    getCounterClientPort,
-    getCounterClientSearchStateLabel,
-    getCounterClientStateLabel,
-    isCounterClientRunning,
-} from "../../client/selectors"
-import {
-    createActionCounterClientRestartRequested,
-    createActionCounterClientSearchRestartRequested,
-    createActionCounterClientSearchStartRequested,
-    createActionCounterClientSearchStopRequested,
-    createActionCounterClientStartFromServiceRequested,
-    createActionCounterClientStartRequested,
-    createActionCounterClientStopRequested,
-} from "../../client/actions"
 
 export const CounterConfiguration = () => {
     const dispatch = useDispatch()

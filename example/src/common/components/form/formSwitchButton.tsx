@@ -1,7 +1,8 @@
 import React from "react"
 import { StyleSheet, Switch, SwitchProps, View } from "react-native"
-import { FormComponentProps } from "./types"
+
 import { FormLabel } from "./formLabel"
+import { FormComponentProps } from "./types"
 
 type Props = FormComponentProps<SwitchProps>
 

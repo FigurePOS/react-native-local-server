@@ -1,9 +1,10 @@
 import React, { useCallback } from "react"
-import { MessageView } from "../../../common/components/messaging/MessageView"
 import { useDispatch, useSelector } from "react-redux"
-import { getBareUDPServerData } from "../selectors"
+
 import { MessageControlEnhanced } from "../../../common/components/messaging/MessageControlEnhanced"
+import { MessageView } from "../../../common/components/messaging/MessageView"
 import { createActionBareUdpServerDataSendRequested } from "../actions"
+import { getBareUDPServerData } from "../selectors"
 
 export const BareUDPServerData = () => {
     const dispatch = useDispatch()

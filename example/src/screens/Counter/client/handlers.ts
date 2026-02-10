@@ -1,9 +1,11 @@
-import { MessageHandler } from "@figuredev/react-native-local-server"
-import { CounterMessage, CounterMessageType } from "../common/messages"
-import { SampleMessagingClientDependenciesType } from "../../MessagingClient/localCommunication/deps"
 import { switchMap } from "rxjs/operators"
-import { createActionCounterCountChanged } from "../data/actionts"
+
+import { MessageHandler } from "@figuredev/react-native-local-server"
+
 import { StateAction } from "../../../types"
+import { SampleMessagingClientDependenciesType } from "../../MessagingClient/localCommunication/deps"
+import { CounterMessage, CounterMessageType } from "../common/messages"
+import { createActionCounterCountChanged } from "../data/actionts"
 
 export const counterChangedHandler: MessageHandler<
     CounterMessage,

@@ -1,5 +1,5 @@
-import { Maybe } from "../../types"
 import { MessageData } from "../../common/components/messaging/types"
+import { Maybe } from "../../types"
 
 export const BARE_UDP_SERVER_START_REQUESTED = "BARE_UDP_SERVER_START_REQUESTED"
 export const createActionBareUdpServerStartRequested = (port: string) => ({

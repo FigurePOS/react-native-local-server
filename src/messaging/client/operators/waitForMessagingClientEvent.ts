@@ -1,17 +1,19 @@
-import { switchMapTo, take } from "rxjs/operators"
-import { fromMessagingClientStatusEvent, ofMessagingClientStatusEvent } from "./"
-import { MessagingClientStatusEventName } from "../"
 import { Observable } from "rxjs"
+import { switchMap, take } from "rxjs/operators"
+
+import { MessagingClientStatusEventName } from "../"
 import { LoggerWrapper } from "../../../utils/logger"
+
+import { fromMessagingClientStatusEvent, ofMessagingClientStatusEvent } from "./"
 
 export const waitForMessagingClientEvent =
     <T = any>(clientId: string, event: MessagingClientStatusEventName, logger: LoggerWrapper) =>
     (source$: Observable<T>) =>
         source$.pipe(
-            switchMapTo(fromMessagingClientStatusEvent(clientId, logger)),
+            switchMap(() => fromMessagingClientStatusEvent(clientId, logger)),
             ofMessagingClientStatusEvent(event),
             take(1),
-            switchMapTo([]),
+            switchMap(() => []),
         )
 
 export const waitForMessagingClientStopped = (clientId: string, logger: LoggerWrapper) =>

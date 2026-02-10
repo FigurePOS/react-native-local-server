@@ -1,7 +1,8 @@
-import { CounterServerStateObject } from "./reducer"
-import { StateObject } from "../../../rootReducer"
 import { ServerConnection, ServerConnectionState, ServerState } from "../../../common/types"
+import { StateObject } from "../../../rootReducer"
 import { Maybe } from "../../../types"
+
+import { CounterServerStateObject } from "./reducer"
 
 export const getCounterServerStateObject = (state: StateObject): CounterServerStateObject => state.Counter.server
 

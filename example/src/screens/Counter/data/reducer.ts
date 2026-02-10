@@ -1,5 +1,9 @@
-import { StateAction } from "../../../types"
+import { prepend } from "ramda"
 import { Reducer } from "redux"
+
+import { LoggerMessage } from "../../../common/components/loggerView/types"
+import { StateAction } from "../../../types"
+
 import {
     COUNTER_AUTO_INCREMENT_STARTED,
     COUNTER_AUTO_INCREMENT_STOPPED,
@@ -7,8 +11,6 @@ import {
     COUNTER_LOG_CLEAR_REQUESTED,
     COUNTER_LOGGED,
 } from "./actionts"
-import { LoggerMessage } from "../../../common/components/loggerView/types"
-import { prepend } from "ramda"
 
 export type CounterDataStateObject = {
     count: number
@@ -23,6 +25,7 @@ export const createDefaultState = (): CounterDataStateObject => ({
 })
 
 export const counterDataReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: CounterDataStateObject = createDefaultState(),
     action: StateAction,
 ): CounterDataStateObject => {

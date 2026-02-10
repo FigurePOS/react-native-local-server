@@ -235,7 +235,7 @@ describe("pingServerConnection", () => {
                     a: true,
                     b: false,
                 },
-                "Ping failed 2 times",
+                { name: "Error", message: "Ping failed 2 times" },
             )
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")

@@ -1,13 +1,14 @@
 import React from "react"
-import { getBareTCPServerActiveConnectionId, getBareTCPServerConnections } from "../selectors"
 import { useDispatch, useSelector } from "react-redux"
-import { Maybe } from "../../../types"
+
 import { ConnectionRow } from "../../../common/components/messaging/ConnectionRow"
+import { ServerConnection } from "../../../common/types"
+import { Maybe } from "../../../types"
 import {
     createActionBareTcpServerActiveConnectionChanged,
     createActionBareTcpServerCloseConnectionRequested,
 } from "../actions"
-import { ServerConnection } from "../../../common/types"
+import { getBareTCPServerActiveConnectionId, getBareTCPServerConnections } from "../selectors"
 
 export const TCPServerConnections = () => {
     const dispatch = useDispatch()

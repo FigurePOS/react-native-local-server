@@ -1,8 +1,9 @@
 import React, { useState } from "react"
 import { StyleSheet, View } from "react-native"
-import { FormTextInput } from "../form/formTextInput"
-import { Button } from "../form/button"
+
 import { FontSize } from "../../constants"
+import { Button } from "../form/button"
+import { FormTextInput } from "../form/formTextInput"
 
 type Props = {
     onSent: (data: string) => void

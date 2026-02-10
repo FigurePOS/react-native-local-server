@@ -1,6 +1,9 @@
-import { Maybe, StateAction } from "../../../types"
+import { append, map, none } from "ramda"
 import { Reducer } from "redux"
+
 import { ServerConnection, ServerConnectionState, ServerState } from "../../../common/types"
+import { Maybe, StateAction } from "../../../types"
+
 import {
     COUNTER_SERVER_CONNECTION_STATE_CHANGED,
     COUNTER_SERVER_ERRORED,
@@ -9,7 +12,6 @@ import {
     COUNTER_SERVER_STATE_CHANGED,
     COUNTER_SERVER_STOP_REQUESTED,
 } from "./actions"
-import { append, map, none } from "ramda"
 
 export type CounterServerStateObject = {
     state: ServerState
@@ -28,6 +30,7 @@ export const createDefaultState = (): CounterServerStateObject => ({
 })
 
 export const counterServerReducer: Reducer = (
+    // eslint-disable-next-line @typescript-eslint/default-param-last
     state: CounterServerStateObject = createDefaultState(),
     action: StateAction,
 ): CounterServerStateObject => {

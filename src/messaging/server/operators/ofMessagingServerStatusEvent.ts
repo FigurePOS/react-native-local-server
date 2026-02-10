@@ -1,5 +1,6 @@
 import { Observable } from "rxjs"
 import { filter } from "rxjs/operators"
+
 import {
     MessagingServerConnectionStatusEvent,
     MessagingServerStatusEvent,
@@ -9,7 +10,7 @@ import {
 export const ofMessagingServerStatusEvent =
     <T extends MessagingServerStatusEventName>(...types: T[]) =>
     (source$: Observable<MessagingServerStatusEvent>): Observable<Extract<MessagingServerStatusEvent, { type: T }>> =>
-        // @ts-ignore
+        // @ts-expect-error - TypeScript does not handle this generic well
         source$.pipe(filter((e: MessagingServerStatusEvent): boolean => types.includes(e.type)))
 
 export const ofMessagingServerConnectionClosed =

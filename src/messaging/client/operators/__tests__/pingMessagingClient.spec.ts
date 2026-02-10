@@ -29,7 +29,7 @@ describe("pingClient", () => {
             const status$: Observable<MessagingClientStatusEvent> = m.hot(_status, {})
             const dataIn$: Observable<DataObject> = m.hot(_dataIn, {})
             const expectedDataOut$: Observable<DataObject> = m.hot(dataOut, {})
-            const _out: Observable<boolean> = m.hot(____out, {}, "Server ping timed out")
+            const _out: Observable<boolean> = m.hot(____out, {}, { name: "Error", message: "Server ping timed out" })
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
@@ -61,7 +61,7 @@ describe("pingClient", () => {
                 {
                     a: true,
                 },
-                "Server ping timed out",
+                { name: "Error", message: "Server ping timed out" },
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
@@ -96,7 +96,7 @@ describe("pingClient", () => {
                     a: true,
                     b: true,
                 },
-                "Server ping timed out",
+                { name: "Error", message: "Server ping timed out" },
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
@@ -133,7 +133,7 @@ describe("pingClient", () => {
                     b: true,
                     c: true,
                 },
-                "Server ping timed out",
+                { name: "Error", message: "Server ping timed out" },
             )
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()

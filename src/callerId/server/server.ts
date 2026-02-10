@@ -1,4 +1,7 @@
 import { defer, from, identity, interval, Observable } from "rxjs"
+import { concatMap, filter, map, share, take } from "rxjs/operators"
+
+import { deduplicateBy } from "../../messaging/operators/deduplicateBy"
 import {
     fromUDPServerEvent,
     UDPServer,
@@ -6,15 +9,14 @@ import {
     UDPServerDataReceivedNativeEvent,
     UDPServerEventName,
 } from "../../udp"
-import { concatMap, filter, map, mapTo, share, take } from "rxjs/operators"
-import { PhoneCall } from "../types"
-import { CallerIdConfiguration, CallerIdServerStatusEvent, CallerIdSimulateCallOptions } from "./types"
-import { composePacketDataFromPhoneCall, parsePhoneCallFromPacketData } from "../parser"
+import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 import { log } from "../../utils/operators/log"
 import { hasPhoneCallGoodChecksum, isPhoneCallInbound } from "../functions"
+import { composePacketDataFromPhoneCall, parsePhoneCallFromPacketData } from "../parser"
+import { PhoneCall } from "../types"
+
 import { fromCallerIdServerStatusEvent } from "./operators/fromCallerIdServerStatusEvent"
-import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
-import { deduplicateBy } from "../../messaging/operators/deduplicateBy"
+import { CallerIdConfiguration, CallerIdServerStatusEvent, CallerIdSimulateCallOptions } from "./types"
 
 export const CALLER_ID_PORT = 3520
 export const CALLER_ID_DROPPED_BYTES = 20
@@ -78,7 +80,7 @@ export class CallerIdServer {
      */
     start(): Observable<boolean> {
         this.logger.log(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - start`)
-        return defer(() => from(this.udpServer.start(this.config))).pipe(mapTo(true))
+        return defer(() => from(this.udpServer.start(this.config))).pipe(map(() => true))
     }
 
     /**
@@ -87,7 +89,7 @@ export class CallerIdServer {
      */
     stop(): Observable<boolean> {
         this.logger.log(LoggerVerbosity.Low, `CallerIdServer [${this.serverId}] - stop`)
-        return defer(() => from(this.udpServer.stop())).pipe(mapTo(true))
+        return defer(() => from(this.udpServer.stop())).pipe(map(() => true))
     }
 
     /**
@@ -102,7 +104,7 @@ export class CallerIdServer {
         return interval(options?.interval ?? 200).pipe(
             take(options?.numberOfCalls ?? 5),
             concatMap(() =>
-                defer(() => from(this.udpServer.sendData("255.255.255.255", port, data))).pipe(mapTo(true)),
+                defer(() => from(this.udpServer.sendData("255.255.255.255", port, data))).pipe(map(() => true)),
             ),
         )
     }

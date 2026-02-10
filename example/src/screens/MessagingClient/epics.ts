@@ -1,6 +1,17 @@
 import { Epic, ofType } from "redux-observable"
+import { Observable } from "rxjs"
+import { catchError, mergeMap, switchMap } from "rxjs/operators"
+
+import {
+    MessagingClientConfiguration,
+    MessagingClientConnectionMethod,
+    MessagingClientStatusEventName,
+} from "@figuredev/react-native-local-server"
+
+import { createMessageData } from "../../common/components/messaging/functions"
+import { ClientState } from "../../common/types"
 import { StateAction } from "../../types"
-import { catchError, mergeMap, switchMap, switchMapTo } from "rxjs/operators"
+
 import {
     createActionMessagingClientDataReceived,
     createActionMessagingClientErrored,
@@ -9,18 +20,10 @@ import {
     MESSAGING_CLIENT_START_REQUESTED,
     MESSAGING_CLIENT_STOP_REQUESTED,
 } from "./actions"
-import { rootHandler } from "./localCommunication/rootHandler"
-import { SampleMessagingClientDependencies } from "./localCommunication/deps"
 import { SampleMessagingClient } from "./localCommunication/client"
+import { SampleMessagingClientDependencies } from "./localCommunication/deps"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
-import {
-    MessagingClientConfiguration,
-    MessagingClientConnectionMethod,
-    MessagingClientStatusEventName,
-} from "@figuredev/react-native-local-server"
-import { createMessageData } from "../../common/components/messaging/functions"
-import { ClientState } from "../../common/types"
-import { Observable } from "rxjs"
+import { rootHandler } from "./localCommunication/rootHandler"
 
 const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
@@ -39,8 +42,8 @@ const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =
                 },
             }
             return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
-                switchMapTo([]),
-                catchError((err) => [createActionMessagingClientErrored(err)]),
+                switchMap(() => []),
+                catchError((err) => [createActionMessagingClientErrored(err.message)]),
             )
         }),
     )
@@ -57,7 +60,7 @@ const messagingClientStatus: Epic = () =>
                     return []
             }
         }),
-        catchError((err) => [createActionMessagingClientErrored(err)]),
+        catchError((err) => [createActionMessagingClientErrored(err.message)]),
     )
 
 const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
@@ -65,8 +68,8 @@ const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
         ofType(MESSAGING_CLIENT_STOP_REQUESTED),
         switchMap(() => {
             return SampleMessagingClient.stop().pipe(
-                switchMapTo([]),
-                catchError((err) => [createActionMessagingClientErrored(err)]),
+                switchMap(() => []),
+                catchError((err) => [createActionMessagingClientErrored(err.message)]),
             )
         }),
     )
@@ -81,9 +84,9 @@ const messagingClientDataSendRequested: Epic = (action$: Observable<StateAction>
                 switchMap(() => {
                     return [createActionMessagingClientDataReceived(createMessageData("client", text))]
                 }),
+                catchError((err) => [createActionMessagingClientErrored(err.message)]),
             )
         }),
-        catchError((err) => [createActionMessagingClientErrored(err)]),
     )
 
 export default [

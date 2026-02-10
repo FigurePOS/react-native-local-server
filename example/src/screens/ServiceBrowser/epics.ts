@@ -1,5 +1,19 @@
 import { Epic, ofType } from "redux-observable"
+import { defer, Observable } from "rxjs"
+import { catchError, filter, map, switchMap } from "rxjs/operators"
+
+import {
+    ServiceBrowser,
+    ServiceBrowserConfiguration,
+    ServiceBrowserServiceFoundNativeEvent,
+    ServiceBrowserServiceLostNativeEvent,
+    ServiceBrowserStartedNativeEvent,
+    ServiceBrowserStoppedNativeEvent,
+} from "@figuredev/react-native-local-server"
+
+import { fromEventFixed } from "../../common/utils"
 import { StateAction } from "../../types"
+
 import {
     createActionServiceBrowserErrored,
     createActionServiceBrowserServiceFound,
@@ -9,18 +23,7 @@ import {
     SERVICE_BROWSER_START_REQUESTED,
     SERVICE_BROWSER_STOP_REQUESTED,
 } from "./actions"
-import { catchError, filter, map, mapTo, switchMap } from "rxjs/operators"
-import { defer, Observable } from "rxjs"
 import { BareServiceBrowser } from "./network"
-import {
-    ServiceBrowser,
-    ServiceBrowserConfiguration,
-    ServiceBrowserServiceFoundNativeEvent,
-    ServiceBrowserServiceLostNativeEvent,
-    ServiceBrowserStartedNativeEvent,
-    ServiceBrowserStoppedNativeEvent,
-} from "@figuredev/react-native-local-server"
-import { fromEventFixed } from "../../common/utils"
 
 const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
     action$.pipe(
@@ -31,8 +34,8 @@ const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>
                 type: group,
             }
             return defer(() => BareServiceBrowser.start(config)).pipe(
-                mapTo(createActionServiceBrowserStarted()),
-                catchError((err) => [createActionServiceBrowserErrored(err)]),
+                map(() => createActionServiceBrowserStarted()),
+                catchError((err) => [createActionServiceBrowserErrored(err.message)]),
             )
         }),
     )
@@ -49,7 +52,7 @@ const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>)
         switchMap(() => {
             return defer(() => BareServiceBrowser.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionServiceBrowserErrored(err)]),
+                catchError((err) => [createActionServiceBrowserErrored(err.message)]),
             )
         }),
     )
@@ -57,7 +60,7 @@ const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>)
 const serviceBrowserStoppedEpic: Epic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.Stopped).pipe(
         filter((event: ServiceBrowserStoppedNativeEvent) => event.browserId === BareServiceBrowser.getId()),
-        mapTo(createActionServiceBrowserStopped()),
+        map(() => createActionServiceBrowserStopped()),
     )
 
 const serviceBrowserServiceFoundEpic: Epic = () =>

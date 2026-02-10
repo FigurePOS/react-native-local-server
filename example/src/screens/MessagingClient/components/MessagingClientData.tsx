@@ -1,9 +1,10 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { getMessagingClientData } from "../selectors"
+
+import { MessageControl } from "../../../common/components/messaging/MessageControl"
 import { MessageView } from "../../../common/components/messaging/MessageView"
 import { createActionMessagingClientDataSendRequested } from "../actions"
-import { MessageControl } from "../../../common/components/messaging/MessageControl"
+import { getMessagingClientData } from "../selectors"
 
 // 70 90
 export const MessagingClientData = () => {

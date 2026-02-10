@@ -1,6 +1,7 @@
-import { StateObject } from "../../../rootReducer"
-import { CounterDataStateObject } from "./reducer"
 import { LoggerMessage } from "../../../common/components/loggerView/types"
+import { StateObject } from "../../../rootReducer"
+
+import { CounterDataStateObject } from "./reducer"
 
 export const getCounterData = (state: StateObject): CounterDataStateObject => state.Counter.data
 
