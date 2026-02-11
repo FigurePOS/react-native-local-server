@@ -5,4 +5,4 @@ source "https://rubygems.org"
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 
-gem 'cocoapods', '~> 1.11', '>= 1.11.2'
+gem 'cocoapods', '~> 1.13', '>= 1.13.2'
