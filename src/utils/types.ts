@@ -5,3 +5,5 @@ export enum StopReasonEnum {
 }
 
 export type StopReason = StopReasonEnum | string
+
+export type Maybe<T> = T | null | undefined

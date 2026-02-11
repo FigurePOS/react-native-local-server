@@ -1,4 +1,4 @@
-import { Maybe } from "../../example/src/types"
+import { Maybe } from "./types"
 
 export class ErrorWithMetadata extends Error {
     metadata: Maybe<Record<string, unknown>> = null
