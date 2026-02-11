@@ -44,7 +44,10 @@ const bareTCPClientStartRequestedEpic: Epic = (action$: Observable<StateAction>)
             }
             return defer(() => BareTCPClient.start(serverConfig)).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpClientErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareTcpClientErrored(message)]
+                }),
             )
         }),
     )
@@ -73,7 +76,10 @@ const bareTCPClientStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         switchMap(() => {
             return defer(() => BareTCPClient.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpClientErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareTcpClientErrored(message)]
+                }),
             )
         }),
     )
@@ -93,7 +99,10 @@ const bareTCPClientDataSendRequestedEpic: Epic = (action$: Observable<StateActio
             const data = action.payload.data
             return defer(() => BareTCPClient.sendData(data)).pipe(
                 switchMap(() => [createActionBareTcpClientNewData(createMessageData("client", data))]),
-                catchError((err) => [createActionBareTcpClientErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareTcpClientErrored(message)]
+                }),
             )
         }),
     )

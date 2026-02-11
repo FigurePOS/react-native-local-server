@@ -43,7 +43,10 @@ const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =
             }
             return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionMessagingClientErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionMessagingClientErrored(message)]
+                }),
             )
         }),
     )
@@ -60,7 +63,10 @@ const messagingClientStatus: Epic = () =>
                     return []
             }
         }),
-        catchError((err) => [createActionMessagingClientErrored(err.message)]),
+        catchError((err: unknown) => {
+            const message = err instanceof Error ? err.message : String(err)
+            return [createActionMessagingClientErrored(message)]
+        }),
     )
 
 const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
@@ -69,7 +75,10 @@ const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
         switchMap(() => {
             return SampleMessagingClient.stop().pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionMessagingClientErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionMessagingClientErrored(message)]
+                }),
             )
         }),
     )
@@ -84,7 +93,10 @@ const messagingClientDataSendRequested: Epic = (action$: Observable<StateAction>
                 switchMap(() => {
                     return [createActionMessagingClientDataReceived(createMessageData("client", text))]
                 }),
-                catchError((err) => [createActionMessagingClientErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionMessagingClientErrored(message)]
+                }),
             )
         }),
     )

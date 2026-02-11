@@ -1,5 +1,5 @@
 import React from "react"
-import JSONTree from "react-native-json-tree"
+import JSONTree, { Renderable } from "react-native-json-tree"
 
 const jsonTheme = {
     scheme: "monokai",
@@ -23,7 +23,7 @@ const jsonTheme = {
 }
 
 export type JSONViewProps = {
-    data: any
+    data: Renderable
 }
 
 export const JSONView = (props: JSONViewProps) => <JSONTree data={props.data} theme={jsonTheme} invertTheme={true} />

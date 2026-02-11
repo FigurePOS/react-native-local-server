@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View, ViewStyle } from "react-native"
 
 import { Button } from "../../../common/components/form/button"
 import { FormTextInput } from "../../../common/components/form/formTextInput"
@@ -9,7 +9,7 @@ type Props = {
     stateLabel: string
     isRunning: boolean
     groupName: string
-    style?: any
+    style?: ViewStyle
 
     onStarted: (groupName: string) => void
     onStopped: () => void

@@ -7,7 +7,7 @@ import { LoggerWrapper } from "../../../utils/logger"
 import { fromMessagingClientStatusEvent, ofMessagingClientStatusEvent } from "./"
 
 export const waitForMessagingClientEvent =
-    <T = any>(clientId: string, event: MessagingClientStatusEventName, logger: LoggerWrapper) =>
+    <T = unknown>(clientId: string, event: MessagingClientStatusEventName, logger: LoggerWrapper) =>
     (source$: Observable<T>) =>
         source$.pipe(
             switchMap(() => fromMessagingClientStatusEvent(clientId, logger)),

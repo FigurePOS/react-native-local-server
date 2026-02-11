@@ -10,17 +10,17 @@ export class LoggerWrapper {
         this.verbosity = verbosity
     }
 
-    log(verbosity: LoggerVerbosity, message: string, data?: any) {
+    log(verbosity: LoggerVerbosity, message: string, data?: unknown) {
         if (verbosity <= this.verbosity) {
             this.logger?.log(message, data)
         }
     }
-    warn(verbosity: LoggerVerbosity, message: string, data: any) {
+    warn(verbosity: LoggerVerbosity, message: string, data: unknown) {
         if (verbosity <= this.verbosity) {
             this.logger?.warn(message, data)
         }
     }
-    error(verbosity: LoggerVerbosity, message: string, data?: any) {
+    error(verbosity: LoggerVerbosity, message: string, data?: unknown) {
         if (verbosity <= this.verbosity) {
             this.logger?.error(message, data)
         }

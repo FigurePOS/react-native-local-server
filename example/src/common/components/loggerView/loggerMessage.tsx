@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, TextStyle, View } from "react-native"
 
 import { Colors, FontSize, FontWeight } from "../../constants"
 import { JSONView } from "../JSONView"
@@ -12,7 +12,7 @@ type Props = {
 
 export const LoggerMessageComponent = (props: Props) => {
     const { message } = props
-    let extraStyle: any = null
+    let extraStyle: TextStyle | null = null
     switch (message.type) {
         case "warn":
             extraStyle = styles.warn

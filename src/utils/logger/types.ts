@@ -5,7 +5,7 @@ export enum LoggerVerbosity {
 }
 
 export type Logger = {
-    log: (message: string, data?: any) => void
-    warn: (message: string, data: any) => void
-    error: (message: string, data?: any) => void
+    log: (message: string, data?: unknown) => void
+    warn: (message: string, data: unknown) => void
+    error: (message: string, data?: unknown) => void
 }

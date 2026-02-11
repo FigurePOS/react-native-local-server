@@ -1,11 +1,11 @@
 import React from "react"
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet, Text, TextStyle } from "react-native"
 
 import { Colors, FontSize } from "../../constants"
 
 type Props = {
     label: string | null | undefined
-    style?: any
+    style?: TextStyle
 }
 
 export const FormLabel = (props: Props) => {

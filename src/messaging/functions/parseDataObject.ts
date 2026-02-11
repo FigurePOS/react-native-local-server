@@ -10,8 +10,9 @@ export const parseDataObject = (
             ...JSON.parse(nativeEvent.data),
             ...("connectionId" in nativeEvent ? { connectionId: nativeEvent.connectionId } : null),
         }
-    } catch (e: any) {
-        throw new ErrorWithMetadata(e.message, {
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e)
+        throw new ErrorWithMetadata(message, {
             data: nativeEvent.data,
         })
     }

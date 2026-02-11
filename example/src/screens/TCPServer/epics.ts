@@ -48,7 +48,10 @@ const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
             }
             return defer(() => BareTCPServer.start(serverConfig)).pipe(
                 map(() => createActionBareTcpServerStartSucceeded()),
-                catchError((err) => [createActionBareTcpServerStartFailed(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareTcpServerStartFailed(message)]
+                }),
             )
         }),
     )
@@ -71,7 +74,10 @@ const bareTcpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         switchMap(() => {
             return defer(() => BareTCPServer.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareTcpServerErrored(message)]
+                }),
             )
         }),
     )
@@ -118,7 +124,10 @@ const bareTcpServerCloseConnectionRequested: Epic = (action$: Observable<StateAc
             const connectionId = action.payload.connectionId
             return defer(() => BareTCPServer.closeConnection(connectionId)).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionBareTcpServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareTcpServerErrored(message)]
+                }),
             )
         }),
     )
@@ -133,7 +142,10 @@ const bareTcpServerDataSendRequestedEpic: Epic = (action$: Observable<StateActio
                 switchMap(() => [
                     createActionBareTcpServerConnectionNewData(connectionId, createMessageData("server", data)),
                 ]),
-                catchError((err) => [createActionBareTcpServerErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionBareTcpServerErrored(message)]
+                }),
             )
         }),
     )

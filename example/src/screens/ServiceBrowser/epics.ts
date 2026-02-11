@@ -35,7 +35,10 @@ const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>
             }
             return defer(() => BareServiceBrowser.start(config)).pipe(
                 map(() => createActionServiceBrowserStarted()),
-                catchError((err) => [createActionServiceBrowserErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionServiceBrowserErrored(message)]
+                }),
             )
         }),
     )
@@ -52,7 +55,10 @@ const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>)
         switchMap(() => {
             return defer(() => BareServiceBrowser.stop()).pipe(
                 switchMap(() => []),
-                catchError((err) => [createActionServiceBrowserErrored(err.message)]),
+                catchError((err: unknown) => {
+                    const message = err instanceof Error ? err.message : String(err)
+                    return [createActionServiceBrowserErrored(message)]
+                }),
             )
         }),
     )

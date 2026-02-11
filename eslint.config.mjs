@@ -14,13 +14,6 @@ export default [
         },
     },
     {
-        rules: {
-            // Temporary disable to make the review easier
-            "@smarttools/rxjs/no-implicit-any-catch": "off",
-            "@typescript-eslint/no-explicit-any": "off",
-        },
-    },
-    {
         ignores: ["**/__tests__/**", "**/__mocks__/**", "**/__rsc_tests__/**"],
     },
 ]
