@@ -7,9 +7,9 @@ import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@f
 
 import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { ServerConnectionState, ServerState } from "../../../common/types"
+import { EpicDependencies } from "../../../configureStore"
 import { StateObject } from "../../../rootReducer"
 import { Maybe, StateAction } from "../../../types"
-import { CounterDependencies } from "../common/deps"
 import { createCounterMessageCountChanged } from "../common/messages"
 import { COUNTER_COUNT_CHANGED } from "../data/actionts"
 
@@ -27,7 +27,7 @@ import { rootHandler } from "./rootHandler"
 import { getCounterServerReadyConnections, isCounterServerRunning } from "./selectors"
 import { CounterServer } from "./server"
 
-const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
+const counterServerStartRequested: Epic = (action$: Observable<StateAction>, _state$, dependencies: EpicDependencies) =>
     action$.pipe(
         ofType(COUNTER_SERVER_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -52,7 +52,7 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>) =>
                     retryCount: 10,
                 },
             }
-            return CounterServer.start(config, rootHandler, CounterDependencies).pipe(
+            return CounterServer.start(config, rootHandler, dependencies).pipe(
                 mergeMap(() => []),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)

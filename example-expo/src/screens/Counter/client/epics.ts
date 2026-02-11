@@ -10,9 +10,9 @@ import {
 
 import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { ClientState } from "../../../common/types"
+import { EpicDependencies } from "../../../configureStore"
 import { StateObject } from "../../../rootReducer"
 import { StateAction } from "../../../types"
-import { CounterDependencies } from "../common/deps"
 import { createCounterMessageCountRequested, createCounterMessageCountResetRequested } from "../common/messages"
 import { COUNTER_COUNT_RESET_REQUESTED } from "../data/actionts"
 
@@ -35,7 +35,7 @@ import { CounterClient } from "./client"
 import { rootHandler } from "./rootHandler"
 import { getCounterClientAvailableServices, isCounterClientRunning } from "./selectors"
 
-const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientStartRequested: Epic = (action$: Observable<StateAction>, _state$, dependencies: EpicDependencies) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -54,7 +54,7 @@ const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
                     timeout: 10 * 1000,
                 },
             }
-            return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
+            return CounterClient.start(config, rootHandler, dependencies).pipe(
                 mergeMap(() => []),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)
@@ -67,6 +67,7 @@ const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
 const counterClientStartFromServiceRequested: Epic = (
     action$: Observable<StateAction>,
     state$: StateObservable<StateObject>,
+    dependencies: EpicDependencies,
 ) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED),
@@ -87,7 +88,7 @@ const counterClientStartFromServiceRequested: Epic = (
                     timeout: 10 * 1000,
                 },
             }
-            return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
+            return CounterClient.start(config, rootHandler, dependencies).pipe(
                 mergeMap(() => []),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)

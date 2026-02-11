@@ -10,6 +10,7 @@ import {
 
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
+import { EpicDependencies } from "../../configureStore"
 import { StateAction } from "../../types"
 
 import {
@@ -21,11 +22,14 @@ import {
     MESSAGING_CLIENT_STOP_REQUESTED,
 } from "./actions"
 import { SampleMessagingClient } from "./localCommunication/client"
-import { SampleMessagingClientDependencies } from "./localCommunication/deps"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
 import { rootHandler } from "./localCommunication/rootHandler"
 
-const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =>
+const messagingClientStartRequested: Epic = (
+    action$: Observable<StateAction>,
+    _state$,
+    dependencies: EpicDependencies,
+) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -41,7 +45,7 @@ const messagingClientStartRequested: Epic = (action$: Observable<StateAction>) =
                     host: action.payload.host,
                 },
             }
-            return SampleMessagingClient.start(config, rootHandler, SampleMessagingClientDependencies).pipe(
+            return SampleMessagingClient.start(config, rootHandler, dependencies).pipe(
                 switchMap(() => []),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)
