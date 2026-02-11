@@ -9,7 +9,7 @@
         "bundle": "react-native start",
         "android": "react-native run-android",
         "android:release": "react-native run-android --variant=release",
-        "ios": "react-native run-ios",
+        "ios": "react-native run-ios --simulator 'iPad Air 2' --terminal zsh",
         "ios:release": "react-native run-ios --configuration 'Release'",
         "android:menu": "adb shell input keyevent 82",
         "android:fix": "adb reverse tcp:8081 tcp:8081",
