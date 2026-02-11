@@ -1502,6 +1502,13 @@
     chalk "^4.1.0"
     js-yaml "^4.1.0"
 
+"@figuredev/react-native-local-server@^0.17.1":
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/@figuredev/react-native-local-server/-/react-native-local-server-0.17.1.tgz#d3070027c9ae4d242fae093606a09f5ac5858bcf"
+  integrity sha512-AGv2uE0mb4umMocljuZWIrJ4FyBjhjUnBQ9wwaYQ3x99ei+4tivac+99gZ25I32M5DmTyZOEJpAD4FOiyH3RtA==
+  dependencies:
+    rxjs "7.8.1"
+
 "@isaacs/balanced-match@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@isaacs/balanced-match/-/balanced-match-4.0.1.tgz#3081dadbc3460661b751e7591d7faea5df39dd29"

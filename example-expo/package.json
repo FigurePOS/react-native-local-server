@@ -1,7 +1,7 @@
 {
   "name": "example-expo",
   "version": "1.0.0",
-  "main": "App.tsx",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -10,6 +10,7 @@
     "prebuild": "expo prebuild --clean --yarn"
   },
   "dependencies": {
+    "@figuredev/react-native-local-server": "0.17.1",
     "@react-navigation/drawer": "6.6.3",
     "@react-navigation/native": "6.1.7",
     "expo": "54.0.33",
