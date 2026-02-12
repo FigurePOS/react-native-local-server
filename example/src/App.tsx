@@ -37,7 +37,7 @@ export enum ScreenNames {
     CallerID = "Caller ID",
 }
 
-export const AppE = () => {
+export const App = () => {
     return (
         <Provider store={store}>
             <NavigationContainer theme={MyTheme}>
