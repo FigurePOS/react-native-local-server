@@ -4,13 +4,13 @@ export default () => {
             name: "Local Server Example",
             slug: "local-server-example",
             version: "1.0.0",
-            icon: "./assets/adaptive-icon.png",
+            icon: "./assets/icon.png",
             scheme: "dev.figure.local-server-example",
             orientation: "landscape",
             userInterfaceStyle: "light",
             newArchEnabled: false,
             splash: {
-                image: "./assets/splash-icon.png",
+                image: "./assets/icon.png",
                 resizeMode: "contain",
                 backgroundColor: "#ffffff",
             },
@@ -28,7 +28,7 @@ export default () => {
             },
             android: {
                 adaptiveIcon: {
-                    foregroundImage: "./assets/adaptive-icon.png",
+                    foregroundImage: "./assets/icon.png",
                     backgroundColor: "#ffffff",
                 },
                 package: "dev.figure.local_server_example",
