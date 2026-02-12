@@ -7,7 +7,7 @@ export default [
     // where there is only one tsconfig.json, so please don't use it there.
     ...figurePlugin("**/tsconfig.json"),
     {
-        files: ["apps/example-expo/**"],
+        files: ["apps/example/**"],
         rules: {
             // we want to use console in the example app, to easily debug
             "no-console": "off",

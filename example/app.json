@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "example-expo",
-    "slug": "example-expo",
+    "name": "example",
+    "slug": "example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.krcma.exampleexpo"
+      "bundleIdentifier": "dev.figure.example"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +23,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.krcma.exampleexpo"
+      "package": "dev.figure.example"
     },
     "web": {
       "favicon": "./assets/favicon.png"
