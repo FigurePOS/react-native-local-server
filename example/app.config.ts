@@ -24,6 +24,7 @@ export default () => {
                 infoPlist: {
                     NSLocalNetworkUsageDescription:
                         "Use Local Network for communication with the printer or discovery the printers.",
+                    NSBonjourServices: ["_fgr-counter._tcp"],
                 },
             },
             android: {
