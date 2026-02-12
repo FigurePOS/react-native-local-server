@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable"
+import { ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
 import { catchError, map, switchMap } from "rxjs/operators"
 
@@ -23,7 +23,7 @@ import {
 } from "./actions"
 import { ExampleCallerIdServer } from "./network"
 
-const callerIdServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const callerIdServerStartRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(CALLER_ID_SERVER_START_REQUESTED),
         switchMap(() => {
@@ -37,7 +37,7 @@ const callerIdServerStartRequestedEpic: Epic = (action$: Observable<StateAction>
         }),
     )
 
-const callerIdServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const callerIdServerStopRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(CALLER_ID_SERVER_STOP_REQUESTED),
         switchMap(() => {
@@ -51,7 +51,7 @@ const callerIdServerStopRequestedEpic: Epic = (action$: Observable<StateAction>)
         }),
     )
 
-const callerIdServerSimulateCallRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const callerIdServerSimulateCallRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(CALLER_ID_SERVER_SIMULATE_CALL_REQUESTED),
         switchMap((action: StateAction) => {
@@ -69,7 +69,7 @@ const callerIdServerSimulateCallRequestedEpic: Epic = (action$: Observable<State
         }),
     )
 
-const callerIdServerStatusEventEpic: Epic = () =>
+const callerIdServerStatusEventEpic = () =>
     ExampleCallerIdServer.getStatusEvent$().pipe(
         switchMap((event: CallerIdServerStatusEvent) => {
             switch (event.type) {
@@ -83,7 +83,7 @@ const callerIdServerStatusEventEpic: Epic = () =>
         }),
     )
 
-const callerIdServerIncomingCallEpic: Epic = () =>
+const callerIdServerIncomingCallEpic = () =>
     ExampleCallerIdServer.getIncomingCall$().pipe(map(createActionCallerIdServerCallDetected))
 
 export default [

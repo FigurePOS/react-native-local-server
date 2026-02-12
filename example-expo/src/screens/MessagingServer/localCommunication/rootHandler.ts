@@ -1,5 +1,6 @@
 import { switchMap } from "rxjs/operators"
-import { MessageHandler } from "src/messaging"
+
+import { MessageHandler } from "@figuredev/react-native-local-server"
 
 import { createMessageData } from "../../../common/components/messaging/functions"
 import { createActionMessagingServerDataReceived } from "../actions"

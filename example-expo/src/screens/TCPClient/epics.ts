@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable"
+import { ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
 import { catchError, filter, switchMap } from "rxjs/operators"
 
@@ -26,7 +26,7 @@ import {
 } from "./actions"
 import { BareTCPClient } from "./network"
 
-const bareTCPClientStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareTCPClientStartRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_CLIENT_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -52,7 +52,7 @@ const bareTCPClientStartRequestedEpic: Epic = (action$: Observable<StateAction>)
         }),
     )
 
-const bareTCPClientReadyEpic: Epic = () =>
+const bareTCPClientReadyEpic = () =>
     fromEventFixed(TCPClient.EventEmitter, TCPClient.EventName.Ready).pipe(
         filter((event: TCPClientReadyNativeEvent) => event.clientId === BareTCPClient.getId()),
         switchMap(() => [
@@ -61,7 +61,7 @@ const bareTCPClientReadyEpic: Epic = () =>
         ]),
     )
 
-const bareTCPClientStoppedEpic: Epic = () =>
+const bareTCPClientStoppedEpic = () =>
     fromEventFixed(TCPClient.EventEmitter, TCPClient.EventName.Stopped).pipe(
         filter((event: TCPClientStoppedNativeEvent) => event.clientId === BareTCPClient.getId()),
         switchMap(() => [
@@ -70,7 +70,7 @@ const bareTCPClientStoppedEpic: Epic = () =>
         ]),
     )
 
-const bareTCPClientStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareTCPClientStopRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_CLIENT_STOP_REQUESTED),
         switchMap(() => {
@@ -84,7 +84,7 @@ const bareTCPClientStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         }),
     )
 
-const bareTCPClientDataReceivedEpic: Epic = () =>
+const bareTCPClientDataReceivedEpic = () =>
     fromEventFixed(TCPClient.EventEmitter, TCPClient.EventName.DataReceived).pipe(
         filter((event: TCPClientDataReceivedNativeEvent) => event.clientId === BareTCPClient.getId()),
         switchMap((event: TCPClientDataReceivedNativeEvent) => [
@@ -92,7 +92,7 @@ const bareTCPClientDataReceivedEpic: Epic = () =>
         ]),
     )
 
-const bareTCPClientDataSendRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareTCPClientDataSendRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_CLIENT_DATA_SEND_REQUESTED),
         switchMap((action: StateAction) => {

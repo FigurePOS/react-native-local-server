@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable"
+import { ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
 import { catchError, filter, map, switchMap } from "rxjs/operators"
 
@@ -25,7 +25,7 @@ import {
 } from "./actions"
 import { BareServiceBrowser } from "./network"
 
-const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const serviceBrowserStartRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(SERVICE_BROWSER_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -43,13 +43,13 @@ const serviceBrowserStartRequestedEpic: Epic = (action$: Observable<StateAction>
         }),
     )
 
-const serviceBrowserReadyEpic: Epic = () =>
+const serviceBrowserReadyEpic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.Started).pipe(
         filter((event: ServiceBrowserStartedNativeEvent) => event.browserId === BareServiceBrowser.getId()),
         map(() => createActionServiceBrowserStarted()),
     )
 
-const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const serviceBrowserStopRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(SERVICE_BROWSER_STOP_REQUESTED),
         switchMap(() => {
@@ -63,19 +63,19 @@ const serviceBrowserStopRequestedEpic: Epic = (action$: Observable<StateAction>)
         }),
     )
 
-const serviceBrowserStoppedEpic: Epic = () =>
+const serviceBrowserStoppedEpic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.Stopped).pipe(
         filter((event: ServiceBrowserStoppedNativeEvent) => event.browserId === BareServiceBrowser.getId()),
         map(() => createActionServiceBrowserStopped()),
     )
 
-const serviceBrowserServiceFoundEpic: Epic = () =>
+const serviceBrowserServiceFoundEpic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.ServiceFound).pipe(
         filter((event: ServiceBrowserServiceFoundNativeEvent) => event.browserId === BareServiceBrowser.getId()),
         map((event: ServiceBrowserServiceFoundNativeEvent) => createActionServiceBrowserServiceFound(event.name)),
     )
 
-const serviceBrowserServiceLostEpic: Epic = () =>
+const serviceBrowserServiceLostEpic = () =>
     fromEventFixed(ServiceBrowser.EventEmitter, ServiceBrowser.EventName.ServiceLost).pipe(
         filter((event: ServiceBrowserServiceLostNativeEvent) => event.browserId === BareServiceBrowser.getId()),
         map((event: ServiceBrowserServiceLostNativeEvent) => createActionServiceBrowserServiceLost(event.name)),

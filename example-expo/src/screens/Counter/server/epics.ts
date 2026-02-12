@@ -1,4 +1,4 @@
-import { Epic, ofType, StateObservable } from "redux-observable"
+import { ofType, StateObservable } from "redux-observable"
 import { from, Observable } from "rxjs"
 import { catchError, concatMap, mergeMap, switchMap } from "rxjs/operators"
 import * as uuid from "uuid"
@@ -27,7 +27,11 @@ import { rootHandler } from "./rootHandler"
 import { getCounterServerReadyConnections, isCounterServerRunning } from "./selectors"
 import { CounterServer } from "./server"
 
-const counterServerStartRequested: Epic = (action$: Observable<StateAction>, _state$, dependencies: EpicDependencies) =>
+const counterServerStartRequested = (
+    action$: Observable<StateAction>,
+    _state$: StateObservable<StateObject>,
+    dependencies: EpicDependencies,
+) =>
     action$.pipe(
         ofType(COUNTER_SERVER_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -62,7 +66,7 @@ const counterServerStartRequested: Epic = (action$: Observable<StateAction>, _st
         }),
     )
 
-const counterServerStatus: Epic = () =>
+const counterServerStatus = () =>
     CounterServer.getStatusEvent$().pipe(
         mergeMap((e) => {
             switch (e.type) {
@@ -88,7 +92,7 @@ const counterServerStatus: Epic = () =>
         }),
     )
 
-const counterServerStopRequested: Epic = (action$: Observable<StateAction>) =>
+const counterServerStopRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_SERVER_STOP_REQUESTED),
         switchMap(() => {
@@ -102,7 +106,7 @@ const counterServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         }),
     )
 
-const counterServerRestartRequested: Epic = (action$: Observable<StateAction>) =>
+const counterServerRestartRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_SERVER_RESTART_REQUESTED),
         switchMap(() => {
@@ -116,7 +120,7 @@ const counterServerRestartRequested: Epic = (action$: Observable<StateAction>) =
         }),
     )
 
-const counterServerCountChanged: Epic = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
+const counterServerCountChanged = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
     action$.pipe(
         ofType(COUNTER_COUNT_CHANGED),
         filterWithSelector(isCounterServerRunning, state$),
@@ -139,7 +143,7 @@ const counterServerCountChanged: Epic = (action$: Observable<StateAction>, state
         }),
     )
 
-const counterServerIpAddressEpic: Epic = (action$: Observable<StateAction>) =>
+const counterServerIpAddressEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_SERVER_STATE_CHANGED),
         switchMap(() => {

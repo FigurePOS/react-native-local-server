@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable"
+import { ofType, StateObservable } from "redux-observable"
 import { Observable } from "rxjs"
 import { catchError, mergeMap, switchMap } from "rxjs/operators"
 
@@ -11,6 +11,7 @@ import {
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ClientState } from "../../common/types"
 import { EpicDependencies } from "../../configureStore"
+import { StateObject } from "../../rootReducer"
 import { StateAction } from "../../types"
 
 import {
@@ -25,9 +26,9 @@ import { SampleMessagingClient } from "./localCommunication/client"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
 import { rootHandler } from "./localCommunication/rootHandler"
 
-const messagingClientStartRequested: Epic = (
+const messagingClientStartRequested = (
     action$: Observable<StateAction>,
-    _state$,
+    _state$: StateObservable<StateObject>,
     dependencies: EpicDependencies,
 ) =>
     action$.pipe(
@@ -55,7 +56,7 @@ const messagingClientStartRequested: Epic = (
         }),
     )
 
-const messagingClientStatus: Epic = () =>
+const messagingClientStatus = () =>
     SampleMessagingClient.getStatusEvent$().pipe(
         mergeMap((e) => {
             switch (e.type) {
@@ -73,7 +74,7 @@ const messagingClientStatus: Epic = () =>
         }),
     )
 
-const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
+const messagingClientStopRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_STOP_REQUESTED),
         switchMap(() => {
@@ -87,7 +88,7 @@ const messagingClientStopRequested: Epic = (action$: Observable<StateAction>) =>
         }),
     )
 
-const messagingClientDataSendRequested: Epic = (action$: Observable<StateAction>) =>
+const messagingClientDataSendRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_CLIENT_DATA_SEND_REQUESTED),
         switchMap((action: StateAction) => {

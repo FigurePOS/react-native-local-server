@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable"
+import { ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
 import { catchError, filter, map, switchMap } from "rxjs/operators"
 
@@ -33,7 +33,7 @@ import {
 } from "./actions"
 import { BareTCPServer } from "./network"
 
-const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareTcpServerStartRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -56,19 +56,19 @@ const bareTcpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
         }),
     )
 
-const bareTcpServerReadyEpic: Epic = () =>
+const bareTcpServerReadyEpic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.Ready).pipe(
         filter((event: TCPServerReadyNativeEvent) => event.serverId === BareTCPServer.getId()),
         map((event: TCPServerReadyNativeEvent) => createActionBareTcpServerReady(Number.parseInt(event.port, 10))),
     )
 
-const bareTcpServerStoppedEpic: Epic = () =>
+const bareTcpServerStoppedEpic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.Stopped).pipe(
         filter((event: TCPServerStoppedNativeEvent) => event.serverId === BareTCPServer.getId()),
         map(() => createActionBareTcpServerStopped(null)),
     )
 
-const bareTcpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareTcpServerStopRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_STOP_REQUESTED),
         switchMap(() => {
@@ -82,7 +82,7 @@ const bareTcpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         }),
     )
 
-const bareTcpServerConnectionAcceptedEpic: Epic = () =>
+const bareTcpServerConnectionAcceptedEpic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.ConnectionAccepted).pipe(
         filter((event: TCPServerConnectionAcceptedNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerConnectionAcceptedNativeEvent) => [
@@ -91,7 +91,7 @@ const bareTcpServerConnectionAcceptedEpic: Epic = () =>
         ]),
     )
 
-const bareTcpServerConnectionReadyEpic: Epic = () =>
+const bareTcpServerConnectionReadyEpic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.ConnectionReady).pipe(
         filter((event: TCPServerConnectionReadyNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerConnectionReadyNativeEvent) => [
@@ -100,7 +100,7 @@ const bareTcpServerConnectionReadyEpic: Epic = () =>
         ]),
     )
 
-const bareTcpServerConnectionStoppedEpic: Epic = () =>
+const bareTcpServerConnectionStoppedEpic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.ConnectionClosed).pipe(
         filter((event: TCPServerConnectionClosedNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerConnectionClosedNativeEvent) => [
@@ -109,7 +109,7 @@ const bareTcpServerConnectionStoppedEpic: Epic = () =>
         ]),
     )
 
-const bareTcpServerDataReceivedEpic: Epic = () =>
+const bareTcpServerDataReceivedEpic = () =>
     fromEventFixed(TCPServer.EventEmitter, TCPServer.EventName.DataReceived).pipe(
         filter((event: TCPServerDataReceivedNativeEvent) => event.serverId === BareTCPServer.getId()),
         switchMap((event: TCPServerDataReceivedNativeEvent) => [
@@ -117,7 +117,7 @@ const bareTcpServerDataReceivedEpic: Epic = () =>
         ]),
     )
 
-const bareTcpServerCloseConnectionRequested: Epic = (action$: Observable<StateAction>) =>
+const bareTcpServerCloseConnectionRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_CLOSE_CONNECTION_REQUESTED),
         switchMap((action: StateAction) => {
@@ -132,7 +132,7 @@ const bareTcpServerCloseConnectionRequested: Epic = (action$: Observable<StateAc
         }),
     )
 
-const bareTcpServerDataSendRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareTcpServerDataSendRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_TCP_SERVER_DATA_SEND_REQUESTED),
         switchMap((action: StateAction) => {

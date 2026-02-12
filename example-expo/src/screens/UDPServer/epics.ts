@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable"
+import { ofType } from "redux-observable"
 import { defer, Observable } from "rxjs"
 import { catchError, filter, map, switchMap } from "rxjs/operators"
 
@@ -27,7 +27,7 @@ import {
 } from "./actions"
 import { BareUDPServer } from "./network"
 
-const bareUdpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareUdpServerStartRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_UDP_SERVER_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -48,19 +48,19 @@ const bareUdpServerStartRequestedEpic: Epic = (action$: Observable<StateAction>)
         }),
     )
 
-const bareUdpServerReadyEpic: Epic = () =>
+const bareUdpServerReadyEpic = () =>
     fromEventFixed(UDPServer.EventEmitter, UDPServer.EventName.Ready).pipe(
         filter((event: UDPServerReadyNativeEvent) => event.serverId === BareUDPServer.getId()),
         map(() => createActionBareUdpServerReady()),
     )
 
-const bareUdpServerStoppedEpic: Epic = () =>
+const bareUdpServerStoppedEpic = () =>
     fromEventFixed(UDPServer.EventEmitter, UDPServer.EventName.Stopped).pipe(
         filter((event: UDPServerStoppedNativeEvent) => event.serverId === BareUDPServer.getId()),
         map(() => createActionBareUdpServerStopped(null)),
     )
 
-const bareUdpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareUdpServerStopRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_UDP_SERVER_STOP_REQUESTED),
         switchMap(() => {
@@ -74,7 +74,7 @@ const bareUdpServerStopRequestedEpic: Epic = (action$: Observable<StateAction>) 
         }),
     )
 
-const bareUdpServerDataReceivedEpic: Epic = () =>
+const bareUdpServerDataReceivedEpic = () =>
     fromEventFixed(UDPServer.EventEmitter, UDPServer.EventName.DataReceived).pipe(
         filter((event: UDPServerDataReceivedNativeEvent) => event.serverId === BareUDPServer.getId()),
         // TODO add more info about the data
@@ -83,7 +83,7 @@ const bareUdpServerDataReceivedEpic: Epic = () =>
         ]),
     )
 
-const bareUdpServerDataSendRequestedEpic: Epic = (action$: Observable<StateAction>) =>
+const bareUdpServerDataSendRequestedEpic = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(BARE_UDP_SERVER_DATA_SEND_REQUESTED),
         switchMap((action: StateAction) => {
