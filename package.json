@@ -37,7 +37,8 @@
         "prepare": "bob build",
         "release": "yarn exec ./scripts/release.sh",
         "release:ts": "yarn release-it patch",
-        "release:native": "yarn release-it minor"
+        "release:native": "yarn release-it minor",
+        "check:all": "yarn check:ts && yarn check:format && yarn check:lint && yarn test:ts"
     },
     "keywords": [
         "react-native",
