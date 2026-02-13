@@ -69,3 +69,6 @@ lib/
 
 # test coverage
 coverage/*
+
+# jest
+.jest/cache

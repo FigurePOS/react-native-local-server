@@ -35,7 +35,7 @@ describe("TCPClient", () => {
             },
         }
         await client.start(config)
-        expect(spy).toBeCalledWith(clientId, "localhost", 12000)
+        expect(spy).toHaveBeenCalledWith(clientId, "localhost", 12000)
         expect(client.getConfiguration()).toEqual(config)
     })
 
@@ -49,7 +49,7 @@ describe("TCPClient", () => {
             },
         }
         await client.start(config)
-        expect(spy).toBeCalledWith(clientId, "fgr-counter", "My Counter (123456)")
+        expect(spy).toHaveBeenCalledWith(clientId, "fgr-counter", "My Counter (123456)")
         expect(client.getConfiguration()).toEqual(config)
     })
 
@@ -65,13 +65,13 @@ describe("TCPClient", () => {
             },
         }
         await expect(client.start(config)).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(clientId, "localhost", 12000)
+        expect(spy).toHaveBeenCalledWith(clientId, "localhost", 12000)
     })
 
     it("should send data to native", async () => {
         const spy = jest.spyOn(TCPClientModule, "send")
         await client.sendData("sample data")
-        expect(spy).toBeCalledWith(clientId, "sample data")
+        expect(spy).toHaveBeenCalledWith(clientId, "sample data")
     })
 
     it("should send data to native - error", async () => {
@@ -79,13 +79,13 @@ describe("TCPClient", () => {
         const e = new Error("failed")
         TCPClientModule.send.mockRejectedValue(e)
         await expect(client.sendData("sample data")).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(clientId, "sample data")
+        expect(spy).toHaveBeenCalledWith(clientId, "sample data")
     })
 
     it("should stop client", async () => {
         const spy = jest.spyOn(TCPClientModule, "stopClient")
         await client.stop()
-        expect(spy).toBeCalledWith(clientId, StopReasonEnum.Manual)
+        expect(spy).toHaveBeenCalledWith(clientId, StopReasonEnum.Manual)
     })
 
     it("should stop client - error", async () => {
@@ -93,6 +93,6 @@ describe("TCPClient", () => {
         const e = new Error("failed")
         TCPClientModule.stopClient.mockRejectedValue(e)
         await expect(client.stop()).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(clientId, StopReasonEnum.Manual)
+        expect(spy).toHaveBeenCalledWith(clientId, StopReasonEnum.Manual)
     })
 })

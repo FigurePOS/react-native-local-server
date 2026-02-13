@@ -22,8 +22,8 @@ describe("log", () => {
             // @ts-ignore
             m.expect(__in.pipe(log(LoggerVerbosity.Low, logger, "This is the message"))).toBeObservable(_out)
             m.flush()
-            expect(spy).toBeCalledWith(LoggerVerbosity.Low, "This is the message", "data 1")
-            expect(spy).toBeCalledWith(LoggerVerbosity.Low, "This is the message", "data 2")
+            expect(spy).toHaveBeenCalledWith(LoggerVerbosity.Low, "This is the message", "data 1")
+            expect(spy).toHaveBeenCalledWith(LoggerVerbosity.Low, "This is the message", "data 2")
         }),
     )
 })
