@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable"
+import { ofType, StateObservable } from "redux-observable"
 import { Observable } from "rxjs"
 import { catchError, mergeMap, switchMap } from "rxjs/operators"
 
@@ -6,6 +6,8 @@ import { MessagingServerConfiguration, MessagingServerStatusEventName } from "@f
 
 import { createMessageData } from "../../common/components/messaging/functions"
 import { ServerConnectionState, ServerState } from "../../common/types"
+import { EpicDependencies } from "../../configureStore"
+import { StateObject } from "../../rootReducer"
 import { StateAction } from "../../types"
 
 import {
@@ -18,12 +20,15 @@ import {
     MESSAGING_SERVER_START_REQUESTED,
     MESSAGING_SERVER_STOP_REQUESTED,
 } from "./actions"
-import { SampleMessagingServerDependencies } from "./localCommunication/deps"
 import { createMessageTextMessageSent } from "./localCommunication/messages"
 import { rootHandler } from "./localCommunication/rootHandler"
 import { SampleMessagingServer } from "./localCommunication/server"
 
-const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =>
+const messagingServerStartRequested = (
+    action$: Observable<StateAction>,
+    _state$: StateObservable<StateObject>,
+    dependencies: EpicDependencies,
+) =>
     action$.pipe(
         ofType(MESSAGING_SERVER_START_REQUESTED),
         mergeMap((action: StateAction) => {
@@ -35,7 +40,7 @@ const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =
                 name: "Sample Messaging Server",
                 port: port,
             }
-            return SampleMessagingServer.start(config, rootHandler, SampleMessagingServerDependencies).pipe(
+            return SampleMessagingServer.start(config, rootHandler, dependencies).pipe(
                 mergeMap(() => []),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)
@@ -45,7 +50,7 @@ const messagingServerStartRequested: Epic = (action$: Observable<StateAction>) =
         }),
     )
 
-const messagingServerStatus: Epic = () =>
+const messagingServerStatus = () =>
     SampleMessagingServer.getStatusEvent$().pipe(
         mergeMap((e) => {
             switch (e.type) {
@@ -74,7 +79,7 @@ const messagingServerStatus: Epic = () =>
         }),
     )
 
-const messagingServerStopRequested: Epic = (action$: Observable<StateAction>) =>
+const messagingServerStopRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_SERVER_STOP_REQUESTED),
         mergeMap(() => {
@@ -88,7 +93,7 @@ const messagingServerStopRequested: Epic = (action$: Observable<StateAction>) =>
         }),
     )
 
-const messagingServerSendDataRequested: Epic = (action$: Observable<StateAction>) =>
+const messagingServerSendDataRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_SERVER_SEND_MESSAGE_REQUESTED),
         switchMap((action: StateAction) => {
@@ -103,7 +108,7 @@ const messagingServerSendDataRequested: Epic = (action$: Observable<StateAction>
         }),
     )
 
-const messagingServerCloseConnectionRequested: Epic = (action$: Observable<StateAction>) =>
+const messagingServerCloseConnectionRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(MESSAGING_SERVER_CONNECTION_CLOSE_REQUESTED),
         switchMap((action: StateAction) => {

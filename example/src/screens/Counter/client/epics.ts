@@ -1,4 +1,4 @@
-import { Epic, ofType, StateObservable } from "redux-observable"
+import { ofType, StateObservable } from "redux-observable"
 import { Observable } from "rxjs"
 import { catchError, filter, mergeMap, switchMap } from "rxjs/operators"
 
@@ -10,9 +10,9 @@ import {
 
 import { filterWithSelector } from "../../../common/operators/filterWithSelector"
 import { ClientState } from "../../../common/types"
+import { EpicDependencies } from "../../../configureStore"
 import { StateObject } from "../../../rootReducer"
 import { StateAction } from "../../../types"
-import { CounterDependencies } from "../common/deps"
 import { createCounterMessageCountRequested, createCounterMessageCountResetRequested } from "../common/messages"
 import { COUNTER_COUNT_RESET_REQUESTED } from "../data/actionts"
 
@@ -35,7 +35,11 @@ import { CounterClient } from "./client"
 import { rootHandler } from "./rootHandler"
 import { getCounterClientAvailableServices, isCounterClientRunning } from "./selectors"
 
-const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientStartRequested = (
+    action$: Observable<StateAction>,
+    _state$: StateObservable<StateObject>,
+    dependencies: EpicDependencies,
+) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_REQUESTED),
         switchMap((action: StateAction) => {
@@ -54,7 +58,7 @@ const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
                     timeout: 10 * 1000,
                 },
             }
-            return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
+            return CounterClient.start(config, rootHandler, dependencies).pipe(
                 mergeMap(() => []),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)
@@ -64,9 +68,10 @@ const counterClientStartRequested: Epic = (action$: Observable<StateAction>) =>
         }),
     )
 
-const counterClientStartFromServiceRequested: Epic = (
+const counterClientStartFromServiceRequested = (
     action$: Observable<StateAction>,
     state$: StateObservable<StateObject>,
+    dependencies: EpicDependencies,
 ) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_START_FROM_SERVICE_REQUESTED),
@@ -87,7 +92,7 @@ const counterClientStartFromServiceRequested: Epic = (
                     timeout: 10 * 1000,
                 },
             }
-            return CounterClient.start(config, rootHandler, CounterDependencies).pipe(
+            return CounterClient.start(config, rootHandler, dependencies).pipe(
                 mergeMap(() => []),
                 catchError((err: unknown) => {
                     const message = err instanceof Error ? err.message : String(err)
@@ -97,7 +102,7 @@ const counterClientStartFromServiceRequested: Epic = (
         }),
     )
 
-const counterClientStatus: Epic = () =>
+const counterClientStatus = () =>
     CounterClient.getStatusEvent$().pipe(
         mergeMap((e) => {
             switch (e.type) {
@@ -115,7 +120,7 @@ const counterClientStatus: Epic = () =>
         }),
     )
 
-const counterClientStopRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientStopRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_STOP_REQUESTED),
         switchMap(() => {
@@ -129,7 +134,7 @@ const counterClientStopRequested: Epic = (action$: Observable<StateAction>) =>
         }),
     )
 
-const counterClientRestartRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientRestartRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_RESTART_REQUESTED),
         switchMap(() => {
@@ -143,10 +148,7 @@ const counterClientRestartRequested: Epic = (action$: Observable<StateAction>) =
         }),
     )
 
-const counterClientCountResetRequested: Epic = (
-    action$: Observable<StateAction>,
-    state$: StateObservable<StateObject>,
-) =>
+const counterClientCountResetRequested = (action$: Observable<StateAction>, state$: StateObservable<StateObject>) =>
     action$.pipe(
         ofType(COUNTER_COUNT_RESET_REQUESTED),
         filterWithSelector(isCounterClientRunning, state$),
@@ -164,7 +166,7 @@ const counterClientCountResetRequested: Epic = (
         }),
     )
 
-const counterClientCountRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientCountRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_STATE_CHANGED),
         filter((action: StateAction) => action.payload.state === ClientState.Ready),
@@ -182,7 +184,7 @@ const counterClientCountRequested: Epic = (action$: Observable<StateAction>) =>
         }),
     )
 
-const counterClientSearchStartRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientSearchStartRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_SEARCH_START_REQUESTED),
         switchMap(() => {
@@ -196,7 +198,7 @@ const counterClientSearchStartRequested: Epic = (action$: Observable<StateAction
         }),
     )
 
-const counterClientSearchStopRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientSearchStopRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_SEARCH_STOP_REQUESTED),
         switchMap(() => {
@@ -210,7 +212,7 @@ const counterClientSearchStopRequested: Epic = (action$: Observable<StateAction>
         }),
     )
 
-const counterClientSearchRestartRequested: Epic = (action$: Observable<StateAction>) =>
+const counterClientSearchRestartRequested = (action$: Observable<StateAction>) =>
     action$.pipe(
         ofType(COUNTER_CLIENT_SEARCH_RESTART_REQUESTED),
         switchMap(() => {
@@ -224,7 +226,7 @@ const counterClientSearchRestartRequested: Epic = (action$: Observable<StateActi
         }),
     )
 
-const counterClientSearchUpdate: Epic = () =>
+const counterClientSearchUpdate = () =>
     CounterClient.getSearchUpdate$().pipe(
         mergeMap((event) => {
             return [createActionCounterClientAvailableServicesChanged(event.services)]

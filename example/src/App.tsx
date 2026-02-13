@@ -1,4 +1,5 @@
 import "react-native-gesture-handler"
+import "react-native-get-random-values"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import * as React from "react"
@@ -36,7 +37,7 @@ export enum ScreenNames {
     CallerID = "Caller ID",
 }
 
-export default function App() {
+export const App = () => {
     return (
         <Provider store={store}>
             <NavigationContainer theme={MyTheme}>

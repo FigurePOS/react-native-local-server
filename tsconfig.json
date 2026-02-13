@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "baseUrl": "./",
         "paths": {
             "@figuredev/react-native-local-server": ["./lib/typescript/src", "./src/index"]
         },
@@ -9,18 +8,18 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
-        "lib": ["esnext"],
-        "module": "esnext",
+        "lib": ["es2023"],
+        "module": "es2022",
         "moduleResolution": "node",
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noImplicitUseStrict": false,
         "noStrictGenericChecks": false,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        "noUnusedParameters": false,
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
-        "target": "esnext"
+        "target": "es2022"
     }
 }
