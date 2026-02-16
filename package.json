@@ -65,6 +65,7 @@
         "@figurepos/commit-lint-config": "0.0.2",
         "@release-it/conventional-changelog": "10.0.5",
         "@types/jest": "30.0.0",
+        "@types/parse-path": "7.1.0",
         "@types/react": "19.1.10",
         "@types/uuid": "11.0.0",
         "babel-jest": "30.2.0",
@@ -75,8 +76,8 @@
         "prettier": "3.5.3",
         "react": "19.1.0",
         "react-native": "0.81.5",
-        "react-native-builder-bob": "0.18.2",
-        "release-it": "17.11.0",
+        "react-native-builder-bob": "0.23.2",
+        "release-it": "19.0.5",
         "typescript": "5.9.3"
     },
     "peerDependencies": {
