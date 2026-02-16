@@ -100,5 +100,8 @@
             ]
         ]
     },
-    "prettier": "@figuredev/prettier-config"
+    "prettier": "@figuredev/prettier-config",
+    "engines": {
+        "node": ">=24"
+    }
 }
