@@ -61,9 +61,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -110,9 +108,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -160,9 +156,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -203,9 +197,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -251,9 +243,7 @@ describe("pingServerConnection", () => {
                 2,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -300,9 +290,7 @@ describe("pingServerConnection", () => {
                 2,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -349,9 +337,7 @@ describe("pingServerConnection", () => {
                 2,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )

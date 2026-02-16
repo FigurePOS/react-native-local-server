@@ -34,9 +34,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -67,9 +65,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -102,9 +98,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -139,9 +133,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -169,9 +161,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
