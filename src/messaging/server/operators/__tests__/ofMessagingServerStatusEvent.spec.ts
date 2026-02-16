@@ -22,10 +22,10 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<unknown> = m.hot("-a---------|", {
+            const _out: Observable<MessagingServerStatusEvent> = m.hot("-a---------|", {
                 a: MessagingServerStatusEventReady,
             })
-            // @ts-ignore
+            // @ts-expect-error - never x MessagingServerStatusEvent issue
             m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Ready))).toBeObservable(_out)
         }),
     )
@@ -39,11 +39,11 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<unknown> = m.hot("---------a-|", {
+            const _out: Observable<MessagingServerStatusEvent> = m.hot("---------a-|", {
                 a: MessagingServerStatusEventStopped,
             })
             m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped))).toBeObservable(
-                // @ts-ignore
+                // @ts-expect-error - never x MessagingServerStatusEvent issue
                 _out,
             )
         }),
@@ -58,14 +58,14 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<unknown> = m.hot("---a-------|", {
+            const _out: Observable<MessagingServerStatusEvent> = m.hot("---a-------|", {
                 a: MessagingServerStatusEventConnectionAccepted,
             })
 
             m.expect(
                 __in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionAccepted)),
             ).toBeObservable(
-                // @ts-ignore
+                // @ts-expect-error - never x MessagingServerStatusEvent issue
                 _out,
             )
         }),

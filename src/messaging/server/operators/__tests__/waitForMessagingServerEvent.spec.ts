@@ -1,4 +1,6 @@
-import { MessagingServerStatusEventName } from "../../"
+import { Observable } from "rxjs"
+
+import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../../"
 import { marbles } from "../../../../utils/marbles"
 import { fromMessagingServerStatusEvent } from "../fromMessagingServerStatusEvent"
 import { waitForMessagingServerEvent } from "../waitForMessagingServerEvent"
@@ -10,20 +12,20 @@ describe("waitForMessagingServerEvent", () => {
         "should wait for stopped event",
         marbles((m) => {
             const _in1 = m.hot("a|", { a: 1 })
-            const ___m = m.cold("-a-b", {
+            const ___m: Observable<MessagingServerStatusEvent> = m.cold("-a-b", {
                 a: {
                     type: MessagingServerStatusEventName.Ready,
+                    port: 12000,
                 },
                 b: {
                     type: MessagingServerStatusEventName.Stopped,
+                    port: 12000,
                 },
             })
-            // @ts-ignore
-            fromMessagingServerStatusEvent.mockReturnValue(___m)
-            const _out = m.hot("---|")
+            jest.mocked(fromMessagingServerStatusEvent).mockReturnValue(___m)
+            const _out: Observable<never> = m.hot("---|")
             m.expect(
                 _in1.pipe(waitForMessagingServerEvent("server-1", MessagingServerStatusEventName.Stopped)),
-                // @ts-ignore
             ).toBeObservable(_out)
         }),
     )
