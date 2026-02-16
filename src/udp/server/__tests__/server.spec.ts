@@ -32,7 +32,7 @@ describe("UDPServer", () => {
             port: 12000,
         }
         await server.start(config)
-        expect(spy).toBeCalledWith(serverId, config.port, 0)
+        expect(spy).toHaveBeenCalledWith(serverId, config.port, 0)
         expect(server.getConfiguration()).toEqual(config)
     })
 
@@ -43,7 +43,7 @@ describe("UDPServer", () => {
             numberOfDroppedBytesFromMsgStart: 20,
         }
         await server.start(config)
-        expect(spy).toBeCalledWith(serverId, config.port, config.numberOfDroppedBytesFromMsgStart)
+        expect(spy).toHaveBeenCalledWith(serverId, config.port, config.numberOfDroppedBytesFromMsgStart)
         expect(server.getConfiguration()).toEqual(config)
     })
 
@@ -55,13 +55,13 @@ describe("UDPServer", () => {
             port: 12000,
         }
         await expect(server.start(config)).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(serverId, config.port, 0)
+        expect(spy).toHaveBeenCalledWith(serverId, config.port, 0)
     })
 
     it("should send data to native", async () => {
         const spy = jest.spyOn(UDPServerModule, "send")
         await server.sendData("192.168.0.1", 500, "sample data")
-        expect(spy).toBeCalledWith("192.168.0.1", 500, "sample data")
+        expect(spy).toHaveBeenCalledWith("192.168.0.1", 500, "sample data")
     })
 
     it("should send data to native - error", async () => {
@@ -69,19 +69,19 @@ describe("UDPServer", () => {
         const e = new Error("failed")
         UDPServerModule.send.mockRejectedValue(e)
         await expect(server.sendData("192.168.0.1", 500, "sample data")).rejects.toEqual(e)
-        expect(spy).toBeCalledWith("192.168.0.1", 500, "sample data")
+        expect(spy).toHaveBeenCalledWith("192.168.0.1", 500, "sample data")
     })
 
     it("should stop server", async () => {
         const spy = jest.spyOn(UDPServerModule, "stopServer")
         await server.stop()
-        expect(spy).toBeCalledWith(serverId, StopReasonEnum.Manual)
+        expect(spy).toHaveBeenCalledWith(serverId, StopReasonEnum.Manual)
     })
 
     it("should stop server with custom reason", async () => {
         const spy = jest.spyOn(UDPServerModule, "stopServer")
         await server.stop("custom-reason")
-        expect(spy).toBeCalledWith(serverId, "custom-reason")
+        expect(spy).toHaveBeenCalledWith(serverId, "custom-reason")
     })
 
     it("should stop server - error", async () => {
@@ -89,6 +89,6 @@ describe("UDPServer", () => {
         const e = new Error("failed")
         UDPServerModule.stopServer.mockRejectedValue(e)
         await expect(server.stop()).rejects.toEqual(e)
-        expect(spy).toBeCalledWith(serverId, StopReasonEnum.Manual)
+        expect(spy).toHaveBeenCalledWith(serverId, StopReasonEnum.Manual)
     })
 })

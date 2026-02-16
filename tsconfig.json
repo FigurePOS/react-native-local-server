@@ -21,5 +21,6 @@
         "skipLibCheck": true,
         "strict": true,
         "target": "es2022"
-    }
+    },
+    "include": ["src/**/*", "example/**/*", ".jest/setup.ts"]
 }
