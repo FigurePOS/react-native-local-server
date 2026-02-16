@@ -59,7 +59,6 @@
         "rxjs": "7.8.1"
     },
     "devDependencies": {
-        "@changesets/cli": "2.29.8",
         "@figuredev/eslint-plugin-react-native": "3.0.3",
         "@figuredev/prettier-config": "2.2.1",
         "@figurepos/commit-lint-config": "0.0.2",
@@ -100,5 +99,8 @@
             ]
         ]
     },
-    "prettier": "@figuredev/prettier-config"
+    "prettier": "@figuredev/prettier-config",
+    "engines": {
+        "node": ">=24"
+    }
 }
