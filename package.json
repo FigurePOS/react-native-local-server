@@ -77,7 +77,6 @@
         "react-native": "0.81.5",
         "react-native-builder-bob": "0.18.2",
         "release-it": "17.11.0",
-        "rxjs-marbles": "7.0.1",
         "typescript": "5.9.3"
     },
     "peerDependencies": {

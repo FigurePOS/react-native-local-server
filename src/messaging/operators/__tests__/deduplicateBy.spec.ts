@@ -1,4 +1,4 @@
-import { marbles } from "rxjs-marbles"
+import { marbles } from "../../../utils/marbles"
 import { deduplicateBy } from "../deduplicateBy"
 
 describe("deduplicateBy", () => {

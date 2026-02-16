@@ -1,4 +1,4 @@
-import { marbles } from "rxjs-marbles"
+import { marbles } from "../../../../utils/marbles"
 import * as uuid from "uuid"
 import { Observable, Subject } from "rxjs"
 import { MessagingServerStatusEvent } from "../../types"
@@ -235,7 +235,7 @@ describe("pingServerConnection", () => {
                     a: true,
                     b: false,
                 },
-                { name: "Error", message: "Ping failed 2 times" },
+                new Error("Ping failed 2 times"),
             )
             const pingInterval = m.time("---|")
             const pingTimeout = m.time("--|")
