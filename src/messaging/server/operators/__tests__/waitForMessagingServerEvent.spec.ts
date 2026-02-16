@@ -1,4 +1,4 @@
-import { marbles } from "rxjs-marbles"
+import { marbles } from "../../../../utils/marbles"
 import { waitForMessagingServerEvent } from "../waitForMessagingServerEvent"
 import { fromMessagingServerStatusEvent } from "../fromMessagingServerStatusEvent"
 import { MessagingServerStatusEventName } from "../../"

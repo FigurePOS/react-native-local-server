@@ -1,4 +1,4 @@
-import { marbles } from "rxjs-marbles"
+import { marbles } from "../../marbles"
 import { log } from "../log"
 import { LoggerVerbosity } from "../../logger"
 import spyOn = jest.spyOn

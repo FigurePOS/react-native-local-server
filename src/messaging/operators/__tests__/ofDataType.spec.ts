@@ -1,4 +1,4 @@
-import { marbles } from "rxjs-marbles"
+import { marbles } from "../../../utils/marbles"
 import {
     DataObjectMessageAckFixture1,
     DataObjectMessageAckFixture2,
