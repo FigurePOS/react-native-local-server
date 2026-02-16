@@ -1,5 +1,24 @@
 ### [0.17.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.17.0...v0.17.1) (2025-01-02)
 
+## 0.18.0
+
+### Minor Changes
+
+- 9a6a858: feat: update dependencies FGR3-8440
+
+### Patch Changes
+
+- 92d465b: feat: remove husky, change commitlint FGR3-8440
+- afd643b: feat: run lint and ts checks for root and example FGR3-8440
+- 87c395d: feat: switch to GHA from Circle CI FGR3-8438
+- 13bef92: feat: enable eslint in tests FGR3-8440
+- f999b8b: feat: remove rxjs-marbles FGR3-8440
+- 56d07e4: fix: enable no-implicit-any-catch and no-explicit-any rules FGR3-8440
+- 5794946: chore: update eslint and fix errors FGR3-8440
+- f4f510d: feat: run native tests on GitHub FGR3-8438
+- c72b56b: feat: migrate example app to expo FGR3-8440
+- 66b5903: feat: update release-it and builder-bob and CONTRIBUTING.md FGR3-8440
+
 ### Features
 
 - update rxjs version FGR3-5592 ([#77](https://github.com/FigurePOS/react-native-local-server/issues/77)) ([2c73132](https://github.com/FigurePOS/react-native-local-server/commit/2c73132790fc488b0e6035654a14addd2a61a671))
