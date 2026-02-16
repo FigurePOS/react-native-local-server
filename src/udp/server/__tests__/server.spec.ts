@@ -1,6 +1,6 @@
 import { UDPServer, UDPServerConfiguration } from "../"
-import { UDPServerModule } from "../module"
 import { StopReasonEnum } from "../../../utils/types"
+import { UDPServerModule } from "../module"
 
 jest.mock("../module", () => ({
     UDPServerModule: {

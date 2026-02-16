@@ -1,5 +1,5 @@
-import { composeTestPhoneCall, examplePhoneCall } from "../__fixtures__/phoneCall"
 import { TestPackets } from "../__fixtures__/packetData"
+import { composeTestPhoneCall, examplePhoneCall } from "../__fixtures__/phoneCall"
 import { composePacketDataFromPhoneCall, parsePhoneCallFromPacketData } from "../parser"
 import { PhoneCallChecksum, PhoneCallDirection, PhoneCallNumberException, PhoneCallUpdate } from "../types"
 

@@ -1,7 +1,7 @@
-import { marbles } from "../../../../utils/marbles"
-import { waitForMessagingServerEvent } from "../waitForMessagingServerEvent"
-import { fromMessagingServerStatusEvent } from "../fromMessagingServerStatusEvent"
 import { MessagingServerStatusEventName } from "../../"
+import { marbles } from "../../../../utils/marbles"
+import { fromMessagingServerStatusEvent } from "../fromMessagingServerStatusEvent"
+import { waitForMessagingServerEvent } from "../waitForMessagingServerEvent"
 
 jest.mock("../fromMessagingServerStatusEvent")
 

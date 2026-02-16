@@ -1,3 +1,5 @@
+import { Observable } from "rxjs"
+
 import { marbles } from "../../../utils/marbles"
 import {
     DataObjectMessageAckFixture1,
@@ -5,9 +7,8 @@ import {
     DataObjectMessageFixture1,
     DataObjectMessageFixture2,
 } from "../../__fixtures__/dataObject"
-import { ofDataTypeMessage, ofDataTypeMessageAck } from "../ofDataType"
-import { Observable } from "rxjs"
 import { DataObject } from "../../types"
+import { ofDataTypeMessage, ofDataTypeMessageAck } from "../ofDataType"
 
 describe("ofDataTypeMessage", () => {
     it(

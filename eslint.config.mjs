@@ -13,7 +13,4 @@ export default [
             "no-console": "off",
         },
     },
-    {
-        ignores: ["**/__tests__/**", "**/__mocks__/**", "**/__rsc_tests__/**"],
-    },
 ]

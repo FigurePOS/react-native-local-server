@@ -1,6 +1,6 @@
 import { TCPClient, TCPClientConfiguration, TCPClientConnectionMethod } from "../"
-import { TCPClientModule } from "../module"
 import { StopReasonEnum } from "../../.."
+import { TCPClientModule } from "../module"
 
 jest.mock("../module", () => ({
     TCPClientModule: {

@@ -1,7 +1,6 @@
-import { marbles } from "../../../../utils/marbles"
 import { Observable } from "rxjs"
-import { ofMessagingServerStatusEvent } from "../ofMessagingServerStatusEvent"
-import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../../types"
+
+import { marbles } from "../../../../utils/marbles"
 import {
     MessagingServerStatusEventConnectionAccepted,
     MessagingServerStatusEventConnectionClosed,
@@ -9,6 +8,8 @@ import {
     MessagingServerStatusEventReady,
     MessagingServerStatusEventStopped,
 } from "../../../__fixtures__/serverStatusEvent"
+import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../../types"
+import { ofMessagingServerStatusEvent } from "../ofMessagingServerStatusEvent"
 
 describe("ofServerStatusEvent", () => {
     it(

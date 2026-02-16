@@ -1,6 +1,6 @@
 import { TCPServer, TCPServerConfiguration } from "../"
-import { TCPServerModule } from "../module"
 import { StopReasonEnum } from "../../.."
+import { TCPServerModule } from "../module"
 
 jest.mock("../module", () => ({
     TCPServerModule: {

@@ -1,6 +1,7 @@
+import { LoggerVerbosity } from "../../logger"
 import { marbles } from "../../marbles"
 import { log } from "../log"
-import { LoggerVerbosity } from "../../logger"
+
 import spyOn = jest.spyOn
 
 describe("log", () => {

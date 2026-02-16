@@ -1,14 +1,15 @@
-import { marbles } from "../../../../utils/marbles"
-import * as uuid from "uuid"
 import { Observable, Subject } from "rxjs"
-import { MessagingServerStatusEvent } from "../../types"
-import { pingMessagingServerConnection } from "../pingMessagingServerConnection"
-import { composeDataObjectPing, DataObject } from "../../../types"
+import * as uuid from "uuid"
+
+import { marbles } from "../../../../utils/marbles"
+import { DataObjectMessageFixture1 } from "../../../__fixtures__/dataObject"
 import {
     MessagingServerStatusEventConnectionClosed,
     MessagingServerStatusEventStopped,
 } from "../../../__fixtures__/serverStatusEvent"
-import { DataObjectMessageFixture1 } from "../../../__fixtures__/dataObject"
+import { composeDataObjectPing, DataObject } from "../../../types"
+import { MessagingServerStatusEvent } from "../../types"
+import { pingMessagingServerConnection } from "../pingMessagingServerConnection"
 
 jest.mock("uuid", () => ({
     v4: jest.fn(),

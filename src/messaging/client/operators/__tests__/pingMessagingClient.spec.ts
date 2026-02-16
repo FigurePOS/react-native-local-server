@@ -1,11 +1,12 @@
-import { marbles } from "../../../../utils/marbles"
-import * as uuid from "uuid"
 import { Observable, Subject } from "rxjs"
-import { MessagingClientStatusEvent } from "../../types"
-import { composeDataObjectPing, DataObject } from "../../../types"
+import * as uuid from "uuid"
+
 import { pingMessagingClient } from "../"
+import { marbles } from "../../../../utils/marbles"
 import { MessagingClientStatusEventStopped } from "../../../__fixtures__/clientStatusEvent"
 import { DataObjectMessageFixture1 } from "../../../__fixtures__/dataObject"
+import { composeDataObjectPing, DataObject } from "../../../types"
+import { MessagingClientStatusEvent } from "../../types"
 
 jest.mock("uuid", () => ({
     v4: jest.fn(),
