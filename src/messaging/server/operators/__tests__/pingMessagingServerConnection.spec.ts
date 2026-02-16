@@ -16,10 +16,8 @@ jest.mock("uuid", () => ({
 }))
 
 const mockIds = (values: string[]) => {
-    values.forEach((v) => {
-        // @ts-ignore
-        uuid.v4.mockReturnValueOnce(v)
-    })
+    // @ts-expect-error - string x Uint8Array<ArrayBufferLike> issue
+    values.forEach((v) => jest.mocked(uuid.v4).mockReturnValueOnce(v))
 }
 
 describe("pingServerConnection", () => {
