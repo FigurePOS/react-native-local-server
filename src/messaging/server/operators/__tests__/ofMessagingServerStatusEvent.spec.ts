@@ -22,7 +22,7 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<any> = m.hot("-a---------|", {
+            const _out: Observable<unknown> = m.hot("-a---------|", {
                 a: MessagingServerStatusEventReady,
             })
             // @ts-ignore
@@ -39,7 +39,7 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<any> = m.hot("---------a-|", {
+            const _out: Observable<unknown> = m.hot("---------a-|", {
                 a: MessagingServerStatusEventStopped,
             })
             m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped))).toBeObservable(
@@ -58,7 +58,7 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<any> = m.hot("---a-------|", {
+            const _out: Observable<unknown> = m.hot("---a-------|", {
                 a: MessagingServerStatusEventConnectionAccepted,
             })
 
