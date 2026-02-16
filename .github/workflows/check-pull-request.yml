@@ -17,6 +17,8 @@ jobs:
 
       - name: Set Up Node.js
         uses: FigurePOS/github-actions/.github/actions/setup-node@v1
+        with:
+          version: "24.x"
 
       - name: Install Dependencies
         uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
