@@ -15,7 +15,7 @@ jest.mock("uuid", () => ({
     v4: jest.fn(),
 }))
 
-export const mockIds = (values: string[]) => {
+const mockIds = (values: string[]) => {
     values.forEach((v) => {
         // @ts-ignore
         uuid.v4.mockReturnValueOnce(v)
