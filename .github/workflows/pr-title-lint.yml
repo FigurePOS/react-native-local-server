@@ -1,0 +1,28 @@
+name: PR Title Lint
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  pr-title-lint:
+    name: "Check PR title"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: FigurePOS/github-actions/.github/actions/setup-node@v1
+        with:
+          version: "22.x"
+
+      - name: Install Dependencies
+        uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
+
+      - name: Lint PR title
+        run: |
+          ./node_modules/@figurepos/commit-lint-config/scripts/lint-commit-message-ci.sh "${{ github.event.pull_request.title }}"
