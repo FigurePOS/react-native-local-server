@@ -1,21 +1,20 @@
-import { marbles } from "../../../../utils/marbles"
-import * as uuid from "uuid"
 import { Observable, Subject } from "rxjs"
-import { MessagingClientStatusEvent } from "../../types"
-import { composeDataObjectPing, DataObject } from "../../../types"
+import * as uuid from "uuid"
+
 import { pingMessagingClient } from "../"
+import { marbles } from "../../../../utils/marbles"
 import { MessagingClientStatusEventStopped } from "../../../__fixtures__/clientStatusEvent"
 import { DataObjectMessageFixture1 } from "../../../__fixtures__/dataObject"
+import { composeDataObjectPing, DataObject } from "../../../types"
+import { MessagingClientStatusEvent } from "../../types"
 
 jest.mock("uuid", () => ({
     v4: jest.fn(),
 }))
 
-export const mockIds = (values: string[]) => {
-    values.forEach((v) => {
-        // @ts-ignore
-        uuid.v4.mockReturnValueOnce(v)
-    })
+const mockIds = (values: string[]) => {
+    // @ts-expect-error - string x Uint8Array<ArrayBufferLike> issue
+    values.forEach((v) => jest.mocked(uuid.v4).mockReturnValueOnce(v))
 }
 
 describe("pingClient", () => {
@@ -33,9 +32,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -66,9 +63,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -101,9 +96,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -138,9 +131,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -168,9 +159,7 @@ describe("pingClient", () => {
             const pingTimeout = m.time("----|")
             const dataOut$: Subject<DataObject> = new Subject<DataObject>()
             const result = pingMessagingClient(status$, dataIn$, dataOut$, pingTimeout, m.scheduler)
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )

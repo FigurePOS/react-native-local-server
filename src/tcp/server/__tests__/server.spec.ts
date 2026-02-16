@@ -1,6 +1,6 @@
 import { TCPServer, TCPServerConfiguration } from "../"
-import { TCPServerModule } from "../module"
 import { StopReasonEnum } from "../../.."
+import { TCPServerModule } from "../module"
 
 jest.mock("../module", () => ({
     TCPServerModule: {
@@ -24,7 +24,7 @@ describe("TCPServer", () => {
 
     it("should return server id", () => {
         server.setLogger(null)
-        return expect(server.getId()).toEqual(serverId)
+        expect(server.getId()).toEqual(serverId)
     })
 
     it("should start server", async () => {

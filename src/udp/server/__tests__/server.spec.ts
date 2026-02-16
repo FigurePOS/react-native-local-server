@@ -1,6 +1,6 @@
 import { UDPServer, UDPServerConfiguration } from "../"
-import { UDPServerModule } from "../module"
 import { StopReasonEnum } from "../../../utils/types"
+import { UDPServerModule } from "../module"
 
 jest.mock("../module", () => ({
     UDPServerModule: {
@@ -23,7 +23,7 @@ describe("UDPServer", () => {
 
     it("should return server id", () => {
         server.setLogger(null)
-        return expect(server.getId()).toEqual(serverId)
+        expect(server.getId()).toEqual(serverId)
     })
 
     it("should start server", async () => {

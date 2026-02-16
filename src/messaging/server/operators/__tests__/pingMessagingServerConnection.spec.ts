@@ -1,24 +1,23 @@
-import { marbles } from "../../../../utils/marbles"
-import * as uuid from "uuid"
 import { Observable, Subject } from "rxjs"
-import { MessagingServerStatusEvent } from "../../types"
-import { pingMessagingServerConnection } from "../pingMessagingServerConnection"
-import { composeDataObjectPing, DataObject } from "../../../types"
+import * as uuid from "uuid"
+
+import { marbles } from "../../../../utils/marbles"
+import { DataObjectMessageFixture1 } from "../../../__fixtures__/dataObject"
 import {
     MessagingServerStatusEventConnectionClosed,
     MessagingServerStatusEventStopped,
 } from "../../../__fixtures__/serverStatusEvent"
-import { DataObjectMessageFixture1 } from "../../../__fixtures__/dataObject"
+import { composeDataObjectPing, DataObject } from "../../../types"
+import { MessagingServerStatusEvent } from "../../types"
+import { pingMessagingServerConnection } from "../pingMessagingServerConnection"
 
 jest.mock("uuid", () => ({
     v4: jest.fn(),
 }))
 
-export const mockIds = (values: string[]) => {
-    values.forEach((v) => {
-        // @ts-ignore
-        uuid.v4.mockReturnValueOnce(v)
-    })
+const mockIds = (values: string[]) => {
+    // @ts-expect-error - string x Uint8Array<ArrayBufferLike> issue
+    values.forEach((v) => jest.mocked(uuid.v4).mockReturnValueOnce(v))
 }
 
 describe("pingServerConnection", () => {
@@ -60,9 +59,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -109,9 +106,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -159,9 +154,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -202,9 +195,7 @@ describe("pingServerConnection", () => {
                 3,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -250,9 +241,7 @@ describe("pingServerConnection", () => {
                 2,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -299,9 +288,7 @@ describe("pingServerConnection", () => {
                 2,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )
@@ -348,9 +335,7 @@ describe("pingServerConnection", () => {
                 2,
                 m.scheduler,
             )
-            // @ts-ignore
             m.expect(result).toBeObservable(_out)
-            // @ts-ignore
             m.expect(dataOut$).toBeObservable(expectedDataOut$)
         }),
     )

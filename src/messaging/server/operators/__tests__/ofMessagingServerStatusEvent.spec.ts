@@ -1,7 +1,6 @@
-import { marbles } from "../../../../utils/marbles"
 import { Observable } from "rxjs"
-import { ofMessagingServerStatusEvent } from "../ofMessagingServerStatusEvent"
-import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../../types"
+
+import { marbles } from "../../../../utils/marbles"
 import {
     MessagingServerStatusEventConnectionAccepted,
     MessagingServerStatusEventConnectionClosed,
@@ -9,6 +8,8 @@ import {
     MessagingServerStatusEventReady,
     MessagingServerStatusEventStopped,
 } from "../../../__fixtures__/serverStatusEvent"
+import { MessagingServerStatusEvent, MessagingServerStatusEventName } from "../../types"
+import { ofMessagingServerStatusEvent } from "../ofMessagingServerStatusEvent"
 
 describe("ofServerStatusEvent", () => {
     it(
@@ -21,10 +22,10 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<any> = m.hot("-a---------|", {
+            const _out: Observable<MessagingServerStatusEvent> = m.hot("-a---------|", {
                 a: MessagingServerStatusEventReady,
             })
-            // @ts-ignore
+            // @ts-expect-error - never x MessagingServerStatusEvent issue
             m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Ready))).toBeObservable(_out)
         }),
     )
@@ -38,11 +39,11 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<any> = m.hot("---------a-|", {
+            const _out: Observable<MessagingServerStatusEvent> = m.hot("---------a-|", {
                 a: MessagingServerStatusEventStopped,
             })
             m.expect(__in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.Stopped))).toBeObservable(
-                // @ts-ignore
+                // @ts-expect-error - never x MessagingServerStatusEvent issue
                 _out,
             )
         }),
@@ -57,14 +58,14 @@ describe("ofServerStatusEvent", () => {
                 d: MessagingServerStatusEventConnectionClosed,
                 e: MessagingServerStatusEventStopped,
             })
-            const _out: Observable<any> = m.hot("---a-------|", {
+            const _out: Observable<MessagingServerStatusEvent> = m.hot("---a-------|", {
                 a: MessagingServerStatusEventConnectionAccepted,
             })
 
             m.expect(
                 __in.pipe(ofMessagingServerStatusEvent(MessagingServerStatusEventName.ConnectionAccepted)),
             ).toBeObservable(
-                // @ts-ignore
+                // @ts-expect-error - never x MessagingServerStatusEvent issue
                 _out,
             )
         }),

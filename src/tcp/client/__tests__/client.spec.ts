@@ -1,6 +1,6 @@
 import { TCPClient, TCPClientConfiguration, TCPClientConnectionMethod } from "../"
-import { TCPClientModule } from "../module"
 import { StopReasonEnum } from "../../.."
+import { TCPClientModule } from "../module"
 
 jest.mock("../module", () => ({
     TCPClientModule: {
@@ -22,7 +22,7 @@ describe("TCPClient", () => {
 
     it("should return client id", () => {
         client.setLogger(null)
-        return expect(client.getId()).toEqual(clientId)
+        expect(client.getId()).toEqual(clientId)
     })
 
     it("should start client - raw method", async () => {
