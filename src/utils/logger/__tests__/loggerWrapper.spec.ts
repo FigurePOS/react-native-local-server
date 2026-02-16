@@ -18,7 +18,7 @@ describe("LoggerWrapper", () => {
 
         loggerWrapper.log(LoggerVerbosity.Medium, "This is the message")
 
-        return expect(spy).toHaveBeenCalledTimes(0)
+        expect(spy).toHaveBeenCalledTimes(0)
     })
 
     it("should log", () => {
@@ -33,6 +33,6 @@ describe("LoggerWrapper", () => {
 
         loggerWrapper.log(LoggerVerbosity.Medium, "This is the message")
 
-        return expect(spy).toHaveBeenCalledWith("This is the message", undefined)
+        expect(spy).toHaveBeenCalledWith("This is the message", undefined)
     })
 })

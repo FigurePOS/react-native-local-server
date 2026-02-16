@@ -20,7 +20,7 @@ describe("mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate", () =
         const expected: MessagingClientServiceSearchEventUpdate = {
             type: MessagingClientServiceSearchUpdate.Reset,
         }
-        return expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
+        expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
     })
     it("should return reset on search stopped", () => {
         const event: ServiceBrowserNativeEvent = {
@@ -30,7 +30,7 @@ describe("mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate", () =
         const expected: MessagingClientServiceSearchEventUpdate = {
             type: MessagingClientServiceSearchUpdate.Reset,
         }
-        return expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
+        expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
     })
     it("should return unknown on unknown event", () => {
         const event: ServiceBrowserNativeEvent = {
@@ -40,7 +40,7 @@ describe("mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate", () =
         const expected: MessagingClientServiceSearchEventUpdate = {
             type: MessagingClientServiceSearchUpdate.Unknown,
         }
-        return expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
+        expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
     })
     it("should return service found", () => {
         const event: ServiceBrowserNativeEvent = {
@@ -56,7 +56,7 @@ describe("mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate", () =
                 shortId: "",
             },
         }
-        return expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
+        expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
     })
     it("should return service lost", () => {
         const event: ServiceBrowserNativeEvent = {
@@ -72,7 +72,7 @@ describe("mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate", () =
                 shortId: "",
             },
         }
-        return expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
+        expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
     })
     it("should parse short id from name", () => {
         const event: ServiceBrowserNativeEvent = {
@@ -88,25 +88,25 @@ describe("mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate", () =
                 shortId: "ab34da24",
             },
         }
-        return expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
+        expect(mapServiceBrowserEventToMessagingClientServiceSearchEventUpdate(event)).toEqual(expected)
     })
 })
 
 describe("mapServiceBrowserEventToMessagingService", () => {
     it("should parse shortId from brackets", () => {
-        return expect(parseMessagingServiceInformation("Service Name (shortId)  ")).toEqual({
+        expect(parseMessagingServiceInformation("Service Name (shortId)  ")).toEqual({
             name: "Service Name",
             shortId: "shortId",
         })
     })
     it("should parse shortId from last brackets", () => {
-        return expect(parseMessagingServiceInformation("Service Name (NOT_ID) (shortId)")).toEqual({
+        expect(parseMessagingServiceInformation("Service Name (NOT_ID) (shortId)")).toEqual({
             name: "Service Name (NOT_ID)",
             shortId: "shortId",
         })
     })
     it("should return empty shortId if there are no brackets", () => {
-        return expect(parseMessagingServiceInformation("Service Name")).toEqual({
+        expect(parseMessagingServiceInformation("Service Name")).toEqual({
             name: "Service Name",
             shortId: "",
         })
@@ -122,9 +122,9 @@ describe("reduceMessagingClientServiceSearchEventUpdate", () => {
             services: [],
             update: update,
         }
-        return expect(
-            reduceMessagingClientServiceSearchEventUpdate({} as MessagingClientServiceSearchEvent, update),
-        ).toEqual(expected)
+        expect(reduceMessagingClientServiceSearchEventUpdate({} as MessagingClientServiceSearchEvent, update)).toEqual(
+            expected,
+        )
     })
     it("should return do not modify state on unknown", () => {
         const update: MessagingClientServiceSearchEventUpdate = {
@@ -138,7 +138,7 @@ describe("reduceMessagingClientServiceSearchEventUpdate", () => {
             services: initial.services,
             update: update,
         }
-        return expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
+        expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
     })
     it("should add service on service found", () => {
         const update: MessagingClientServiceSearchEventUpdate = {
@@ -153,7 +153,7 @@ describe("reduceMessagingClientServiceSearchEventUpdate", () => {
             services: [update.service],
             update: update,
         }
-        return expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
+        expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
     })
     it("should remove service on service lost", () => {
         const update: MessagingClientServiceSearchEventUpdate = {
@@ -168,7 +168,7 @@ describe("reduceMessagingClientServiceSearchEventUpdate", () => {
             services: [],
             update: update,
         }
-        return expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
+        expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
     })
     it("should keep other services on service lost", () => {
         const update: MessagingClientServiceSearchEventUpdate = {
@@ -183,7 +183,7 @@ describe("reduceMessagingClientServiceSearchEventUpdate", () => {
             services: [{ name: "Other Service Name", shortId: "otherShortId" }],
             update: update,
         }
-        return expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
+        expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
     })
     it("should not add the same service twice", () => {
         const update: MessagingClientServiceSearchEventUpdate = {
@@ -198,6 +198,6 @@ describe("reduceMessagingClientServiceSearchEventUpdate", () => {
             services: [update.service],
             update: update,
         }
-        return expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
+        expect(reduceMessagingClientServiceSearchEventUpdate(initial, update)).toEqual(expected)
     })
 })
