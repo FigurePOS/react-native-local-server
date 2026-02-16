@@ -1,0 +1,8 @@
+{
+    "rules": {
+        "no-caret-version-dependencies": "error",
+        "no-tilde-version-dependencies": "error",
+        "no-caret-version-devDependencies": "error",
+        "no-tilde-version-devDependencies": "error"
+    }
+}

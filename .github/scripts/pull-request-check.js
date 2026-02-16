@@ -1,22 +1,10 @@
 /* eslint-disable no-console */
-const exec = require("child_process").exec
-
 // @ts-check
 /** @param {import('@types/github-script').AsyncFunctionArguments} AsyncFunctionArguments */
 module.exports = async ({ context, github, changedFiles }) => {
-  const prName = context.payload.pull_request.title
   console.log("Running pull-request-check")
   console.log("Deleting old comments...")
   await deleteOldComments(github, context)
-
-  console.log("Checking PR name...")
-  const lintOutput = await lintCommitMessage(context, prName)
-  if (lintOutput.length > 0) {
-    console.log(`PR name (${prName}) is invalid`)
-    console.log(lintOutput)
-  } else {
-    console.log(`PR name (${prName}) is valid`)
-  }
 
   console.log("Checking native changes...")
   const nativeChanges = checkNativeChanges(changedFiles)
@@ -28,7 +16,7 @@ module.exports = async ({ context, github, changedFiles }) => {
   }
 
   console.log("Composing comment...")
-  const comment = composeComment(context.workflow, prName, lintOutput, nativeChanges)
+  const comment = composeComment(context.workflow, nativeChanges)
   if (!comment) {
     console.log("No issues found")
     return
@@ -42,18 +30,6 @@ module.exports = async ({ context, github, changedFiles }) => {
     body: comment,
   })
 }
-
-const lintCommitMessage = (context, prName) =>
-  new Promise((resolve) => {
-    exec(`echo "${prName}" | npx commitlint`, (error, stdout, stderr) => {
-      console.log("Commitlint output:")
-      console.log("stdout")
-      console.log(stdout)
-      console.log("stderr")
-      console.log(stderr)
-      resolve(stdout)
-    })
-  })
 
 /**
  *
@@ -72,17 +48,12 @@ const checkNativeChanges = (changedFiles) => {
 
 /**
  * @param workflow {string}
- * @param prName {string}
- * @param lintOutput {string}
  * @param nativeChanges {string}
  * @returns {string|null}
  */
-const composeComment = (workflow, prName, lintOutput, nativeChanges) => {
+const composeComment = (workflow, nativeChanges) => {
   const messages = []
-  if (lintOutput.length > 0) {
-    messages.push({ title: "PR Name", body: lintOutput })
-  }
-  if (nativeChanges && !prName.includes("!")) {
+  if (nativeChanges) {
     messages.push({ title: "Native Changes", body: nativeChanges })
   }
   if (messages.length === 0) {
