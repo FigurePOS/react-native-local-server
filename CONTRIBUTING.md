@@ -8,12 +8,12 @@ To get started with the project, run `yarn` in the root directory to install the
 
 ```sh
 yarn
-yarn example install-native
+yarn example prebuild
 ```
 
 > While it's possible to use [`npm`](https://github.com/npm/cli), the tooling is built around [`yarn`](https://classic.yarnpkg.com/), so you'll have an easier time if you use `yarn` for development.
 
-While developing, you can run the [example app](/example/) to test your changes. Any changes you make in your library's JavaScript code will be reflected in the example app without a rebuild. If you change any native code, then you'll need to rebuild the example app.
+While developing, you can run the [example app](/example) to test your changes. Any changes you make in your library's JavaScript code will be reflected in the example app without a rebuild. If you change any native code, then you'll need to rebuild the example app.
 
 To start the packager:
 
@@ -33,11 +33,19 @@ To run the example app on iOS:
 yarn example ios
 ```
 
-Make sure your code passes TypeScript and ESLint. Run the following to verify:
+Make sure your code passes TypeScript, Prettier and ESLint. Run the following to verify:
 
 ```sh
 yarn check:ts
 yarn check:lint
+yarn check:format
+```
+
+To fix any linting or formatting issues, run:
+
+```sh
+yarn fix:lint
+yarn fix:format
 ```
 
 Remember to add tests for your change if possible. Run the unit tests by:
@@ -46,6 +54,12 @@ Remember to add tests for your change if possible. Run the unit tests by:
 yarn test:ts
 yarn test:android
 yarn test:ios
+```
+
+Or use a command to run all the checks and tests at once (except the native tests):
+
+```sh
+yarn check:all
 ```
 
 To edit the Objective-C files, open `example/ios/LocalServerExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-local-server`.
@@ -81,10 +95,14 @@ The `package.json` file contains various scripts for common tasks:
 
 - `yarn check:ts`: type-check files with TypeScript.
 - `yarn check:lint`: lint files with ESLint.
+- `yarn fix:lint`: fix linting issues with ESLint.
+- `yarn check:format`: check if files are formatted with Prettier.
+- `yarn fix:format`: format files with Prettier.
 - `yarn test:ts`: runs TypeScript unit tests with Jest.
+- `yarn check:all`: runs all checks and tests except the native tests.
 - `yarn test:android`: runs Android unit tests.
 - `yarn test:ios`: runs iOS unit tests.
-- `yarn example install-native`: installs all dependencies for the example app.
+- `yarn example prebuild`: installs all dependencies for the example app.
 - `yarn example bundle`: starts the Metro server for the example app.
 - `yarn example android`: runs the example app on Android.
 - `yarn example ios`: runs the example app on iOS.
