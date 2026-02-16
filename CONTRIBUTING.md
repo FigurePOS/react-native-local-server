@@ -87,7 +87,7 @@ We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint]
 
 We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
 
-To publish new versions, approve release on circleci.
+To publish new versions, run the "Build and Release" action on GitHub.
 
 ### Scripts
 
