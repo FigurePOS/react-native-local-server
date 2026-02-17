@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  id-token: write
   contents: write
   packages: read
 
@@ -14,21 +15,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+        shell: bash
       - name: Set Up Node.js
-        uses: FigurePOS/github-actions/.github/actions/setup-node@v1
+        uses: useblacksmith/setup-node@v5
         with:
-          version: "24.x"
+          node-version: "24.x"
+          cache: "yarn"
+          registry-url: "https://registry.npmjs.org"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Install Dependencies
         uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
 
       - name: Build library
         run: yarn build
-
-      - name: Set NPM Token
-        shell: bash
-        run: |
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
 
       - name: Release
         run: yarn release
