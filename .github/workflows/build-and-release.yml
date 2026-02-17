@@ -30,10 +30,7 @@ jobs:
         run: |
           npm config set @figurepos:registry https://npm.pkg.github.com/
           npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GITHUB_TOKEN }}
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release
         run: yarn release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
