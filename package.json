@@ -53,7 +53,8 @@
     "homepage": "https://github.com/FigurePOS/react-native-local-server#readme",
     "publishConfig": {
         "registry": "https://registry.npmjs.org/",
-        "access": "public"
+        "access": "public",
+        "skipChecks": true
     },
     "dependencies": {
         "rxjs": "7.8.1"
