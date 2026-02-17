@@ -27,6 +27,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
+      - name: Configure Git User
+        uses: FigurePOS/github-actions/.github/actions/git-configure-user@v1
+
       - name: Install Dependencies
         uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
 
