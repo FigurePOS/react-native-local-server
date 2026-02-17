@@ -30,6 +30,9 @@ jobs:
       - name: Install Dependencies
         uses: FigurePOS/github-actions/.github/actions/install-dependencies@v1
 
+      - name: Check NPM version
+        run: npm --version
+
       - name: Build library
         run: yarn build
 
