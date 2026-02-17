@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Releasing SDK"
+echo "Releasing"
 
 VERSION=$(cat "./package.json" | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
 
@@ -21,8 +21,8 @@ IOS_FILES="$(echo  "$CHANGED_FILES" | grep "^ios/")"
 
 if [ -z "$ANDROID_FILES" ] && [ -z "$IOS_FILES" ]; then
   echo "No native files changed, releasing TS version only."
-  yarn release:ts --ci
+  yarn release-it patch --ci
 else
   echo "Native files changed, releasing new NATIVE version."
-  yarn release:native --ci
+  yarn release-it minor --ci
 fi
