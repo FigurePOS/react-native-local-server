@@ -1,9 +1,6 @@
 name: Build and Release
 
 on:
-  push:
-    branches:
-      - master
   workflow_dispatch:
 
 permissions:
@@ -28,5 +25,7 @@ jobs:
       - name: Build library
         run: yarn build
 
-      - name: Release SDK
+      - name: Release
         run: yarn release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
