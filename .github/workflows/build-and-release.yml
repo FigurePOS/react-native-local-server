@@ -25,13 +25,8 @@ jobs:
       - name: Build library
         run: yarn build
 
-      - name: Set GitHub Packages Token
-        shell: bash
-        run: |
-          npm config set @figurepos:registry https://npm.pkg.github.com/
-          npm config set //npm.pkg.github.com/:_authToken ${{ github.token }}
-
       - name: Release
         run: yarn release
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
