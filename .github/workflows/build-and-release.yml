@@ -14,10 +14,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY_PRIVATE }}
 
       - name: Enable Corepack
         run: corepack enable
         shell: bash
+
       - name: Set Up Node.js
         uses: actions/setup-node@v4
         with:
