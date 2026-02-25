@@ -8,3 +8,4 @@ coverage/*
 *.spec.js
 lib/*
 example/vendor/bundle/*
+CHANGELOG.md
