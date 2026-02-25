@@ -4,7 +4,7 @@
 
 ### Features
 
-* bump version + configure git user FGR3-8440 ([d2970b4](https://github.com/FigurePOS/react-native-local-server/commit/d2970b423e604eba892ee22a803f08f5201a293a))
+- bump version + configure git user FGR3-8440 ([d2970b4](https://github.com/FigurePOS/react-native-local-server/commit/d2970b423e604eba892ee22a803f08f5201a293a))
 
 ### [0.17.1](https://github.com/FigurePOS/react-native-local-server/compare/v0.17.0...v0.17.1) (2025-01-02)
 
