@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,swift}"
   s.exclude_files = ["ios/Tests/**/*.{h,m,mm,swift}", "ios/LocalServerForTests-Bridging-Header.h"]
 
-  s.dependency "React-Core"
+  install_modules_dependencies(s)
   s.framework = "Network"
 
   s.test_spec 'Tests' do |t|

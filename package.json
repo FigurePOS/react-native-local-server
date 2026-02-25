@@ -96,6 +96,14 @@
             ]
         ]
     },
+    "codegenConfig": {
+        "name": "LocalServerSpec",
+        "type": "modules",
+        "jsSrcsDir": "src/specs",
+        "android": {
+            "javaPackageName": "com.reactnativelocalserver"
+        }
+    },
     "prettier": "@figuredev/prettier-config",
     "engines": {
         "node": ">=24"

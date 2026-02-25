@@ -54,7 +54,7 @@ describe("TCPServer", () => {
     it("should start server - error", async () => {
         const spy = jest.spyOn(TCPServerModule, "createServer")
         const e = new Error("failed")
-        TCPServerModule.createServer.mockRejectedValue(e)
+        jest.mocked(TCPServerModule.createServer).mockRejectedValue(e)
         const config: TCPServerConfiguration = {
             port: 12000,
         }
@@ -71,7 +71,7 @@ describe("TCPServer", () => {
     it("should send data to native - error", async () => {
         const spy = jest.spyOn(TCPServerModule, "send")
         const e = new Error("failed")
-        TCPServerModule.send.mockRejectedValue(e)
+        jest.mocked(TCPServerModule.send).mockRejectedValue(e)
         await expect(server.sendData(connectionId, "sample data")).rejects.toEqual(e)
         expect(spy).toHaveBeenCalledWith(serverId, connectionId, "sample data")
     })
@@ -85,7 +85,7 @@ describe("TCPServer", () => {
     it("should stop server - error", async () => {
         const spy = jest.spyOn(TCPServerModule, "stopServer")
         const e = new Error("failed")
-        TCPServerModule.stopServer.mockRejectedValue(e)
+        jest.mocked(TCPServerModule.stopServer).mockRejectedValue(e)
         await expect(server.stop()).rejects.toEqual(e)
         expect(spy).toHaveBeenCalledWith(serverId, StopReasonEnum.Manual)
     })
@@ -99,7 +99,7 @@ describe("TCPServer", () => {
     it("should close connection - error", async () => {
         const spy = jest.spyOn(TCPServerModule, "closeConnection")
         const e = new Error("failed")
-        TCPServerModule.closeConnection.mockRejectedValue(e)
+        jest.mocked(TCPServerModule.closeConnection).mockRejectedValue(e)
         await expect(server.closeConnection(connectionId)).rejects.toEqual(e)
         expect(spy).toHaveBeenCalledWith(serverId, connectionId, StopReasonEnum.Manual)
     })

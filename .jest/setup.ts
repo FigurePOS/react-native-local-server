@@ -11,5 +11,9 @@ jest.mock("react-native", () => {
         NativeEventEmitter: EventEmitter,
         NativeModules: {},
         Platform: { OS: "ios", select: jest.fn() },
+        TurboModuleRegistry: {
+            getEnforcing: jest.fn().mockReturnValue({}),
+            get: jest.fn().mockReturnValue(null),
+        },
     }
 })

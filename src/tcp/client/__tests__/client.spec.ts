@@ -56,7 +56,7 @@ describe("TCPClient", () => {
     it("should start client - error", async () => {
         const spy = jest.spyOn(TCPClientModule, "createClient")
         const e = new Error("failed")
-        TCPClientModule.createClient.mockRejectedValue(e)
+        jest.mocked(TCPClientModule.createClient).mockRejectedValue(e)
         const config: TCPClientConfiguration = {
             connection: {
                 method: TCPClientConnectionMethod.Raw,
@@ -77,7 +77,7 @@ describe("TCPClient", () => {
     it("should send data to native - error", async () => {
         const spy = jest.spyOn(TCPClientModule, "send")
         const e = new Error("failed")
-        TCPClientModule.send.mockRejectedValue(e)
+        jest.mocked(TCPClientModule.send).mockRejectedValue(e)
         await expect(client.sendData("sample data")).rejects.toEqual(e)
         expect(spy).toHaveBeenCalledWith(clientId, "sample data")
     })
@@ -91,7 +91,7 @@ describe("TCPClient", () => {
     it("should stop client - error", async () => {
         const spy = jest.spyOn(TCPClientModule, "stopClient")
         const e = new Error("failed")
-        TCPClientModule.stopClient.mockRejectedValue(e)
+        jest.mocked(TCPClientModule.stopClient).mockRejectedValue(e)
         await expect(client.stop()).rejects.toEqual(e)
         expect(spy).toHaveBeenCalledWith(clientId, StopReasonEnum.Manual)
     })
