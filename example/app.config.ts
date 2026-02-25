@@ -8,7 +8,6 @@ export default () => {
             scheme: "dev.figure.local-server-example",
             orientation: "landscape",
             userInterfaceStyle: "light",
-            newArchEnabled: false,
             splash: {
                 image: "./assets/icon.png",
                 resizeMode: "contain",

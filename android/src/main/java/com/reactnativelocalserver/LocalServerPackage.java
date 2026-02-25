@@ -3,11 +3,14 @@ package com.reactnativelocalserver;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.facebook.react.ReactPackage;
+import com.facebook.react.TurboReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.module.model.ReactModuleInfo;
+import com.facebook.react.module.model.ReactModuleInfoProvider;
 import com.facebook.react.uimanager.ViewManager;
 import com.reactnativelocalserver.tcp.factory.TCPClientFactory;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
@@ -15,30 +18,56 @@ import com.reactnativelocalserver.udp.factory.UDPServerFactory;
 import com.reactnativelocalserver.utils.EventEmitter;
 import com.reactnativelocalserver.utils.NsdManagerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class LocalServerPackage implements ReactPackage {
+public class LocalServerPackage extends TurboReactPackage {
 
-    private TCPClientFactory tcpClientFactory = new TCPClientFactory();
-    private TCPServerFactory tcpServerFactory = new TCPServerFactory();
-    private UDPServerFactory udpServerFactory = new UDPServerFactory();
-    private EventEmitter eventEmitter;
-    private NsdManagerFactory nsdManagerFactory;
+    private final TCPClientFactory tcpClientFactory = new TCPClientFactory();
+    private final TCPServerFactory tcpServerFactory = new TCPServerFactory();
+    private final UDPServerFactory udpServerFactory = new UDPServerFactory();
+
+    @Nullable
+    @Override
+    public NativeModule getModule(@NonNull String name, @NonNull ReactApplicationContext reactContext) {
+        EventEmitter eventEmitter = new EventEmitter(reactContext);
+        NsdManagerFactory nsdManagerFactory = new NsdManagerFactory(reactContext);
+        switch (name) {
+            case TCPClientModule.NAME:
+                return new TCPClientModule(reactContext, eventEmitter, tcpClientFactory);
+            case TCPServerModule.NAME:
+                return new TCPServerModule(reactContext, eventEmitter, tcpServerFactory, nsdManagerFactory, true);
+            case UDPServerModule.NAME:
+                return new UDPServerModule(reactContext, eventEmitter, udpServerFactory);
+            case ServiceBrowserModule.NAME:
+                return new ServiceBrowserModule(reactContext, eventEmitter, nsdManagerFactory);
+            default:
+                return null;
+        }
+    }
 
     @NonNull
     @Override
-    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
-        eventEmitter = new EventEmitter(reactContext);
-        nsdManagerFactory = new NsdManagerFactory(reactContext);
-        modules.add(new TCPClientModule(reactContext, eventEmitter, tcpClientFactory));
-        modules.add(new TCPServerModule(reactContext, eventEmitter, tcpServerFactory, nsdManagerFactory, true));
-        modules.add(new UDPServerModule(reactContext, eventEmitter, udpServerFactory));
-        modules.add(new ServiceBrowserModule(reactContext, eventEmitter, nsdManagerFactory));
-        return modules;
+    public ReactModuleInfoProvider getReactModuleInfoProvider() {
+        return () -> {
+            Map<String, ReactModuleInfo> map = new HashMap<>();
+            map.put(TCPClientModule.NAME, new ReactModuleInfo(
+                    TCPClientModule.NAME, TCPClientModule.NAME,
+                    false, false, true, false, false));
+            map.put(TCPServerModule.NAME, new ReactModuleInfo(
+                    TCPServerModule.NAME, TCPServerModule.NAME,
+                    false, false, true, false, false));
+            map.put(UDPServerModule.NAME, new ReactModuleInfo(
+                    UDPServerModule.NAME, UDPServerModule.NAME,
+                    false, false, true, false, false));
+            map.put(ServiceBrowserModule.NAME, new ReactModuleInfo(
+                    ServiceBrowserModule.NAME, ServiceBrowserModule.NAME,
+                    false, false, true, false, false));
+            return map;
+        };
     }
 
     @NonNull

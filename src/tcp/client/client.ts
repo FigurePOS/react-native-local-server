@@ -98,7 +98,7 @@ export class TCPClient {
         }
     }
 
-    private connect = (connection: TCPClientConnectionConfiguration): Promise<void> => {
+    private connect = (connection: TCPClientConnectionConfiguration): Promise<boolean> => {
         switch (connection.method) {
             case TCPClientConnectionMethod.Raw:
                 return TCPClientModule.createClient(this.getId(), connection.host, connection.port)
