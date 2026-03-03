@@ -30,7 +30,6 @@ jobs:
         run: ./scripts/run-android-tests.sh
 
   ios:
-    if: false # Temporarily skip iOS tests
     runs-on: macos-latest
     steps:
       - name: Checkout

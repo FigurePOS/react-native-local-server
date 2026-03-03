@@ -50,7 +50,9 @@ class GeneralNetworkServerConnection {
 
     func stop(reason: String) {
         RNLSLog("GeneralNetworkServerConnection \(id) will stop: \(reason)")
-        lastReasonToStop = reason
+        if lastReasonToStop == nil {
+            lastReasonToStop = reason
+        }
         closeConnection()
     }
     
