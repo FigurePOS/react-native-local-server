@@ -91,9 +91,9 @@ public class E2E {
 
     @Test
     public void serverShouldNotStartIdAlreadyInUse() throws Exception {
-        prepareServer("server-1", 12000);
+        prepareServer("server-1", 12010);
         Promise promise = mockPromise();
-        serverModule.createServer("server-1", 12001, 0, promise);
+        serverModule.createServer("server-1", 12011, 0, promise);
         verify(promise).reject("udp.server.already-exists", "Server with this id already exists");
     }
 
