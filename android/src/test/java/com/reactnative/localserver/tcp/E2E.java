@@ -230,7 +230,7 @@ public class E2E {
 
         Promise promise = mockPromise();
         clientModule.createClient("client", "localhost", port + 1, promise);
-        verify(promise).reject("tcp.client.error", "Connection refused (Connection refused)");
+        verify(promise).reject("tcp.client.error", "Connection refused");
 
         TimeUnit.MILLISECONDS.sleep(100);
 
