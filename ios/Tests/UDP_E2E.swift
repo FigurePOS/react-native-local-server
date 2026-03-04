@@ -46,7 +46,10 @@ class UDP_E2E: XCTestCase {
         }
     }
     
-    func testServerShouldSendBroadcast() {
+    func testServerShouldSendBroadcast() throws {
+        #if targetEnvironment(macCatalyst)
+        throw XCTSkip("UDP broadcast is not supported on Mac Catalyst")
+        #endif
         do {
             let exp = expectation(description: "Server should not start")
             let onSuccess = {
@@ -131,7 +134,10 @@ class UDP_E2E: XCTestCase {
         }
     }
     
-    func testServerShouldReceiveDataBroadcast() {
+    func testServerShouldReceiveDataBroadcast() throws {
+        #if targetEnvironment(macCatalyst)
+        throw XCTSkip("UDP broadcast loopback is not supported on Mac Catalyst")
+        #endif
         do {
             prepareServer(id: "server")
             let sendExp = expectation(description: "Server should send data")
