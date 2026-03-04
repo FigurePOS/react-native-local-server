@@ -21,7 +21,7 @@ class GeneralNetworkServerConnection {
     private let numberOfDroppedBytesFromMsgStart: UInt16
     let id: String
     
-    private var lastReasonToStop: String? = nil
+    private var stopReason: String? = nil
 
     init(nwConnection: NWConnection, numberOfDroppedBytesFromMsgStart: UInt16, delegate: ServerConnectionDelegateProtocol) {
         self.delegate = delegate
@@ -50,8 +50,8 @@ class GeneralNetworkServerConnection {
 
     func stop(reason: String) {
         RNLSLog("GeneralNetworkServerConnection \(id) will stop: \(reason)")
-        if lastReasonToStop == nil {
-            lastReasonToStop = reason
+        if stopReason == nil {
+            stopReason = reason
         }
         closeConnection()
     }
@@ -116,11 +116,11 @@ class GeneralNetworkServerConnection {
     }
     
     private func handleConnectionFailed(error: NWError) {
-        self.delegate.handleConnectionStopped(connectionId: id, reason: lastReasonToStop ?? error.debugDescription)
+        self.delegate.handleConnectionStopped(connectionId: id, reason: stopReason ?? error.debugDescription)
     }
     
     private func handleConnectionCancelled() {
-        RNLSLog("GeneralNetworkServerConnection - cancelled: \(lastReasonToStop ?? "cancelled")")
-        self.delegate.handleConnectionStopped(connectionId: id, reason: lastReasonToStop ?? "cancelled")
+        RNLSLog("GeneralNetworkServerConnection - cancelled: \(stopReason ?? "cancelled")")
+        self.delegate.handleConnectionStopped(connectionId: id, reason: stopReason ?? "cancelled")
     }
 }
