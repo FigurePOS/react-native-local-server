@@ -56,16 +56,16 @@ public class LocalServerPackage extends TurboReactPackage {
             Map<String, ReactModuleInfo> map = new HashMap<>();
             map.put(TCPClientModule.NAME, new ReactModuleInfo(
                     TCPClientModule.NAME, TCPClientModule.NAME,
-                    false, false, false, false));
+                    false, false, false, true));
             map.put(TCPServerModule.NAME, new ReactModuleInfo(
                     TCPServerModule.NAME, TCPServerModule.NAME,
-                    false, false, false, false));
+                    false, false, false, true));
             map.put(UDPServerModule.NAME, new ReactModuleInfo(
                     UDPServerModule.NAME, UDPServerModule.NAME,
-                    false, false, false, false));
+                    false, false, false, true));
             map.put(ServiceBrowserModule.NAME, new ReactModuleInfo(
                     ServiceBrowserModule.NAME, ServiceBrowserModule.NAME,
-                    false, false, false, false));
+                    false, false, false, true));
             return map;
         };
     }

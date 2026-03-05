@@ -2,12 +2,8 @@ package com.reactnativelocalserver;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.TCPClient;
 import com.reactnativelocalserver.tcp.factory.TCPClientFactory;
@@ -19,13 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ReactModule(name = TCPClientModule.NAME)
-public class TCPClientModule extends ReactContextBaseJavaModule {
+public class TCPClientModule extends NativeTCPClientModuleSpec {
     public static final String NAME = "TCPClientModule";
 
     private final TCPClientFactory clientFactory;
-
     private final EventEmitter eventEmitter;
-
     private final Map<String, TCPClient> clients = new HashMap();
 
     public TCPClientModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPClientFactory clientFactory) {
@@ -39,20 +33,14 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
     }
 
     @Override
-    @NonNull
-    public String getName() {
-        return NAME;
-    }
-
-    @ReactMethod
-    public void createClient(String id, String host, int port, Promise promise) {
+    public void createClient(String id, String host, double port, Promise promise) {
         Log.d(NAME, "createClient started for id:" + id);
         if (clients.get(id) != null) {
             promise.reject("tcp.client.already-exists", "Client with this id already exists");
             return;
         }
         try {
-            TCPClient client = clientFactory.of(id, host, port, eventEmitter);
+            TCPClient client = clientFactory.of(id, host, (int) port, eventEmitter);
             client.setOnConnectionClosed(this::onConnectionClosed);
             client.start();
             clients.put(id, client);
@@ -64,13 +52,13 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void createClientFromDiscovery(String id, String discoveryGroup, String discoveryName, Promise promise) {
         Log.d(NAME, "createClientFromDiscovery started for id:" + id);
         promise.reject("tcp.client.error", "Not Implemented");
     }
 
-    @ReactMethod
+    @Override
     public void stopClient(String id, String reason, Promise promise) {
         Log.d(NAME, "stopClient started for id:" + id);
         TCPClient client = clients.get(id);
@@ -87,7 +75,7 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void send(String clientId, String message, Promise promise) {
         Log.d(NAME, "send started for client:" + clientId);
         TCPClient client = clients.get(clientId);
@@ -102,6 +90,12 @@ public class TCPClientModule extends ReactContextBaseJavaModule {
             promise.reject("tcp.client.error", e.getMessage());
         }
     }
+
+    @Override
+    public void addListener(String eventType) {}
+
+    @Override
+    public void removeListeners(double count) {}
 
     @Override
     public void invalidate() {

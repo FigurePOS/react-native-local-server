@@ -26,16 +26,12 @@ class UDPServerModule: RCTEventEmitter {
         return false
     }
     
-    @objc(createServer:withPort:withNumberOfDroppedBytesFromMsgStart:withResolver:withRejecter:)
-    func createServer(id: String, port: UInt16, numberOfDroppedBytesFromMsgStart: UInt16, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc(createServer:port:numberOfDroppedBytesFromMsgStart:resolve:reject:)
+    func createServer(id: String, port: Double, numberOfDroppedBytesFromMsgStart: Double, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            let onSuccess = {
-                resolve(true)
-            }
-            let onFailure = { (reason: String) in
-                reject("udp.server.error", reason, nil)
-            }
-            try manager.createServer(id: id, port: port, numberOfDroppedBytesFromMsgStart: numberOfDroppedBytesFromMsgStart, onSuccess: onSuccess, onFailure: onFailure)
+            let onSuccess = { resolve(true) }
+            let onFailure = { (reason: String) in reject("udp.server.error", reason, nil) }
+            try manager.createServer(id: id, port: UInt16(port), numberOfDroppedBytesFromMsgStart: UInt16(numberOfDroppedBytesFromMsgStart), onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesAlreadyExist {
             reject("udp.server.already-exists", "Server with this id already exists", nil)
         } catch {
@@ -43,7 +39,7 @@ class UDPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(stopServer:withReason:withResolver:withRejecter:)
+    @objc(stopServer:reason:resolve:reject:)
     func stopServer(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         do {
             try manager.stopServer(id: id, reason: reason)
@@ -55,16 +51,12 @@ class UDPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(send:withPort:withMessage:withResolver:withRejecter:)
-    func send(host: String, port: UInt16, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    @objc(send:port:message:resolve:reject:)
+    func send(host: String, port: Double, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            let onSuccess = {
-                resolve(true)
-            }
-            let onFailure = { (reason: String?) in
-                reject("udp.server.error", reason ?? "UNKNOWN REASON", nil)
-            }
-            try manager.send(host: host, port: port, message: message, onSuccess: onSuccess, onFailure: onFailure)
+            let onSuccess = { resolve(true) }
+            let onFailure = { (reason: String?) in reject("udp.server.error", reason ?? "UNKNOWN REASON", nil) }
+            try manager.send(host: host, port: UInt16(port), message: message, onSuccess: onSuccess, onFailure: onFailure)
         } catch {
             reject("udp.server.error", "Failed to send", error)
         }

@@ -2,12 +2,8 @@ package com.reactnativelocalserver;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.udp.UDPServer;
 import com.reactnativelocalserver.udp.factory.UDPServerFactory;
@@ -23,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ReactModule(name = UDPServerModule.NAME)
-public class UDPServerModule extends ReactContextBaseJavaModule {
+public class UDPServerModule extends NativeUDPServerModuleSpec {
     public static final String NAME = "UDPServerModule";
 
     private final EventEmitter eventEmitter;
@@ -41,21 +37,14 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
     }
 
     @Override
-    @NonNull
-    public String getName() {
-        return NAME;
-    }
-
-    @ReactMethod
-    public void createServer(String id, int port, int numberOfDroppedBytesFromMsgStart, Promise promise) {
+    public void createServer(String id, double port, double numberOfDroppedBytesFromMsgStart, Promise promise) {
         Log.d(NAME, "createServer started for id: " + id);
         if (servers.get(id) != null) {
             promise.reject("udp.server.already-exists", "Server with this id already exists");
             return;
         }
         try {
-            // numberOfDroppedBytesFromMsgStart ignored for now
-            UDPServer server = serverFactory.of(id, port, eventEmitter);
+            UDPServer server = serverFactory.of(id, (int) port, eventEmitter);
             server.start();
             servers.put(id, server);
             promise.resolve(true);
@@ -64,7 +53,7 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void stopServer(String id, String reason, Promise promise) {
         Log.d(NAME, "stopServer started for id: " + id);
         UDPServer server = servers.get(id);
@@ -81,14 +70,14 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
-    public void send(String host, int port, String message, Promise promise) {
+    @Override
+    public void send(String host, double port, String message, Promise promise) {
         Log.d(NAME, "send started: " + host);
         try {
             DatagramSocket socket = new DatagramSocket();
             InetAddress address = InetAddress.getByName(host);
             byte[] buffer = message.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, port);
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, (int) port);
             socket.send(packet);
             promise.resolve(true);
         } catch (UnknownHostException e) {
@@ -100,6 +89,11 @@ public class UDPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @Override
+    public void addListener(String eventType) {}
+
+    @Override
+    public void removeListeners(double count) {}
 
     @Override
     public void invalidate() {

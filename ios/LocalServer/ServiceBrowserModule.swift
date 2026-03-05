@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 @available(iOS 13.0, *)
 @objc(ServiceBrowserModule)
 class ServiceBrowserModule: RCTEventEmitter {
@@ -27,15 +26,11 @@ class ServiceBrowserModule: RCTEventEmitter {
         return false
     }
 
-    @objc(createBrowser:withDiscoveryGroup:withResolver:withRejecter:)
+    @objc(createBrowser:discoveryGroup:resolve:reject:)
     func createBrowser(id: String, discoveryGroup: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            let onSuccess = {
-                resolve(true)
-            }
-            let onFailure = { (reason: String) in
-                reject("service.browser.error", reason, nil)
-            }
+            let onSuccess = { resolve(true) }
+            let onFailure = { (reason: String) in reject("service.browser.error", reason, nil) }
             try manager.createBrowser(id: id, discoveryGroup: discoveryGroup, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesAlreadyExist {
             reject("service.browser.already-exists", "Browser with this id already exists", nil)
@@ -44,15 +39,11 @@ class ServiceBrowserModule: RCTEventEmitter {
         }
     }
 
-    @objc(stopBrowser:withResolver:withRejecter:)
+    @objc(stopBrowser:resolve:reject:)
     func stopBrowser(id: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         do {
-            let onSuccess = {
-                resolve(true)
-            }
-            let onFailure = { (reason: String) in
-                reject("service.browser.error", reason, nil)
-            }
+            let onSuccess = { resolve(true) }
+            let onFailure = { (reason: String) in reject("service.browser.error", reason, nil) }
             try manager.stopBrowser(id: id, onSuccess: onSuccess, onFailure: onFailure)
         } catch LocalServerError.ServerDoesNotExist {
             resolve(true)
@@ -60,7 +51,6 @@ class ServiceBrowserModule: RCTEventEmitter {
             reject("service.browser.error", "Failed to stop browser", error)
         }
     }
-
 
     override func supportedEvents() -> [String]! {
         return self.eventNames

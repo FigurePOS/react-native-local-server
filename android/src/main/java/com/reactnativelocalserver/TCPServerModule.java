@@ -6,12 +6,10 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 import com.reactnativelocalserver.tcp.TCPServer;
 import com.reactnativelocalserver.tcp.factory.TCPServerFactory;
@@ -28,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 @ReactModule(name = TCPServerModule.NAME)
-public class TCPServerModule extends ReactContextBaseJavaModule {
+public class TCPServerModule extends NativeTCPServerModuleSpec {
     public static final String NAME = "TCPServerModule";
 
     private final EventEmitter eventEmitter;
@@ -36,7 +34,6 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
     private final NsdManagerFactory nsdManagerFactory;
     private final Map<String, TCPServer> servers = new HashMap();
     private final ReactApplicationContext reactApplicationContext;
-
     private final boolean useJmDNS;
 
     public TCPServerModule(ReactApplicationContext reactContext, EventEmitter eventEmitter, TCPServerFactory serverFactory, NsdManagerFactory nsdManagerFactory) {
@@ -56,26 +53,20 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         return servers;
     }
 
-    @Override
-    @NonNull
-    public String getName() {
-        return NAME;
-    }
-
     public void createServer(String id, int port, Promise promise) {
         createServer(id, port, null, null, promise);
     }
 
-    @ReactMethod
-    public void createServer(String id, int port, String discoveryGroup, String discoveryName, Promise promise) {
+    @Override
+    public void createServer(String id, double port, @Nullable String discoveryGroup, @Nullable String discoveryName, Promise promise) {
         Log.d(NAME, "createServer started for id: " + id);
         if (servers.get(id) != null) {
             promise.reject("tcp.server.already-exists", "Server with this id already exists");
             return;
         }
-        NsdServiceInfo discoveryConfig = NsdServiceInfoFactory.of(discoveryName, discoveryGroup, port);
+        NsdServiceInfo discoveryConfig = NsdServiceInfoFactory.of(discoveryName, discoveryGroup, (int) port);
         try {
-            TCPServer server = serverFactory.of(id, port, discoveryConfig, true, eventEmitter);
+            TCPServer server = serverFactory.of(id, (int) port, discoveryConfig, true, eventEmitter);
             server.start(nsdManagerFactory.of());
             servers.put(id, server);
             promise.resolve(true);
@@ -84,7 +75,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void stopServer(String id, String reason, Promise promise) {
         Log.d(NAME, "stopServer started for id: " + id);
         TCPServer server = servers.get(id);
@@ -101,7 +92,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void send(String serverId, String connectionId, String message, Promise promise) {
         Log.d(NAME, "send started for server: " + serverId);
         TCPServer server = servers.get(serverId);
@@ -117,7 +108,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void closeConnection(String serverId, String connectionId, String reason, Promise promise) {
         Log.d(NAME, "close connection started for server: " + serverId);
         TCPServer server = servers.get(serverId);
@@ -133,7 +124,7 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void getConnectionIds(String serverId, Promise promise) {
         Log.d(NAME, "get connection ids for server: " + serverId);
         TCPServer server = servers.get(serverId);
@@ -145,33 +136,36 @@ public class TCPServerModule extends ReactContextBaseJavaModule {
         promise.resolve(ids);
     }
 
-    @ReactMethod
-    public void getLocalIpAddress(final Promise promise) throws Exception {
+    @Override
+    public void getLocalIpAddress(Promise promise) {
         Log.d(NAME, "getLocalIpAddress");
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    WifiManager manager = (WifiManager) reactApplicationContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    if (manager == null) {
-                        promise.resolve(null);
-                        return;
-                    }
-                    WifiInfo info = manager.getConnectionInfo();
-                    String ipAddress = InetAddress.getByAddress(
-                            ByteBuffer
-                                    .allocate(4)
-                                    .order(ByteOrder.LITTLE_ENDIAN)
-                                    .putInt(info.getIpAddress())
-                                    .array())
-                            .getHostAddress();
-                    Log.d(NAME, "getLocalIpAddress: " + ipAddress);
-                    promise.resolve(ipAddress);
-                } catch (Exception e) {
-                    promise.reject("tcp.server.error", e.getMessage());
+        new Thread(() -> {
+            try {
+                WifiManager manager = (WifiManager) reactApplicationContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                if (manager == null) {
+                    promise.resolve(null);
+                    return;
                 }
+                WifiInfo info = manager.getConnectionInfo();
+                String ipAddress = InetAddress.getByAddress(
+                        ByteBuffer.allocate(4)
+                                .order(ByteOrder.LITTLE_ENDIAN)
+                                .putInt(info.getIpAddress())
+                                .array())
+                        .getHostAddress();
+                Log.d(NAME, "getLocalIpAddress: " + ipAddress);
+                promise.resolve(ipAddress);
+            } catch (Exception e) {
+                promise.reject("tcp.server.error", e.getMessage());
             }
         }).start();
     }
+
+    @Override
+    public void addListener(String eventType) {}
+
+    @Override
+    public void removeListeners(double count) {}
 
     @Override
     public void invalidate() {
