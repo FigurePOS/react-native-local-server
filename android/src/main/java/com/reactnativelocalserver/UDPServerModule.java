@@ -30,6 +30,21 @@ public class UDPServerModule extends NativeUDPServerModuleSpec {
         super(reactContext);
         this.eventEmitter = eventEmitter;
         this.serverFactory = serverFactory;
+        this.eventEmitter.setEventHandler(this::handleEvent);
+    }
+
+    private void handleEvent(String name, com.facebook.react.bridge.WritableMap body) {
+        switch (name) {
+            case "RN_Local_Communication__UDP_Server_Ready":
+                emitOnReady(body);
+                break;
+            case "RN_Local_Communication__UDP_Server_Stopped":
+                emitOnStopped(body);
+                break;
+            case "RN_Local_Communication__UDP_Server_DataReceived":
+                emitOnDataReceived(body);
+                break;
+        }
     }
 
     public Map<String, UDPServer> getServers() {
@@ -88,12 +103,6 @@ public class UDPServerModule extends NativeUDPServerModuleSpec {
             promise.reject("udp.server.error", e.getMessage());
         }
     }
-
-    @Override
-    public void addListener(String eventType) {}
-
-    @Override
-    public void removeListeners(double count) {}
 
     @Override
     public void invalidate() {

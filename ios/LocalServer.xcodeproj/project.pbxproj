@@ -180,6 +180,14 @@
 		1BE5C6192893FFB7009D6F03 /* TCPServerEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerEventName.swift; sourceTree = "<group>"; };
 		1BE5C6202893FFDC009D6F03 /* TCPClientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientManager.swift; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocalServer-Bridging-Header.h"; sourceTree = "<group>"; };
+		AABB00010000000000000001 /* RCTTCPServerModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTTCPServerModule.h; path = LocalServer/RCTTCPServerModule.h; sourceTree = "<group>"; };
+		AABB00010000000000000002 /* RCTTCPClientModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTTCPClientModule.h; path = LocalServer/RCTTCPClientModule.h; sourceTree = "<group>"; };
+		AABB00010000000000000003 /* RCTUDPServerModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTUDPServerModule.h; path = LocalServer/RCTUDPServerModule.h; sourceTree = "<group>"; };
+		AABB00010000000000000004 /* RCTServiceBrowserModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTServiceBrowserModule.h; path = LocalServer/RCTServiceBrowserModule.h; sourceTree = "<group>"; };
+		AABB00010000000000000005 /* TCPServerModuleImpl-Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TCPServerModuleImpl-Interface.h"; path = "LocalServer/TCPServerModuleImpl-Interface.h"; sourceTree = "<group>"; };
+		AABB00010000000000000006 /* TCPClientModuleImpl-Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TCPClientModuleImpl-Interface.h"; path = "LocalServer/TCPClientModuleImpl-Interface.h"; sourceTree = "<group>"; };
+		AABB00010000000000000007 /* UDPServerModuleImpl-Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UDPServerModuleImpl-Interface.h"; path = "LocalServer/UDPServerModuleImpl-Interface.h"; sourceTree = "<group>"; };
+		AABB00010000000000000008 /* ServiceBrowserModuleImpl-Interface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ServiceBrowserModuleImpl-Interface.h"; path = "LocalServer/ServiceBrowserModuleImpl-Interface.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -374,6 +382,14 @@
 				1BE5C5A32893D190009D6F03 /* TCPClientModule.swift */,
 				1BE5C5A12893D190009D6F03 /* TCPServerModule.mm */,
 				1BE5C5A42893D190009D6F03 /* TCPServerModule.swift */,
+				AABB00010000000000000001 /* RCTTCPServerModule.h */,
+				AABB00010000000000000002 /* RCTTCPClientModule.h */,
+				AABB00010000000000000003 /* RCTUDPServerModule.h */,
+				AABB00010000000000000004 /* RCTServiceBrowserModule.h */,
+				AABB00010000000000000005 /* TCPServerModuleImpl-Interface.h */,
+				AABB00010000000000000006 /* TCPClientModuleImpl-Interface.h */,
+				AABB00010000000000000007 /* UDPServerModuleImpl-Interface.h */,
+				AABB00010000000000000008 /* ServiceBrowserModuleImpl-Interface.h */,
 				F4FF95D5245B92E700C19C63 /* LocalServer-Bridging-Header.h */,
 				1BE5C6102893E10E009D6F03 /* LocalServerForTests-Bridging-Header.h */,
 				1BE5C6012893DEAF009D6F03 /* Tests */,
@@ -628,9 +644,13 @@
 				EXCLUDED_SOURCE_FILE_NAMES = (
 					LocalServer/TCPClientModule.swift,
 					LocalServer/TCPServerModule.swift,
+					LocalServer/UDPServerModule.swift,
+					LocalServer/ServiceBrowserModule.swift,
 					LocalServer/Utils/EventEmitterWrapper.swift,
 					LocalServer/TCPServerModule.mm,
 					LocalServer/TCPClientModule.mm,
+					LocalServer/UDPServerModule.mm,
+					LocalServer/ServiceBrowserModule.mm,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -655,9 +675,13 @@
 				EXCLUDED_SOURCE_FILE_NAMES = (
 					LocalServer/TCPClientModule.swift,
 					LocalServer/TCPServerModule.swift,
+					LocalServer/UDPServerModule.swift,
+					LocalServer/ServiceBrowserModule.swift,
 					LocalServer/Utils/EventEmitterWrapper.swift,
 					LocalServer/TCPServerModule.mm,
 					LocalServer/TCPClientModule.mm,
+					LocalServer/UDPServerModule.mm,
+					LocalServer/ServiceBrowserModule.mm,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

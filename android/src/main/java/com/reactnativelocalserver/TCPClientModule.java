@@ -26,6 +26,21 @@ public class TCPClientModule extends NativeTCPClientModuleSpec {
         super(reactContext);
         this.eventEmitter = eventEmitter;
         this.clientFactory = clientFactory;
+        this.eventEmitter.setEventHandler(this::handleEvent);
+    }
+
+    private void handleEvent(String name, com.facebook.react.bridge.WritableMap body) {
+        switch (name) {
+            case "RN_Local_Communication__TCP_Client_Ready":
+                emitOnReady(body);
+                break;
+            case "RN_Local_Communication__TCP_Client_Stopped":
+                emitOnStopped(body);
+                break;
+            case "RN_Local_Communication__TCP_Client_DataReceived":
+                emitOnDataReceived(body);
+                break;
+        }
     }
 
     public Map<String, TCPClient> getClients() {
@@ -90,12 +105,6 @@ public class TCPClientModule extends NativeTCPClientModuleSpec {
             promise.reject("tcp.client.error", e.getMessage());
         }
     }
-
-    @Override
-    public void addListener(String eventType) {}
-
-    @Override
-    public void removeListeners(double count) {}
 
     @Override
     public void invalidate() {

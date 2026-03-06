@@ -9,13 +9,13 @@
 import Foundation
 
 class EventEmitterWrapper {
-    private var eventEmitter: RCTEventEmitter?;
-    
-    func setEventEmitter(eventEmitter: RCTEventEmitter) {
-        self.eventEmitter = eventEmitter
+    private var eventCallback: ((JSEvent) -> Void)?
+
+    func setEventCallback(_ callback: @escaping (JSEvent) -> Void) {
+        self.eventCallback = callback
     }
-    
+
     func emitEvent(event: JSEvent) -> Void {
-        eventEmitter?.sendEvent(withName: event.getName(), body: event.getBody())
+        eventCallback?(event)
     }
 }

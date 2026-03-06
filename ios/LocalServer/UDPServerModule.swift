@@ -1,5 +1,5 @@
 //
-//  UDPServerModule.swift
+//  UDPServerModuleImpl.swift
 //  LocalServer
 //
 //  Created by David Lang on 25.09.2022.
@@ -9,25 +9,22 @@
 import Foundation
 
 @available(iOS 13.0, *)
-@objc(UDPServerModule)
-class UDPServerModule: RCTEventEmitter {
+@objcMembers
+class UDPServerModuleImpl: NSObject {
 
-    private var eventNames: [String]! = UDPServerEventName.allValues
-    private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
+    private let eventEmitter: EventEmitterWrapper
     private var manager: UDPServerManager
-    
-    override init() {
+
+    init(onEvent: @escaping (String, [String: Any]) -> Void) {
+        eventEmitter = EventEmitterWrapper()
         manager = UDPServerManager(eventEmitter: eventEmitter)
         super.init()
-        eventEmitter.setEventEmitter(eventEmitter: self)
+        eventEmitter.setEventCallback { event in
+            onEvent(event.getName(), event.getBody())
+        }
     }
-    
-    @objc override static func requiresMainQueueSetup() -> Bool {
-        return false
-    }
-    
-    @objc(createServer:port:numberOfDroppedBytesFromMsgStart:resolve:reject:)
-    func createServer(id: String, port: Double, numberOfDroppedBytesFromMsgStart: Double, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+
+    func createServer(_ id: String, port: Double, numberOfDroppedBytesFromMsgStart: Double, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("udp.server.error", reason, nil) }
@@ -39,8 +36,7 @@ class UDPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(stopServer:reason:resolve:reject:)
-    func stopServer(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func stopServer(_ id: String, reason: String, resolve: (Any?) -> Void, reject: (String?, String?, Error?) -> Void) {
         do {
             try manager.stopServer(id: id, reason: reason)
             resolve(true)
@@ -51,8 +47,7 @@ class UDPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(send:port:message:resolve:reject:)
-    func send(host: String, port: Double, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func send(_ host: String, port: Double, message: String, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String?) in reject("udp.server.error", reason ?? "UNKNOWN REASON", nil) }
@@ -61,13 +56,8 @@ class UDPServerModule: RCTEventEmitter {
             reject("udp.server.error", "Failed to send", error)
         }
     }
-    
-    override func supportedEvents() -> [String]! {
-        return self.eventNames
-    }
-    
-    override func invalidate() {
+
+    func invalidate() {
         manager.invalidate()
-        super.invalidate()
     }
 }

@@ -1,5 +1,5 @@
 //
-//  TCPServerModule.swift
+//  TCPServerModuleImpl.swift
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
@@ -9,25 +9,22 @@
 import Foundation
 
 @available(iOS 13.0, *)
-@objc(TCPServerModule)
-class TCPServerModule: RCTEventEmitter {
+@objcMembers
+class TCPServerModuleImpl: NSObject {
 
-    private var eventNames: [String]! = TCPServerEventName.allValues
-    private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
+    private let eventEmitter: EventEmitterWrapper
     private var manager: TCPServerManager
-    
-    override init() {
+
+    init(onEvent: @escaping (String, [String: Any]) -> Void) {
+        eventEmitter = EventEmitterWrapper()
         manager = TCPServerManager(eventEmitter: eventEmitter)
         super.init()
-        eventEmitter.setEventEmitter(eventEmitter: self)
+        eventEmitter.setEventCallback { event in
+            onEvent(event.getName(), event.getBody())
+        }
     }
-    
-    @objc override static func requiresMainQueueSetup() -> Bool {
-        return false
-    }
-    
-    @objc(createServer:port:discoveryGroup:discoveryName:resolve:reject:)
-    func createServer(id: String, port: Double, discoveryGroup: String?, discoveryName: String?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+
+    func createServer(_ id: String, port: Double, discoveryGroup: String?, discoveryName: String?, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("tcp.server.error", reason, nil) }
@@ -39,8 +36,7 @@ class TCPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(stopServer:reason:resolve:reject:)
-    func stopServer(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func stopServer(_ id: String, reason: String, resolve: (Any?) -> Void, reject: (String?, String?, Error?) -> Void) {
         do {
             try manager.stopServer(id: id, reason: reason)
             resolve(true)
@@ -51,8 +47,7 @@ class TCPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(send:connectionId:message:resolve:reject:)
-    func send(serverId: String, connectionId: String, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func send(_ serverId: String, connectionId: String, message: String, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("tcp.server.error", reason, nil) }
@@ -64,8 +59,7 @@ class TCPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(closeConnection:connectionId:reason:resolve:reject:)
-    func closeConnection(serverId: String, connectionId: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func closeConnection(_ serverId: String, connectionId: String, reason: String, resolve: (Any?) -> Void, reject: (String?, String?, Error?) -> Void) {
         do {
             try manager.closeConnection(serverId: serverId, connectionId: connectionId, reason: reason)
             resolve(true)
@@ -76,8 +70,7 @@ class TCPServerModule: RCTEventEmitter {
         }
     }
 
-    @objc(getConnectionIds:resolve:reject:)
-    func getConnectionIds(serverId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func getConnectionIds(_ serverId: String, resolve: (Any?) -> Void, reject: (String?, String?, Error?) -> Void) {
         do {
             let connectionIds: [String] = try manager.getConnectionIds(serverId: serverId)
             resolve(connectionIds)
@@ -87,9 +80,8 @@ class TCPServerModule: RCTEventEmitter {
             reject("tcp.server.error", "Failed to get connections", error)
         }
     }
-    
-    @objc(getLocalIpAddress:reject:)
-    func getLocalIpAddress(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+
+    func getLocalIpAddress(_ resolve: (Any?) -> Void, reject: (String?, String?, Error?) -> Void) {
         var address: String?
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
         if getifaddrs(&ifaddr) == 0 {
@@ -118,13 +110,8 @@ class TCPServerModule: RCTEventEmitter {
         }
         resolve(address)
     }
-    
-    override func supportedEvents() -> [String]! {
-        return self.eventNames
-    }
-    
-    override func invalidate() {
+
+    func invalidate() {
         manager.invalidate()
-        super.invalidate()
     }
 }

@@ -1,5 +1,3 @@
-import { NativeEventEmitter } from "react-native"
-
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 import { StopReason, StopReasonEnum } from "../../utils/types"
 
@@ -7,15 +5,12 @@ import { UDPServerModule } from "./module"
 import { UDPServerEventName } from "./nativeEvents"
 import { UDPServerConfiguration } from "./types"
 
-const eventEmitter = new NativeEventEmitter(UDPServerModule)
-
 /**
  * Implementation of UDP protocol
  */
 export class UDPServer {
     private readonly id: string
     static readonly EventName = UDPServerEventName
-    static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
     private logger: LoggerWrapper = new LoggerWrapper()
     private config: UDPServerConfiguration | null = null

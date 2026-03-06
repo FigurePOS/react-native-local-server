@@ -1,5 +1,3 @@
-import { NativeEventEmitter } from "react-native"
-
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 import { StopReason, StopReasonEnum } from "../../utils/types"
 
@@ -7,15 +5,12 @@ import { TCPServerModule } from "./module"
 import { TCPServerEventName } from "./nativeEvents"
 import type { TCPServerConfiguration } from "./types"
 
-const eventEmitter = new NativeEventEmitter(TCPServerModule)
-
 /**
  * Implementation of TCP protocol (server)
  */
 export class TCPServer {
     private readonly id: string
     static readonly EventName = TCPServerEventName
-    static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
     private logger: LoggerWrapper = new LoggerWrapper()
     private config: TCPServerConfiguration | null = null

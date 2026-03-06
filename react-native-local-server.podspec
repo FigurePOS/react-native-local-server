@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/FigurePOS/react-native-local-server.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
+  s.pod_target_xcconfig = { "OTHER_LDFLAGS" => "-ObjC" }
   s.exclude_files = ["ios/Tests/**/*.{h,m,mm,swift}", "ios/LocalServerForTests-Bridging-Header.h"]
 
   install_modules_dependencies(s)

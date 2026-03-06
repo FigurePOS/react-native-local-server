@@ -1,5 +1,5 @@
 //
-//  TCPClientModule.swift
+//  TCPClientModuleImpl.swift
 //  LocalServer
 //
 //  Created by David Lang on 02.06.2022.
@@ -9,25 +9,22 @@
 import Foundation
 
 @available(iOS 13.0, *)
-@objc(TCPClientModule)
-class TCPClientModule: RCTEventEmitter {
+@objcMembers
+class TCPClientModuleImpl: NSObject {
 
-    private let eventNames: [String]! = TCPClientEventName.allValues
-    private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
+    private let eventEmitter: EventEmitterWrapper
     private var manager: TCPClientManager
-        
-    override init() {
+
+    init(onEvent: @escaping (String, [String: Any]) -> Void) {
+        eventEmitter = EventEmitterWrapper()
         manager = TCPClientManager(eventEmitter: eventEmitter)
         super.init()
-        eventEmitter.setEventEmitter(eventEmitter: self)
+        eventEmitter.setEventCallback { event in
+            onEvent(event.getName(), event.getBody())
+        }
     }
-    
-    @objc override static func requiresMainQueueSetup() -> Bool {
-        return false
-    }
-    
-    @objc(createClient:host:port:resolve:reject:)
-    func createClient(id: String, host: String, port: Double, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+
+    func createClient(_ id: String, host: String, port: Double, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("tcp.client.error", reason, nil) }
@@ -38,9 +35,8 @@ class TCPClientModule: RCTEventEmitter {
             reject("tcp.client.error", "Failed to create client", error)
         }
     }
-    
-    @objc(createClientFromDiscovery:discoveryGroup:discoveryName:resolve:reject:)
-    func createClientFromDiscovery(id: String, discoveryGroup: String, discoveryName: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+
+    func createClientFromDiscovery(_ id: String, discoveryGroup: String, discoveryName: String, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("tcp.client.error", reason, nil) }
@@ -52,8 +48,7 @@ class TCPClientModule: RCTEventEmitter {
         }
     }
 
-    @objc(stopClient:reason:resolve:reject:)
-    func stopClient(id: String, reason: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    func stopClient(_ id: String, reason: String, resolve: (Any?) -> Void, reject: (String?, String?, Error?) -> Void) {
         do {
             try manager.stopClient(id: id, reason: reason)
             resolve(true)
@@ -64,8 +59,7 @@ class TCPClientModule: RCTEventEmitter {
         }
     }
 
-    @objc(send:message:resolve:reject:)
-    func send(clientId: String, message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func send(_ clientId: String, message: String, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("tcp.client.error", reason, nil) }
@@ -77,12 +71,7 @@ class TCPClientModule: RCTEventEmitter {
         }
     }
 
-    override func supportedEvents() -> [String]! {
-        return self.eventNames
-    }
-    
-    override func invalidate() {
+    func invalidate() {
         manager.invalidate()
-        super.invalidate()
     }
 }

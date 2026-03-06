@@ -47,6 +47,30 @@ public class TCPServerModule extends NativeTCPServerModuleSpec {
         this.serverFactory = serverFactory;
         this.nsdManagerFactory = nsdManagerFactory;
         this.useJmDNS = useJmDNS;
+        this.eventEmitter.setEventHandler(this::handleEvent);
+    }
+
+    private void handleEvent(String name, com.facebook.react.bridge.WritableMap body) {
+        switch (name) {
+            case "RN_Local_Communication__TCP_Server_Ready":
+                emitOnReady(body);
+                break;
+            case "RN_Local_Communication__TCP_Server_Stopped":
+                emitOnStopped(body);
+                break;
+            case "RN_Local_Communication__TCP_Server_ConnectionAccepted":
+                emitOnConnectionAccepted(body);
+                break;
+            case "RN_Local_Communication__TCP_Server_ConnectionReady":
+                emitOnConnectionReady(body);
+                break;
+            case "RN_Local_Communication__TCP_Server_ConnectionClosed":
+                emitOnConnectionClosed(body);
+                break;
+            case "RN_Local_Communication__TCP_Server_DataReceived":
+                emitOnDataReceived(body);
+                break;
+        }
     }
 
     public Map<String, TCPServer> getServers() {
@@ -160,12 +184,6 @@ public class TCPServerModule extends NativeTCPServerModuleSpec {
             }
         }).start();
     }
-
-    @Override
-    public void addListener(String eventType) {}
-
-    @Override
-    public void removeListeners(double count) {}
 
     @Override
     public void invalidate() {

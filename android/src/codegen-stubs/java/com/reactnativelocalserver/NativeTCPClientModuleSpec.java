@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.WritableMap;
 
 public abstract class NativeTCPClientModuleSpec extends ReactContextBaseJavaModule {
     public static final String NAME = "TCPClientModule";
@@ -23,6 +24,8 @@ public abstract class NativeTCPClientModuleSpec extends ReactContextBaseJavaModu
     public abstract void createClientFromDiscovery(String id, String discoveryGroup, String discoveryName, Promise promise);
     public abstract void stopClient(String id, String reason, Promise promise);
     public abstract void send(String clientId, String message, Promise promise);
-    public abstract void addListener(String eventType);
-    public abstract void removeListeners(double count);
+
+    protected void emitOnReady(WritableMap value) {}
+    protected void emitOnStopped(WritableMap value) {}
+    protected void emitOnDataReceived(WritableMap value) {}
 }

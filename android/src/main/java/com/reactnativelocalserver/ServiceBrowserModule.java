@@ -29,6 +29,24 @@ public class ServiceBrowserModule extends NativeServiceBrowserModuleSpec {
         this.eventEmitter = eventEmitter;
         this.nsdManagerFactory = nsdManagerFactory;
         this.browsers = new HashMap<>();
+        this.eventEmitter.setEventHandler(this::handleEvent);
+    }
+
+    private void handleEvent(String name, com.facebook.react.bridge.WritableMap body) {
+        switch (name) {
+            case "RN_Local_Communication__Service_Browser_Started":
+                emitOnStarted(body);
+                break;
+            case "RN_Local_Communication__Service_Browser_Stopped":
+                emitOnStopped(body);
+                break;
+            case "RN_Local_Communication__Service_Browser_Service_Found":
+                emitOnServiceFound(body);
+                break;
+            case "RN_Local_Communication__Service_Browser_Service_Lost":
+                emitOnServiceLost(body);
+                break;
+        }
     }
 
     @Override
@@ -61,12 +79,6 @@ public class ServiceBrowserModule extends NativeServiceBrowserModuleSpec {
             promise.reject("service.browser.error", e.getMessage());
         }
     }
-
-    @Override
-    public void addListener(String eventType) {}
-
-    @Override
-    public void removeListeners(double count) {}
 
     @Override
     public void invalidate() {

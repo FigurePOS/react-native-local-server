@@ -1,12 +1,8 @@
-import { NativeEventEmitter } from "react-native"
-
 import { Logger, LoggerVerbosity, LoggerWrapper } from "../../utils/logger"
 
 import { ServiceBrowserModule } from "./module"
 import { ServiceBrowserEventName } from "./nativeEvents"
 import { ServiceBrowserConfiguration } from "./types"
-
-const eventEmitter = new NativeEventEmitter(ServiceBrowserModule)
 
 /**
  * Implementation of Service Browser
@@ -14,7 +10,6 @@ const eventEmitter = new NativeEventEmitter(ServiceBrowserModule)
 export class ServiceBrowser {
     private readonly id: string
     static readonly EventName = ServiceBrowserEventName
-    static readonly EventEmitter: NativeEventEmitter = eventEmitter
 
     private logger: LoggerWrapper = new LoggerWrapper()
     private config: ServiceBrowserConfiguration | null = null

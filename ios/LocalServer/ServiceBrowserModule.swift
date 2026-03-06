@@ -1,5 +1,5 @@
 //
-//  ServiceBrowserModule.swift
+//  ServiceBrowserModuleImpl.swift
 //  LocalServer
 //
 //  Created by David Lang on 12.12.2022.
@@ -9,25 +9,22 @@
 import Foundation
 
 @available(iOS 13.0, *)
-@objc(ServiceBrowserModule)
-class ServiceBrowserModule: RCTEventEmitter {
+@objcMembers
+class ServiceBrowserModuleImpl: NSObject {
 
-    private var eventNames: [String]! = ServiceBrowserEventName.allValues
-    private let eventEmitter: EventEmitterWrapper = EventEmitterWrapper()
+    private let eventEmitter: EventEmitterWrapper
     private var manager: ServiceBrowserManager
 
-    override init() {
-        self.manager = ServiceBrowserManager.init(eventEmitter: eventEmitter)
+    init(onEvent: @escaping (String, [String: Any]) -> Void) {
+        eventEmitter = EventEmitterWrapper()
+        manager = ServiceBrowserManager.init(eventEmitter: eventEmitter)
         super.init()
-        eventEmitter.setEventEmitter(eventEmitter: self)
+        eventEmitter.setEventCallback { event in
+            onEvent(event.getName(), event.getBody())
+        }
     }
 
-    @objc override static func requiresMainQueueSetup() -> Bool {
-        return false
-    }
-
-    @objc(createBrowser:discoveryGroup:resolve:reject:)
-    func createBrowser(id: String, discoveryGroup: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func createBrowser(_ id: String, discoveryGroup: String, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("service.browser.error", reason, nil) }
@@ -39,8 +36,7 @@ class ServiceBrowserModule: RCTEventEmitter {
         }
     }
 
-    @objc(stopBrowser:resolve:reject:)
-    func stopBrowser(id: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func stopBrowser(_ id: String, resolve: @escaping (Any?) -> Void, reject: @escaping (String?, String?, Error?) -> Void) {
         do {
             let onSuccess = { resolve(true) }
             let onFailure = { (reason: String) in reject("service.browser.error", reason, nil) }
@@ -52,12 +48,7 @@ class ServiceBrowserModule: RCTEventEmitter {
         }
     }
 
-    override func supportedEvents() -> [String]! {
-        return self.eventNames
-    }
-
-    override func invalidate() {
+    func invalidate() {
         manager.invalidate()
-        super.invalidate()
     }
 }
