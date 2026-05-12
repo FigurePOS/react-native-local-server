@@ -1,11 +1,9 @@
-import groovy.json.JsonSlurper
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
-def reactNativeVersion = new JsonSlurper()
-        .parse(file("$rootDir/../package.json"))
-        .devDependencies["react-native"]
-
+def isNewArchitectureEnabled() {
+    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
 
 buildscript {
     if (project == rootProject) {
@@ -21,19 +19,26 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+if (isNewArchitectureEnabled()) {
+    apply plugin: 'com.facebook.react'
+}
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
 android {
+    namespace "com.reactnativelocalserver"
     compileSdkVersion safeExtGet('LocalServer_compileSdkVersion', 33)
     defaultConfig {
         minSdkVersion safeExtGet('LocalServer_minSdkVersion', 21)
         targetSdkVersion safeExtGet('LocalServer_targetSdkVersion', 33)
         versionCode 1
         versionName "1.0"
-
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    }
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
@@ -61,9 +66,9 @@ repositories {
 }
 
 dependencies {
-    //noinspection GradleDynamicVersion
-    // From node_modules
-    implementation("com.facebook.react:react-android:$reactNativeVersion")
+    // The version is resolved from the host app's React Native installation via the
+    // React Native Gradle plugin / Maven repository configured above.
+    implementation 'com.facebook.react:react-native:+'
     // This is used for Zeroconf service registration instead of the system NsdManager
     implementation 'org.jmdns:jmdns:3.6.0'
 
