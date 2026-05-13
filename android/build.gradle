@@ -1,44 +1,72 @@
+import groovy.json.JsonSlurper
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
-def isNewArchitectureEnabled() {
-    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
-}
+def packageReactNativeVersion = new JsonSlurper()
+    .parse(file("$rootDir/../package.json"))
+    .devDependencies["react-native"]
+
+// When built standalone (without RN plugin), we need an explicit version
+def reactNativeVersion = rootProject.hasProperty('reactNativeVersion') 
+    ? rootProject.reactNativeVersion 
+    : packageReactNativeVersion
 
 buildscript {
-    if (project == rootProject) {
-        repositories {
-            google()
-            mavenCentral()
-        }
+  ext.LocalServer = [
+    kotlinVersion: "2.0.21",
+    minSdkVersion: 24,
+    compileSdkVersion: 36,
+    targetSdkVersion: 36
+  ]
 
-        dependencies {
-            classpath("com.android.tools.build:gradle:7.4.2")
-        }
+  ext.getExtOrDefault = { prop ->
+    if (rootProject.ext.has(prop)) {
+      return rootProject.ext.get(prop)
     }
+
+    return LocalServer[prop]
+  }
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:8.7.2"
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${getExtOrDefault('kotlinVersion')}"
+  }
 }
 
-apply plugin: 'com.android.library'
-if (isNewArchitectureEnabled()) {
-    apply plugin: 'com.facebook.react'
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+// Only apply React Native plugin when available (not available in standalone test builds)
+try {
+    apply plugin: "com.facebook.react"
+} catch (Exception e) {
+    logger.warn("com.facebook.react plugin not available - this is expected for standalone test builds")
 }
 
-def safeExtGet(prop, fallback) {
-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+// Repositories for project dependencies (when built standalone)
+repositories {
+    google()
+    mavenCentral()
+    maven { url "$rootDir/../node_modules/react-native/android" }
 }
 
 android {
     namespace "com.reactnativelocalserver"
-    compileSdkVersion safeExtGet('LocalServer_compileSdkVersion', 33)
+    compileSdkVersion getExtOrDefault("compileSdkVersion")
     defaultConfig {
-        minSdkVersion safeExtGet('LocalServer_minSdkVersion', 21)
-        targetSdkVersion safeExtGet('LocalServer_targetSdkVersion', 33)
-        versionCode 1
-        versionName "1.0"
-        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+        minSdkVersion getExtOrDefault("minSdkVersion")
+        targetSdkVersion getExtOrDefault("targetSdkVersion")
     }
+
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
 
     buildTypes {
@@ -46,37 +74,25 @@ android {
             minifyEnabled false
         }
     }
-    lintOptions {
-        disable 'GradleCompatible'
+
+    lint {
+        disable "GradleCompatible"
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-repositories {
-    mavenLocal()
-    maven {
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        url("$rootDir/../node_modules/react-native/android")
-    }
-    google()
-    mavenCentral()
-}
-
 dependencies {
-    // The version is resolved from the host app's React Native installation via the
-    // React Native Gradle plugin / Maven repository configured above.
-    implementation 'com.facebook.react:react-native:+'
-    // This is used for Zeroconf service registration instead of the system NsdManager
-    implementation 'org.jmdns:jmdns:3.6.0'
+    implementation "com.facebook.react:react-android:$reactNativeVersion"
+    implementation "org.jmdns:jmdns:3.6.0"
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.assertj:assertj-core:3.11.1"
     testImplementation 'org.mockito:mockito-core:2.19.0'
     testImplementation "androidx.test:core:1.3.0"
-
 }
 
 // Enhance test commands

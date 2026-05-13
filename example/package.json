@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "start": "expo start",
-        "android": "expo run:android",
+        "android": "expo run:android --device",
         "ios": "expo run:ios --device",
         "web": "expo start --web",
         "prebuild": "expo prebuild --clean --yarn",
