@@ -34,6 +34,7 @@ export default () => {
                 package: "dev.figure.local_server_example",
                 edgeToEdgeEnabled: true,
                 predictiveBackGestureEnabled: false,
+                permissions: ["android.permission.ACCESS_WIFI_STATE"],
             },
             platforms: ["ios", "android"],
         },
