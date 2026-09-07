@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.10 (2026-09-07)
+
+### Bug Fixes
+
+* **android:** skip explicit Kotlin plugin when AGP registers the kotlin extension ([#107](https://github.com/FigurePOS/react-native-local-server/issues/107)) ([c78a447](https://github.com/FigurePOS/react-native-local-server/commit/c78a447da39470eb332bab7f396172b96e54ff41))
+
 ## 0.17.9 (2026-05-13)
 
 ### Bug Fixes
