@@ -11,6 +11,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.io.IOException;
 import java.util.Collections;
 
 import javax.jmdns.JmDNS;
@@ -60,7 +61,7 @@ public class TCPServerDiscovery {
      * Register the server with the JmDNS.
      */
     public void register() {
-        if (listener != null) {
+        if (jmdns != null) {
             Log.d(TAG, "register - already registered");
             return;
         }
@@ -99,11 +100,28 @@ public class TCPServerDiscovery {
      * Unregister the server from the JmDNS.
      */
     public void unregister() {
-        if (jmdns == null || serviceInfo == null) {
+        if (jmdns == null) {
             Log.d(TAG, "unregister - not registered");
             return;
         }
-        jmdns.unregisterService(serviceInfo);
+        try {
+            if (serviceInfo != null) {
+                jmdns.unregisterService(serviceInfo);
+            }
+            jmdns.unregisterAllServices();
+            eventHandler.handleLifecycleEvent(TCPServerEventName.DiscoveryUnregistered);
+        } catch (Exception e) {
+            Log.e(TAG, "unregister - error", e);
+            eventHandler.handleLifecycleEvent(TCPServerEventName.DiscoveryUnregistrationFailed, "Error: " + e.getMessage());
+        } finally {
+            try {
+                jmdns.close();
+            } catch (IOException e) {
+                Log.e(TAG, "unregister - close error", e);
+            }
+            jmdns = null;
+            serviceInfo = null;
+        }
     }
 
     public void setPort(int port) {
@@ -156,6 +174,7 @@ public class TCPServerDiscovery {
 
         @Override
         public void onServiceUnregistered(NsdServiceInfo nsdServiceInfo) {
+            listener = null;
             eventHandler.handleLifecycleEvent(TCPServerEventName.DiscoveryUnregistered);
         }
     }

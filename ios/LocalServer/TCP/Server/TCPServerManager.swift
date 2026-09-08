@@ -22,7 +22,7 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
     func createServer(id: String, port: UInt16, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         try self.createServer(id: id, port: port, discoveryGroup: nil, discoveryName: nil, onSuccess: onSuccess, onFailure: onFailure)
     }
-    
+
     func createServer(id: String, port: UInt16, discoveryGroup: String?, discoveryName: String?, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         RNLSLog("TCPServerManager [\(id)] - createServer - started")
         if let _: GeneralNetworkServer = servers[id] {
@@ -64,16 +64,16 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
             throw LocalServerError.ServerDoesNotExist
         }
         try server.closeConnection(connectionId: connectionId, reason: reason)
-    
+
     }
-    
+
     func getConnectionIds(serverId: String) throws -> [String] {
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         return server.getConnectionIds()
     }
-    
+
     func getServerIds() -> [String] {
         var keys: [String] = []
         for k in servers.keys {
@@ -81,26 +81,37 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
         }
         return keys
     }
-    
+
     func getConnectionsFromServer(serverId: String) throws -> [String] {
         guard let server: GeneralNetworkServer = servers[serverId] else {
             throw LocalServerError.ServerDoesNotExist
         }
         return server.getConnectionIds()
     }
-    
+
     func invalidate() {
         RNLSLog("TCPServerManager - invalidate - \(servers.count) servers")
-        for (key, server) in servers {
+        let serversToStop = Array(servers)
+        let stopGroup = DispatchGroup()
+        for (key, server) in serversToStop {
+            stopGroup.enter()
             do {
-                try server.stop(reason: StopReasonEnum.Invalidation)
+                try server.stop(reason: StopReasonEnum.Invalidation, onStopCompleted: {
+                    stopGroup.leave()
+                })
             } catch {
                 RNLSLog("TCPServerManager - invalidate - \(key) error: \(error)")
+                stopGroup.leave()
             }
         }
+
+        if stopGroup.wait(timeout: .now() + .seconds(2)) == .timedOut {
+            RNLSLog("TCPServerManager - invalidate - timeout waiting for servers to stop")
+        }
+
         servers.removeAll()
     }
-    
+
     private func handleLifecycleEvent(serverId: String, eventName: String, port: UInt16, reason: String? = nil) {
         RNLSLog("TCPServerManager [\(serverId)] - event \(eventName)")
         let event: JSEvent = JSEvent(name: eventName)
@@ -122,29 +133,29 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
         }
         eventEmitter.emitEvent(event: event)
     }
-    
+
     //MARK: - ServerDelegateProtocol
     func handleServerReady(serverId: String, port: UInt16) {
         handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Ready, port: port)
     }
-    
+
     func handleServerStopped(serverId: String, port: UInt16, reason: String?) {
         servers.removeValue(forKey: serverId)
         handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.Stopped, port: port, reason: reason)
     }
-    
+
     func handleConnectionAccepted(serverId: String, connectionId: String) {
         handleConnectionLifecycleEvent(serverId: serverId, connectionId: connectionId, eventName: TCPServerEventName.ConnectionAccepted)
     }
-    
+
     func handleConnectionReady(serverId: String, connectionId: String) {
         handleConnectionLifecycleEvent(serverId: serverId, connectionId: connectionId, eventName: TCPServerEventName.ConnectionReady)
     }
-    
+
     func handleConnectionStopped(serverId: String, connectionId: String, reason: String?) {
         handleConnectionLifecycleEvent(serverId: serverId, connectionId: connectionId, eventName: TCPServerEventName.ConnectionClosed, reason: reason)
     }
-    
+
     func handleDataReceived(serverId: String, connectionId: String, data: String) {
         let event: JSEvent = JSEvent(name: TCPServerEventName.DataReceived)
         event.putString(key: "serverId", value: serverId)
@@ -152,12 +163,12 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
         event.putString(key: "data", value: data)
         eventEmitter.emitEvent(event: event)
     }
-    
+
     //MARK: - ServiceDelegateProtocol
     func serviceAdded(serverId: String, endpoint: NWEndpoint) {
         handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryRegistered, port: 0)
     }
-    
+
     func serviceRemoved(serverId: String, endpoint: NWEndpoint) {
         handleLifecycleEvent(serverId: serverId, eventName: TCPServerEventName.DiscoveryUnregistered, port: 0)
     }

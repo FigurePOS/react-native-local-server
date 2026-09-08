@@ -12,7 +12,7 @@ import Network
 
 @available(iOS 13.0, *)
 class GeneralNetworkServer: ServerConnectionDelegateProtocol {
-    
+
     private let delegate: ServerDelegateProtocol
     private var serviceDelegate: ServiceDelegateProtocol? = nil
     private var connectionsByID: [String: GeneralNetworkServerConnection] = [:]
@@ -20,14 +20,15 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     private var wasReady: Bool = false
     private var onStartSucceeded: (() -> ())? = nil
     private var onStartFailed: ((_ reason: String) -> ())? = nil
-    
+    private var onStopCompleted: (() -> ())? = nil
+
     let id: String
     var port: NWEndpoint.Port
     let numberOfDroppedBytesFromMsgStart: UInt16
     let listener: NWListener
     let queue: DispatchQueue
     var lastReasonToStop: String? = nil
-    
+
     init(id: String, port: UInt16, params: NWParameters, delegate: ServerDelegateProtocol) throws {
         self.delegate = delegate
         queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
@@ -36,7 +37,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         self.numberOfDroppedBytesFromMsgStart = 0
         self.listener = try NWListener(using: params, on: self.port)
     }
-    
+
     init(id: String, port: UInt16, numberOfDroppedBytesFromMsgStart: UInt16, params: NWParameters, delegate: ServerDelegateProtocol) throws {
         self.delegate = delegate
         queue = DispatchQueue(label: "com.react-native-local-messaging.server.\(id)")
@@ -45,13 +46,13 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         self.numberOfDroppedBytesFromMsgStart = numberOfDroppedBytesFromMsgStart
         self.listener = try NWListener(using: params, on: self.port)
     }
-    
+
     func prepareBonjourService(type: String, name: String, delegate: ServiceDelegateProtocol) {
         self.listener.service = NWListener.Service.init(name: name, type: type)
         self.serviceDelegate = delegate
         self.listener.serviceRegistrationUpdateHandler = serviceRegistrationHandler(update:)
     }
-    
+
     func start(onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         RNLSLog("GeneralNetworkServer [\(self.id)] - start")
         onStartSucceeded = onSuccess
@@ -60,13 +61,18 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         listener.newConnectionHandler = handleConnectionAccepted(nwConnection:)
         listener.start(queue: self.queue)
     }
-    
+
     func stop(reason: String) throws {
+        try stop(reason: reason, onStopCompleted: nil)
+    }
+
+    func stop(reason: String, onStopCompleted: (() -> ())?) throws {
         RNLSLog("GeneralNetworkServer [\(self.id)] - stop")
         self.lastReasonToStop = reason
+        self.onStopCompleted = onStopCompleted
         self.stopServer()
     }
-    
+
     func send(connectionId: String, message: String, onSuccess: @escaping () -> (), onFailure: @escaping (_ reason: String) -> ()) throws {
         RNLSLog("GeneralNetworkServer [\(self.id)] - send")
         RNLSLog("\tconnection: \(connectionId)")
@@ -78,7 +84,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         let preparedMessage = message + "\r\n"
         connection.send(data: (preparedMessage.data(using: .utf8))!, onSuccess: onSuccess, onFailure: onFailure)
     }
-    
+
     func closeConnection(connectionId: String, reason: String) throws {
         RNLSLog("GeneralNetworkServer [\(self.id)] - close connection: \(connectionId)")
         guard let connection = connectionsByID[connectionId] else {
@@ -87,7 +93,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         }
         connection.stop(reason: reason)
     }
-    
+
     func getConnectionIds() -> [String] {
         var keys: [String] = []
         for k in connectionsByID.keys {
@@ -95,7 +101,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         }
         return keys
     }
-    
+
     private func stopServer() {
         self.listener.newConnectionHandler = nil
         for connection in self.connectionsByID.values {
@@ -103,7 +109,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         }
         self.listener.cancel()
     }
-    
+
     private func stateDidChange(to newState: NWListener.State) {
         RNLSLog("GeneralNetworkServer [\(self.id)] - stateDidChange")
         switch newState {
@@ -134,7 +140,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
                 break
         }
     }
-    
+
     private func handleConnectionAccepted(nwConnection: NWConnection) {
         let connection = GeneralNetworkServerConnection(nwConnection: nwConnection, numberOfDroppedBytesFromMsgStart: self.numberOfDroppedBytesFromMsgStart, delegate: self)
         RNLSLog("GeneralNetworkServer [\(self.id)] - connection accepted - \(connection.id)")
@@ -142,16 +148,26 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
         self.connectionsByID[connection.id] = connection
         connection.start()
     }
-    
+
     private func handleServerFailed(error: NWError? = nil) {
         if (!wasReady) {
             self.onStartFailed?(lastReasonToStop ?? "cancelled")
+            self.completeStopIfNeeded()
             return
         }
         let reason = error == nil ? lastReasonToStop : error?.debugDescription
         delegate.handleServerStopped(serverId: id, port: self.port.rawValue, reason: reason)
+        self.completeStopIfNeeded()
     }
-    
+
+    private func completeStopIfNeeded() {
+        guard let onStopCompleted = self.onStopCompleted else {
+            return
+        }
+        self.onStopCompleted = nil
+        onStopCompleted()
+    }
+
     private func serviceRegistrationHandler(update: NWListener.ServiceRegistrationChange) {
         RNLSLog("GeneralNetworkServer [\(self.id)] - service registration changed")
         guard let serviceDelegate = serviceDelegate else {
@@ -171,24 +187,24 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
             return
         }
     }
-    
+
     //MARK: - ServerConnectionDelegateProtocol
     internal func handleConnectionReady(connectionId: String) {
         delegate.handleConnectionReady(serverId: id, connectionId: connectionId)
     }
-    
+
     internal func handleConnectionCompleted(connectionId: String) {
         guard let connection = self.connectionsByID[connectionId] else {
             return
         }
         connection.stop(reason: StopReasonEnum.ClosedByPeer)
     }
-    
+
     internal func handleConnectionStopped(connectionId: String, reason: String?) {
         self.connectionsByID.removeValue(forKey: connectionId)
         delegate.handleConnectionStopped(serverId: id, connectionId: connectionId, reason: reason)
     }
-    
+
     internal func handleDataReceived(connectionId: String, data: String) {
         delegate.handleDataReceived(serverId: id, connectionId: connectionId, data: data)
     }
