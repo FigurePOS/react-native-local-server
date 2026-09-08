@@ -20,6 +20,7 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     private var wasReady: Bool = false
     private var onStartSucceeded: (() -> ())? = nil
     private var onStartFailed: ((_ reason: String) -> ())? = nil
+    private var onStopCompleted: (() -> ())? = nil
 
     let id: String
     var port: NWEndpoint.Port
@@ -62,8 +63,13 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     }
 
     func stop(reason: String) throws {
+        try stop(reason: reason, onStopCompleted: nil)
+    }
+
+    func stop(reason: String, onStopCompleted: (() -> ())?) throws {
         RNLSLog("GeneralNetworkServer [\(self.id)] - stop")
         self.lastReasonToStop = reason
+        self.onStopCompleted = onStopCompleted
         self.stopServer()
     }
 
@@ -146,10 +152,20 @@ class GeneralNetworkServer: ServerConnectionDelegateProtocol {
     private func handleServerFailed(error: NWError? = nil) {
         if (!wasReady) {
             self.onStartFailed?(lastReasonToStop ?? "cancelled")
+            self.completeStopIfNeeded()
             return
         }
         let reason = error == nil ? lastReasonToStop : error?.debugDescription
         delegate.handleServerStopped(serverId: id, port: self.port.rawValue, reason: reason)
+        self.completeStopIfNeeded()
+    }
+
+    private func completeStopIfNeeded() {
+        guard let onStopCompleted = self.onStopCompleted else {
+            return
+        }
+        self.onStopCompleted = nil
+        onStopCompleted()
     }
 
     private func serviceRegistrationHandler(update: NWListener.ServiceRegistrationChange) {

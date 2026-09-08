@@ -104,12 +104,28 @@ public class TCPServer implements EventHandler {
 
     public void stop(String reason) throws Exception {
         Log.d(TAG, "stop: " + id);
+        Thread serverThread = thread;
         try {
             lastStopReason = reason;
+            if (serverSocket == null) {
+                Log.d(TAG, "stop: server socket is already null for " + id);
+                return;
+            }
             serverSocket.close();
+
+            // Wait for the accept loop to unwind and cleanup discovery registration.
+            if (serverThread != null && serverThread != Thread.currentThread()) {
+                serverThread.join(2000);
+                if (serverThread.isAlive()) {
+                    Log.w(TAG, "stop timeout: server thread is still alive for " + id);
+                }
+            }
         } catch (IOException e) {
             Log.e(TAG, "close server socket error", e);
             throw new Exception("Failed to stop server: " + id, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new Exception("Interrupted while stopping server: " + id, e);
         }
     }
 

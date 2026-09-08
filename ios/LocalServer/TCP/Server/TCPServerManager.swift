@@ -91,13 +91,24 @@ class TCPServerManager: ServerDelegateProtocol, ServiceDelegateProtocol {
 
     func invalidate() {
         RNLSLog("TCPServerManager - invalidate - \(servers.count) servers")
-        for (key, server) in servers {
+        let serversToStop = Array(servers)
+        let stopGroup = DispatchGroup()
+        for (key, server) in serversToStop {
+            stopGroup.enter()
             do {
-                try server.stop(reason: StopReasonEnum.Invalidation)
+                try server.stop(reason: StopReasonEnum.Invalidation, onStopCompleted: {
+                    stopGroup.leave()
+                })
             } catch {
                 RNLSLog("TCPServerManager - invalidate - \(key) error: \(error)")
+                stopGroup.leave()
             }
         }
+
+        if stopGroup.wait(timeout: .now() + .seconds(2)) == .timedOut {
+            RNLSLog("TCPServerManager - invalidate - timeout waiting for servers to stop")
+        }
+
         servers.removeAll()
     }
 
