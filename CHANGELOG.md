@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.11 (2026-09-09)
+
+### Features
+
+* improve server invalidation FGR3-10240 ([#108](https://github.com/FigurePOS/react-native-local-server/issues/108)) ([2b4afc8](https://github.com/FigurePOS/react-native-local-server/commit/2b4afc83f58e12c4d547b91c5d73fd35a9ca4071))
+
 ## 0.17.10 (2026-09-07)
 
 ### Bug Fixes
